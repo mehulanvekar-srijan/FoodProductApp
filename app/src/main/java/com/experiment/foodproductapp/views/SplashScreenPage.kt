@@ -14,12 +14,13 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.experiment.foodproductapp.R
 import com.experiment.foodproductapp.ui.theme.Purple700
 import com.experiment.foodproductapp.viewmodels.SplashScreenViewModel
 
 @Composable
-fun SplashScreenPage(
+fun SplashScreenPage(navController: NavController,
     splashScreenViewModel: SplashScreenViewModel = viewModel(),
     animationDuration : Int = splashScreenViewModel.splashDuration.toInt() - 1000
 ) {
@@ -44,7 +45,7 @@ fun SplashScreenPage(
 
     LaunchedEffect(key1 = Unit) {
         startAnimation.value = true
-        splashScreenViewModel.execute()
+        splashScreenViewModel.execute(navController)
     }
 }
 

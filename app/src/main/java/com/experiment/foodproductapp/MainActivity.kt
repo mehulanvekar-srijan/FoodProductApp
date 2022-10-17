@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.ui.theme.FoodProductAppTheme
+import com.experiment.foodproductapp.views.SignupPage
 import com.experiment.foodproductapp.views.SplashScreenPage
 
 class MainActivity : ComponentActivity() {
@@ -21,10 +22,10 @@ class MainActivity : ComponentActivity() {
                     startDestination = Screen.SplashScreen.route
                 ) {
                     composable(route = Screen.SplashScreen.route) {
-                        SplashScreenPage()
+                        SplashScreenPage(navHostController)
                     }
                     composable(route = Screen.SignUpScreen.route) {
-
+                        SignupPage()
                     }
                 }
             }
