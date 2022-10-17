@@ -9,10 +9,12 @@ import kotlinx.coroutines.withContext
 
 class SplashScreenViewModel : ViewModel() {
 
+    val splashDuration: Long = 3000  // Milliseconds
+
     fun execute() {
         viewModelScope.launch(Dispatchers.IO) {
 
-            delay(3000)
+            delay(splashDuration)
 
             withContext(Dispatchers.Main) {
                 //Navigation Logic

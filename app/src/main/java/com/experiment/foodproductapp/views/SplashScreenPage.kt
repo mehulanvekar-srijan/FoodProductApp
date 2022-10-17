@@ -1,43 +1,67 @@
 package com.experiment.foodproductapp.views
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.experiment.foodproductapp.R
+import com.experiment.foodproductapp.ui.theme.Purple700
 import com.experiment.foodproductapp.viewmodels.SplashScreenViewModel
 
-@Preview(showBackground = true)
 @Composable
 fun SplashScreenPage(
-    splashScreenViewModel: SplashScreenViewModel = viewModel()
+    splashScreenViewModel: SplashScreenViewModel = viewModel(),
+    animationDuration : Int = splashScreenViewModel.splashDuration.toInt() - 1000
 ) {
+    val startAnimation = remember { mutableStateOf(false) }
+
+    val animatedAlpha = animateFloatAsState(
+        targetValue = if(startAnimation.value) 1F else 0F,
+        animationSpec = tween(animationDuration),
+    )
+
+    val animatedShape = animateFloatAsState(
+        targetValue = if(startAnimation.value) 0.9F else 0.1F,
+        animationSpec = tween(animationDuration),
+    )
+
     Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+        modifier = Modifier.fillMaxSize().background(Purple700),
+        contentAlignment = Alignment.Center,
     ) {
-        Image(
-            imageVector = Icons.Filled.ShoppingCart,
-            contentDescription = "",
-            modifier = Modifier
-                .padding(0.dp)
-                .fillMaxSize(0.9f),
-            contentScale = ContentScale.Fit,
-            alignment = Alignment.Center,
-        )
+        DrawLogo(animatedAlpha,animatedShape)
     }
 
     LaunchedEffect(key1 = Unit) {
+        startAnimation.value = true
         splashScreenViewModel.execute()
     }
+}
+
+@Composable
+fun DrawLogo(
+    animatedAlpha: State<Float>,
+    animatedShape: State<Float>
+) {
+    Image(
+        painter = painterResource(id = R.drawable.ic_burger_logo),
+        contentDescription = "ic_burger_logo",
+        modifier = Modifier
+            .padding(0.dp)
+            .fillMaxSize(animatedShape.value),
+        contentScale = ContentScale.Fit,
+        alignment = Alignment.Center,
+        alpha = animatedAlpha.value,
+    )
 }
 
