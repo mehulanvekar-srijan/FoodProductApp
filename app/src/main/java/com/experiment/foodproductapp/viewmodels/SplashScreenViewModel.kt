@@ -7,14 +7,14 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class SplashScreenViewModel : ViewModel(){
+class SplashScreenViewModel : ViewModel() {
 
     fun execute() {
         viewModelScope.launch(Dispatchers.IO) {
 
             delay(3000)
 
-            withContext(Dispatchers.Main){
+            withContext(Dispatchers.Main) {
                 //Navigation Logic
 
             }

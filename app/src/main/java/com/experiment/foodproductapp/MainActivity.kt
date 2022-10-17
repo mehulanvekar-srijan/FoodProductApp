@@ -19,11 +19,11 @@ class MainActivity : ComponentActivity() {
                 NavHost(
                     navController = navHostController,
                     startDestination = Screen.SplashScreen.route
-                ){
-                    composable(route = Screen.SplashScreen.route){
+                ) {
+                    composable(route = Screen.SplashScreen.route) {
                         SplashScreenPage()
                     }
-                    composable(route = Screen.SignUpScreen.route){
+                    composable(route = Screen.SignUpScreen.route) {
 
                     }
                 }
