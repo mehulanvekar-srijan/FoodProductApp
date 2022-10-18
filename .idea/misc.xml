@@ -7,8 +7,13 @@
         <entry key="../../../../layout/compose-model-1666008218194.xml" value="0.15287162162162163" />
         <entry key="../../../../layout/compose-model-1666008229486.xml" value="1.0" />
         <entry key="../../../../layout/compose-model-1666014641549.xml" value="0.15371621621621623" />
-        <entry key="../../../../layout/compose-model-1666068073024.xml" value="0.20523648648648649" />
-        <entry key="../../../../layout/compose-model-1666073332881.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_beer_bucket.xml" value="0.1205" />
+        <entry key="app/src/main/res/drawable/ic_beer_cheers.xml" value="0.1205" />
+        <entry key="app/src/main/res/drawable/ic_beer_glass.xml" value="0.116" />
+        <entry key="app/src/main/res/drawable/ic_beer_tap.xml" value="0.125" />
+        <entry key="app/src/main/res/drawable/ic_burger_logo.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_splash_beer.xml" value="0.1375" />
+        <entry key="app/src/main/res/drawable/ic_wine.xml" value="0.1375" />
       </map>
     </option>
   </component>

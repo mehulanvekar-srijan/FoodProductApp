@@ -3,6 +3,7 @@ package com.experiment.foodproductapp.views
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -16,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -27,6 +29,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import com.experiment.foodproductapp.R
 import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.domain.event.SignupFormEvent
 import com.experiment.foodproductapp.viewmodels.SignUpViewModel
@@ -34,203 +37,211 @@ import kotlinx.coroutines.flow.collect
 
 @Composable
 fun SignupPage(navController: NavHostController,signUpViewModel: SignUpViewModel = viewModel()) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(20.dp)
-    ) {
-        val state = signUpViewModel.state
-        val context = LocalContext.current
-        LaunchedEffect(key1 = context) {
-            signUpViewModel.validationEvents.collect { event ->
-                when (event) {
-                    is SignUpViewModel.ValidationEvent.Success -> {
-                        Toast.makeText(context, "Registration Successful", Toast.LENGTH_LONG).show()
-                        navController.navigate(Screen.SignInScreen.route){
-                            popUpTo(Screen.SignUpScreen.route){inclusive=true}
-                            popUpTo(Screen.SignInScreen.route){inclusive=true}
-                        }
+    val state = signUpViewModel.state
+    val context = LocalContext.current
+    LaunchedEffect(key1 = context) {
+        signUpViewModel.validationEvents.collect { event ->
+            when (event) {
+                is SignUpViewModel.ValidationEvent.Success -> {
+                    Toast.makeText(context, "Registration Successful", Toast.LENGTH_LONG).show()
+                    navController.navigate(Screen.SignInScreen.route){
+                        popUpTo(Screen.SignUpScreen.route){inclusive=true}
+                        popUpTo(Screen.SignInScreen.route){inclusive=true}
                     }
                 }
             }
         }
-        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-            Image(
-                modifier = Modifier.fillMaxSize(.20f),
-                imageVector = Icons.Outlined.ShoppingCart,
-                contentDescription = ""
-            )
-        }
-        Spacer(modifier = Modifier.height(10.dp))
-        Text(
-            text = "REGISTER",
-            fontFamily = FontFamily.SansSerif,
-            textAlign = TextAlign.Left,
-            fontSize = 30.sp
-        )
+    }
 
-        Spacer(modifier = Modifier.height(10.dp))
+    LazyColumn{
+        item {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(20.dp)
+            ) {
+                Spacer(modifier = Modifier.height(10.dp))
 
-        TextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = state.firstName,
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = Color.Blue,
-                focusedLabelColor = Color.Blue
-            ),
-            onValueChange = {
-                signUpViewModel.onEvent(SignupFormEvent.FirstNameChanged(it))
-            },
-            isError = state.firstNameError != null,
-            label = { Text(text = "First Name") })
-        if (state.firstNameError != null) {
-            Text(
-                text = state.firstNameError,
-                color = MaterialTheme.colors.error,
-                fontSize = 14.sp
-                ,modifier = Modifier.align(Alignment.End)
-            )
-        }
-
-        Spacer(modifier = Modifier.height(10.dp))
-
-        TextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = state.lastName,
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = Color.Blue,
-                focusedLabelColor = Color.Blue
-            ),
-            onValueChange = {
-                signUpViewModel.onEvent(SignupFormEvent.LastNameChanged(it))
-            },
-            isError = state.lastNameError != null,
-            label = { Text(text = "Last Name") })
-        if (state.lastNameError != null) {
-            Text(
-                text = state.lastNameError,
-                color = MaterialTheme.colors.error,
-                fontSize = 14.sp,
-                modifier = Modifier.align(Alignment.End)
-            )
-        }
-
-        Spacer(modifier = Modifier.height(10.dp))
-
-        TextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = state.email,
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = Color.Blue,
-                focusedLabelColor = Color.Blue
-            ),
-            isError = state.emailError != null,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            onValueChange = {
-                signUpViewModel.onEvent(SignupFormEvent.EmailChanged(it))
-            },
-            label = { Text(text = "Email") })
-        if (state.emailError != null) {
-            Text(
-                text = state.emailError,
-                color = MaterialTheme.colors.error,
-                fontSize = 14.sp,
-                modifier = Modifier.align(Alignment.End)
-            )
-        }
-
-        Spacer(modifier = Modifier.height(10.dp))
-
-        TextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = state.password,
-            shape = RoundedCornerShape(20.dp),
-            onValueChange = {
-                signUpViewModel.onEvent(SignupFormEvent.PasswordChanged(it))
-            },
-            label = { Text(text = "Enter password") },
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = Color.Blue,
-                focusedLabelColor = Color.Blue
-            ),
-            visualTransformation = if (signUpViewModel.passwordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            trailingIcon = {
-                val image = if (signUpViewModel.passwordVisible.value)
-                    Icons.Filled.Visibility
-                else Icons.Filled.VisibilityOff
-                val description =
-                    if (signUpViewModel.passwordVisible.value) "Hide password" else "Show password"
-
-                IconButton(onClick = { signUpViewModel.passwordchange() }) {
-                    Icon(imageVector = image, description)
+                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                    Image(
+                        modifier = Modifier.fillMaxSize(.40f),
+                        painter = painterResource(id = R.drawable.ic_beer_cheers),
+                        contentDescription = ""
+                    )
                 }
-            })
-        if (state.passwordError != null) {
-            Text(
-                text = state.passwordError,
-                color = MaterialTheme.colors.error,
-                fontSize = 14.sp,
-                modifier = Modifier.align(Alignment.End)
-            )
-        }
 
-        Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(10.dp))
 
-        TextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = state.repeatedPassword,
-            shape = RoundedCornerShape(20.dp),
-            onValueChange = {
-                signUpViewModel.onEvent(SignupFormEvent.ConfirmPasswordChanged(it))
-            },
-            label = { Text(text = "Confirm password") },
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = Color.Blue,
-                focusedLabelColor = Color.Blue
-            ),
-            visualTransformation = if (signUpViewModel.confirmPasswordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            trailingIcon = {
-                val image = if (signUpViewModel.confirmPasswordVisible.value)
-                    Icons.Filled.Visibility
-                else Icons.Filled.VisibilityOff
-                val description =
-                    if (signUpViewModel.confirmPasswordVisible.value) "Hide password" else "Show password"
+                Text(
+                    text = "REGISTER",
+                    fontFamily = FontFamily.SansSerif,
+                    textAlign = TextAlign.Left,
+                    fontSize = 30.sp
+                )
 
-                IconButton(onClick = {
-                    signUpViewModel.confirmpasswordchange()
-                }) {
-                    Icon(imageVector = image, description)
+                Spacer(modifier = Modifier.height(10.dp))
+
+                TextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    value = state.firstName,
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = Color.Blue,
+                        focusedLabelColor = Color.Blue
+                    ),
+                    onValueChange = {
+                        signUpViewModel.onEvent(SignupFormEvent.FirstNameChanged(it))
+                    },
+                    isError = state.firstNameError != null,
+                    label = { Text(text = "First Name") })
+                if (state.firstNameError != null) {
+                    Text(
+                        text = state.firstNameError,
+                        color = MaterialTheme.colors.error,
+                        fontSize = 14.sp
+                        ,modifier = Modifier.align(Alignment.End)
+                    )
                 }
-            })
-        if (state.repeatedPasswordError != null) {
-            Text(
-                text = state.repeatedPasswordError,
-                color = MaterialTheme.colors.error,
-                fontSize = 14.sp,
-                modifier = Modifier.align(Alignment.End)
-            )
-        }
 
-        Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(10.dp))
 
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            OutlinedButton(
-                shape = RoundedCornerShape(40.dp),
-                onClick = {
-                    signUpViewModel.onEvent(SignupFormEvent.Submit)
-                }) {
-                Text(text = "CREATE ACCOUNT")
+                TextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    value = state.lastName,
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = Color.Blue,
+                        focusedLabelColor = Color.Blue
+                    ),
+                    onValueChange = {
+                        signUpViewModel.onEvent(SignupFormEvent.LastNameChanged(it))
+                    },
+                    isError = state.lastNameError != null,
+                    label = { Text(text = "Last Name") })
+                if (state.lastNameError != null) {
+                    Text(
+                        text = state.lastNameError,
+                        color = MaterialTheme.colors.error,
+                        fontSize = 14.sp,
+                        modifier = Modifier.align(Alignment.End)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                TextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    value = state.email,
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = Color.Blue,
+                        focusedLabelColor = Color.Blue
+                    ),
+                    isError = state.emailError != null,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                    onValueChange = {
+                        signUpViewModel.onEvent(SignupFormEvent.EmailChanged(it))
+                    },
+                    label = { Text(text = "Email") })
+                if (state.emailError != null) {
+                    Text(
+                        text = state.emailError,
+                        color = MaterialTheme.colors.error,
+                        fontSize = 14.sp,
+                        modifier = Modifier.align(Alignment.End)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                TextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    value = state.password,
+                    shape = RoundedCornerShape(20.dp),
+                    onValueChange = {
+                        signUpViewModel.onEvent(SignupFormEvent.PasswordChanged(it))
+                    },
+                    label = { Text(text = "Enter password") },
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = Color.Blue,
+                        focusedLabelColor = Color.Blue
+                    ),
+                    visualTransformation = if (signUpViewModel.passwordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    trailingIcon = {
+                        val image = if (signUpViewModel.passwordVisible.value)
+                            Icons.Filled.Visibility
+                        else Icons.Filled.VisibilityOff
+                        val description =
+                            if (signUpViewModel.passwordVisible.value) "Hide password" else "Show password"
+
+                        IconButton(onClick = { signUpViewModel.passwordchange() }) {
+                            Icon(imageVector = image, description)
+                        }
+                    })
+                if (state.passwordError != null) {
+                    Text(
+                        text = state.passwordError,
+                        color = MaterialTheme.colors.error,
+                        fontSize = 14.sp,
+                        modifier = Modifier.align(Alignment.End)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                TextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    value = state.repeatedPassword,
+                    shape = RoundedCornerShape(20.dp),
+                    onValueChange = {
+                        signUpViewModel.onEvent(SignupFormEvent.ConfirmPasswordChanged(it))
+                    },
+                    label = { Text(text = "Confirm password") },
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = Color.Blue,
+                        focusedLabelColor = Color.Blue
+                    ),
+                    visualTransformation = if (signUpViewModel.confirmPasswordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    trailingIcon = {
+                        val image = if (signUpViewModel.confirmPasswordVisible.value)
+                            Icons.Filled.Visibility
+                        else Icons.Filled.VisibilityOff
+                        val description =
+                            if (signUpViewModel.confirmPasswordVisible.value) "Hide password" else "Show password"
+
+                        IconButton(onClick = {
+                            signUpViewModel.confirmpasswordchange()
+                        }) {
+                            Icon(imageVector = image, description)
+                        }
+                    })
+                if (state.repeatedPasswordError != null) {
+                    Text(
+                        text = state.repeatedPasswordError,
+                        color = MaterialTheme.colors.error,
+                        fontSize = 14.sp,
+                        modifier = Modifier.align(Alignment.End)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    OutlinedButton(
+                        shape = RoundedCornerShape(40.dp),
+                        onClick = {
+                            signUpViewModel.onEvent(SignupFormEvent.Submit)
+                        }) {
+                        Text(text = "CREATE ACCOUNT")
+
+                    }
+                }
 
             }
         }
-
     }
-
 }
 
 //@Composable

@@ -5,6 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 
 import androidx.compose.material.*
@@ -48,27 +49,29 @@ fun SignInPage(navHostController: NavHostController,signInViewModel: SignInViewM
 
     val passwordVisibility = remember { mutableStateOf(false) }
 
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
 
+    LazyColumn(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxSize()
+            .background(Color.White)
+            .padding(10.dp)
+    ) {
+
+        item {
             Image(
-                painter = painterResource(id = R.drawable.login_image),
+                painter = painterResource(id = R.drawable.ic_beer_cheers),
                 contentDescription = "ic_burger_logo",
-                modifier = Modifier.fillMaxSize(),
-                alignment = Alignment.TopCenter
+                modifier = Modifier.fillMaxHeight(0.4F).padding(20.dp),
+                alignment = Alignment.TopCenter,
+                contentScale = ContentScale.Fit,
             )
+        }
 
-
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.60f)
-                .background(Color.White)
-                .padding(10.dp)
-        ) {
-
-          Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        item {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(
                     text = "Sign In",
                     style = TextStyle(
@@ -78,15 +81,15 @@ fun SignInPage(navHostController: NavHostController,signInViewModel: SignInViewM
                     ),
                 )
                 Spacer(modifier = Modifier.padding(20.dp))
-                  Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                      OutlinedTextField(
-                      value = emailValue.value,
-                      onValueChange = { emailValue.value = it },
-                      label = { Text("Email Address") },
-                      placeholder = { Text(text = "Email Address") },
-                      singleLine = true,
-                      modifier = Modifier
-                          .fillMaxWidth(0.8f)
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    OutlinedTextField(
+                        value = emailValue.value,
+                        onValueChange = { emailValue.value = it },
+                        label = { Text("Email Address") },
+                        placeholder = { Text(text = "Email Address") },
+                        singleLine = true,
+                        modifier = Modifier
+                            .fillMaxWidth(0.8f)
                     )
 
 
@@ -117,7 +120,7 @@ fun SignInPage(navHostController: NavHostController,signInViewModel: SignInViewM
                     Button(
                         onClick = {},
                         colors = ButtonDefaults.buttonColors(
-                           // backgroundColor = Color.Blue,
+                            // backgroundColor = Color.Blue,
                             //contentColor = Color),
                         ),
                         modifier = Modifier
@@ -134,7 +137,7 @@ fun SignInPage(navHostController: NavHostController,signInViewModel: SignInViewM
                         text = "Create An Account",
                         color = Color.Blue,
                         modifier = Modifier.clickable(onClick = {
-                        signInViewModel.navigate(navHostController)
+                            signInViewModel.navigate(navHostController)
                         }),
                         style = TextStyle(
                             fontSize = 15.sp,
@@ -145,6 +148,5 @@ fun SignInPage(navHostController: NavHostController,signInViewModel: SignInViewM
 
             }
         }
-
     }
 }

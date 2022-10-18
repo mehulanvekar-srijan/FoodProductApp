@@ -6,10 +6,13 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -37,7 +40,9 @@ fun SplashScreenPage(navController: NavController,
     )
 
     Box(
-        modifier = Modifier.fillMaxSize().background(Purple700),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Purple700),
         contentAlignment = Alignment.Center,
     ) {
         DrawLogo(animatedAlpha,animatedShape)
@@ -55,14 +60,13 @@ fun DrawLogo(
     animatedShape: State<Float>
 ) {
     Image(
-        painter = painterResource(id = R.drawable.ic_burger_logo),
+        painter = painterResource(id = R.drawable.ic_beer_glass),
         contentDescription = "ic_burger_logo",
         modifier = Modifier
-            .padding(0.dp)
+            .padding(30.dp)
             .fillMaxSize(animatedShape.value),
         contentScale = ContentScale.Fit,
         alignment = Alignment.Center,
         alpha = animatedAlpha.value,
     )
 }
-
