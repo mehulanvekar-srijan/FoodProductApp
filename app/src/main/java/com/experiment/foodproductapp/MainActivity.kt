@@ -28,7 +28,7 @@ class MainActivity : ComponentActivity() {
                         SplashScreenPage(navHostControllerLambda)
                     }
                     composable(route = Screen.SignUpScreen.route) {
-                        SignupPage(navHostController)
+                        SignupPage(navHostControllerLambda)
                     }
                     composable(route = Screen.SignInScreen.route) {
                         SignInPage(navHostControllerLambda)

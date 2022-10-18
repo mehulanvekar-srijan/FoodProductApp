@@ -5,6 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavHostController
+import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.domain.event.SignupFormEvent
 import com.experiment.foodproductapp.domain.use_case.ValidateConfirmPassword
 import com.experiment.foodproductapp.domain.use_case.ValidateEmail
@@ -93,6 +95,13 @@ class SignUpViewModel(
 
     fun confirmpasswordchange() {
         _confirmPasswordVisible.value = !_confirmPasswordVisible.value
+    }
+
+    fun navigateOnSucces(navHostController: NavHostController) {
+        navHostController.navigate(Screen.SignInScreen.route){
+            popUpTo(Screen.SignUpScreen.route){inclusive=true}
+            popUpTo(Screen.SignInScreen.route){inclusive=true}
+        }
     }
 
     sealed class ValidationEvent{

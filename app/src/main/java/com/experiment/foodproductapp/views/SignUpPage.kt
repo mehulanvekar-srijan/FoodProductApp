@@ -36,7 +36,7 @@ import com.experiment.foodproductapp.viewmodels.SignUpViewModel
 import kotlinx.coroutines.flow.collect
 
 @Composable
-fun SignupPage(navController: NavHostController,signUpViewModel: SignUpViewModel = viewModel()) {
+fun SignupPage(navHostControllerLambda : () -> NavHostController,signUpViewModel: SignUpViewModel = viewModel()) {
     val state = signUpViewModel.state
     val context = LocalContext.current
     LaunchedEffect(key1 = context) {
@@ -44,10 +44,7 @@ fun SignupPage(navController: NavHostController,signUpViewModel: SignUpViewModel
             when (event) {
                 is SignUpViewModel.ValidationEvent.Success -> {
                     Toast.makeText(context, "Registration Successful", Toast.LENGTH_LONG).show()
-                    navController.navigate(Screen.SignInScreen.route){
-                        popUpTo(Screen.SignUpScreen.route){inclusive=true}
-                        popUpTo(Screen.SignInScreen.route){inclusive=true}
-                    }
+                    signUpViewModel.navigateOnSucces(navHostControllerLambda())
                 }
             }
         }
