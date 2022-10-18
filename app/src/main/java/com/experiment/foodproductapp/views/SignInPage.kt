@@ -1,6 +1,7 @@
 package com.experiment.foodproductapp.views
 
 
+import android.graphics.Paint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -34,22 +35,21 @@ import androidx.compose.ui.tooling.preview.Preview
 
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.experiment.foodproductapp.R
+import com.experiment.foodproductapp.domain.event.SignInFormEvent
 import com.experiment.foodproductapp.viewmodels.SignInViewModel
 
 
 @Composable
-fun SignInPage(navHostControllerLambda: () -> NavHostController,signInViewModel: SignInViewModel= viewModel()) {
+fun SignInPage(navHostControllerLambda: () -> NavHostController,signInViewModel: SignInViewModel = viewModel()) {
 
-    val emailValue = remember { mutableStateOf("") }
-    val passwordValue = remember { mutableStateOf("") }
+    val passwordValue = remember { mutableStateOf("")}
 
     val passwordVisibility = remember { mutableStateOf(false) }
-
+    val state = signInViewModel.state
 
     LazyColumn(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -65,7 +65,9 @@ fun SignInPage(navHostControllerLambda: () -> NavHostController,signInViewModel:
             Image(
                 painter = painterResource(id = R.drawable.ic_beer_cheers),
                 contentDescription = "ic_burger_logo",
-                modifier = Modifier.fillMaxHeight(0.4F).padding(20.dp),
+                modifier = Modifier
+                    .fillMaxHeight(0.4F)
+                    .padding(20.dp),
                 alignment = Alignment.TopCenter,
                 contentScale = ContentScale.Fit,
             )
@@ -84,15 +86,25 @@ fun SignInPage(navHostControllerLambda: () -> NavHostController,signInViewModel:
                 Spacer(modifier = Modifier.padding(20.dp))
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     OutlinedTextField(
-                        value = emailValue.value,
-                        onValueChange = { emailValue.value = it },
+                        value = state.email,//emailValue.value,
+                        onValueChange = { signInViewModel.OnEvent(SignInFormEvent.EmailChanged(it))},
+                            //emailValue.value = it },
                         label = { Text("Email Address") },
+                        isError = state.emailError != null,
                         placeholder = { Text(text = "Email Address") },
                         singleLine = true,
                         modifier = Modifier
                             .fillMaxWidth(0.8f)
-                    )
 
+                    )
+                    if (state.emailError != null) {
+                        Text(
+                            text = state.emailError,
+                            color = MaterialTheme.colors.error,
+                            fontSize = 14.sp,
+                            modifier = Modifier.align(Alignment.End)
+                        )
+                    }
 
                     OutlinedTextField(
                         value = passwordValue.value,
@@ -125,7 +137,9 @@ fun SignInPage(navHostControllerLambda: () -> NavHostController,signInViewModel:
 
                     Spacer(modifier = Modifier.padding(10.dp))
                     Button(
-                        onClick = {},
+                        onClick = {
+                                  signInViewModel.OnEvent(SignInFormEvent.Login)
+                        },
                         colors = ButtonDefaults.buttonColors(
                             // backgroundColor = Color.Blue,
                             //contentColor = Color),
