@@ -69,8 +69,8 @@ fun SignupPage(signUpViewModel: SignUpViewModel = viewModel()) {
             modifier = Modifier.fillMaxWidth(),
             value = state.firstName,
             colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = Color.Black,
-                focusedLabelColor = Color.Black
+                focusedBorderColor = Color.Blue,
+                focusedLabelColor = Color.Blue
             ),
             onValueChange = {
                 signUpViewModel.onEvent(SignupFormEvent.FirstNameChanged(it))
@@ -81,7 +81,8 @@ fun SignupPage(signUpViewModel: SignUpViewModel = viewModel()) {
             Text(
                 text = state.firstNameError,
                 color = MaterialTheme.colors.error,
-                modifier = Modifier.align(Alignment.End)
+                fontSize = 14.sp
+                ,modifier = Modifier.align(Alignment.End)
             )
         }
 
@@ -91,8 +92,8 @@ fun SignupPage(signUpViewModel: SignUpViewModel = viewModel()) {
             modifier = Modifier.fillMaxWidth(),
             value = state.lastName,
             colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = Color.Black,
-                focusedLabelColor = Color.Black
+                focusedBorderColor = Color.Blue,
+                focusedLabelColor = Color.Blue
             ),
             onValueChange = {
                 signUpViewModel.onEvent(SignupFormEvent.LastNameChanged(it))
@@ -103,6 +104,7 @@ fun SignupPage(signUpViewModel: SignUpViewModel = viewModel()) {
             Text(
                 text = state.lastNameError,
                 color = MaterialTheme.colors.error,
+                fontSize = 14.sp,
                 modifier = Modifier.align(Alignment.End)
             )
         }
@@ -113,8 +115,8 @@ fun SignupPage(signUpViewModel: SignUpViewModel = viewModel()) {
             modifier = Modifier.fillMaxWidth(),
             value = state.email,
             colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = Color.Black,
-                focusedLabelColor = Color.Black
+                focusedBorderColor = Color.Blue,
+                focusedLabelColor = Color.Blue
             ),
             isError = state.emailError != null,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
@@ -126,6 +128,7 @@ fun SignupPage(signUpViewModel: SignUpViewModel = viewModel()) {
             Text(
                 text = state.emailError,
                 color = MaterialTheme.colors.error,
+                fontSize = 14.sp,
                 modifier = Modifier.align(Alignment.End)
             )
         }
@@ -141,8 +144,8 @@ fun SignupPage(signUpViewModel: SignUpViewModel = viewModel()) {
             },
             label = { Text(text = "Enter password") },
             colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = Color.Black,
-                focusedLabelColor = Color.Black
+                focusedBorderColor = Color.Blue,
+                focusedLabelColor = Color.Blue
             ),
             visualTransformation = if (signUpViewModel.passwordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
@@ -161,6 +164,7 @@ fun SignupPage(signUpViewModel: SignUpViewModel = viewModel()) {
             Text(
                 text = state.passwordError,
                 color = MaterialTheme.colors.error,
+                fontSize = 14.sp,
                 modifier = Modifier.align(Alignment.End)
             )
         }
@@ -176,8 +180,8 @@ fun SignupPage(signUpViewModel: SignUpViewModel = viewModel()) {
             },
             label = { Text(text = "Confirm password") },
             colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = Color.Black,
-                focusedLabelColor = Color.Black
+                focusedBorderColor = Color.Blue,
+                focusedLabelColor = Color.Blue
             ),
             visualTransformation = if (signUpViewModel.confirmPasswordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
@@ -198,11 +202,12 @@ fun SignupPage(signUpViewModel: SignUpViewModel = viewModel()) {
             Text(
                 text = state.repeatedPasswordError,
                 color = MaterialTheme.colors.error,
+                fontSize = 14.sp,
                 modifier = Modifier.align(Alignment.End)
             )
         }
 
-//        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
         Column(
             modifier = Modifier.fillMaxWidth(),

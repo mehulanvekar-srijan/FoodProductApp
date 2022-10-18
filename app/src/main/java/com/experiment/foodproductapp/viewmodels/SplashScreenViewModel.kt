@@ -19,7 +19,9 @@ class SplashScreenViewModel : ViewModel() {
             delay(splashDuration)
 
             withContext(Dispatchers.Main) {
-                navController.navigate(route = Screen.SignUpScreen.route)
+                navController.navigate(route = Screen.SignUpScreen.route){
+                    popUpTo(Screen.SplashScreen.route){inclusive=true}
+                }
 
             }
         }
