@@ -18,13 +18,14 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val navHostController = rememberNavController()
+            val navHostControllerLambda : () -> NavHostController = { navHostController }
             FoodProductAppTheme {
                 NavHost(
                     navController = navHostController,
                     startDestination = Screen.SplashScreen.route
                 ) {
                     composable(route = Screen.SplashScreen.route) {
-                        SplashScreenPage(navHostController)
+                        SplashScreenPage(navHostControllerLambda)
                     }
                     composable(route = Screen.SignUpScreen.route) {
                         SignupPage(navHostController)

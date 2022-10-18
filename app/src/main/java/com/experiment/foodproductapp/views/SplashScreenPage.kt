@@ -18,12 +18,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.experiment.foodproductapp.R
 import com.experiment.foodproductapp.ui.theme.Purple700
 import com.experiment.foodproductapp.viewmodels.SplashScreenViewModel
 
 @Composable
-fun SplashScreenPage(navController: NavController,
+fun SplashScreenPage(
+    navHostControllerLambda : () -> NavHostController,
     splashScreenViewModel: SplashScreenViewModel = viewModel(),
     animationDuration : Int = splashScreenViewModel.splashDuration.toInt() - 1000
 ) {
@@ -50,7 +52,7 @@ fun SplashScreenPage(navController: NavController,
 
     LaunchedEffect(key1 = Unit) {
         startAnimation.value = true
-        splashScreenViewModel.execute(navController)
+        splashScreenViewModel.execute(navHostControllerLambda())
     }
 }
 
