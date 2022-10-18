@@ -31,7 +31,7 @@ class MainActivity : ComponentActivity() {
                         SignupPage(navHostController)
                     }
                     composable(route = Screen.SignInScreen.route) {
-                        SignInPage(navHostController)
+                        SignInPage(navHostControllerLambda)
                     }
                 }
             }

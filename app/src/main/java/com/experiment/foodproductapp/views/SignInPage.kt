@@ -11,6 +11,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,7 +43,7 @@ import com.experiment.foodproductapp.viewmodels.SignInViewModel
 
 
 @Composable
-fun SignInPage(navHostController: NavHostController,signInViewModel: SignInViewModel= viewModel()) {
+fun SignInPage(navHostControllerLambda: () -> NavHostController,signInViewModel: SignInViewModel= viewModel()) {
 
     val emailValue = remember { mutableStateOf("") }
     val passwordValue = remember { mutableStateOf("") }
@@ -97,11 +98,17 @@ fun SignInPage(navHostController: NavHostController,signInViewModel: SignInViewM
                         value = passwordValue.value,
                         onValueChange = { passwordValue.value = it },
                         trailingIcon = {
+                            val image = if (passwordVisibility.value) {
+                                Icons.Filled.Visibility
+                            } else {
+                                Icons.Filled.VisibilityOff
+                            }
+
                             IconButton(onClick = {
                                 passwordVisibility.value = !passwordVisibility.value
                             }) {
                                 Icon(
-                                    imageVector = Icons.Filled.Visibility,
+                                    imageVector = image,
                                     contentDescription = "",
                                     tint = Color.Red
                                 )
@@ -137,7 +144,7 @@ fun SignInPage(navHostController: NavHostController,signInViewModel: SignInViewM
                         text = "Create An Account",
                         color = Color.Blue,
                         modifier = Modifier.clickable(onClick = {
-                            signInViewModel.navigate(navHostController)
+                            signInViewModel.navigate(navHostControllerLambda())
                         }),
                         style = TextStyle(
                             fontSize = 15.sp,
