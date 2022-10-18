@@ -25,13 +25,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.domain.event.SignupFormEvent
 import com.experiment.foodproductapp.viewmodels.SignUpViewModel
 import kotlinx.coroutines.flow.collect
 
-@Preview(showBackground = true)
 @Composable
-fun SignupPage(signUpViewModel: SignUpViewModel = viewModel()) {
+fun SignupPage(navController: NavHostController,signUpViewModel: SignUpViewModel = viewModel()) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -44,6 +46,10 @@ fun SignupPage(signUpViewModel: SignUpViewModel = viewModel()) {
                 when (event) {
                     is SignUpViewModel.ValidationEvent.Success -> {
                         Toast.makeText(context, "Registration Successful", Toast.LENGTH_LONG).show()
+                        navController.navigate(Screen.SignInScreen.route){
+                            popUpTo(Screen.SignUpScreen.route){inclusive=true}
+                            popUpTo(Screen.SignInScreen.route){inclusive=true}
+                        }
                     }
                 }
             }
