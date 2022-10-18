@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt' //Room Database
 }
 
 android {
@@ -79,4 +80,10 @@ dependencies {
 
     //Icons
     implementation "androidx.compose.material:material-icons-extended:$compose_version"
+
+    //Room Database
+    def room_version = "2.4.2" //Latest stable version(2.4.3) gives compilation error
+    implementation "androidx.room:room-runtime:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version"
+    kapt "androidx.room:room-compiler:$room_version" // To use Kotlin annotation processing tool (kapt)
 }

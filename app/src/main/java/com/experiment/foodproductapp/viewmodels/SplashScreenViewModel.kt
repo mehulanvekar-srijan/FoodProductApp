@@ -9,7 +9,7 @@ import kotlinx.coroutines.*
 
 class SplashScreenViewModel : ViewModel() {
 
-    val splashDuration: Long = 5000  // Milliseconds
+    val splashDuration: Long = 3000  // Milliseconds
 
     fun execute(navHostController: NavHostController) {
         viewModelScope.launch(Dispatchers.IO) {
