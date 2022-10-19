@@ -22,8 +22,6 @@ import kotlinx.coroutines.launch
 class SignInViewModel(private val validateEmail: ValidateEmail = ValidateEmail()) : ViewModel() {
     var state by mutableStateOf(SignInState())
 
-    private val validationEmailChannel = Channel<ValidationEvent>()
-    val validationEmail = validationEmailChannel.receiveAsFlow()
 
     fun navigate(navHostController: NavHostController) {
         navHostController.navigate(Screen.SignUpScreen.route) {
@@ -37,7 +35,7 @@ class SignInViewModel(private val validateEmail: ValidateEmail = ValidateEmail()
                 state = state.copy(email = event.email)
             }
             is SignInFormEvent.PasswordChanged -> {
-                state = state.copy(email = event.password)
+                state = state.copy(password = event.password)
             }
             is SignInFormEvent.Login -> {
                 loginUser(context)
@@ -46,9 +44,6 @@ class SignInViewModel(private val validateEmail: ValidateEmail = ValidateEmail()
     }
 
     private fun loginUser(context: Context) {
-
-
-
         val emailResult = validateEmail.execute(state.email)
         val hasError = listOf(emailResult).any {
             !it.successful
@@ -57,11 +52,10 @@ class SignInViewModel(private val validateEmail: ValidateEmail = ValidateEmail()
             state = state.copy(emailError = emailResult.errorMessage)
             return
         }
-        viewModelScope.launch {
-            validationEmailChannel.send(ValidationEvent.Succcess)
+        viewModelScope.launch(Dispatchers.IO) {
+            val user : User?
             val database = DatabaseRepository(context)
-            val user = database.getUserByEmail(state.email)
-            Log.d("testRom", "navigateOnSucces: $user")
+            user = database.getUserByEmail(state.email)
         }
     }
 
