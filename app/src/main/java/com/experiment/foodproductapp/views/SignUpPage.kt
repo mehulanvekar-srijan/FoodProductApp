@@ -1,5 +1,7 @@
 package com.experiment.foodproductapp.views
 
+import android.app.DatePickerDialog
+import android.widget.DatePicker
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -8,37 +10,70 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.EditCalendar
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material.icons.outlined.ShoppingCart
+import androidx.compose.material.icons.twotone.CalendarViewDay
+import androidx.compose.material.icons.twotone.EditCalendar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.experiment.foodproductapp.R
-import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.domain.event.SignupFormEvent
 import com.experiment.foodproductapp.viewmodels.SignUpViewModel
-import kotlinx.coroutines.flow.collect
+import java.util.*
 
 @Composable
 fun SignupPage(navHostControllerLambda : () -> NavHostController,signUpViewModel: SignUpViewModel = viewModel()) {
     val state = signUpViewModel.state
+
     val context = LocalContext.current
+
+    val mYear: Int
+    val mMonth: Int
+    val mDay: Int
+
+    // Initializing a Calendar
+    val mCalendar = Calendar.getInstance()
+
+    // Fetching current year, month and day
+    mYear = mCalendar.get(Calendar.YEAR)
+    mMonth = mCalendar.get(Calendar.MONTH)
+    mDay = mCalendar.get(Calendar.DAY_OF_MONTH)
+
+    mCalendar.time = Date()
+
+    // Declaring a string value to
+    // store date in string format
+    val mDate = remember { mutableStateOf("") }
+
+    // Declaring DatePickerDialog and setting
+    // initial values as current values (present year, month and day)
+    val mDatePickerDialog = DatePickerDialog(
+        context,
+        { _: DatePicker, mYear: Int, mMonth: Int, mDayOfMonth: Int ->
+            signUpViewModel.onEvent(SignupFormEvent.CalenderChanged("$mDayOfMonth/${mMonth+1}/$mYear"))
+        }, mYear, mMonth, mDay
+    )
+
+
     LaunchedEffect(key1 = context) {
         signUpViewModel.validationEvents.collect { event ->
             when (event) {
@@ -122,7 +157,63 @@ fun SignupPage(navHostControllerLambda : () -> NavHostController,signUpViewModel
                     )
                 }
 
+
                 Spacer(modifier = Modifier.height(10.dp))
+
+                TextField(
+                    readOnly= true,
+                    modifier=Modifier.fillMaxWidth(),
+                    value = state.date,
+                    isError = state.dateError != null,
+                    onValueChange = { signUpViewModel.onEvent(SignupFormEvent.CalenderChanged(it)) },
+                    label = { Text(text = "Date of Birth") },
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = Color.Blue,
+                        focusedLabelColor = Color.Blue
+                    ),
+                    leadingIcon = {
+                        IconButton(onClick = { mDatePickerDialog.show() }) {
+                            Icon(
+                                imageVector = Icons.TwoTone.EditCalendar,
+                                contentDescription = "",
+                            )
+                        }
+                    },
+                )
+                if (state.dateError != null) {
+                    Text(
+                        text = state.dateError,
+                        color = MaterialTheme.colors.error,
+                        fontSize = 14.sp,
+                        modifier = Modifier.align(Alignment.End)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                TextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    value = state.phoneNumber,
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = Color.Blue,
+                        focusedLabelColor = Color.Blue
+                    ),
+                    isError = state.phoneNumberError != null,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                    onValueChange = { signUpViewModel.onEvent(SignupFormEvent.PhoneNumberChanged(it))
+                    },
+                    label = { Text(text = "Enter Phone Number") })
+                if (state.phoneNumberError != null) {
+                    Text(
+                        text = state.phoneNumberError,
+                        color = MaterialTheme.colors.error,
+                        fontSize = 14.sp,
+                        modifier = Modifier.align(Alignment.End)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(10.dp))
+
 
                 TextField(
                     modifier = Modifier.fillMaxWidth(),
@@ -241,124 +332,3 @@ fun SignupPage(navHostControllerLambda : () -> NavHostController,signUpViewModel
     }
 }
 
-//@Composable
-//fun ShowRadioGroup(
-//    selected: String,
-//    updateRadioGroupSelection: (String) -> Unit,
-//    radioGroupError: Boolean,
-//) {
-//    Column(
-//        modifier = Modifier.padding(top = 10.dp)
-//    ) {
-//        Row {
-//            RadioButton(
-//                selected = selected == "Male",
-//                onClick = { updateRadioGroupSelection("Male") })
-//            Text(
-//                text = "Male",
-//                modifier = Modifier
-//                    .clickable {
-//                        updateRadioGroupSelection("Male")
-//                    }
-//                    .padding(start = 4.dp)
-//            )
-//            Spacer(modifier = Modifier.size(4.dp))
-//            RadioButton(
-//                selected = selected == "Female",
-//                onClick = { updateRadioGroupSelection("Female") })
-//            Text(
-//                text = "Female",
-//                modifier = Modifier
-//                    .clickable(onClick = { updateRadioGroupSelection("Female") })
-//                    .padding(start = 4.dp)
-//            )
-//            Spacer(modifier = Modifier.size(4.dp))
-//            RadioButton(
-//                selected = selected == "Other",
-//                onClick = { updateRadioGroupSelection("Other") })
-//            Text(
-//                text = "Other",
-//                modifier = Modifier
-//                    .clickable(onClick = { updateRadioGroupSelection("Other") })
-//                    .padding(start = 4.dp)
-//            )
-//        }
-//        if (radioGroupError) {
-//            Text(
-//                text = "Select Valid Option",
-//                color = MaterialTheme.colors.error,
-//                style = MaterialTheme.typography.caption,
-//                modifier = Modifier.padding(start = 16.dp)
-//            )
-//        }
-//    }
-//}
-//
-//@Composable
-//fun TextFieldWithErrorView(
-//    value: String,
-//    onValueChange: (String) -> Unit,
-//    modifier: Modifier = Modifier,
-//    enabled: Boolean = true,
-//    readOnly: Boolean = false,
-//    textStyle: TextStyle = LocalTextStyle.current,
-//    label: @Composable (() -> Unit)? = null,
-//    placeholder: @Composable (() -> Unit)? = null,
-//    leadingIcon: @Composable (() -> Unit)? = null,
-//    trailingIcon: @Composable (() -> Unit)? = null,
-//    isError: Boolean = false,
-//    visualTransformation: VisualTransformation = VisualTransformation.None,
-//    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-//    keyboardActions: KeyboardActions = KeyboardActions.Default,
-//    singleLine: Boolean = false,
-//    maxLines: Int = Int.MAX_VALUE,
-//    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-//    shape: Shape = MaterialTheme.shapes.small,
-//    colors: TextFieldColors = TextFieldDefaults.outlinedTextFieldColors(),
-//    errorMsg: String = ""
-//) {
-//
-//    Column(
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .padding(
-//                bottom = if (isError) {
-//                    0.dp
-//                } else {
-//                    10.dp
-//                }
-//            )
-//    ) {
-//        TextField(
-//            enabled = enabled,
-//            readOnly = readOnly,
-//            value = value,
-//            onValueChange = onValueChange,
-//            modifier = Modifier.fillMaxWidth(),
-//            singleLine = singleLine,
-//            textStyle = textStyle,
-//            label = label,
-//            placeholder = placeholder,
-//            leadingIcon = leadingIcon,
-//            trailingIcon = trailingIcon,
-//            isError = isError,
-//            visualTransformation = visualTransformation,
-//            keyboardOptions = keyboardOptions,
-//            keyboardActions = keyboardActions,
-//            maxLines = maxLines,
-//            interactionSource = interactionSource,
-//            shape = shape,
-//            colors = colors
-//        )
-//
-//        if (isError) {
-//            Text(
-//                text = errorMsg,
-//                color = MaterialTheme.colors.error,
-//                style = MaterialTheme.typography.caption,
-//                modifier = Modifier.padding(start = 16.dp)
-//            )
-//        }
-//    }
-//
-//}
