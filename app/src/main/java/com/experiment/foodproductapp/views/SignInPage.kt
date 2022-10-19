@@ -50,9 +50,7 @@ fun SignInPage(
     signInViewModel: SignInViewModel = viewModel()
 ) {
 
-
     val context = LocalContext.current
-    val passwordVisibility = remember { mutableStateOf(false) }
     val state = signInViewModel.state
 
     LazyColumn(
@@ -87,12 +85,15 @@ fun SignInPage(
                         letterSpacing = 2.sp
                     ),
                 )
-                Spacer(modifier = Modifier.padding(20.dp))
+                Spacer(modifier = Modifier.padding(5.dp))
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    OutlinedTextField(
-                        value = state.email,//emailValue.value,
-                        onValueChange = { signInViewModel.OnEvent(context,SignInFormEvent.EmailChanged(it))},
-                            //emailValue.value = it },
+                    TextField(
+                        value = state.email,
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            focusedBorderColor = Color.Blue,
+                            unfocusedLabelColor = Color.Blue
+                        ),
+                        onValueChange = { signInViewModel.OnEvent(context,SignInFormEvent.EmailChanged(it),navHostControllerLambda())},
                         label = { Text("Email Address") },
                         isError = state.emailError != null,
                         placeholder = { Text(text = "Email Address") },
@@ -110,18 +111,22 @@ fun SignInPage(
                         )
                     }
 
-                    OutlinedTextField(
+                    TextField(
                         value = state.password,
-                        onValueChange = { signInViewModel.OnEvent(context,SignInFormEvent.PasswordChanged(it)) },
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            focusedBorderColor = Color.Blue,
+                            unfocusedLabelColor = Color.Blue
+                        ),
+                        onValueChange = { signInViewModel.OnEvent(context,SignInFormEvent.PasswordChanged(it),navHostControllerLambda()) },
                         trailingIcon = {
-                            val image = if (passwordVisibility.value) {
+                            val image = if (signInViewModel.passwordVisibility.value) {
                                 Icons.Filled.Visibility
                             } else {
                                 Icons.Filled.VisibilityOff
                             }
 
                             IconButton(onClick = {
-                                passwordVisibility.value = !passwordVisibility.value
+                                signInViewModel.passwordVisibility.value = !signInViewModel.passwordVisibility.value
                             }) {
                                 Icon(
                                     imageVector = image,
@@ -131,23 +136,26 @@ fun SignInPage(
                             }
                         },
                         label = { Text("Password") },
-                        //placeholder = { Text(text = "Password") },
                         singleLine = true,
-                        visualTransformation = if (passwordVisibility.value) VisualTransformation.None
+                        visualTransformation = if (signInViewModel.passwordVisibility.value) VisualTransformation.None
                         else PasswordVisualTransformation(),
                         modifier = Modifier
                             .fillMaxWidth(0.8f)
                     )
+                    if (state.passwordError != null) {
+                        Text(
+                            text = state.passwordError,
+                            color = MaterialTheme.colors.error,
+                            fontSize = 14.sp,
+                            modifier = Modifier.align(Alignment.End)
+                        )
+                    }
 
                     Spacer(modifier = Modifier.padding(10.dp))
                     Button(
                         onClick = {
-                                  signInViewModel.OnEvent(context,SignInFormEvent.Login)
+                                  signInViewModel.OnEvent(context,SignInFormEvent.Login,navHostControllerLambda())
                         },
-                        colors = ButtonDefaults.buttonColors(
-                            // backgroundColor = Color.Blue,
-                            //contentColor = Color),
-                        ),
                         modifier = Modifier
                             .fillMaxWidth(0.8f)
                             .height(50.dp),
@@ -157,7 +165,7 @@ fun SignInPage(
                         Text(text = "Sign In", fontSize = 20.sp)
                     }
 
-                    Spacer(modifier = Modifier.padding(20.dp))
+                    Spacer(modifier = Modifier.padding(15.dp))
                     Text(
                         text = "Create An Account",
                         color = Color.Blue,
