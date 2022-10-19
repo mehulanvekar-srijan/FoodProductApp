@@ -14,7 +14,7 @@ class DatabaseRepository(context: Context) {
         return dao.readAllUsers()
     }
 
-    fun getUserByUserName(userName: String) : User {
-        return dao.getUserByUserName(userName)
-    }
+//    fun getUserByUserName(userName: String) : User {
+//        return dao.getUserByUserName(userName)
+//    }
 }

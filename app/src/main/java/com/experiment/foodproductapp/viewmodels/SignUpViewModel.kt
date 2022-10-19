@@ -1,5 +1,6 @@
 package com.experiment.foodproductapp.viewmodels
 
+import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -7,14 +8,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.experiment.foodproductapp.constants.Screen
+import com.experiment.foodproductapp.database.User
 import com.experiment.foodproductapp.domain.event.SignupFormEvent
 import com.experiment.foodproductapp.domain.use_case.ValidateConfirmPassword
 import com.experiment.foodproductapp.domain.use_case.ValidateEmail
 import com.experiment.foodproductapp.domain.use_case.ValidateName
 import com.experiment.foodproductapp.domain.use_case.ValidatePassword
+import com.experiment.foodproductapp.repository.DatabaseRepository
 import com.experiment.foodproductapp.states.SignUpFormState
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 
 class SignUpViewModel(
@@ -97,7 +102,19 @@ class SignUpViewModel(
         _confirmPasswordVisible.value = !_confirmPasswordVisible.value
     }
 
-    fun navigateOnSucces(navHostController: NavHostController) {
+    suspend fun navigateOnSucces(context: Context,navHostController: NavHostController) {
+
+        val job = viewModelScope.launch(Dispatchers.IO){
+            val user = User()
+            user.firstName=state.firstName
+            user.lastName=state.lastName
+            user.password=state.password
+            user.email=state.email
+            val database = DatabaseRepository(context)
+            database.addUser(user)
+        }
+
+        job.join()
         navHostController.navigate(Screen.SignInScreen.route){
             popUpTo(Screen.SignUpScreen.route){inclusive=true}
             popUpTo(Screen.SignInScreen.route){inclusive=true}

@@ -13,6 +13,4 @@ interface UserDao {
     @Query("SELECT * FROM User")
     fun readAllUsers() : List<User>
 
-    @Query("SELECT * FROM User WHERE userName = :userName")
-    fun getUserByUserName(userName: String) : User
 }
