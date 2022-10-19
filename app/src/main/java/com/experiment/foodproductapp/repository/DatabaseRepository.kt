@@ -8,13 +8,14 @@ class DatabaseRepository(context: Context) {
 
     private val dao = UserDatabase.getDatabase(context).userDao()
 
+
     fun addUser(user: User) = dao.insertUser(user)
 
     fun readAllUsers() : List<User> {
         return dao.readAllUsers()
     }
 
-//    fun getUserByUserName(userName: String) : User {
-//        return dao.getUserByUserName(userName)
-//    }
+    fun getUserByEmail(email: String) : User {
+        return dao.getUserByEmail(email)
+    }
 }

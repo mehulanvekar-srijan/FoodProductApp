@@ -24,6 +24,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 
 import androidx.compose.ui.text.TextStyle
@@ -44,10 +45,13 @@ import com.experiment.foodproductapp.viewmodels.SignInViewModel
 
 
 @Composable
-fun SignInPage(navHostControllerLambda: () -> NavHostController,signInViewModel: SignInViewModel = viewModel()) {
+fun SignInPage(
+    navHostControllerLambda: () -> NavHostController,
+    signInViewModel: SignInViewModel = viewModel()
+) {
 
-    val passwordValue = remember { mutableStateOf("")}
 
+    val context = LocalContext.current
     val passwordVisibility = remember { mutableStateOf(false) }
     val state = signInViewModel.state
 
@@ -87,7 +91,7 @@ fun SignInPage(navHostControllerLambda: () -> NavHostController,signInViewModel:
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     OutlinedTextField(
                         value = state.email,//emailValue.value,
-                        onValueChange = { signInViewModel.OnEvent(SignInFormEvent.EmailChanged(it))},
+                        onValueChange = { signInViewModel.OnEvent(context,SignInFormEvent.EmailChanged(it))},
                             //emailValue.value = it },
                         label = { Text("Email Address") },
                         isError = state.emailError != null,
@@ -107,8 +111,8 @@ fun SignInPage(navHostControllerLambda: () -> NavHostController,signInViewModel:
                     }
 
                     OutlinedTextField(
-                        value = passwordValue.value,
-                        onValueChange = { passwordValue.value = it },
+                        value = state.password,
+                        onValueChange = { signInViewModel.OnEvent(context,SignInFormEvent.PasswordChanged(it)) },
                         trailingIcon = {
                             val image = if (passwordVisibility.value) {
                                 Icons.Filled.Visibility
@@ -138,7 +142,7 @@ fun SignInPage(navHostControllerLambda: () -> NavHostController,signInViewModel:
                     Spacer(modifier = Modifier.padding(10.dp))
                     Button(
                         onClick = {
-                                  signInViewModel.OnEvent(SignInFormEvent.Login)
+                                  signInViewModel.OnEvent(context,SignInFormEvent.Login)
                         },
                         colors = ButtonDefaults.buttonColors(
                             // backgroundColor = Color.Blue,
