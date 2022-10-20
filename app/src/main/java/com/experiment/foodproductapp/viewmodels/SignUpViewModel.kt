@@ -92,6 +92,7 @@ class SignUpViewModel(
     }
 
     private fun submitData() {
+
         val firstNameResult = validateFirstName.execute(state.firstName)
         val lastNameResult = validateLastName.execute(state.lastName)
         val dateResult = validateDateChange.execute(state.date)
