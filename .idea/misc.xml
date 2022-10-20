@@ -13,7 +13,10 @@
         <entry key="app/src/main/res/drawable/ic_beer_glass.xml" value="0.116" />
         <entry key="app/src/main/res/drawable/ic_beer_glass_bg.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_beer_glass_effects.xml" value="0.1125" />
+        <entry key="app/src/main/res/drawable/ic_beer_left_glass.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_beer_spark.xml" value="0.1105" />
         <entry key="app/src/main/res/drawable/ic_beer_tap.xml" value="0.125" />
+        <entry key="app/src/main/res/drawable/ic_blob_scatter_haikei.xml" value="0.1105" />
         <entry key="app/src/main/res/drawable/ic_blob_scene_haikei.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_burger_logo.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_heart_beer.xml" value="0.1285" />

@@ -1,18 +1,19 @@
 package com.experiment.foodproductapp.views
 
+import android.util.Log
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -43,13 +44,23 @@ fun SplashScreenPage(
         animationSpec = tween(animationDuration),
     )
 
+    val animatedPadding = animateDpAsState(
+        targetValue = if(startAnimation.value) 20.dp else 0.dp,
+        animationSpec = tween(2000),
+    )
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Purple700),
         contentAlignment = Alignment.Center,
     ) {
-        DrawLogo(animatedAlpha,animatedShape,animatedAngle)
+        //DrawLogo1(animatedAlpha,animatedShape,animatedAngle)
+        CollisionAnimation(
+            animatedAlpha = animatedAlpha,
+            animatedShape = animatedShape,
+            animatedPadding = animatedPadding,
+        )
     }
 
     LaunchedEffect(key1 = Unit) {
@@ -59,12 +70,56 @@ fun SplashScreenPage(
 }
 
 @Composable
+fun CollisionAnimation(
+    animatedAlpha: State<Float>,
+    animatedShape: State<Float>,
+    animatedPadding: State<Dp>,
+) {
+    Image(
+        painter = painterResource(id = R.drawable.ic_beer_left_glass),
+        contentDescription = "left",
+        modifier = Modifier
+            .padding(start = animatedPadding.value,),
+        contentScale = ContentScale.Fit,
+        alignment = Alignment.CenterStart,
+    )
+
+    Image(
+        painter = painterResource(id = R.drawable.ic_beer_right_glass),
+        contentDescription = "right",
+        modifier = Modifier
+            .padding(end = animatedPadding.value,),
+        contentScale = ContentScale.Fit,
+        alignment = Alignment.CenterEnd,
+    )
+
+    Image(
+        painter = painterResource(id = R.drawable.ic_beer_spark),
+        contentDescription = "spark",
+        modifier = Modifier.fillMaxSize(animatedShape.value),
+        contentScale = ContentScale.Fit,
+        alignment = Alignment.CenterEnd,
+        alpha = animatedAlpha.value,
+    )
+}
+
+
+@Composable
 fun DrawLogo(
     animatedAlpha: State<Float>,
     animatedShape: State<Float>,
     animatedAngle: State<Float>,
 ) {
-
+    Image(
+        painter = painterResource(id = R.drawable.ic_stars),
+        contentDescription = "ic_stars",
+        modifier = Modifier
+            .padding(15.dp)
+            .fillMaxSize(),
+        contentScale = ContentScale.Fit,
+        alignment = Alignment.Center,
+        alpha = animatedAlpha.value,
+    )
     Image(
         painter = painterResource(id = R.drawable.ic_beer_glass),
         contentDescription = "ic_burger_glass",
@@ -76,12 +131,31 @@ fun DrawLogo(
         alignment = Alignment.Center,
         alpha = animatedAlpha.value,
     )
+}
+
+@Composable
+fun DrawLogo1(
+    animatedAlpha: State<Float>,
+    animatedShape: State<Float>,
+    animatedAngle: State<Float>,
+) {
     Image(
-        painter = painterResource(id = R.drawable.ic_stars),
+        painter = painterResource(id = R.drawable.ic_beer_drops),
         contentDescription = "ic_stars",
         modifier = Modifier
-            .padding(15.dp)
+            .padding(5.dp)
             .fillMaxSize(animatedShape.value),
+        contentScale = ContentScale.Fit,
+        alignment = Alignment.Center,
+        alpha = animatedAlpha.value,
+    )
+    Image(
+        painter = painterResource(id = R.drawable.ic_beer_glass),
+        contentDescription = "ic_burger_glass",
+        modifier = Modifier
+            .padding(30.dp)
+            .fillMaxSize(animatedShape.value)
+            .rotate(animatedAngle.value),
         contentScale = ContentScale.Fit,
         alignment = Alignment.Center,
         alpha = animatedAlpha.value,
