@@ -5,7 +5,7 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import java.util.*
 
-@Entity(indices = [ Index(value = ["email"], unique = true) ])
+@Entity
 data class User(
     var firstName: String="",
     var lastName: String="",
