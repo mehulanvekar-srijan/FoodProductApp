@@ -31,6 +31,7 @@ class SignInViewModel(
     var state by mutableStateOf(SignInState())
     val _passwordVisibility =  mutableStateOf(false)
     val passwordVisibility = _passwordVisibility
+
     fun navigate(navHostController: NavHostController) {
         navHostController.navigate(Screen.SignUpScreen.route) {
 

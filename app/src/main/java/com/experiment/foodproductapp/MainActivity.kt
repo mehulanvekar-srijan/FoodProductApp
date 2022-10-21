@@ -9,6 +9,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.ui.theme.FoodProductAppTheme
+import com.experiment.foodproductapp.views.ForgotPassword
 import com.experiment.foodproductapp.views.SignInPage
 import com.experiment.foodproductapp.views.SignupPage
 import com.experiment.foodproductapp.views.SplashScreenPage
@@ -32,6 +33,9 @@ class MainActivity : ComponentActivity() {
                     }
                     composable(route = Screen.SignInScreen.route) {
                         SignInPage(navHostControllerLambda)
+                    }
+                    composable(route = Screen.ForgotPassword.route) {
+                        ForgotPassword()
                     }
                 }
             }

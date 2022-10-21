@@ -1,11 +1,9 @@
 package com.experiment.foodproductapp.views
 
-import android.util.Log
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -18,7 +16,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.experiment.foodproductapp.R
-import com.experiment.foodproductapp.ui.theme.Purple700
+import com.experiment.foodproductapp.ui.theme.ChangeBarColors
+import com.experiment.foodproductapp.ui.theme.DarkYellow
+import com.experiment.foodproductapp.ui.theme.Orange
 import com.experiment.foodproductapp.viewmodels.SplashScreenViewModel
 
 @Composable
@@ -28,6 +28,8 @@ fun SplashScreenPage(
     animationDuration : Int = splashScreenViewModel.splashDuration.toInt() - 1000
 ) {
     val startAnimation = remember { mutableStateOf(false) }
+
+    ChangeBarColors(statusColor = Orange, navigationBarColor = DarkYellow)
 
     val animatedAlpha = animateFloatAsState(
         targetValue = if(startAnimation.value) 1F else 0F,
@@ -45,17 +47,22 @@ fun SplashScreenPage(
     )
 
     val animatedPadding = animateDpAsState(
-        targetValue = if(startAnimation.value) 20.dp else 0.dp,
+        targetValue = if(startAnimation.value) 15.dp else 0.dp,
         animationSpec = tween(2000),
     )
 
     Box(
         modifier = Modifier
-            .fillMaxSize()
-            .background(Purple700),
+            .fillMaxSize(),
         contentAlignment = Alignment.Center,
     ) {
         //DrawLogo1(animatedAlpha,animatedShape,animatedAngle)
+        Image(
+            painter = painterResource(id = R.drawable.background_yellow_wave),
+            contentDescription = "",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize(),
+        )
         CollisionAnimation(
             animatedAlpha = animatedAlpha,
             animatedShape = animatedShape,
@@ -98,7 +105,6 @@ fun CollisionAnimation(
         contentDescription = "spark",
         modifier = Modifier.fillMaxSize(animatedShape.value),
         contentScale = ContentScale.Fit,
-        alignment = Alignment.CenterEnd,
         alpha = animatedAlpha.value,
     )
 }

@@ -6,6 +6,7 @@ import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 private val DarkColorPalette = darkColors(
@@ -28,6 +29,15 @@ private val LightColorPalette = lightColors(
     onSurface = Color.Black,
     */
 )
+
+var systemUiController : SystemUiController? = null
+
+@Composable
+fun ChangeBarColors(statusColor: Color = Orange, navigationBarColor: Color = Orange) {
+    systemUiController = rememberSystemUiController()
+    systemUiController?.setStatusBarColor(color = statusColor, darkIcons = true)
+    systemUiController?.setNavigationBarColor(color = navigationBarColor, darkIcons = true)
+}
 
 @Composable
 fun FoodProductAppTheme(
