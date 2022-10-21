@@ -45,6 +45,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.experiment.foodproductapp.R
+import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.domain.event.SignInFormEvent
 import com.experiment.foodproductapp.viewmodels.SignInViewModel
 
@@ -248,22 +249,24 @@ fun SignInPage(
                                 text = "Create An Account",
                                 color = Color.White,
                                 modifier = Modifier.clickable(onClick = {
-                                    signInViewModel.navigate(navHostControllerLambda())
+                                    signInViewModel.navigate(
+                                        navHostController = navHostControllerLambda(),
+                                        route = Screen.SignUpScreen.route
+                                    )
                                 }),
-                                style = TextStyle(
-                                    fontSize = 20.sp,
-                                ),
+                                style = TextStyle(fontSize = 20.sp,),
                             )
                             Spacer(modifier = Modifier.padding(10.dp))
                             Text(
                                 text = "Forgot Password?",
                                 color = Color.White,
                                 modifier = Modifier.clickable(onClick = {
-                                 //todo
+                                    signInViewModel.navigate(
+                                        navHostController = navHostControllerLambda(),
+                                        route = Screen.ForgotPassword.route
+                                    )
                                 }),
-                                style = TextStyle(
-                                    fontSize = 20.sp,
-                                ),
+                                style = TextStyle(fontSize = 20.sp,),
                             )
                         }
 

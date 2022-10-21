@@ -29,12 +29,14 @@ class SignInViewModel(
     private val validatePassword: EmptyPassword = EmptyPassword()
 ) : ViewModel() {
     var state by mutableStateOf(SignInState())
-    val _passwordVisibility =  mutableStateOf(false)
+
+    private val _passwordVisibility =  mutableStateOf(false)
     val passwordVisibility = _passwordVisibility
 
-    fun navigate(navHostController: NavHostController) {
-        navHostController.navigate(Screen.SignUpScreen.route) {
-
+    fun navigate(navHostController: NavHostController,route: String) {
+        when(route){
+            Screen.SignUpScreen.route -> { navHostController.navigate(Screen.SignUpScreen.route) }
+            Screen.ForgotPassword.route -> { navHostController.navigate(Screen.ForgotPassword.route) }
         }
     }
 
