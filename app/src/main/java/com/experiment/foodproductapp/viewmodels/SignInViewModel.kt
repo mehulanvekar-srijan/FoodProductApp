@@ -76,25 +76,31 @@ class SignInViewModel(
         }
 
         viewModelScope.launch(Dispatchers.IO) {
+
             val user : User?
             val database = DatabaseRepository(context)
             user = database.getUserByEmail(state.email)
 
             if (user != null) {
                 if (user.email == state.email && user.password == state.password ) {
+
                     withContext(Dispatchers.Main) {
-                       //call navigate to go to the next screen
+
                         Toast.makeText(context, "log in successfull", Toast.LENGTH_LONG).show()
-                        Log.d("datacheck", "loginUser: successfull email verification")
+
+                        navHostController.navigate(Screen.UserDetails.routeWithDate(user.email)) {
+                            popUpTo(Screen.SignInScreen.route) { inclusive = true }
+                        }
                     }
+
                 } else {
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(context, "incorrect email and password", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, "incorrect email or password", Toast.LENGTH_LONG).show()
                     }
                 }
             } else {
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(context, "incorrect email and password", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, "incorrect email or password", Toast.LENGTH_LONG).show()
                 }
             }
         }

@@ -7,10 +7,12 @@ import java.util.*
 
 @Entity
 data class User(
-    var firstName: String="",
-    var lastName: String="",
-    @PrimaryKey var email: String="",
-    var password: String="",
-    var dob: String="",
-    var phoneNumber: String="",
-)
+    var firstName: String,
+    var lastName: String,
+    @PrimaryKey var email: String,
+    var password: String,
+    var dob: String,
+    var phoneNumber: String,
+){
+    constructor() : this("","","","","","") {}
+}

@@ -114,7 +114,6 @@ class SignUpViewModel(
 
         if (hasError) {
             state = state.copy(
-
                 firstNameError = firstNameResult.errorMessage,
                 lastNameError = lastNameResult.errorMessage,
                 phoneNumberError = phoneNumberResult.errorMessage,
@@ -143,13 +142,14 @@ class SignUpViewModel(
     suspend fun navigateOnSucces(context: Context,navHostController: NavHostController) {
 
         val job = viewModelScope.launch(Dispatchers.IO){
-            val user = User()
-            user.firstName=state.firstName
-            user.lastName=state.lastName
-            user.password=state.password
-            user.email=state.email
-            user.phoneNumber=state.phoneNumber
-            user.dob=state.date
+            val user = User(
+                firstName = state.firstName,
+                lastName = state.lastName,
+                password = state.password,
+                email = state.email,
+                phoneNumber = state.phoneNumber,
+                dob = state.date,
+            )
             val database = DatabaseRepository(context)
             database.addUser(user)
         }

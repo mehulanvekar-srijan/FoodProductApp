@@ -1,18 +1,18 @@
 package com.experiment.foodproductapp
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.ui.theme.FoodProductAppTheme
-import com.experiment.foodproductapp.views.ForgotPassword
-import com.experiment.foodproductapp.views.SignInPage
-import com.experiment.foodproductapp.views.SignupPage
-import com.experiment.foodproductapp.views.SplashScreenPage
+import com.experiment.foodproductapp.views.*
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,6 +36,12 @@ class MainActivity : ComponentActivity() {
                     }
                     composable(route = Screen.ForgotPassword.route) {
                         ForgotPassword()
+                    }
+                    composable(
+                        route = Screen.UserDetails.route,
+                        arguments = listOf(navArgument("email") {type = NavType.StringType} )
+                    ) {
+                        UserDetails(it.arguments?.getString("email"))
                     }
                 }
             }
