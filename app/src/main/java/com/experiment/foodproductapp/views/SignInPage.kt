@@ -1,8 +1,7 @@
 package com.experiment.foodproductapp.views
 
 
-import android.graphics.Paint
-import androidx.compose.foundation.BorderStroke
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -15,27 +14,25 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.draw.clip
+
+
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.vector.ImageVector
+
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 
 import androidx.compose.ui.text.TextStyle
+
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+
 import androidx.compose.ui.tooling.preview.Preview
 
 
@@ -47,6 +44,8 @@ import androidx.navigation.compose.rememberNavController
 import com.experiment.foodproductapp.R
 import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.domain.event.SignInFormEvent
+import com.experiment.foodproductapp.ui.theme.DarkYellow
+import com.experiment.foodproductapp.ui.theme.Orange
 import com.experiment.foodproductapp.viewmodels.SignInViewModel
 
 @Preview
@@ -68,99 +67,89 @@ fun SignInPage(
     val context = LocalContext.current
     val state = signInViewModel.state
 
-    Box {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+    ){
         Image(
-            modifier = Modifier
-                .fillMaxSize()
-                .blur(3.dp),
-            painter = painterResource(R.drawable.background_image_beer),
-            contentDescription = "background_image",
-            contentScale = ContentScale.FillBounds,
-            colorFilter = ColorFilter.tint(Color.Gray, blendMode = BlendMode.Darken)
+            painter = painterResource(id = R.drawable.background_yellow_wave),
+            contentDescription = "Background Image",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
         )
+
+        //Main Column
         Column(
-            modifier = Modifier
-                .fillMaxSize(),
+            modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
 
-            ) {
-
+            //Brand Logo
             Image(
-                painter = painterResource(id = R.drawable.ic_beer_cheers),
-                contentDescription = "ic_burger_logo",
                 modifier = Modifier
-                    .fillMaxSize(.3f)
-                    .fillMaxWidth(),
+                    .fillMaxHeight(0.40F),
+                painter = painterResource(id = R.drawable.ic_beer_cheers),
+                contentDescription = "brand logo"
+            )
 
-                alignment = Alignment.BottomCenter,
-                contentScale = ContentScale.Fit,
-
-                )
-
-            Column(modifier = Modifier.fillMaxWidth().fillMaxHeight(.2f),
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp))
+                    .background(Color.White)
+                    .padding(10.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                verticalArrangement = Arrangement.Center,
             ) {
+            item {
                 Text(
                     text = "Sign In",
-                    color = Color.White,
+                    color = Color.Black,
                     style = TextStyle(
                         fontWeight = FontWeight.Bold,
                         fontSize = 30.sp,
                         letterSpacing = 2.sp
-                    ),
-
+                     ),
                 )
             }
-            LazyColumn(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                //verticalArrangement = Arrangement.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxSize()
-            ) {
 
-                item {
+            item {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
 
                         Spacer(modifier = Modifier.padding(5.dp))
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             TextField(
+
                                 value = state.email,
                                 shape = RoundedCornerShape(50),
-                                colors = TextFieldDefaults.outlinedTextFieldColors(
-                                    textColor = Color.White,
+                                colors = TextFieldDefaults.textFieldColors(
+                                    textColor = Color.Black,
                                     backgroundColor = Color.Transparent,
                                     placeholderColor = Color.White,
-                                    errorTrailingIconColor = Color.Cyan,
-                                    cursorColor = Color.White,
-                                    unfocusedBorderColor = Color.White,
-                                    focusedBorderColor = Color.White,
-                                    focusedLabelColor = Color.White,
-                                    errorCursorColor = Color.White,
-                                    errorBorderColor = Color.White,
-                                    errorLabelColor = Color.Cyan,
+                                    errorTrailingIconColor = Orange,
+                                    cursorColor = Orange,
+                                    focusedLabelColor = Orange,
+                                    errorCursorColor = Orange,
+                                    errorLabelColor = Orange,
+                                    focusedIndicatorColor = Orange,
+                                    unfocusedIndicatorColor = Orange,
+                                    unfocusedLabelColor = Orange,
                                     ),
                                 onValueChange = {
-                                    signInViewModel.OnEvent(
+                                    signInViewModel.onEvent(
                                         context,
                                         SignInFormEvent.EmailChanged(it),
                                         navHostControllerLambda()
                                     )
                                 },
-                                label = { Text("Email Address", color = Color.White) },
-                                isError = state.emailError != null,
-                                //placeholder = { Text(text = "Email Address") },
+                                label = { Text("Email Address", color = Color.Black) },
                                 singleLine = true,
                                 modifier = Modifier
-
                                     .fillMaxWidth(0.8f)
-
                             )
                             if (state.emailError != null) {
                                 Text(
                                     text = state.emailError,
-                                    color = Color.Cyan,
+                                    color = Color.Red,
                                     fontSize = 16.sp,
                                     modifier = Modifier.align(Alignment.End)
                                 )
@@ -169,20 +158,21 @@ fun SignInPage(
                             TextField(
                                 value = state.password,
                                 shape = RoundedCornerShape(50),
-                                colors = TextFieldDefaults.outlinedTextFieldColors(
-                                    textColor = Color.White,
+                                colors = TextFieldDefaults.textFieldColors(
+                                    textColor = Color.Black,
+                                    backgroundColor = Color.Transparent,
                                     placeholderColor = Color.White,
-                                    cursorColor = Color.White,
-                                    errorTrailingIconColor = Color.Cyan,
-                                    unfocusedBorderColor = Color.White,
-                                    focusedBorderColor = Color.White,
-                                    focusedLabelColor = Color.White,
-                                    errorCursorColor = Color.White,
-                                    errorBorderColor = Color.White,
-                                    errorLabelColor = Color.Cyan,
+                                    errorTrailingIconColor = Orange,
+                                    cursorColor = Orange,
+                                    focusedLabelColor = Orange,
+                                    errorCursorColor = Orange,
+                                    errorLabelColor = Orange,
+                                    focusedIndicatorColor = Orange,
+                                    unfocusedIndicatorColor = Orange,
+                                    unfocusedLabelColor = Orange,
                                 ),
                                 onValueChange = {
-                                    signInViewModel.OnEvent(
+                                    signInViewModel.onEvent(
                                         context,
                                         SignInFormEvent.PasswordChanged(it),
                                         navHostControllerLambda()
@@ -202,11 +192,11 @@ fun SignInPage(
                                         Icon(
                                             imageVector = image,
                                             contentDescription = "",
-                                            tint = Color.White
+                                            tint = Orange
                                         )
                                     }
                                 },
-                                label = { Text("Password", color = Color.White) },
+                                label = { Text("Password", color = Color.Black) },
                                 singleLine = true,
                                 visualTransformation = if (signInViewModel.passwordVisibility.value) VisualTransformation.None
                                 else PasswordVisualTransformation(),
@@ -216,7 +206,7 @@ fun SignInPage(
                             if (state.passwordError != null) {
                                 Text(
                                     text = state.passwordError,
-                                    color = Color.Cyan,
+                                    color = Color.Red,
                                     fontSize = 16.sp,
                                     modifier = Modifier.align(Alignment.End)
                                 )
@@ -225,7 +215,7 @@ fun SignInPage(
                             Spacer(modifier = Modifier.padding(10.dp))
                             OutlinedButton(
                                 onClick = {
-                                    signInViewModel.OnEvent(
+                                    signInViewModel.onEvent(
                                         context,
                                         SignInFormEvent.Login,
                                         navHostControllerLambda()
@@ -236,18 +226,19 @@ fun SignInPage(
                                     .height(50.dp),
 
                                 shape = RoundedCornerShape(50),
-                                border = BorderStroke(1.dp, Color.White),
-
-                                colors = ButtonDefaults.buttonColors(Color.Transparent)
+                                colors = ButtonDefaults.buttonColors(
+                                    backgroundColor = DarkYellow,
+                                    contentColor = Color.White
+                                ),
 
                             ) {
-                                Text(text = "Sign In", fontSize = 22.sp, color = Color.White)
+                                Text(text = "Sign In", fontSize = 22.sp, color = Color.Black)
                             }
 
                             Spacer(modifier = Modifier.padding(15.dp))
                             Text(
                                 text = "Create An Account",
-                                color = Color.White,
+                                color = DarkYellow,
                                 modifier = Modifier.clickable(onClick = {
                                     signInViewModel.navigate(
                                         navHostController = navHostControllerLambda(),
@@ -259,14 +250,14 @@ fun SignInPage(
                             Spacer(modifier = Modifier.padding(10.dp))
                             Text(
                                 text = "Forgot Password?",
-                                color = Color.White,
+                                color = DarkYellow,
                                 modifier = Modifier.clickable(onClick = {
                                     signInViewModel.navigate(
                                         navHostController = navHostControllerLambda(),
                                         route = Screen.ForgotPassword.route
                                     )
                                 }),
-                                style = TextStyle(fontSize = 20.sp,),
+                                style = TextStyle(fontSize = 20.sp),
                             )
                         }
 
@@ -276,4 +267,5 @@ fun SignInPage(
         }
     }
 }
+
 

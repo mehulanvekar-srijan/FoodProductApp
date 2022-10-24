@@ -40,7 +40,7 @@ class SignInViewModel(
         }
     }
 
-    fun OnEvent(context: Context,event: SignInFormEvent, navHostController: NavHostController) {
+    fun onEvent(context: Context, event: SignInFormEvent, navHostController: NavHostController) {
         when (event) {
             is SignInFormEvent.EmailChanged -> {
                 state = state.copy(email = event.email)
