@@ -25,8 +25,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 import com.experiment.foodproductapp.R
+import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.ui.theme.ChangeBarColors
 import com.experiment.foodproductapp.ui.theme.Orange
 import com.experiment.foodproductapp.viewmodels.HomeScreenViewModel
@@ -35,8 +37,12 @@ import kotlin.math.min
 @OptIn(ExperimentalMaterialApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun HomeScreenPage(
+    email : String?,
+    navHostControllerLambda: () -> NavHostController,
     homeScreenViewModel: HomeScreenViewModel = viewModel(),
 ) {
+
+    LaunchedEffect(key1 = Unit){ homeScreenViewModel.setEmail(email) }
 
     ChangeBarColors(navigationBarColor = Color.White)
     val listState = rememberLazyListState()
@@ -60,7 +66,7 @@ fun HomeScreenPage(
     )
 
     Box(modifier = Modifier.fillMaxSize()){
-        //Background Image
+
         BackgroundImage()
 
         //Main Column
@@ -127,6 +133,11 @@ fun HomeScreenPage(
             animatedAppBarBackgroundColor = animatedAppBarBackgroundColor,
             animatedAppBarContentColor = animatedAppBarContentColor,
             animatedAppBarElevation = animatedAppBarElevation,
+            onUserProfileClick = {
+                navHostControllerLambda().navigate(
+                    Screen.UserDetails.routeWithDate(email ?: "")
+                )
+            }
         )
 //        AnimatedVisibility(
 //            visible = (listState.firstVisibleItemScrollOffset >= (brandLogoSize.value/2)) || (listState.firstVisibleItemIndex > 0),
@@ -159,14 +170,14 @@ fun AppBar(
     animatedAppBarBackgroundColor: State<Color>,
     animatedAppBarContentColor: State<Color>,
     animatedAppBarElevation: State<Dp>,
+    onUserProfileClick: ()->Unit = {},
 ) {
     TopAppBar(
         title = { Text(text = "Beer App", color = animatedAppBarContentColor.value) },
         backgroundColor = animatedAppBarBackgroundColor.value,
-        //navigationIcon = {  },
         elevation = animatedAppBarElevation.value,
         actions = {
-            IconButton(onClick = {}) {
+            IconButton(onClick = onUserProfileClick) {
                 Icon(imageVector = Icons.Default.ManageAccounts, contentDescription = "", tint = Color.White)
             }
         }

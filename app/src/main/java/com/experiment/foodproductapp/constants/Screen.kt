@@ -8,4 +8,7 @@ sealed class Screen(val route:String){
     object UserDetails : Screen("UserDetails/{email}"){
         fun routeWithDate(data: String) = "UserDetails/$data"
     }
+    object HomeScreen : Screen("HomeScreen/{email}"){
+        fun routeWithDate(data: String) = "HomeScreen/$data"
+    }
 }

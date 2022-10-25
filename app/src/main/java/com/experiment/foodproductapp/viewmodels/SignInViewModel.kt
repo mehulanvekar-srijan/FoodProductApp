@@ -88,9 +88,11 @@ class SignInViewModel(
 
                         Toast.makeText(context, "log in successfull", Toast.LENGTH_LONG).show()
 
-                        navHostController.navigate(Screen.UserDetails.routeWithDate(user.email)) {
+                        navHostController.navigate(Screen.HomeScreen.routeWithDate(user.email)) {
                             popUpTo(Screen.SignInScreen.route) { inclusive = true }
                         }
+
+
                     }
 
                 } else {

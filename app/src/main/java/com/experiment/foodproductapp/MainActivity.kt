@@ -39,9 +39,15 @@ class MainActivity : ComponentActivity() {
                     }
                     composable(
                         route = Screen.UserDetails.route,
-                        arguments = listOf(navArgument("email") {type = NavType.StringType} )
+                        arguments = listOf(navArgument("email") { type = NavType.StringType } )
                     ) {
                         UserDetails(it.arguments?.getString("email"))
+                    }
+                    composable(
+                        route = Screen.HomeScreen.route,
+                        arguments = listOf(navArgument("email") { type = NavType.StringType } )
+                    ) {
+                        HomeScreenPage(it.arguments?.getString("email"),navHostControllerLambda)
                     }
                 }
             }
