@@ -104,7 +104,8 @@ fun SignupPage(
 
         //Main Column
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
 
@@ -424,26 +425,23 @@ fun SignupPage(
                 }
                 Spacer(modifier = Modifier.height(20.dp))
 
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                OutlinedButton(
+                    onClick = {
+                        signUpViewModel.onEvent(SignupFormEvent.Submit)
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp)
+                        .padding(start = 20.dp, end = 20.dp),
+                    shape = RoundedCornerShape(50),
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = DarkYellow,
+                        contentColor = Color.White
+                    ),
                 ) {
-                    OutlinedButton(
-                        onClick = {
-                            signUpViewModel.onEvent(SignupFormEvent.Submit)
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth(0.8f)
-                            .height(50.dp),
-                        shape = RoundedCornerShape(50),
-                        colors = ButtonDefaults.buttonColors(
-                            backgroundColor = DarkYellow,
-                            contentColor = Color.White
-                        ),
-                    ) {
-                        Text(text = "CREATE ACCOUNT", color = Color.Black)
-                    }
+                    Text(text = "CREATE ACCOUNT", color = Color.Black)
                 }
+
             }
         }
     }

@@ -39,7 +39,9 @@ import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.ui.theme.ChangeBarColors
 import com.experiment.foodproductapp.ui.theme.Orange
 import com.experiment.foodproductapp.viewmodels.HomeScreenViewModel
+import kotlin.math.absoluteValue
 import kotlin.math.min
+
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalAnimationApi::class)
 @Composable
@@ -48,7 +50,6 @@ fun HomeScreenPage(
     navHostControllerLambda: () -> NavHostController,
     homeScreenViewModel: HomeScreenViewModel = viewModel(),
 ) {
-
     LaunchedEffect(key1 = Unit){ homeScreenViewModel.setEmail(email) }
 
     ChangeBarColors(navigationBarColor = Color.White)
@@ -66,6 +67,12 @@ fun HomeScreenPage(
         animationSpec = tween(1),
     )
 
+    val animatedAppBarBrandIconColor = animateColorAsState(
+        targetValue = if((listState.firstVisibleItemScrollOffset >= (brandLogoSize.value/2)) || (listState.firstVisibleItemIndex > 0)) Color.Unspecified
+                        else Color.Transparent,
+        animationSpec = tween(1),
+    )
+
     val animatedAppBarElevation = animateDpAsState(
         targetValue = if((listState.firstVisibleItemScrollOffset >= (brandLogoSize.value/2)) || (listState.firstVisibleItemIndex > 0)) 3.dp
                         else 0.dp,
@@ -74,6 +81,7 @@ fun HomeScreenPage(
 
     Box(modifier = Modifier.fillMaxSize()){
 
+        //Background Image
         BackgroundImage()
 
         //Main Column
@@ -86,13 +94,13 @@ fun HomeScreenPage(
             state = listState,
         ){
 
+            //Brand Logo
             item {
                 BrandLogo(listState = listState,brandLogoSize = brandLogoSize)
             }
 
-            items(
-                items = homeScreenViewModel.productsList,
-            ) { item ->
+            //Products
+            items(items = homeScreenViewModel.productsList) { item ->
 
                 Card(modifier = Modifier
                     .fillMaxWidth()
@@ -107,9 +115,9 @@ fun HomeScreenPage(
                     onClick = {  },
                 ) {
                     Row {
-
                         val liked = rememberSaveable { mutableStateOf(false) }
 
+                        //Product Image
                         Box{
                             Image(
                                 painter = rememberImagePainter(item.url),
@@ -134,25 +142,20 @@ fun HomeScreenPage(
                                 }
                             }
                         }
-
-
                         Column {
-
-                            Box(
+                            //Title
+                            Text( // Title
+                                textAlign = TextAlign.Center,
                                 modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(5.dp)
                                     .weight(2F),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text( // Title
-                                    textAlign = TextAlign.Center,
-                                    modifier = Modifier
-                                        .fillMaxSize(),
-                                    style = MaterialTheme.typography.h5,
-                                    overflow = TextOverflow.Ellipsis,
-                                    text = item.title,
-                                    fontWeight = FontWeight.Bold,
-                                )
-                            }
+                                style = MaterialTheme.typography.h5,
+                                overflow = TextOverflow.Ellipsis,
+                                text = item.title,
+                                fontWeight = FontWeight.Bold,
+                                maxLines = 3
+                            )
 
                             Box(
                                 modifier = Modifier
@@ -190,31 +193,24 @@ fun HomeScreenPage(
                 }
             }
 
-            item{
-                Spacer(modifier = Modifier.padding(5.dp))
-            }
+            //Space
+            item{ Spacer(modifier = Modifier.padding(5.dp)) }
         }
 
+        //Top App Bar
         AppBar(
             animatedAppBarBackgroundColor = animatedAppBarBackgroundColor,
             animatedAppBarContentColor = animatedAppBarContentColor,
+            animatedAppBarBrandIconColor = animatedAppBarBrandIconColor,
             animatedAppBarElevation = animatedAppBarElevation,
             onUserProfileClick = {
                 homeScreenViewModel.navigateToUserDetails(navHostControllerLambda())
             }
         )
-//        AnimatedVisibility(
-//            visible = (listState.firstVisibleItemScrollOffset >= (brandLogoSize.value/2)) || (listState.firstVisibleItemIndex > 0),
-//            enter = fadeIn(),
-//            exit = fadeOut(),
-//        ) {
-//            //Top Bar
-//            AppBar(animatedColor)
-//            SideEffect { Log.d("testRecomp", "AnimatedVisibility: ") }
-//        }
     }
 
-    SideEffect { Log.d("testRecomp", "HomeScreenPage: ") }
+//    val count = remember{ mutableStateOf(0) }
+//    SideEffect { Log.d("testRecomp", "HomeScreenPage : ${count.value++}") }
 }
 
 @Composable
@@ -226,13 +222,15 @@ fun BackgroundImage() {
         modifier = Modifier.fillMaxSize()
     )
 
-    SideEffect { Log.d("testRecomp", "BackgroundImage: ") }
+//    val count = remember{ mutableStateOf(0) }
+//    SideEffect { Log.d("testRecomp", "BackgroundImage : ${count.value++}") }
 }
 
 @Composable
 fun AppBar(
     animatedAppBarBackgroundColor: State<Color>,
     animatedAppBarContentColor: State<Color>,
+    animatedAppBarBrandIconColor: State<Color>,
     animatedAppBarElevation: State<Dp>,
     onUserProfileClick: ()->Unit = {},
 ) {
@@ -240,13 +238,23 @@ fun AppBar(
         title = { Text(text = "Beer App", color = animatedAppBarContentColor.value) },
         backgroundColor = animatedAppBarBackgroundColor.value,
         elevation = animatedAppBarElevation.value,
+        navigationIcon = {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_beer_cheers),
+                contentDescription = "",
+                tint = animatedAppBarBrandIconColor.value,
+                modifier = Modifier.padding(start = 5.dp)
+            )
+        },
         actions = {
             IconButton(onClick = onUserProfileClick) {
                 Icon(imageVector = Icons.Default.ManageAccounts, contentDescription = "", tint = Color.White)
             }
         }
     )
-    SideEffect { Log.d("testRecomp", "AppBar: ") }
+
+//    val count = remember{ mutableStateOf(0) }
+//    SideEffect { Log.d("testRecomp", "AppBar: ${count.value++}") }
 }
 
 @Composable
@@ -270,11 +278,6 @@ fun BrandLogo(
         painter = painterResource(id = R.drawable.ic_beer_cheers),
         contentDescription = "brand logo",
     )
-    SideEffect { Log.d("testRecomp", "BrandLogo: ") }
-}
-
-@OptIn(ExperimentalMaterialApi::class)
-@Composable
-@Preview(showBackground = true, backgroundColor = 1)
-fun Preview() {
+//    val count = remember{ mutableStateOf(0) }
+//    SideEffect { Log.d("testRecomp", "BrandLogo: ${count.value++}") }
 }

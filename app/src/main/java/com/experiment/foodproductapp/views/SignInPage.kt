@@ -43,6 +43,7 @@ import androidx.navigation.compose.rememberNavController
 import com.experiment.foodproductapp.R
 import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.domain.event.SignInFormEvent
+import com.experiment.foodproductapp.ui.theme.ChangeBarColors
 import com.experiment.foodproductapp.ui.theme.DarkYellow
 import com.experiment.foodproductapp.ui.theme.Orange
 import com.experiment.foodproductapp.viewmodels.SignInViewModel
@@ -64,6 +65,7 @@ fun SignInPage(
     signInViewModel: SignInViewModel = viewModel()
 ) {
 
+    ChangeBarColors(navigationBarColor = Color.White)
     val context = LocalContext.current
     val state = signInViewModel.state
 

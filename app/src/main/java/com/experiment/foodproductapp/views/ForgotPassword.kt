@@ -13,10 +13,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -28,6 +31,7 @@ import com.experiment.foodproductapp.ui.theme.*
 fun ForgotPassword() {
 
     ChangeBarColors(navigationBarColor = Color.White)
+    val focusManager = LocalFocusManager.current
 
     val inputList = remember { mutableStateListOf("","","","") }
 
@@ -63,6 +67,16 @@ fun ForgotPassword() {
                 verticalArrangement = Arrangement.Center,
             ){
                 item {
+                    Text(
+                        text = "Enter 4 digit OTP sent via email",
+                        style = MaterialTheme.typography.h4,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(10.dp),
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+                item {
                     Row(
                         modifier = Modifier
                             .padding(5.dp)
@@ -77,6 +91,8 @@ fun ForgotPassword() {
                                     .size(55.dp),
                                 onValueChange = {
                                     inputList[i] = it
+                                    if(inputList[i].isNotEmpty()) focusManager.moveFocus(FocusDirection.Right)
+                                    if(i == 3 && inputList[i].isNotEmpty()) focusManager.clearFocus()
                                 },
                                 textStyle = TextStyle().copy(textAlign = TextAlign.Center),
                                 colors = TextFieldDefaults.textFieldColors(
