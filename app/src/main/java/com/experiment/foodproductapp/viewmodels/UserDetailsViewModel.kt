@@ -14,14 +14,13 @@ import kotlinx.coroutines.launch
 
 class UserDetailsViewModel : ViewModel() {
 
-    private val _user : MutableState<User>  = mutableStateOf(User())
-    val user : State<User> = _user
+    private val _user: MutableState<User> = mutableStateOf(User())
+    val user: State<User> = _user
 
-    fun execute(context: Context,email : String){
+    fun execute(context: Context, email: String) {
         viewModelScope.launch(Dispatchers.IO) {
             val database = DatabaseRepository(context)
             _user.value = database.getUserByEmail(email = email)
         }
     }
-
 }
