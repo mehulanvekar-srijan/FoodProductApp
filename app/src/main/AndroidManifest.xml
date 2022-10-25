@@ -15,6 +15,7 @@
         android:theme="@style/Theme.FoodProductApp"
         tools:targetApi="31">
         <activity
+            android:windowSoftInputMode="adjustResize"
             android:configChanges="orientation"
             android:name=".MainActivity"
             android:exported="true"
