@@ -5,6 +5,7 @@ import androidx.compose.animation.*
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -12,7 +13,10 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ManageAccounts
+import androidx.compose.material.icons.outlined.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,12 +24,15 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberImagePainter
 import com.experiment.foodproductapp.R
 import com.experiment.foodproductapp.constants.Screen
@@ -100,25 +107,84 @@ fun HomeScreenPage(
                     onClick = {  },
                 ) {
                     Row {
-                        Image(
-                            painter = rememberImagePainter(item),
-                            contentDescription = "",
-                            contentScale = ContentScale.Fit,
-                            alignment = Alignment.CenterStart,
-                            modifier = Modifier.padding(8.dp),
-                        )
-                        Column {
-                            Text(
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .fillMaxHeight(0.30F)
-                                    .padding(3.dp),
-                                color = Color.Black,
-                                overflow = TextOverflow.Ellipsis,
-                                text = "Beer",
-                                maxLines = 1,
+
+                        val liked = rememberSaveable { mutableStateOf(false) }
+
+                        Box{
+                            Image(
+                                painter = rememberImagePainter(item.url),
+                                contentDescription = "",
+                                contentScale = ContentScale.Fit,
+                                alignment = Alignment.CenterStart,
+                                modifier = Modifier.padding(8.dp),
                             )
+                            IconButton(onClick = { liked.value = !liked.value }) {
+                                if (liked.value){
+                                    Icon(
+                                        imageVector = Icons.Outlined.Favorite,
+                                        contentDescription = "",
+                                        tint = Color.Red
+                                    )
+                                }
+                                else{
+                                    Icon(
+                                        imageVector = Icons.Outlined.FavoriteBorder,
+                                        contentDescription = "",
+                                    )
+                                }
+                            }
+                        }
+
+
+                        Column {
+
+                            Box(
+                                modifier = Modifier
+                                    .weight(2F),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text( // Title
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier
+                                        .fillMaxSize(),
+                                    style = MaterialTheme.typography.h5,
+                                    overflow = TextOverflow.Ellipsis,
+                                    text = item.title,
+                                    fontWeight = FontWeight.Bold,
+                                )
+                            }
+
+                            Box(
+                                modifier = Modifier
+                                    .weight(1F),
+                                contentAlignment = Alignment.CenterStart
+                            ){
+                                Text( // Description
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier
+                                        .fillMaxWidth(),
+                                    color = Color.Black,
+                                    overflow = TextOverflow.Ellipsis,
+                                    text = item.description,
+                                    maxLines = 2,
+                                )
+                            }
+
+                            Box(
+                                modifier = Modifier
+                                    .weight(1F),
+                                contentAlignment = Alignment.CenterStart
+                            ){
+                                Text( // Price
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(start = 10.dp),
+                                    color = Color.Black,
+                                    overflow = TextOverflow.Ellipsis,
+                                    text = "MRP:Rs ${item.price}",
+                                )
+                            }
                         }
                     }
                 }
@@ -134,9 +200,7 @@ fun HomeScreenPage(
             animatedAppBarContentColor = animatedAppBarContentColor,
             animatedAppBarElevation = animatedAppBarElevation,
             onUserProfileClick = {
-                navHostControllerLambda().navigate(
-                    Screen.UserDetails.routeWithDate(email ?: "")
-                )
+                homeScreenViewModel.navigateToUserDetails(navHostControllerLambda())
             }
         )
 //        AnimatedVisibility(
@@ -207,4 +271,10 @@ fun BrandLogo(
         contentDescription = "brand logo",
     )
     SideEffect { Log.d("testRecomp", "BrandLogo: ") }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+@Preview(showBackground = true, backgroundColor = 1)
+fun Preview() {
 }
