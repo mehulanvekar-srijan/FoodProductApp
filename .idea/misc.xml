@@ -12,16 +12,21 @@
         <entry key="../../../../layout/compose-model-1666301122030.xml" value="0.25" />
         <entry key="../../../../layout/compose-model-1666640415281.xml" value="0.25" />
         <entry key="../../../../layout/compose-model-1666640737933.xml" value="0.24351851851851852" />
+        <entry key="../../../../layout/compose-model-1666695548613.xml" value="0.25" />
         <entry key="app/src/main/res/drawable/ic_beer.xml" value="0.1285" />
         <entry key="app/src/main/res/drawable/ic_beer_bucket.xml" value="0.1205" />
         <entry key="app/src/main/res/drawable/ic_beer_cheers.xml" value="0.1205" />
+        <entry key="app/src/main/res/drawable/ic_beer_drops.xml" value="0.1505" />
         <entry key="app/src/main/res/drawable/ic_beer_glass.xml" value="0.116" />
         <entry key="app/src/main/res/drawable/ic_beer_glass_bg.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_beer_glass_effects.xml" value="0.1125" />
+        <entry key="app/src/main/res/drawable/ic_beer_right_glass.xml" value="0.1505" />
+        <entry key="app/src/main/res/drawable/ic_beer_spark.xml" value="0.1505" />
         <entry key="app/src/main/res/drawable/ic_beer_tap.xml" value="0.125" />
         <entry key="app/src/main/res/drawable/ic_blob_scene_haikei.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_burger_logo.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_heart_beer.xml" value="0.1285" />
+        <entry key="app/src/main/res/drawable/ic_profile.xml" value="0.1505" />
         <entry key="app/src/main/res/drawable/ic_splash_beer.xml" value="0.1375" />
         <entry key="app/src/main/res/drawable/ic_stars.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_symbol_scatter_haikei.xml" value="0.1125" />
