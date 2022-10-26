@@ -1,18 +1,16 @@
 package com.experiment.foodproductapp.views
 
-import android.util.Log
 import androidx.compose.animation.*
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ManageAccounts
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.runtime.*
@@ -23,23 +21,24 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberImagePainter
 import com.experiment.foodproductapp.R
-import com.experiment.foodproductapp.constants.Screen
+import com.experiment.foodproductapp.repository.DatabaseRepository
 import com.experiment.foodproductapp.ui.theme.ChangeBarColors
 import com.experiment.foodproductapp.ui.theme.Orange
+import com.experiment.foodproductapp.ui.theme.descriptionFontFamily
+import com.experiment.foodproductapp.ui.theme.titleFontFamily
 import com.experiment.foodproductapp.viewmodels.HomeScreenViewModel
-import kotlin.math.absoluteValue
+import kotlinx.coroutines.launch
 import kotlin.math.min
 
 
@@ -53,6 +52,9 @@ fun HomeScreenPage(
     LaunchedEffect(key1 = Unit){ homeScreenViewModel.setEmail(email) }
 
     ChangeBarColors(navigationBarColor = Color.White)
+
+    val context = LocalContext.current
+
     val listState = rememberLazyListState()
     val brandLogoSize = remember { mutableStateOf(Int.MAX_VALUE) }
 
@@ -102,9 +104,10 @@ fun HomeScreenPage(
             //Products
             items(items = homeScreenViewModel.productsList) { item ->
 
-                Card(modifier = Modifier
-                    .fillMaxWidth()
-                    .height(180.dp),
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(180.dp),
                     elevation = 5.dp,
                     shape = RoundedCornerShape(
                         bottomStart = 40.dp,
@@ -112,13 +115,15 @@ fun HomeScreenPage(
                         topEnd = 3.dp,
                         bottomEnd = 3.dp,
                     ),
-                    onClick = {  },
+                    onClick = {
+                        homeScreenViewModel.addProductToCart(item,context)
+                    },
                 ) {
                     Row {
                         val liked = rememberSaveable { mutableStateOf(false) }
 
                         //Product Image
-                        Box{
+                        Box {
                             Image(
                                 painter = rememberImagePainter(item.url),
                                 contentDescription = "",
@@ -142,52 +147,34 @@ fun HomeScreenPage(
                                 }
                             }
                         }
-                        Column {
-                            //Title
+
+                        Column(
+                            modifier = Modifier.fillMaxSize(),
+                            verticalArrangement = Arrangement.SpaceEvenly,
+                        ){
                             Text( // Title
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(5.dp)
-                                    .weight(2F),
+                                textAlign = TextAlign.Start,
                                 style = MaterialTheme.typography.h5,
                                 overflow = TextOverflow.Ellipsis,
                                 text = item.title,
-                                fontWeight = FontWeight.Bold,
-                                maxLines = 3
+                                fontFamily = titleFontFamily,
+                                fontWeight = FontWeight.SemiBold
                             )
-
-                            Box(
-                                modifier = Modifier
-                                    .weight(1F),
-                                contentAlignment = Alignment.CenterStart
-                            ){
-                                Text( // Description
-                                    textAlign = TextAlign.Center,
-                                    modifier = Modifier
-                                        .fillMaxWidth(),
-                                    color = Color.Black,
-                                    overflow = TextOverflow.Ellipsis,
-                                    text = item.description,
-                                    maxLines = 2,
-                                )
-                            }
-
-                            Box(
-                                modifier = Modifier
-                                    .weight(1F),
-                                contentAlignment = Alignment.CenterStart
-                            ){
-                                Text( // Price
-                                    textAlign = TextAlign.Center,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(start = 10.dp),
-                                    color = Color.Black,
-                                    overflow = TextOverflow.Ellipsis,
-                                    text = "MRP:Rs ${item.price}",
-                                )
-                            }
+                            Text( // Description
+                                textAlign = TextAlign.Start,
+                                color = Color.Black,
+                                overflow = TextOverflow.Ellipsis,
+                                text = item.description,
+                                maxLines = 2,
+                                fontFamily = descriptionFontFamily,
+                            )
+                            Text( // Price
+                                textAlign = TextAlign.Center,
+                                color = Color.Black,
+                                overflow = TextOverflow.Ellipsis,
+                                text = "MRP:Rs ${item.price}",
+                                fontFamily = descriptionFontFamily,
+                            )
                         }
                     }
                 }
@@ -205,6 +192,9 @@ fun HomeScreenPage(
             animatedAppBarElevation = animatedAppBarElevation,
             onUserProfileClick = {
                 homeScreenViewModel.navigateToUserDetails(navHostControllerLambda())
+            },
+            onProductCartClick = {
+                homeScreenViewModel.navigateToProductCart(navHostControllerLambda())
             }
         )
     }
@@ -233,6 +223,7 @@ fun AppBar(
     animatedAppBarBrandIconColor: State<Color>,
     animatedAppBarElevation: State<Dp>,
     onUserProfileClick: ()->Unit = {},
+    onProductCartClick: ()->Unit = {},
 ) {
     TopAppBar(
         title = { Text(text = "Beer App", color = animatedAppBarContentColor.value) },
@@ -249,6 +240,10 @@ fun AppBar(
         actions = {
             IconButton(onClick = onUserProfileClick) {
                 Icon(imageVector = Icons.Default.ManageAccounts, contentDescription = "", tint = Color.White)
+            }
+
+            IconButton(onClick = onProductCartClick) {
+                Icon(imageVector = Icons.Default.ShoppingCart, contentDescription = "", tint = Color.White)
             }
         }
     )

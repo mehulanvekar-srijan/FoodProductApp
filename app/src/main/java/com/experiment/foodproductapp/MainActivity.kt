@@ -49,6 +49,10 @@ class MainActivity : ComponentActivity() {
                     ) {
                         HomeScreenPage(it.arguments?.getString("email"),navHostControllerLambda)
                     }
+
+                    composable(route = Screen.ProductCart.route) {
+                        ProductCart()
+                    }
                 }
             }
         }

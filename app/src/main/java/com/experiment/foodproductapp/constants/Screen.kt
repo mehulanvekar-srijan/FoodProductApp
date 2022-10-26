@@ -11,4 +11,6 @@ sealed class Screen(val route:String){
     object HomeScreen : Screen("HomeScreen/{email}"){
         fun routeWithDate(data: String) = "HomeScreen/$data"
     }
+    object ProductCart : Screen("ProductCart")
+
 }

@@ -23,12 +23,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.experiment.foodproductapp.R
 import com.experiment.foodproductapp.ui.theme.*
+import com.experiment.foodproductapp.viewmodels.ForgotPasswordViewModel
 
 @Preview(showBackground = true)
 @Composable
-fun ForgotPassword() {
+fun ForgotPassword(
+    forgotPasswordViewModel: ForgotPasswordViewModel = viewModel()
+) {
 
     ChangeBarColors(navigationBarColor = Color.White)
     val focusManager = LocalFocusManager.current
@@ -115,7 +119,7 @@ fun ForgotPassword() {
                         onClick = {
                             var str = ""
                             inputList.forEach{ str += it }
-                            Log.d("testOTP", "ForgotPassword: $str")
+
                         },
                         colors = ButtonDefaults.buttonColors(
                             backgroundColor = DarkYellow,
