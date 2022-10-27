@@ -47,17 +47,17 @@ import com.experiment.foodproductapp.ui.theme.ChangeBarColors
 import com.experiment.foodproductapp.ui.theme.DarkYellow
 import com.experiment.foodproductapp.ui.theme.Orange
 import com.experiment.foodproductapp.viewmodels.SignInViewModel
-
-@Preview
-@Composable
-fun preview() {
-    val navHostController = rememberNavController()
-    val navHostControllerLambda: () -> NavHostController = {
-
-        navHostController
-    }
-    SignInPage(navHostControllerLambda = navHostControllerLambda)
-}
+//
+//@Preview
+//@Composable
+//fun preview() {
+//    val navHostController = rememberNavController()
+//    val navHostControllerLambda: () -> NavHostController = {
+//
+//        navHostController
+//    }
+//    SignInPage(navHostControllerLambda = navHostControllerLambda)
+//}
 
 @Composable
 fun SignInPage(
@@ -112,148 +112,150 @@ fun SignInPage(
                     ),
                 )
                 Spacer(modifier = Modifier.padding(5.dp))
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    TextField(
+                LazyColumn(horizontalAlignment = Alignment.CenterHorizontally) {
+                    item {
+                        TextField(
 
-                        value = state.email,
-                        shape = RoundedCornerShape(50),
-                        colors = TextFieldDefaults.textFieldColors(
-                            textColor = Color.Black,
-                            backgroundColor = Color.Transparent,
-                            placeholderColor = Color.White,
-                            errorTrailingIconColor = Orange,
-                            cursorColor = Orange,
-                            focusedLabelColor = Orange,
-                            errorCursorColor = Orange,
-                            errorLabelColor = Orange,
-                            focusedIndicatorColor = Orange,
-                            unfocusedIndicatorColor = Orange,
-                            unfocusedLabelColor = Orange,
-                        ),
-                        onValueChange = {
-                            signInViewModel.onEvent(
-                                context,
-                                SignInFormEvent.EmailChanged(it),
-                                navHostControllerLambda()
-                            )
-                        },
-                        label = { Text("Email Address", color = Color.Black) },
-                        singleLine = true,
-                        modifier = Modifier
-                            .fillMaxWidth(0.8f)
-                    )
-                    if (state.emailError != null) {
-                        Text(
-                            text = state.emailError,
-                            color = Color.Red,
-                            fontSize = 16.sp,
-                            modifier = Modifier.align(Alignment.End)
-                        )
-                    }
-                    Spacer(modifier = Modifier.padding(top = 8.dp))
-                    TextField(
-                        value = state.password,
-                        shape = RoundedCornerShape(50),
-                        colors = TextFieldDefaults.textFieldColors(
-                            textColor = Color.Black,
-                            backgroundColor = Color.Transparent,
-                            placeholderColor = Color.White,
-                            errorTrailingIconColor = Orange,
-                            cursorColor = Orange,
-                            focusedLabelColor = Orange,
-                            errorCursorColor = Orange,
-                            errorLabelColor = Orange,
-                            focusedIndicatorColor = Orange,
-                            unfocusedIndicatorColor = Orange,
-                            unfocusedLabelColor = Orange,
-                        ),
-                        onValueChange = {
-                            signInViewModel.onEvent(
-                                context,
-                                SignInFormEvent.PasswordChanged(it),
-                                navHostControllerLambda()
-                            )
-                        },
-                        trailingIcon = {
-                            val image = if (signInViewModel.passwordVisibility.value) {
-                                Icons.Filled.Visibility
-                            } else {
-                                Icons.Filled.VisibilityOff
-                            }
-
-                            IconButton(onClick = {
-                                signInViewModel.passwordVisibility.value =
-                                    !signInViewModel.passwordVisibility.value
-                            }) {
-                                Icon(
-                                    imageVector = image,
-                                    contentDescription = "",
+                            value = state.email,
+                            shape = RoundedCornerShape(50),
+                            colors = TextFieldDefaults.textFieldColors(
+                                textColor = Color.Black,
+                                backgroundColor = Color.Transparent,
+                                placeholderColor = Color.White,
+                                errorTrailingIconColor = Orange,
+                                cursorColor = Orange,
+                                focusedLabelColor = Orange,
+                                errorCursorColor = Orange,
+                                errorLabelColor = Orange,
+                                focusedIndicatorColor = Orange,
+                                unfocusedIndicatorColor = Orange,
+                                unfocusedLabelColor = Orange,
+                            ),
+                            onValueChange = {
+                                signInViewModel.onEvent(
+                                    context,
+                                    SignInFormEvent.EmailChanged(it),
+                                    navHostControllerLambda()
                                 )
-                            }
-                        },
-                        label = { Text("Password", color = Color.Black) },
-                        singleLine = true,
-                        visualTransformation = if (signInViewModel.passwordVisibility.value) VisualTransformation.None
-                        else PasswordVisualTransformation(),
-                        modifier = Modifier
-                            .fillMaxWidth(0.8f)
-                    )
-                    if (state.passwordError != null) {
+                            },
+                            label = { Text("Email Address", color = Color.Black) },
+                            singleLine = true,
+                            modifier = Modifier
+                                .fillMaxWidth(0.8f)
+                        )
+                        if (state.emailError != null) {
+                            Text(
+                                text = state.emailError,
+                                color = Color.Red,
+                                fontSize = 16.sp,
+                                modifier = Modifier.align(Alignment.End)
+                            )
+                        }
+                        Spacer(modifier = Modifier.padding(top = 8.dp))
+                        TextField(
+                            value = state.password,
+                            shape = RoundedCornerShape(50),
+                            colors = TextFieldDefaults.textFieldColors(
+                                textColor = Color.Black,
+                                backgroundColor = Color.Transparent,
+                                placeholderColor = Color.White,
+                                errorTrailingIconColor = Orange,
+                                cursorColor = Orange,
+                                focusedLabelColor = Orange,
+                                errorCursorColor = Orange,
+                                errorLabelColor = Orange,
+                                focusedIndicatorColor = Orange,
+                                unfocusedIndicatorColor = Orange,
+                                unfocusedLabelColor = Orange,
+                            ),
+                            onValueChange = {
+                                signInViewModel.onEvent(
+                                    context,
+                                    SignInFormEvent.PasswordChanged(it),
+                                    navHostControllerLambda()
+                                )
+                            },
+                            trailingIcon = {
+                                val image = if (signInViewModel.passwordVisibility.value) {
+                                    Icons.Filled.Visibility
+                                } else {
+                                    Icons.Filled.VisibilityOff
+                                }
+
+                                IconButton(onClick = {
+                                    signInViewModel.passwordVisibility.value =
+                                        !signInViewModel.passwordVisibility.value
+                                }) {
+                                    Icon(
+                                        imageVector = image,
+                                        contentDescription = "",
+                                    )
+                                }
+                            },
+                            label = { Text("Password", color = Color.Black) },
+                            singleLine = true,
+                            visualTransformation = if (signInViewModel.passwordVisibility.value) VisualTransformation.None
+                            else PasswordVisualTransformation(),
+                            modifier = Modifier
+                                .fillMaxWidth(0.8f)
+                        )
+                        if (state.passwordError != null) {
+                            Text(
+                                text = state.passwordError,
+                                color = Color.Red,
+                                fontSize = 16.sp,
+                                modifier = Modifier.align(Alignment.End)
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.padding(10.dp))
+                        OutlinedButton(
+                            onClick = {
+                                signInViewModel.onEvent(
+                                    context,
+                                    SignInFormEvent.Login,
+                                    navHostControllerLambda()
+                                )
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth(0.8f)
+                                .height(50.dp),
+
+                            shape = RoundedCornerShape(50),
+                            colors = ButtonDefaults.buttonColors(
+                                backgroundColor = DarkYellow,
+                                contentColor = Color.White
+                            ),
+
+                            ) {
+                            Text(text = "Sign In", fontSize = 22.sp, color = Color.Black)
+                        }
+
+                        Spacer(modifier = Modifier.padding(15.dp))
                         Text(
-                            text = state.passwordError,
-                            color = Color.Red,
-                            fontSize = 16.sp,
-                            modifier = Modifier.align(Alignment.End)
+                            text = "Create An Account",
+                            color = DarkYellow,
+                            modifier = Modifier.clickable(onClick = {
+                                signInViewModel.navigate(
+                                    navHostController = navHostControllerLambda(),
+                                    route = Screen.SignUpScreen.route
+                                )
+                            }),
+                            style = TextStyle(fontSize = 20.sp),
+                        )
+                        Spacer(modifier = Modifier.padding(10.dp))
+                        Text(
+                            text = "Forgot Password?",
+                            color = DarkYellow,
+                            modifier = Modifier.clickable(onClick = {
+                                signInViewModel.navigate(
+                                    navHostController = navHostControllerLambda(),
+                                    route = Screen.ForgotPassword.route
+                                )
+                            }),
+                            style = TextStyle(fontSize = 20.sp),
                         )
                     }
-
-                    Spacer(modifier = Modifier.padding(10.dp))
-                    OutlinedButton(
-                        onClick = {
-                            signInViewModel.onEvent(
-                                context,
-                                SignInFormEvent.Login,
-                                navHostControllerLambda()
-                            )
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth(0.8f)
-                            .height(50.dp),
-
-                        shape = RoundedCornerShape(50),
-                        colors = ButtonDefaults.buttonColors(
-                            backgroundColor = DarkYellow,
-                            contentColor = Color.White
-                        ),
-
-                        ) {
-                        Text(text = "Sign In", fontSize = 22.sp, color = Color.Black)
-                    }
-
-                    Spacer(modifier = Modifier.padding(15.dp))
-                    Text(
-                        text = "Create An Account",
-                        color = DarkYellow,
-                        modifier = Modifier.clickable(onClick = {
-                            signInViewModel.navigate(
-                                navHostController = navHostControllerLambda(),
-                                route = Screen.SignUpScreen.route
-                            )
-                        }),
-                        style = TextStyle(fontSize = 20.sp),
-                    )
-                    Spacer(modifier = Modifier.padding(10.dp))
-                    Text(
-                        text = "Forgot Password?",
-                        color = DarkYellow,
-                        modifier = Modifier.clickable(onClick = {
-                            signInViewModel.navigate(
-                                navHostController = navHostControllerLambda(),
-                                route = Screen.ForgotPassword.route
-                            )
-                        }),
-                        style = TextStyle(fontSize = 20.sp),
-                    )
                 }
             }
         }

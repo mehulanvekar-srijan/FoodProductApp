@@ -63,6 +63,10 @@ class HomeScreenViewModel : ViewModel() {
         navHostController.navigate(Screen.ProductCart.route)
     }
 
+    fun navigateToProductDetailsPage(navHostController: NavHostController){
+        navHostController.navigate(Screen.ProductDetailsScreen.route)
+    }
+
     fun addProductToCart(item: Product,context: Context){
         viewModelScope.launch(Dispatchers.IO){
             DatabaseRepository(context).addProduct(item)

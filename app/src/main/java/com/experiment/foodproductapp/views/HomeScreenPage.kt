@@ -116,7 +116,9 @@ fun HomeScreenPage(
                         bottomEnd = 3.dp,
                     ),
                     onClick = {
-                        homeScreenViewModel.addProductToCart(item,context)
+                        //homeScreenViewModel.addProductToCart(item,context)
+                        homeScreenViewModel.navigateToProductDetailsPage(navHostController = navHostControllerLambda())
+
                     },
                 ) {
                     Row {
@@ -276,3 +278,4 @@ fun BrandLogo(
 //    val count = remember{ mutableStateOf(0) }
 //    SideEffect { Log.d("testRecomp", "BrandLogo: ${count.value++}") }
 }
+

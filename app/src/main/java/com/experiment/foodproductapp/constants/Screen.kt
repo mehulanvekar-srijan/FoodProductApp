@@ -5,6 +5,9 @@ sealed class Screen(val route:String){
     object SignUpScreen : Screen("SignUpScreen")
     object SignInScreen : Screen("SignInScreen")
     object ForgotPassword : Screen("ForgotPassword")
+
+    object ProductDetailsScreen : Screen("ProductDetailsScreen")
+
     object UserDetails : Screen("UserDetails/{email}"){
         fun routeWithDate(data: String) = "UserDetails/$data"
     }

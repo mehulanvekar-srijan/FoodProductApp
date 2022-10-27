@@ -53,6 +53,9 @@ class MainActivity : ComponentActivity() {
                     composable(route = Screen.ProductCart.route) {
                         ProductCart()
                     }
+                    composable(route = Screen.ProductDetailsScreen.route) {
+                        ProductDetailsPage()
+                    }
                 }
             }
         }
