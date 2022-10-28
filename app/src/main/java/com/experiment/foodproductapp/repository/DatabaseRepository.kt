@@ -23,5 +23,7 @@ class DatabaseRepository(context: Context) {
 
     fun addProduct(product: Product) = productDao.insertProduct(product)
 
+    fun removeProduct(id: Int) = productDao.deleteProduct(id)
+
     fun readAllProducts() = productDao.readAllProducts()
 }

@@ -4,16 +4,16 @@ import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.experiment.foodproductapp.R
 
 val titleFontFamily = FontFamily(
-    Font(R.font.playfairdisplay_semibold, FontWeight.SemiBold),
-    Font(R.font.playfairdisplay_bold, FontWeight.Bold),
+    Font(R.font.latinotype_corpsansrdalt_boldcnd),
 )
 val descriptionFontFamily = FontFamily(
-    Font(R.font.lustria_regular, FontWeight.Light),
+    Font(R.font.istok_regular, FontWeight.Light),
 )
 
 // Set of Material typography styles to start with

@@ -11,7 +11,7 @@ interface ProductDao {
     fun insertProduct(product: Product)
 
     @Query("SELECT * FROM Product")
-    fun readAllProducts() : List<Product>
+    fun readAllProducts() : MutableList<Product>
 
     @Query("DELETE FROM Product WHERE id = :id")
     fun deleteProduct(id: Int)

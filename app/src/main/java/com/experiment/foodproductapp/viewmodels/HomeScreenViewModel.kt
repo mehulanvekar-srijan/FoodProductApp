@@ -1,6 +1,7 @@
 package com.experiment.foodproductapp.viewmodels
 
 import android.content.Context
+import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionContext
 import androidx.compose.runtime.mutableStateOf
@@ -16,6 +17,7 @@ import com.experiment.foodproductapp.views.HomeScreenPage
 import com.experiment.foodproductapp.views.SignInPage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class HomeScreenViewModel : ViewModel() {
 
@@ -69,7 +71,17 @@ class HomeScreenViewModel : ViewModel() {
 
     fun addProductToCart(item: Product,context: Context){
         viewModelScope.launch(Dispatchers.IO){
-            DatabaseRepository(context).addProduct(item)
+            try{
+                DatabaseRepository(context).addProduct(item)
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(context,"Item added to cart",Toast.LENGTH_SHORT).show()
+                }
+            }
+            catch (e: android.database.sqlite.SQLiteConstraintException){
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(context,"Item already in the cart",Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 }

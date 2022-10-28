@@ -51,7 +51,7 @@ class MainActivity : ComponentActivity() {
                     }
 
                     composable(route = Screen.ProductCart.route) {
-                        ProductCart()
+                        ProductCart(navHostControllerLambda)
                     }
                     composable(route = Screen.ProductDetailsScreen.route) {
                         ProductDetailsPage()

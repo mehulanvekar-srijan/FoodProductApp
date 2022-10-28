@@ -1,14 +1,18 @@
 package com.experiment.foodproductapp.views
 
+import android.widget.Toast
 import androidx.compose.animation.*
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.ManageAccounts
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.outlined.Favorite
@@ -17,6 +21,8 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
@@ -26,17 +32,17 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberImagePainter
 import com.experiment.foodproductapp.R
 import com.experiment.foodproductapp.repository.DatabaseRepository
-import com.experiment.foodproductapp.ui.theme.ChangeBarColors
-import com.experiment.foodproductapp.ui.theme.Orange
-import com.experiment.foodproductapp.ui.theme.descriptionFontFamily
-import com.experiment.foodproductapp.ui.theme.titleFontFamily
+import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.viewmodels.HomeScreenViewModel
 import kotlinx.coroutines.launch
 import kotlin.math.min
@@ -49,6 +55,7 @@ fun HomeScreenPage(
     navHostControllerLambda: () -> NavHostController,
     homeScreenViewModel: HomeScreenViewModel = viewModel(),
 ) {
+
     LaunchedEffect(key1 = Unit){ homeScreenViewModel.setEmail(email) }
 
     ChangeBarColors(navigationBarColor = Color.White)
@@ -60,24 +67,24 @@ fun HomeScreenPage(
 
     val animatedAppBarBackgroundColor = animateColorAsState(
         targetValue = if((listState.firstVisibleItemScrollOffset >= (brandLogoSize.value/2)) || (listState.firstVisibleItemIndex > 0)) Orange
-                        else Color.Transparent,
+        else Color.Transparent,
         animationSpec = tween(1),
     )
     val animatedAppBarContentColor = animateColorAsState(
         targetValue = if((listState.firstVisibleItemScrollOffset >= (brandLogoSize.value/2)) || (listState.firstVisibleItemIndex > 0)) Color.White
-                        else Color.Transparent,
+        else Color.Transparent,
         animationSpec = tween(1),
     )
 
     val animatedAppBarBrandIconColor = animateColorAsState(
         targetValue = if((listState.firstVisibleItemScrollOffset >= (brandLogoSize.value/2)) || (listState.firstVisibleItemIndex > 0)) Color.Unspecified
-                        else Color.Transparent,
+        else Color.Transparent,
         animationSpec = tween(1),
     )
 
     val animatedAppBarElevation = animateDpAsState(
         targetValue = if((listState.firstVisibleItemScrollOffset >= (brandLogoSize.value/2)) || (listState.firstVisibleItemIndex > 0)) 3.dp
-                        else 0.dp,
+        else 0.dp,
         animationSpec = tween(1),
     )
 
@@ -104,82 +111,123 @@ fun HomeScreenPage(
             //Products
             items(items = homeScreenViewModel.productsList) { item ->
 
-                Card(
+                Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(180.dp),
-                    elevation = 5.dp,
-                    shape = RoundedCornerShape(
-                        bottomStart = 40.dp,
-                        topStart = 3.dp,
-                        topEnd = 3.dp,
-                        bottomEnd = 3.dp,
-                    ),
-                    onClick = {
-                        //homeScreenViewModel.addProductToCart(item,context)
-                        homeScreenViewModel.navigateToProductDetailsPage(navHostController = navHostControllerLambda())
+                ){
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(180.dp),
+                        elevation = 5.dp,
+                        shape = RoundedCornerShape(
+                            bottomStart = 40.dp,
+                            topStart = 3.dp,
+                            topEnd = 3.dp,
+                            bottomEnd = 3.dp,
+                        ),
+                        onClick = {
+                        },
+                    ) {
+                        Row {
+                            val liked = rememberSaveable { mutableStateOf(false) }
 
-                    },
-                ) {
-                    Row {
-                        val liked = rememberSaveable { mutableStateOf(false) }
+                            //Product Image
+                            Box {
+                                Image(
+                                    painter = rememberImagePainter(item.url),
+                                    contentDescription = "",
+                                    contentScale = ContentScale.Fit,
+                                    alignment = Alignment.CenterStart,
+                                    modifier = Modifier.padding(8.dp),
+                                )
+//                                IconButton(onClick = { liked.value = !liked.value }) {
+//                                    if (liked.value){
+//                                        Icon(
+//                                            imageVector = Icons.Outlined.Favorite,
+//                                            contentDescription = "",
+//                                            tint = Color.Red
+//                                        )
+//                                    }
+//                                    else{
+//                                        Icon(
+//                                            imageVector = Icons.Outlined.FavoriteBorder,
+//                                            contentDescription = "",
+//                                        )
+//                                    }
+//                                }
+                            }
 
-                        //Product Image
-                        Box {
-                            Image(
-                                painter = rememberImagePainter(item.url),
-                                contentDescription = "",
-                                contentScale = ContentScale.Fit,
-                                alignment = Alignment.CenterStart,
-                                modifier = Modifier.padding(8.dp),
-                            )
-                            IconButton(onClick = { liked.value = !liked.value }) {
-                                if (liked.value){
-                                    Icon(
-                                        imageVector = Icons.Outlined.Favorite,
-                                        contentDescription = "",
-                                        tint = Color.Red
-                                    )
-                                }
-                                else{
-                                    Icon(
-                                        imageVector = Icons.Outlined.FavoriteBorder,
-                                        contentDescription = "",
-                                    )
-                                }
+                            Column(
+                                modifier = Modifier.fillMaxSize(),
+                                verticalArrangement = Arrangement.SpaceEvenly,
+                            ){
+                                Text( // Title
+                                    textAlign = TextAlign.Start,
+                                    overflow = TextOverflow.Ellipsis,
+                                    text = item.title,
+                                    fontFamily = titleFontFamily,
+                                    fontSize = 24.sp,
+                                    color = DarkGray
+                                )
+                                Text( // Description
+                                    textAlign = TextAlign.Start,
+                                    overflow = TextOverflow.Ellipsis,
+                                    text = item.description,
+                                    maxLines = 2,
+                                    fontFamily = descriptionFontFamily,
+                                    color = LightDarkGray
+                                )
+
+                                Text( // Price
+                                    textAlign = TextAlign.Center,
+                                    overflow = TextOverflow.Ellipsis,
+                                    text = "MRP:Rs ${item.price}",
+                                    fontFamily = descriptionFontFamily,
+                                    color = LightDarkGray,
+                                )
+
                             }
                         }
+                    }
 
-                        Column(
-                            modifier = Modifier.fillMaxSize(),
-                            verticalArrangement = Arrangement.SpaceEvenly,
+                    Box( //left Middle Add Icon
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(end = 10.dp)
+                            .offset(x = -12.dp,y = 70.dp),
+                    ) {
+                        Surface(
+                            elevation = 3.dp,
+                            color = Color.Transparent
                         ){
-                            Text( // Title
-                                textAlign = TextAlign.Start,
-                                style = MaterialTheme.typography.h5,
-                                overflow = TextOverflow.Ellipsis,
-                                text = item.title,
-                                fontFamily = titleFontFamily,
-                                fontWeight = FontWeight.SemiBold
-                            )
-                            Text( // Description
-                                textAlign = TextAlign.Start,
-                                color = Color.Black,
-                                overflow = TextOverflow.Ellipsis,
-                                text = item.description,
-                                maxLines = 2,
-                                fontFamily = descriptionFontFamily,
-                            )
-                            Text( // Price
-                                textAlign = TextAlign.Center,
-                                color = Color.Black,
-                                overflow = TextOverflow.Ellipsis,
-                                text = "MRP:Rs ${item.price}",
-                                fontFamily = descriptionFontFamily,
-                            )
+                            IconButton(
+                                onClick = {
+                                    homeScreenViewModel.addProductToCart(item,context)
+                                },
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(15))
+                                    .background(
+                                        Brush.verticalGradient(
+                                            listOf(
+                                                LightPink, DarkPink
+                                            )
+                                        )
+                                    )
+                                    .size(width = 30.dp, height = 30.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Add,
+                                    contentDescription = "",
+                                    tint = Color.White,
+                                )
+                            }
                         }
                     }
+
                 }
+
             }
 
             //Space
@@ -279,3 +327,13 @@ fun BrandLogo(
 //    SideEffect { Log.d("testRecomp", "BrandLogo: ${count.value++}") }
 }
 
+
+@Preview(showBackground = true)
+@Composable
+fun Prev() {
+    val navHostController = rememberNavController()
+
+    FoodProductAppTheme {
+        HomeScreenPage(email = "meh@ul.com", navHostControllerLambda = { navHostController })
+    }
+}
