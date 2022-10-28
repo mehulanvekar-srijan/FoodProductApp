@@ -34,15 +34,28 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.experiment.foodproductapp.R
 import com.experiment.foodproductapp.domain.event.SignupFormEvent
 import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.viewmodels.SignUpViewModel
 import java.util.*
+
+@Preview
+@Composable
+fun preview1(){
+    val navHostController = rememberNavController()
+    val navHostControllerLambda: () -> NavHostController = {
+
+        navHostController
+    }
+    SignupPage(navHostControllerLambda =navHostControllerLambda)
+}
 
 @Composable
 fun SignupPage(
@@ -148,20 +161,20 @@ fun SignupPage(
                             value = state.firstName,
                             colors = TextFieldDefaults.textFieldColors(
                                 textColor = Color.Black,
-                                backgroundColor = Color.Transparent,
+                                backgroundColor = LightGray1,
                                 placeholderColor = Color.White,
-                                errorTrailingIconColor = Orange,
-                                cursorColor = Orange,
-                                focusedLabelColor = Orange,
-                                errorCursorColor = Orange,
-                                errorLabelColor = Orange,
-                                focusedIndicatorColor = Orange,
-                                unfocusedIndicatorColor = Orange,
+                                cursorColor = Color.Black,
+                                focusedLabelColor = Color.Black,
+                                errorCursorColor = Color.Black,
+                                errorLabelColor = Color.Red,
+                                focusedIndicatorColor = Color.Transparent,
+                                unfocusedIndicatorColor = Color.Transparent,
                                 unfocusedLabelColor = Orange,
                             ),
                             onValueChange = {
                                 signUpViewModel.onEvent(SignupFormEvent.FirstNameChanged(it))
                             },
+                            shape= RoundedCornerShape(30.dp),
                             isError = state.firstNameError != null,
                             label = { Text(text = "First Name", color = Color.Black) }
                         )
@@ -181,20 +194,20 @@ fun SignupPage(
                             value = state.lastName,
                             colors = TextFieldDefaults.textFieldColors(
                                 textColor = Color.Black,
-                                backgroundColor = Color.Transparent,
+                                backgroundColor = LightGray1,
                                 placeholderColor = Color.White,
-                                errorTrailingIconColor = Orange,
-                                cursorColor = Orange,
-                                focusedLabelColor = Orange,
-                                errorCursorColor = Orange,
-                                errorLabelColor = Orange,
-                                focusedIndicatorColor = Orange,
-                                unfocusedIndicatorColor = Orange,
+                                cursorColor = Color.Black,
+                                focusedLabelColor = Color.Black,
+                                errorCursorColor = Color.Black,
+                                errorLabelColor = Color.Red,
+                                focusedIndicatorColor = Color.Transparent,
+                                unfocusedIndicatorColor = Color.Transparent,
                                 unfocusedLabelColor = Orange,
                             ),
                             onValueChange = {
                                 signUpViewModel.onEvent(SignupFormEvent.LastNameChanged(it))
                             },
+                            shape= RoundedCornerShape(30.dp),
                             isError = state.lastNameError != null,
                             label = { Text(text = "Last Name", color = Color.Black) })
                         if (state.lastNameError != null) {
@@ -214,6 +227,7 @@ fun SignupPage(
                             readOnly = true,
                             modifier = Modifier.fillMaxWidth(),
                             value = state.date,
+                            shape= RoundedCornerShape(30.dp),
                             isError = state.dateError != null,
                             onValueChange = {
                                 signUpViewModel.onEvent(
@@ -225,15 +239,14 @@ fun SignupPage(
                             label = { Text(text = "Date of Birth", color = Color.Black) },
                             colors = TextFieldDefaults.textFieldColors(
                                 textColor = Color.Black,
-                                backgroundColor = Color.Transparent,
+                                backgroundColor = LightGray1,
                                 placeholderColor = Color.White,
-                                errorTrailingIconColor = Orange,
-                                cursorColor = Orange,
-                                focusedLabelColor = Orange,
-                                errorCursorColor = Orange,
-                                errorLabelColor = Orange,
-                                focusedIndicatorColor = Orange,
-                                unfocusedIndicatorColor = Orange,
+                                cursorColor = Color.Black,
+                                focusedLabelColor = Color.Black,
+                                errorCursorColor = Color.Black,
+                                errorLabelColor = Color.Red,
+                                focusedIndicatorColor = Color.Transparent,
+                                unfocusedIndicatorColor = Color.Transparent,
                                 unfocusedLabelColor = Orange,
                             ),
                             leadingIcon = {
@@ -260,17 +273,17 @@ fun SignupPage(
                         TextField(
                             modifier = Modifier.fillMaxWidth(),
                             value = state.phoneNumber,
+                            shape= RoundedCornerShape(30.dp),
                             colors = TextFieldDefaults.textFieldColors(
                                 textColor = Color.Black,
-                                backgroundColor = Color.Transparent,
+                                backgroundColor = LightGray1,
                                 placeholderColor = Color.White,
-                                errorTrailingIconColor = Orange,
-                                cursorColor = Orange,
-                                focusedLabelColor = Orange,
-                                errorCursorColor = Orange,
-                                errorLabelColor = Orange,
-                                focusedIndicatorColor = Orange,
-                                unfocusedIndicatorColor = Orange,
+                                cursorColor = Color.Black,
+                                focusedLabelColor = Color.Black,
+                                errorCursorColor = Color.Black,
+                                errorLabelColor = Color.Red,
+                                focusedIndicatorColor = Color.Transparent,
+                                unfocusedIndicatorColor = Color.Transparent,
                                 unfocusedLabelColor = Orange,
                             ),
                             isError = state.phoneNumberError != null,
@@ -295,17 +308,17 @@ fun SignupPage(
                         TextField(
                             modifier = Modifier.fillMaxWidth(),
                             value = state.email,
+                            shape= RoundedCornerShape(30.dp),
                             colors = TextFieldDefaults.textFieldColors(
                                 textColor = Color.Black,
-                                backgroundColor = Color.Transparent,
+                                backgroundColor = LightGray1,
                                 placeholderColor = Color.White,
-                                errorTrailingIconColor = Orange,
-                                cursorColor = Orange,
-                                focusedLabelColor = Orange,
-                                errorCursorColor = Orange,
-                                errorLabelColor = Orange,
-                                focusedIndicatorColor = Orange,
-                                unfocusedIndicatorColor = Orange,
+                                cursorColor = Color.Black,
+                                focusedLabelColor = Color.Black,
+                                errorCursorColor = Color.Black,
+                                errorLabelColor = Color.Red,
+                                focusedIndicatorColor = Color.Transparent,
+                                unfocusedIndicatorColor = Color.Transparent,
                                 unfocusedLabelColor = Orange,
                             ),
                             isError = state.emailError != null,
@@ -329,22 +342,21 @@ fun SignupPage(
                         TextField(
                             modifier = Modifier.fillMaxWidth(),
                             value = state.password,
-                            shape = RoundedCornerShape(20.dp),
+                            shape= RoundedCornerShape(30.dp),
                             onValueChange = {
                                 signUpViewModel.onEvent(SignupFormEvent.PasswordChanged(it))
                             },
                             label = { Text(text = "Enter password", color = Color.Black) },
                             colors = TextFieldDefaults.textFieldColors(
                                 textColor = Color.Black,
-                                backgroundColor = Color.Transparent,
+                                backgroundColor = LightGray1,
                                 placeholderColor = Color.White,
-                                errorTrailingIconColor = Orange,
-                                cursorColor = Orange,
-                                focusedLabelColor = Orange,
-                                errorCursorColor = Orange,
-                                errorLabelColor = Orange,
-                                focusedIndicatorColor = Orange,
-                                unfocusedIndicatorColor = Orange,
+                                cursorColor = Color.Black,
+                                focusedLabelColor = Color.Black,
+                                errorCursorColor = Color.Black,
+                                errorLabelColor = Color.Red,
+                                focusedIndicatorColor = Color.Transparent,
+                                unfocusedIndicatorColor = Color.Transparent,
                                 unfocusedLabelColor = Orange,
                             ),
                             visualTransformation = if (signUpViewModel.passwordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
@@ -375,7 +387,7 @@ fun SignupPage(
                         TextField(
                             modifier = Modifier.fillMaxWidth(),
                             value = state.repeatedPassword,
-                            shape = RoundedCornerShape(20.dp),
+                            shape= RoundedCornerShape(30.dp),
                             onValueChange = {
                                 signUpViewModel.onEvent(
                                     SignupFormEvent.ConfirmPasswordChanged(
@@ -386,15 +398,14 @@ fun SignupPage(
                             label = { Text(text = "Confirm password", color = Color.Black) },
                             colors = TextFieldDefaults.textFieldColors(
                                 textColor = Color.Black,
-                                backgroundColor = Color.Transparent,
+                                backgroundColor = LightGray1,
                                 placeholderColor = Color.White,
-                                errorTrailingIconColor = Orange,
-                                cursorColor = Orange,
-                                focusedLabelColor = Orange,
-                                errorCursorColor = Orange,
-                                errorLabelColor = Orange,
-                                focusedIndicatorColor = Orange,
-                                unfocusedIndicatorColor = Orange,
+                                cursorColor = Color.Black,
+                                focusedLabelColor = Color.Black,
+                                errorCursorColor = Color.Black,
+                                errorLabelColor = Color.Red,
+                                focusedIndicatorColor = Color.Transparent,
+                                unfocusedIndicatorColor = Color.Transparent,
                                 unfocusedLabelColor = Orange,
                             ),
                             visualTransformation = if (signUpViewModel.confirmPasswordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),

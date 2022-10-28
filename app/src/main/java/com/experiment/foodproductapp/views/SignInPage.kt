@@ -45,6 +45,7 @@ import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.domain.event.SignInFormEvent
 import com.experiment.foodproductapp.ui.theme.ChangeBarColors
 import com.experiment.foodproductapp.ui.theme.DarkYellow
+import com.experiment.foodproductapp.ui.theme.LightGray1
 import com.experiment.foodproductapp.ui.theme.Orange
 import com.experiment.foodproductapp.viewmodels.SignInViewModel
 //
@@ -117,18 +118,17 @@ fun SignInPage(
                         TextField(
 
                             value = state.email,
-                            shape = RoundedCornerShape(50),
+                            shape= RoundedCornerShape(30.dp),
                             colors = TextFieldDefaults.textFieldColors(
                                 textColor = Color.Black,
-                                backgroundColor = Color.Transparent,
+                                backgroundColor = LightGray1,
                                 placeholderColor = Color.White,
-                                errorTrailingIconColor = Orange,
-                                cursorColor = Orange,
-                                focusedLabelColor = Orange,
-                                errorCursorColor = Orange,
-                                errorLabelColor = Orange,
-                                focusedIndicatorColor = Orange,
-                                unfocusedIndicatorColor = Orange,
+                                cursorColor = Color.Black,
+                                focusedLabelColor = Color.Black,
+                                errorCursorColor = Color.Black,
+                                errorLabelColor = Color.Red,
+                                focusedIndicatorColor = Color.Transparent,
+                                unfocusedIndicatorColor = Color.Transparent,
                                 unfocusedLabelColor = Orange,
                             ),
                             onValueChange = {
@@ -154,18 +154,17 @@ fun SignInPage(
                         Spacer(modifier = Modifier.padding(top = 8.dp))
                         TextField(
                             value = state.password,
-                            shape = RoundedCornerShape(50),
+                            shape= RoundedCornerShape(30.dp),
                             colors = TextFieldDefaults.textFieldColors(
                                 textColor = Color.Black,
-                                backgroundColor = Color.Transparent,
+                                backgroundColor = LightGray1,
                                 placeholderColor = Color.White,
-                                errorTrailingIconColor = Orange,
-                                cursorColor = Orange,
-                                focusedLabelColor = Orange,
-                                errorCursorColor = Orange,
-                                errorLabelColor = Orange,
-                                focusedIndicatorColor = Orange,
-                                unfocusedIndicatorColor = Orange,
+                                cursorColor = Color.Black,
+                                focusedLabelColor = Color.Black,
+                                errorCursorColor = Color.Black,
+                                errorLabelColor = Color.Red,
+                                focusedIndicatorColor = Color.Transparent,
+                                unfocusedIndicatorColor = Color.Transparent,
                                 unfocusedLabelColor = Orange,
                             ),
                             onValueChange = {

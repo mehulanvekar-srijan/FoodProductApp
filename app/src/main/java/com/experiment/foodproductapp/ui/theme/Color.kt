@@ -9,7 +9,7 @@ val Teal200 = Color(0xFF03DAC5)
 val DarkYellow = Color(0xFFFDB515)
 val Orange = Color(0xFFF9990E)
 val DarkGray = Color(0xFF494848)
-val LightGray = Color(0xFFA3A2A2)
+val LightGray1 = Color(0xFFF7F4F4)
 
 val Translucent = Color(0x2D000000)
 val Transparent = Color(0x7000000)
