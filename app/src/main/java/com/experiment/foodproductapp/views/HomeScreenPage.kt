@@ -1,3 +1,4 @@
+
 package com.experiment.foodproductapp.views
 
 import android.widget.Toast
@@ -192,6 +193,37 @@ fun HomeScreenPage(
                         }
                     }
 
+//                    Box( //Original Pos Add Icon
+//                        modifier = Modifier
+//                            .fillMaxSize()
+//                            .padding(end = 10.dp)
+//                            .offset(y = 11.dp),
+//                        contentAlignment = Alignment.BottomEnd,
+//                    ) {
+//                        IconButton(
+//                            onClick = {
+//                                homeScreenViewModel.addProductToCart(item,context)
+//                            },
+//                            modifier = Modifier
+//                                .clip(RoundedCornerShape(50))
+//                                .size(width = 25.dp, height = 25.dp)
+//                                .background(
+//                                    Brush.verticalGradient(
+//                                        listOf(
+//                                            Color(0xFFd7156f), Color(0xFFb82065)
+//                                        )
+//                                    )
+//                                ),
+//                        ) {
+//                            Icon(
+////                                imageVector = Icons.Default.Add,
+//                                imageVector = Icons.Default.Add,
+//                                contentDescription = "",
+//                                tint = Color.White,
+//                            )
+//                        }
+//                    }
+
                     Box( //left Middle Add Icon
                         modifier = Modifier
                             .fillMaxSize()
@@ -211,7 +243,7 @@ fun HomeScreenPage(
                                     .background(
                                         Brush.verticalGradient(
                                             listOf(
-                                                LightPink, DarkPink
+                                                DarkPink, LightPink
                                             )
                                         )
                                     )

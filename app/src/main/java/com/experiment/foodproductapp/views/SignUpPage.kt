@@ -136,7 +136,7 @@ fun SignupPage(
                     .fillMaxSize()
                     .clip(RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp))
                     .background(Color.White)
-                    .padding(top = 10.dp, start = 25.dp, end = 25.dp, bottom = 10.dp)
+                    .padding(top = 10.dp, start = 28.dp, end = 28.dp, bottom = 10.dp)
                     ,
             ) {
                 Text(

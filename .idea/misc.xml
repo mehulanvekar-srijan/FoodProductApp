@@ -12,31 +12,26 @@
         <entry key="../../../../layout/compose-model-1666301122030.xml" value="0.25" />
         <entry key="../../../../layout/compose-model-1666640415281.xml" value="0.25" />
         <entry key="../../../../layout/compose-model-1666640737933.xml" value="0.24351851851851852" />
-        <entry key="../../../../layout/compose-model-1666643745753.xml" value="0.25" />
-        <entry key="../../../../layout/compose-model-1666816080043.xml" value="0.55" />
-        <entry key="../../../../layout/compose-model-1666816309073.xml" value="0.165" />
-        <entry key="../../../../layout/compose-model-1666816512396.xml" value="0.1" />
-        <entry key="../../../../layout/compose-model-1666816733956.xml" value="0.2074074074074074" />
-        <entry key="../../../../layout/compose-model-1666816762278.xml" value="0.2074074074074074" />
-        <entry key="../../../../layout/compose-model-1666817089021.xml" value="0.165" />
-        <entry key="../../../../layout/compose-model-1666817630461.xml" value="0.2074074074074074" />
-        <entry key="../../../../layout/compose-model-1666820567095.xml" value="0.2074074074074074" />
-        <entry key="../../../../layout/compose-model-1666848502546.xml" value="0.20277777777777778" />
-        <entry key="../../../../layout/compose-model-1666949936985.xml" value="0.21621621621621623" />
-        <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.112" />
-        <entry key="app/src/main/res/drawable/background_home_view.xml" value="0.112" />
+        <entry key="../../../../layout/compose-model-1666695548613.xml" value="0.25" />
+        <entry key="../../../../layout/compose-model-1666717293474.xml" value="0.16849662162162163" />
+        <entry key="../../../../layout/compose-model-1666943218105.xml" value="0.25" />
+        <entry key="../../../../layout/compose-model-1666959683085.xml" value="0.25" />
+        <entry key="../../../../layout/compose-model-1666972443861.xml" value="0.25" />
+        <entry key="app/src/main/res/drawable/background_yellow_wave.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_beer.xml" value="0.1285" />
         <entry key="app/src/main/res/drawable/ic_beer_bucket.xml" value="0.1205" />
         <entry key="app/src/main/res/drawable/ic_beer_cheers.xml" value="0.1205" />
+        <entry key="app/src/main/res/drawable/ic_beer_drops.xml" value="0.1505" />
         <entry key="app/src/main/res/drawable/ic_beer_glass.xml" value="0.116" />
         <entry key="app/src/main/res/drawable/ic_beer_glass_bg.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_beer_glass_effects.xml" value="0.1125" />
-        <entry key="app/src/main/res/drawable/ic_beer_right_glass.xml" value="0.112" />
+        <entry key="app/src/main/res/drawable/ic_beer_right_glass.xml" value="0.1505" />
+        <entry key="app/src/main/res/drawable/ic_beer_spark.xml" value="0.1505" />
         <entry key="app/src/main/res/drawable/ic_beer_tap.xml" value="0.125" />
         <entry key="app/src/main/res/drawable/ic_blob_scene_haikei.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_burger_logo.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_heart_beer.xml" value="0.1285" />
-        <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.112" />
+        <entry key="app/src/main/res/drawable/ic_profile.xml" value="0.1505" />
         <entry key="app/src/main/res/drawable/ic_splash_beer.xml" value="0.1375" />
         <entry key="app/src/main/res/drawable/ic_stars.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_symbol_scatter_haikei.xml" value="0.1125" />
