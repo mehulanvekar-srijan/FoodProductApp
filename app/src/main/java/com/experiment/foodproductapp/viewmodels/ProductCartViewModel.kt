@@ -18,6 +18,9 @@ class ProductCartViewModel : ViewModel() {
     private var _cartList = mutableStateListOf<Product>()
     val cartList = _cartList
 
+//    private val _totalPrice = mutableStateOf(0)
+//    val totalPrice = _totalPrice
+
     fun onDismiss(context: Context,item: Product){
         viewModelScope.launch(Dispatchers.IO){
             removeFromProductList(item)

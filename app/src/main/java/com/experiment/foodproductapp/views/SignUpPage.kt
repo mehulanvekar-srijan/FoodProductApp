@@ -1,14 +1,18 @@
 package com.experiment.foodproductapp.views
 
 import android.app.DatePickerDialog
+import android.util.Log
 import android.widget.DatePicker
 import android.widget.Toast
-import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.relocation.BringIntoViewRequester
+import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -17,20 +21,23 @@ import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.twotone.EditCalendar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -45,6 +52,7 @@ import com.experiment.foodproductapp.R
 import com.experiment.foodproductapp.domain.event.SignupFormEvent
 import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.viewmodels.SignUpViewModel
+import kotlinx.coroutines.launch
 import java.util.*
 
 @Preview
@@ -58,12 +66,20 @@ fun preview1(){
     SignupPage(navHostControllerLambda =navHostControllerLambda)
 }
 
+@OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun SignupPage(
     navHostControllerLambda: () -> NavHostController,
     signUpViewModel: SignUpViewModel = viewModel()
 ) {
     ChangeBarColors(navigationBarColor = Color.White)
+    val focusManager = LocalFocusManager.current
+    val softwareKeyboard = LocalSoftwareKeyboardController.current
+
+    val viewRequesterForConfirmPassword = remember { BringIntoViewRequester() }
+    val viewRequesterForConfirmDatePicker = remember { BringIntoViewRequester() }
+
+    val coroutineScope = rememberCoroutineScope()
 
     val state = signUpViewModel.state
 
@@ -126,7 +142,7 @@ fun SignupPage(
             //Brand Logo
             Image(
                 modifier = Modifier
-                    .fillMaxHeight(0.35F),
+                    .fillMaxHeight(0.30F),
                 painter = painterResource(id = R.drawable.ic_beer_cheers),
                 contentDescription = "brand logo"
             )
@@ -137,7 +153,7 @@ fun SignupPage(
                     .clip(RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp))
                     .background(Color.White)
                     .padding(top = 10.dp, start = 28.dp, end = 28.dp, bottom = 10.dp)
-                    ,
+                ,
             ) {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
@@ -159,7 +175,8 @@ fun SignupPage(
                 ) {
                     item {
                         TextField(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth(),
                             value = state.firstName,
                             colors = TextFieldDefaults.textFieldColors(
                                 textColor = Color.Black,
@@ -178,7 +195,11 @@ fun SignupPage(
                             },
                             shape= RoundedCornerShape(30.dp),
                             isError = state.firstNameError != null,
-                            label = { Text(text = "First Name", color = Color.Black) }
+                            label = { Text(text = "First Name", color = Color.Black) },
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                            keyboardActions = KeyboardActions(
+                                onNext = { focusManager.moveFocus(FocusDirection.Down) },
+                            )
                         )
                         if (state.firstNameError != null) {
                             Text(
@@ -192,7 +213,8 @@ fun SignupPage(
                         Spacer(modifier = Modifier.height(10.dp))
 
                         TextField(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth(),
                             value = state.lastName,
                             colors = TextFieldDefaults.textFieldColors(
                                 textColor = Color.Black,
@@ -211,7 +233,12 @@ fun SignupPage(
                             },
                             shape= RoundedCornerShape(30.dp),
                             isError = state.lastNameError != null,
-                            label = { Text(text = "Last Name", color = Color.Black) })
+                            label = { Text(text = "Last Name", color = Color.Black) },
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                            keyboardActions = KeyboardActions(
+                                onNext = { focusManager.moveFocus(FocusDirection.Down) },
+                            )
+                        )
                         if (state.lastNameError != null) {
                             Text(
                                 text = state.lastNameError,
@@ -222,58 +249,11 @@ fun SignupPage(
                             )
                         }
 
-
                         Spacer(modifier = Modifier.height(10.dp))
 
                         TextField(
-                            readOnly = true,
-                            modifier = Modifier.fillMaxWidth(),
-                            value = state.date,
-                            shape= RoundedCornerShape(30.dp),
-                            isError = state.dateError != null,
-                            onValueChange = {
-                                signUpViewModel.onEvent(
-                                    SignupFormEvent.CalenderChanged(
-                                        it
-                                    )
-                                )
-                            },
-                            label = { Text(text = "Date of Birth", color = Color.Black) },
-                            colors = TextFieldDefaults.textFieldColors(
-                                textColor = Color.Black,
-                                backgroundColor = LightGray1,
-                                placeholderColor = Color.White,
-                                cursorColor = Color.Black,
-                                focusedLabelColor = Color.Black,
-                                errorCursorColor = Color.Black,
-                                errorLabelColor = Color.Red,
-                                focusedIndicatorColor = Color.Transparent,
-                                unfocusedIndicatorColor = Color.Transparent,
-                                unfocusedLabelColor = Orange,
-                            ),
-                            leadingIcon = {
-                                IconButton(onClick = { mDatePickerDialog.show() }) {
-                                    Icon(
-                                        imageVector = Icons.TwoTone.EditCalendar,
-                                        contentDescription = "",
-                                    )
-                                }
-                            },
-                        )
-                        if (state.dateError != null) {
-                            Text(
-                                text = state.dateError,
-                                color = MaterialTheme.colors.error,
-                                fontSize = 14.sp,
-                                modifier = Modifier.fillMaxWidth(),
-                                textAlign = TextAlign.End
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.height(10.dp))
-
-                        TextField(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth(),
                             value = state.phoneNumber,
                             shape= RoundedCornerShape(30.dp),
                             colors = TextFieldDefaults.textFieldColors(
@@ -289,11 +269,18 @@ fun SignupPage(
                                 unfocusedLabelColor = Orange,
                             ),
                             isError = state.phoneNumberError != null,
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Phone,
+                                imeAction = ImeAction.Next
+                            ),
                             onValueChange = {
                                 signUpViewModel.onEvent(SignupFormEvent.PhoneNumberChanged(it))
                             },
-                            label = { Text(text = "Enter Phone Number", color = Color.Black) })
+                            label = { Text(text = "Enter Phone Number", color = Color.Black) },
+                            keyboardActions = KeyboardActions(
+                                onNext = { focusManager.moveFocus(FocusDirection.Down) },
+                            )
+                        )
                         if (state.phoneNumberError != null) {
                             Text(
                                 text = state.phoneNumberError,
@@ -306,9 +293,16 @@ fun SignupPage(
 
                         Spacer(modifier = Modifier.height(10.dp))
 
-
                         TextField(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .onFocusEvent {
+                                    if (it.isFocused) {
+                                        coroutineScope.launch {
+                                            viewRequesterForConfirmPassword.bringIntoView()
+                                        }
+                                    }
+                                },
                             value = state.email,
                             shape= RoundedCornerShape(30.dp),
                             colors = TextFieldDefaults.textFieldColors(
@@ -324,11 +318,19 @@ fun SignupPage(
                                 unfocusedLabelColor = Orange,
                             ),
                             isError = state.emailError != null,
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                            keyboardOptions = KeyboardOptions(
+                                //keyboardType = KeyboardType.Email,
+                                imeAction = ImeAction.Next,
+                            )
+                            ,
                             onValueChange = {
                                 signUpViewModel.onEvent(SignupFormEvent.EmailChanged(it))
                             },
-                            label = { Text(text = "Enter Email", color = Color.Black) })
+                            label = { Text(text = "Enter Email", color = Color.Black) },
+                            keyboardActions = KeyboardActions(
+                                onNext = { focusManager.moveFocus(FocusDirection.Down) },
+                            )
+                        )
                         if (state.emailError != null) {
                             Text(
                                 text = state.emailError,
@@ -342,7 +344,8 @@ fun SignupPage(
                         Spacer(modifier = Modifier.height(10.dp))
 
                         TextField(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth(),
                             value = state.password,
                             shape= RoundedCornerShape(30.dp),
                             onValueChange = {
@@ -362,7 +365,10 @@ fun SignupPage(
                                 unfocusedLabelColor = Orange,
                             ),
                             visualTransformation = if (signUpViewModel.passwordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Password,
+                                imeAction = ImeAction.Next
+                            ),
                             trailingIcon = {
                                 val image = if (signUpViewModel.passwordVisible.value)
                                     Icons.Filled.Visibility
@@ -373,7 +379,11 @@ fun SignupPage(
                                 IconButton(onClick = { signUpViewModel.passwordchange() }) {
                                     Icon(imageVector = image, description)
                                 }
-                            })
+                            },
+                            keyboardActions = KeyboardActions(
+                                onNext = { focusManager.moveFocus(FocusDirection.Down) },
+                            )
+                        )
                         if (state.passwordError != null) {
                             Text(
                                 text = state.passwordError,
@@ -387,7 +397,16 @@ fun SignupPage(
                         Spacer(modifier = Modifier.height(10.dp))
 
                         TextField(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .bringIntoViewRequester(viewRequesterForConfirmPassword)
+                                .onFocusEvent {
+                                    if (it.isFocused) {
+                                        coroutineScope.launch {
+                                            viewRequesterForConfirmDatePicker.bringIntoView()
+                                        }
+                                    }
+                                },
                             value = state.repeatedPassword,
                             shape= RoundedCornerShape(30.dp),
                             onValueChange = {
@@ -411,7 +430,10 @@ fun SignupPage(
                                 unfocusedLabelColor = Orange,
                             ),
                             visualTransformation = if (signUpViewModel.confirmPasswordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Password,
+                                imeAction = ImeAction.Next
+                            ),
                             trailingIcon = {
                                 val image = if (signUpViewModel.confirmPasswordVisible.value)
                                     Icons.Filled.Visibility
@@ -424,7 +446,11 @@ fun SignupPage(
                                 }) {
                                     Icon(imageVector = image, description)
                                 }
-                            })
+                            },
+                            keyboardActions = KeyboardActions(
+                                onNext = { mDatePickerDialog.show() },
+                            )
+                        )
                         if (state.repeatedPasswordError != null) {
                             Text(
                                 text = state.repeatedPasswordError,
@@ -434,8 +460,58 @@ fun SignupPage(
                                 textAlign = TextAlign.End
                             )
                         }
+
+                        Spacer(modifier = Modifier.height(10.dp))
+
+                        TextField(
+                            readOnly = true,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .bringIntoViewRequester(viewRequesterForConfirmDatePicker),
+                            value = state.date,
+                            shape= RoundedCornerShape(30.dp),
+                            isError = state.dateError != null,
+                            onValueChange = {
+                                signUpViewModel.onEvent(
+                                    SignupFormEvent.CalenderChanged(it)
+                                )
+                            },
+                            label = { Text(text = "Date of Birth", color = Color.Black) },
+                            colors = TextFieldDefaults.textFieldColors(
+                                textColor = Color.Black,
+                                backgroundColor = LightGray1,
+                                placeholderColor = Color.White,
+                                cursorColor = Color.Black,
+                                focusedLabelColor = Color.Black,
+                                errorCursorColor = Color.Black,
+                                errorLabelColor = Color.Red,
+                                focusedIndicatorColor = Color.Transparent,
+                                unfocusedIndicatorColor = Color.Transparent,
+                                unfocusedLabelColor = Orange,
+                            ),
+                            leadingIcon = {
+                                IconButton(onClick = {
+                                    mDatePickerDialog.show()
+                                }) {
+                                    Icon(
+                                        imageVector = Icons.TwoTone.EditCalendar,
+                                        contentDescription = "",
+                                    )
+                                }
+                            },
+                        )
+                        if (state.dateError != null) {
+                            Text(
+                                text = state.dateError,
+                                color = MaterialTheme.colors.error,
+                                fontSize = 14.sp,
+                                modifier = Modifier.fillMaxWidth(),
+                                textAlign = TextAlign.End
+                            )
+                        }
                     }
                 }
+
                 Spacer(modifier = Modifier.height(20.dp))
 
                 OutlinedButton(
@@ -462,4 +538,5 @@ fun SignupPage(
         }
     }
 }
+
 

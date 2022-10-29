@@ -98,7 +98,7 @@ fun HomeScreenPage(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(start = 30.dp, end = 5.dp),
+                .padding(end = 5.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(20.dp),
             state = listState,
@@ -120,6 +120,7 @@ fun HomeScreenPage(
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .padding(start = 30.dp)
                             .height(180.dp),
                         elevation = 5.dp,
                         shape = RoundedCornerShape(
@@ -128,11 +129,9 @@ fun HomeScreenPage(
                             topEnd = 3.dp,
                             bottomEnd = 3.dp,
                         ),
-                        onClick = {
-                        },
+                        onClick = {},
                     ) {
                         Row {
-                            val liked = rememberSaveable { mutableStateOf(false) }
 
                             //Product Image
                             Box {
@@ -143,21 +142,6 @@ fun HomeScreenPage(
                                     alignment = Alignment.CenterStart,
                                     modifier = Modifier.padding(8.dp),
                                 )
-//                                IconButton(onClick = { liked.value = !liked.value }) {
-//                                    if (liked.value){
-//                                        Icon(
-//                                            imageVector = Icons.Outlined.Favorite,
-//                                            contentDescription = "",
-//                                            tint = Color.Red
-//                                        )
-//                                    }
-//                                    else{
-//                                        Icon(
-//                                            imageVector = Icons.Outlined.FavoriteBorder,
-//                                            contentDescription = "",
-//                                        )
-//                                    }
-//                                }
                             }
 
                             Column(
@@ -192,43 +176,10 @@ fun HomeScreenPage(
                             }
                         }
                     }
-
-//                    Box( //Original Pos Add Icon
-//                        modifier = Modifier
-//                            .fillMaxSize()
-//                            .padding(end = 10.dp)
-//                            .offset(y = 11.dp),
-//                        contentAlignment = Alignment.BottomEnd,
-//                    ) {
-//                        IconButton(
-//                            onClick = {
-//                                homeScreenViewModel.addProductToCart(item,context)
-//                            },
-//                            modifier = Modifier
-//                                .clip(RoundedCornerShape(50))
-//                                .size(width = 25.dp, height = 25.dp)
-//                                .background(
-//                                    Brush.verticalGradient(
-//                                        listOf(
-//                                            Color(0xFFd7156f), Color(0xFFb82065)
-//                                        )
-//                                    )
-//                                ),
-//                        ) {
-//                            Icon(
-////                                imageVector = Icons.Default.Add,
-//                                imageVector = Icons.Default.Add,
-//                                contentDescription = "",
-//                                tint = Color.White,
-//                            )
-//                        }
-//                    }
-
                     Box( //left Middle Add Icon
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(end = 10.dp)
-                            .offset(x = -12.dp,y = 70.dp),
+                            .padding(start = 17.dp,top = 70.dp)
                     ) {
                         Surface(
                             elevation = 3.dp,
@@ -257,7 +208,6 @@ fun HomeScreenPage(
                             }
                         }
                     }
-
                 }
 
             }

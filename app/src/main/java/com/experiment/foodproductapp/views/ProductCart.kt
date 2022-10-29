@@ -2,8 +2,7 @@ package com.experiment.foodproductapp.views
 
 import android.util.Log
 import android.widget.Toast
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -15,6 +14,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.ShoppingBag
 import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.runtime.*
@@ -22,6 +22,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -34,12 +35,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberImagePainter
 import com.experiment.foodproductapp.database.Product
 import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.viewmodels.ProductCartViewModel
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun ProductCart(
     navHostControllerLambda: () -> NavHostController,
@@ -47,7 +49,7 @@ fun ProductCart(
 ) {
 
     val context = LocalContext.current
-    ChangeBarColors(statusColor = Color.White, navigationBarColor = Color.White)
+    ChangeBarColors(statusColor = Color.White, navigationBarColor = DarkYellow)
 
     LaunchedEffect(key1 = Unit){
         productCartViewModel.fetchCartList(context)
@@ -56,27 +58,52 @@ fun ProductCart(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 8.dp, start = 8.dp, end = 8.dp,),
+            .background(Color.White),
         verticalArrangement = Arrangement.SpaceEvenly,
     ) {
         LazyColumn(
             modifier = Modifier
-                .weight(6F),
+                .fillMaxSize()
+                .weight(6F)
+                .padding(top = 8.dp, start = 8.dp, end = 8.dp),
             verticalArrangement = Arrangement.spacedBy(9.dp)
         ) {
             item {
-                IconButton(
-                    onClick = {
-                              navHostControllerLambda().navigateUp()
+
+                TopAppBar(
+                    title = {
+                        Row(horizontalArrangement = Arrangement.Center) {
+                            Text(
+                                text = "Cart ",
+                                fontFamily = titleFontFamily,
+                                fontWeight = FontWeight.Bold,
+                                color = DarkYellow,
+                            )
+                            Icon(
+                                imageVector = Icons.Default.ShoppingBag,
+                                contentDescription = "",
+                                tint = DarkYellow,
+                            )
+                        }
                     },
-                    modifier = Modifier.padding(start = 5.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.ArrowBack,
-                        contentDescription = "",
-                        tint = Color.Black,
-                    )
-                }
+                    navigationIcon = {
+                        IconButton(
+                            onClick = {
+                                navHostControllerLambda().navigateUp()
+                            },
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.ArrowBack,
+                                contentDescription = "",
+                                tint = DarkYellow,
+                            )
+                        }
+                    },
+                    backgroundColor = Color.Transparent,
+                    elevation = 0.dp,
+                )
+
+
             }
 
             items(
@@ -113,6 +140,7 @@ fun ProductCart(
                         Box( //Red background
                             modifier = Modifier
                                 .fillMaxSize()
+                                .clip(RoundedCornerShape(15.dp))
                                 .background(color.value)
                                 .padding(end = 25.dp),
                             contentAlignment = Alignment.CenterEnd,
@@ -128,14 +156,19 @@ fun ProductCart(
             }
         }
 
+        Spacer(modifier = Modifier.padding(5.dp))
+
         Column( //Checkout Button
             modifier = Modifier
+                .shadow(70.dp)
+                .clip(RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp))
+                .weight(1F)
                 .fillMaxSize()
-                .clip(RoundedCornerShape(10))
                 .background(DarkYellow)
-                .weight(1F),
+                ,
         ){
 
+            //Price row
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -166,13 +199,14 @@ fun ProductCart(
                 )
             }
 
+            //Checkout button
             Box(
                 modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
             ) {
                 Button(
                     modifier = Modifier
-                        .padding(start = 20.dp, end = 20.dp, top = 6.dp, bottom = 8.dp)
+                        .padding(start = 30.dp, end = 30.dp, top = 6.dp, bottom = 9.dp)
                         .fillMaxSize(),
                     onClick = { /*TODO*/ },
                     colors = ButtonDefaults.buttonColors(
@@ -182,12 +216,14 @@ fun ProductCart(
                 ) {
                     Text(
                         text = "CHECKOUT",
+                        color = Color.Black,
+                        fontWeight = FontWeight.Bold
                     )
                 }
             }
-        }
 
-        Spacer(modifier = Modifier.padding(5.dp))
+            Spacer(modifier = Modifier.padding(5.dp))
+        }
     }
 }
 
@@ -199,11 +235,10 @@ fun CardView(item: Product){
             .fillMaxWidth()
             .height(110.dp),
         elevation = 20.dp,
+        shape = RoundedCornerShape(15.dp),
         onClick = {  },
     ) {
         Row {
-            val liked = rememberSaveable { mutableStateOf(false) }
-
             //Product Image
             Box {
                 Image(
@@ -213,25 +248,12 @@ fun CardView(item: Product){
                     alignment = Alignment.CenterStart,
                     modifier = Modifier.padding(8.dp),
                 )
-                IconButton(onClick = { liked.value = !liked.value }) {
-                    if (liked.value){
-                        Icon(
-                            imageVector = Icons.Outlined.Favorite,
-                            contentDescription = "",
-                            tint = Color.Red
-                        )
-                    }
-                    else{
-                        Icon(
-                            imageVector = Icons.Outlined.FavoriteBorder,
-                            contentDescription = "",
-                        )
-                    }
-                }
             }
 
             Column(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(5.dp),
                 verticalArrangement = Arrangement.SpaceEvenly,
             ){
                 Text( // Title
@@ -240,7 +262,6 @@ fun CardView(item: Product){
                     overflow = TextOverflow.Ellipsis,
                     text = item.title,
                     fontFamily = titleFontFamily,
-                    fontWeight = FontWeight.SemiBold,
                 )
                 Text( // Price
                     textAlign = TextAlign.Center,
@@ -251,5 +272,16 @@ fun CardView(item: Product){
                 )
             }
         }
+    }
+}
+
+
+@Preview(showBackground = true)
+@Composable
+fun PrevPC() {
+    val navHostController = rememberNavController()
+
+    FoodProductAppTheme {
+        ProductCart(navHostControllerLambda = { navHostController })
     }
 }
