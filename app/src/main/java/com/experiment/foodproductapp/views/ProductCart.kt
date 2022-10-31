@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.ShoppingBag
@@ -165,7 +166,7 @@ fun ProductCart(
                 .weight(1F)
                 .fillMaxSize()
                 .background(DarkYellow)
-                ,
+            ,
         ){
 
             //Price row
@@ -202,7 +203,7 @@ fun ProductCart(
             //Checkout button
             Box(
                 modifier = Modifier
-                .fillMaxSize()
+                    .fillMaxSize()
             ) {
                 Button(
                     modifier = Modifier
@@ -270,6 +271,81 @@ fun CardView(item: Product){
                     text = "MRP:Rs ${item.price}",
                     fontFamily = descriptionFontFamily,
                 )
+
+                //Count button
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    //Add
+                    Box(
+                        modifier = Modifier
+                            .weight(2F)
+                            .background(Color.Transparent),
+                        contentAlignment = Alignment.Center,
+                    ){
+                        Surface(
+                            elevation = 3.dp,
+                            color = Color.Transparent
+                        ){
+                            IconButton(
+                                onClick = {},
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(15))
+                                    .background(
+                                        Brush.verticalGradient(
+                                            listOf(
+                                                Orange,
+                                                DarkYellow
+                                            )
+                                        )
+                                    )
+                                    .size(width = 25.dp, height = 25.dp)
+                            ){
+                                Icon(
+                                    imageVector = Icons.Default.Add,
+                                    contentDescription = "",
+                                    tint = Color.White,
+                                )
+                            }
+                        }
+                    }
+
+                    //Count Value
+                    Text(text = "def 0")
+
+                    //Minus
+                    Box(
+                        modifier = Modifier
+                            .weight(2F)
+                            .background(Color.Transparent),
+                        contentAlignment = Alignment.Center,
+                    ){
+                        Surface(
+                            elevation = 3.dp,
+                            color = Color.Transparent
+                        ){
+                            IconButton(
+                                onClick = {},
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(15))
+                                    .background(
+                                        Brush.verticalGradient(
+                                            listOf(
+                                                Orange,
+                                                DarkYellow
+                                            )
+                                        )
+                                    )
+                                    .size(width = 25.dp, height = 25.dp)
+                            ){
+                                Icon(
+                                    imageVector = Icons.Default.Add,
+                                    contentDescription = "",
+                                    tint = Color.White,
+                                )
+                            }
+                        }
+                    }
+                }
+
             }
         }
     }

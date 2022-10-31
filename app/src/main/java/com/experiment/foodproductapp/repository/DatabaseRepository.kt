@@ -13,17 +13,16 @@ class DatabaseRepository(context: Context) {
 
     fun addUser(user: User) = dao.insertUser(user)
 
-    fun readAllUsers() : List<User> {
-        return dao.readAllUsers()
-    }
+    fun readAllUsers() : List<User> = dao.readAllUsers()
 
-    fun getUserByEmail(email: String) : User {
-        return dao.getUserByEmail(email)
-    }
+    fun getUserByEmail(email: String) : User = dao.getUserByEmail(email)
 
     fun addProduct(product: Product) = productDao.insertProduct(product)
 
     fun removeProduct(id: Int) = productDao.deleteProduct(id)
 
     fun readAllProducts() = productDao.readAllProducts()
+
+    fun setCount(id: Int,count: Int) = productDao.setCount(id,count)
+    fun getCount(id: Int) = productDao.getCount(id)
 }
