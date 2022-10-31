@@ -588,11 +588,11 @@ fun AppBar(
         actions = {
             IconButton(onClick =  onProductAddClick ) {
 
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = "",
-                        tint = Color.Red
-                    )
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "",
+                    tint = Color.Red
+                )
 
             }
 
@@ -802,6 +802,3 @@ fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScr
         }
     )
 }
-
-
-

@@ -1,7 +1,6 @@
 package com.experiment.foodproductapp
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -12,7 +11,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.experiment.foodproductapp.constants.Screen
-import com.experiment.foodproductapp.database.Product
 import com.experiment.foodproductapp.ui.theme.FoodProductAppTheme
 import com.experiment.foodproductapp.viewmodels.HomeScreenViewModel
 import com.experiment.foodproductapp.views.*
@@ -23,7 +21,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val navHostController = rememberNavController()
             val navHostControllerLambda : () -> NavHostController = { navHostController }
-            val HomeScreenViewModel: HomeScreenViewModel = viewModel()
+            val homeScreenViewModel: HomeScreenViewModel = viewModel()
 
             FoodProductAppTheme {
                 NavHost(
@@ -52,7 +50,10 @@ class MainActivity : ComponentActivity() {
                         route = Screen.HomeScreen.route,
                         arguments = listOf(navArgument("email") { type = NavType.StringType } )
                     ) {
-                        HomeScreenPage(it.arguments?.getString("email"),navHostControllerLambda, homeScreenViewModel = HomeScreenViewModel)
+                        HomeScreenPage(
+                            it.arguments?.getString("email"),
+                            navHostControllerLambda, homeScreenViewModel = homeScreenViewModel
+                        )
                     }
 
                     composable(route = Screen.ProductCart.route) {
@@ -64,7 +65,9 @@ class MainActivity : ComponentActivity() {
                        // Log.d(TAG, "onCreate: ")
 
                        // ProductDetailsPage (result)
-                        ProductDetailsPage (navHostControllerLambda,homeScreenViewModel = HomeScreenViewModel)
+                        ProductDetailsPage (
+                            navHostControllerLambda,homeScreenViewModel = homeScreenViewModel
+                        )
                     }
                 }
             }

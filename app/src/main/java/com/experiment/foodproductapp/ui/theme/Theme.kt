@@ -10,24 +10,27 @@ import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 private val DarkColorPalette = darkColors(
-    primary = Purple200,
-    primaryVariant = Purple700,
-    secondary = Teal200
-)
-
-private val LightColorPalette = lightColors(
-    primary = Purple500,
-    primaryVariant = Purple700,
-    secondary = Teal200
-
-    /* Other default colors to override
+    primary = DarkYellow,
+    primaryVariant = DarkYellow,
+    secondary = Orange,
     background = Color.White,
     surface = Color.White,
     onPrimary = Color.White,
-    onSecondary = Color.Black,
+    onSecondary = Color.White,
     onBackground = Color.Black,
     onSurface = Color.Black,
-    */
+)
+
+private val LightColorPalette = lightColors(
+    primary = DarkYellow,
+    primaryVariant = DarkYellow,
+    secondary = Orange,
+    background = Color.White,
+    surface = Color.White,
+    onPrimary = Color.White,
+    onSecondary = Color.White,
+    onBackground = Color.Black,
+    onSurface = Color.Black,
 )
 
 var systemUiController : SystemUiController? = null
@@ -45,14 +48,9 @@ fun FoodProductAppTheme(
     content: @Composable () -> Unit
 ) {
     val colors = if (darkTheme) {
-//        DarkColorPalette
-        LightColorPalette
+        DarkColorPalette
     } else {
         LightColorPalette
-    }
-
-    rememberSystemUiController().apply {
-        this.setSystemBarsColor(Purple700)
     }
 
     MaterialTheme(
