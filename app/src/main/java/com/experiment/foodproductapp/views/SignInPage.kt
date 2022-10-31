@@ -31,6 +31,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 
 import androidx.compose.ui.tooling.preview.Preview
 
@@ -147,8 +148,9 @@ fun SignInPage(
                             Text(
                                 text = state.emailError,
                                 color = Color.Red,
-                                fontSize = 16.sp,
-                                modifier = Modifier.align(Alignment.End)
+                                fontSize = 14.sp,
+                                modifier = Modifier.fillMaxWidth(0.8f),
+                                textAlign = TextAlign.End
                             )
                         }
                         Spacer(modifier = Modifier.padding(top = 8.dp))
@@ -202,8 +204,9 @@ fun SignInPage(
                             Text(
                                 text = state.passwordError,
                                 color = Color.Red,
-                                fontSize = 16.sp,
-                                modifier = Modifier.align(Alignment.End)
+                                fontSize = 14.sp,
+                                modifier = Modifier.fillMaxWidth(0.8f),
+                                textAlign = TextAlign.End
                             )
                         }
 
