@@ -44,7 +44,7 @@ class MainActivity : ComponentActivity() {
                         route = Screen.UserDetails.route,
                         arguments = listOf(navArgument("email") { type = NavType.StringType } )
                     ) {
-                        UserDetails(it.arguments?.getString("email"))
+                        UserDetails(navHostControllerLambda,it.arguments?.getString("email"))
                     }
                     composable(
                         route = Screen.HomeScreen.route,
@@ -62,9 +62,9 @@ class MainActivity : ComponentActivity() {
                     composable(route = Screen.ProductDetailsScreen.route) {
                         //val result =
                         //    navHostController.previousBackStackEntry?.savedStateHandle?.get<Product>("product")
-                       // Log.d(TAG, "onCreate: ")
+                        // Log.d(TAG, "onCreate: ")
 
-                       // ProductDetailsPage (result)
+                        // ProductDetailsPage (result)
                         ProductDetailsPage (
                             navHostControllerLambda,homeScreenViewModel = homeScreenViewModel
                         )
