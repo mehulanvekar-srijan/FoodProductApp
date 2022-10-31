@@ -685,7 +685,7 @@ fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScr
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .fillMaxHeight(.55f)
+                        .fillMaxHeight(.57f)
                     //.height(120.dp)
                 ) {
                     item {
