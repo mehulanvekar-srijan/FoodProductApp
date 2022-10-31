@@ -1,20 +1,14 @@
 package com.experiment.foodproductapp.viewmodels
 
-import android.app.Person
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.runtime.*
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.database.Product
 import com.experiment.foodproductapp.repository.DatabaseRepository
-import com.experiment.foodproductapp.views.HomeScreenPage
-import com.experiment.foodproductapp.views.SignInPage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -34,7 +28,7 @@ class HomeScreenViewModel : ViewModel() {
      val productsList =  listOf(
          Product(
              id = 0,
-             url = "https://www.bigbasket.com/media/uploads/p/xxl/40212586_3-toyo-kombucha-ginger-lemon-kombucha.jpg",
+             url = "https://www.bigbasket.com/media/uploads/p/xxl/40213061_2-coolberg-non-alcoholic-beer-malt.jpg",
              title = "Coolberg Non Alcoholic Beer - Malt",
              description = "Coolberg Malt Beer is a Non-Alcoholic Beer. This NAB has toasty notes of barley malts and hops and a distinctive musky aroma. It is made from the finest natural barley malts extracts. It is carbonated and has a serious spunk. As it contains less carbonation and often develops a beer-like head when poured into a glass. It is a perfect blend of crisp, bold and smooth flavour. Enjoy it with your choice of snack in the evening or serve it at a party.",
              price = 79,
