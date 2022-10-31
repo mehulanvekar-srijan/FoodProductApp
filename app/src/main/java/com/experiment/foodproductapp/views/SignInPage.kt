@@ -44,10 +44,7 @@ import androidx.navigation.compose.rememberNavController
 import com.experiment.foodproductapp.R
 import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.domain.event.SignInFormEvent
-import com.experiment.foodproductapp.ui.theme.ChangeBarColors
-import com.experiment.foodproductapp.ui.theme.DarkYellow
-import com.experiment.foodproductapp.ui.theme.LightGray1
-import com.experiment.foodproductapp.ui.theme.Orange
+import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.viewmodels.SignInViewModel
 //
 //@Preview
@@ -110,10 +107,11 @@ fun SignInPage(
                     style = TextStyle(
                         fontWeight = FontWeight.Bold,
                         fontSize = 30.sp,
-                        letterSpacing = 2.sp
+                        letterSpacing = 2.sp,
+                        fontFamily = titleFontFamily
                     ),
                 )
-                Spacer(modifier = Modifier.padding(5.dp))
+                Spacer(modifier = Modifier.padding(10.dp))
                 LazyColumn(horizontalAlignment = Alignment.CenterHorizontally) {
                     item {
                         TextField(

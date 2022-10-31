@@ -294,7 +294,6 @@ fun BrandLogo(
         modifier = Modifier
             .fillMaxHeight(0.10F)
             .fillMaxWidth()
-            .padding(end = 25.dp)
             .onGloballyPositioned {
                 brandLogoSize.value = it.size.height
             }

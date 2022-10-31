@@ -162,7 +162,8 @@ fun SignupPage(
                     style = TextStyle(
                         fontWeight = FontWeight.Bold,
                         fontSize = 30.sp,
-                        letterSpacing = 2.sp
+                        letterSpacing = 2.sp,
+                        fontFamily = titleFontFamily
                     ),
                     color = Color.Black
                 )
