@@ -10,5 +10,6 @@ data class Product(
     var title: String,
     var description: String,
     var price: Int,
+    var count: Int,
     //var alcohol: Int = 5
 )
