@@ -117,7 +117,6 @@ fun SignupPage(
             when (event) {
                 is SignUpViewModel.ValidationEvent.Success -> {
                     signUpViewModel.navigateOnSucces(context, navHostControllerLambda())
-                    Toast.makeText(context, "Registration Successful", Toast.LENGTH_LONG).show()
                 }
             }
         }
