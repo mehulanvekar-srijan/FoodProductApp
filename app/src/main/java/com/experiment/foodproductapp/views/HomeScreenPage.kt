@@ -1,7 +1,5 @@
-
 package com.experiment.foodproductapp.views
 
-import android.widget.Toast
 import androidx.compose.animation.*
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -13,7 +11,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.ManageAccounts
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.outlined.Favorite
@@ -34,13 +31,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberImagePainter
 import com.experiment.foodproductapp.R
 import com.experiment.foodproductapp.repository.DatabaseRepository
@@ -55,7 +50,7 @@ import kotlin.math.min
 fun HomeScreenPage(
     email : String?,
     navHostControllerLambda: () -> NavHostController,
-    homeScreenViewModel: HomeScreenViewModel = viewModel(),
+    homeScreenViewModel: HomeScreenViewModel,
 ) {
 
     LaunchedEffect(key1 = Unit){ homeScreenViewModel.setEmail(email) }
@@ -130,7 +125,10 @@ fun HomeScreenPage(
                             topEnd = 3.dp,
                             bottomEnd = 3.dp,
                         ),
-                        onClick = {},
+                        onClick = {
+                            homeScreenViewModel.addProduct(item)
+                            homeScreenViewModel.navigateToProductDetailsPage(navHostController = navHostControllerLambda())
+                        },
                     ) {
                         Row {
 
@@ -310,12 +308,4 @@ fun BrandLogo(
 }
 
 
-@Preview(showBackground = true)
-@Composable
-fun Prev() {
-    val navHostController = rememberNavController()
 
-    FoodProductAppTheme {
-        HomeScreenPage(email = "meh@ul.com", navHostControllerLambda = { navHostController })
-    }
-}
