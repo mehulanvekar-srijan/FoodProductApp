@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -37,10 +38,14 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
+import com.experiment.foodproductapp.R
 import com.experiment.foodproductapp.database.Product
 import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.viewmodels.ProductCartViewModel
+
+val arr = arrayOf(R.drawable.beer0,R.drawable.beer1,R.drawable.beer2,R.drawable.beer3)
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalAnimationApi::class)
 @Composable
@@ -62,6 +67,7 @@ fun ProductCart(
             .background(Color.White),
         verticalArrangement = Arrangement.SpaceEvenly,
     ) {
+
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -126,7 +132,11 @@ fun ProductCart(
                     state = dismissState,
                     directions = setOf(DismissDirection.EndToStart),
                     dismissThresholds = { FractionalThreshold(0.2F) },
-                    dismissContent = { CardView(item) },
+                    dismissContent = {
+
+                        CardView(item)
+
+                    },
                     background = {
 
                         val color = animateColorAsState(
@@ -165,8 +175,7 @@ fun ProductCart(
                 .clip(RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp))
                 .weight(1F)
                 .fillMaxSize()
-                .background(DarkYellow)
-            ,
+                .background(DarkYellow),
         ){
 
             //Price row
@@ -198,6 +207,26 @@ fun ProductCart(
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp,
                 )
+//                AnimatedContent(
+//                    targetState = productCartViewModel.cartList.size,
+//                    transitionSpec = {
+//                        slideInVertically(animationSpec = tween(400),
+//                            initialOffsetY = { fullHeight -> fullHeight }) with
+//                        slideOutVertically(animationSpec = tween(400),
+//                            targetOffsetY = { fullHeight -> -fullHeight })
+//                    }
+//                ) {
+//                    Text(
+//                        text = "Rs : ${productCartViewModel.computePrice()}",
+//                        color = Color.White,
+//                        modifier = Modifier
+//                            .padding(end = 25.dp)
+//                            .weight(1F),
+//                        textAlign = TextAlign.End,
+//                        fontWeight = FontWeight.Bold,
+//                        fontSize = 20.sp,
+//                    )
+//                }
             }
 
             //Checkout button
@@ -228,7 +257,7 @@ fun ProductCart(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalCoilApi::class)
 @Composable
 fun CardView(item: Product){
     Card(
@@ -244,6 +273,7 @@ fun CardView(item: Product){
             Box {
                 Image(
                     painter = rememberImagePainter(item.url),
+                    //painter = painterResource(id = arr[0]),
                     contentDescription = "",
                     contentScale = ContentScale.Fit,
                     alignment = Alignment.CenterStart,
@@ -350,7 +380,6 @@ fun CardView(item: Product){
         }
     }
 }
-
 
 @Preview(showBackground = true)
 @Composable

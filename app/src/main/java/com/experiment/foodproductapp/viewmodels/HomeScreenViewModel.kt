@@ -28,7 +28,8 @@ class HomeScreenViewModel : ViewModel() {
      val productsList =  listOf(
          Product(
              id = 0,
-             url = "https://www.bigbasket.com/media/uploads/p/xxl/40213061_2-coolberg-non-alcoholic-beer-malt.jpg",
+//             url = "https://www.bigbasket.com/media/uploads/p/xxl/40213061_2-coolberg-non-alcoholic-beer-malt.jpg",
+             url = "https://products3.imgix.drizly.com/ci-budweiser-24269668d4e23c97.jpeg",
              title = "Coolberg Non Alcoholic Beer - Malt",
              description = "Coolberg Malt Beer is a Non-Alcoholic Beer. This NAB has toasty notes of barley malts and hops and a distinctive musky aroma. It is made from the finest natural barley malts extracts. It is carbonated and has a serious spunk. As it contains less carbonation and often develops a beer-like head when poured into a glass. It is a perfect blend of crisp, bold and smooth flavour. Enjoy it with your choice of snack in the evening or serve it at a party.",
              price = 79,
@@ -37,7 +38,8 @@ class HomeScreenViewModel : ViewModel() {
          ),
          Product(
              id = 1,
-             url = "https://www.bigbasket.com/media/uploads/p/xxl/40122150_2-coolberg-beer-mint-non-alcoholic.jpg",
+//             url = "https://www.bigbasket.com/media/uploads/p/xxl/40122150_2-coolberg-beer-mint-non-alcoholic.jpg",
+             url = "https://products3.imgix.drizly.com/ci-budweiser-24269668d4e23c97.jpeg",
              title = "Coolberg Non Alcoholic Beer - Mint",
              description = "Coolberg Malt Beer is a Non-Alcoholic Beer. This NAB has toasty notes of barley malts and hops and a distinctive musky aroma. It is made from the finest natural barley malts extracts. It is carbonated and has a serious spunk. As it contains less carbonation and often develops a beer-like head when poured into a glass. It is a perfect blend of crisp, bold and smooth flavour. Enjoy it with your choice of snack in the evening or serve it at a party.",
              price = 79,
@@ -46,7 +48,8 @@ class HomeScreenViewModel : ViewModel() {
          ),
          Product(
              id = 2,
-             url = "https://www.bigbasket.com/media/uploads/p/xxl/40213060_2-coolberg-non-alcoholic-beer-cranberry.jpg",
+//             url = "https://www.bigbasket.com/media/uploads/p/xxl/40213060_2-coolberg-non-alcoholic-beer-cranberry.jpg",
+             url = "https://products3.imgix.drizly.com/ci-budweiser-24269668d4e23c97.jpeg",
              title = "Coolberg Non Alcoholic Beer - Cranberry",
              description = "Coolberg Malt Beer is a Non-Alcoholic Beer. This NAB has toasty notes of barley malts and hops and a distinctive musky aroma. It is made from the finest natural barley malts extracts. It is carbonated and has a serious spunk. As it contains less carbonation and often develops a beer-like head when poured into a glass. It is a perfect blend of crisp, bold and smooth flavour. Enjoy it with your choice of snack in the evening or serve it at a party.",
              price = 79,
@@ -55,7 +58,8 @@ class HomeScreenViewModel : ViewModel() {
          ),
          Product(
              id = 3,
-             url = "https://www.bigbasket.com/media/uploads/p/xxl/40213059_2-coolberg-non-alcoholic-beer-strawberry.jpg",
+//             url = "https://www.bigbasket.com/media/uploads/p/xxl/40213059_2-coolberg-non-alcoholic-beer-strawberry.jpg",
+             url = "https://products3.imgix.drizly.com/ci-budweiser-24269668d4e23c97.jpeg",
              title = "Coolberg Non Alcoholic Beer - Strawberry",
              description = "Coolberg Malt Beer is a Non-Alcoholic Beer. This NAB has toasty notes of barley malts and hops and a distinctive musky aroma. It is made from the finest natural barley malts extracts. It is carbonated and has a serious spunk. As it contains less carbonation and often develops a beer-like head when poured into a glass. It is a perfect blend of crisp, bold and smooth flavour. Enjoy it with your choice of snack in the evening or serve it at a party.",
              price = 79,

@@ -528,7 +528,7 @@ fun SignupPage(
                     },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(50.dp)
+                        .height(45.dp)
                         .padding(start = 20.dp, end = 20.dp),
                     shape = RoundedCornerShape(50),
                     colors = ButtonDefaults.buttonColors(
