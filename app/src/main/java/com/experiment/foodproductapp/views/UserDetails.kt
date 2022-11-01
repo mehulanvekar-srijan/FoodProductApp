@@ -1,59 +1,115 @@
 package com.experiment.foodproductapp.views
 
-import android.util.Log
+import android.app.DatePickerDialog
+import android.widget.DatePicker
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.relocation.BringIntoViewRequester
+import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
-import androidx.compose.material.SnackbarDefaults.backgroundColor
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.twotone.EditCalendar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.experiment.foodproductapp.R
-import com.experiment.foodproductapp.domain.event.SignInFormEvent
-import com.experiment.foodproductapp.domain.event.SignupFormEvent
+import com.experiment.foodproductapp.domain.event.UserDetailsFormEvent
 import com.experiment.foodproductapp.ui.theme.DarkGray1
 import com.experiment.foodproductapp.ui.theme.DarkYellow
 import com.experiment.foodproductapp.ui.theme.LightGray1
 import com.experiment.foodproductapp.ui.theme.Orange
 import com.experiment.foodproductapp.viewmodels.UserDetailsViewModel
+import kotlinx.coroutines.launch
+import java.util.*
 
 @Composable
 @Preview
-fun show()
-{
-    val string ="Sahil"
-    UserDetails(email = string)
+fun show() {
+    val string = "Sahil"
+    val navHostController = rememberNavController()
+    val navHostControllerLambda: () -> NavHostController = {
+        navHostController
+    }
+    UserDetails(navHostControllerLambda, email = string)
 }
+
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun UserDetails(
-    email : String?,
+    navHostControllerLambda: () -> NavHostController,
+    email: String?,
     userDetailsViewModel: UserDetailsViewModel = viewModel(),
 ) {
     if (email != null) {
+        val focusManager = LocalFocusManager.current
+        val viewRequesterForDatePicker = remember { BringIntoViewRequester() }
+        val coroutineScope = rememberCoroutineScope()
 
         val context = LocalContext.current
+
+        val mYear: Int
+        val mMonth: Int
+        val mDay: Int
+
+        // Initializing a Calendar
+        val mCalendar = Calendar.getInstance()
+
+        // Fetching current year, month and day
+        mYear = mCalendar.get(Calendar.YEAR)
+        mMonth = mCalendar.get(Calendar.MONTH)
+        mDay = mCalendar.get(Calendar.DAY_OF_MONTH)
+
+        mCalendar.time = Date()
+
+        // Declaring a string value to
+        // store date in string format
+
+        // Declaring DatePickerDialog and setting
+        // initial values as current values (present year, month and day)
+        val mDatePickerDialog = DatePickerDialog(
+            context,
+            { _: DatePicker, mYear: Int, mMonth: Int, mDayOfMonth: Int ->
+                userDetailsViewModel.onEvent(
+                    context,
+                    UserDetailsFormEvent.CalenderChanged("$mDayOfMonth/${mMonth + 1}/$mYear")
+                )
+            }, mYear, mMonth, mDay
+        )
 
         LaunchedEffect(key1 = Unit) {
             userDetailsViewModel.execute(context, email)
         }
-        Box(modifier = Modifier.fillMaxSize()
+        Box(
+            modifier = Modifier.fillMaxSize()
         ) {
             Image(
                 painter = painterResource(id = R.drawable.background_yellow_wave),
@@ -65,12 +121,13 @@ fun UserDetails(
             //Main Column
             Column(
                 modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
+                horizontalAlignment = CenterHorizontally,
             ) {
 
                 Image(
                     modifier = Modifier
-                        .fillMaxHeight(0.25F),
+                        .fillMaxHeight(0.25F)
+                        .padding(25.dp),
                     painter = painterResource(id = R.drawable.ic_profile),
                     contentDescription = "Profile"
                 )
@@ -79,7 +136,7 @@ fun UserDetails(
                         .fillMaxSize()
                         .clip(RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp))
                         .background(Color.White)
-                        .padding(10.dp),
+                        .padding(top = 10.dp, start = 28.dp, end = 28.dp, bottom = 10.dp),
                 ) {
                     Text(
                         modifier = Modifier.fillMaxWidth(),
@@ -94,147 +151,286 @@ fun UserDetails(
                     )
                     Spacer(modifier = Modifier.padding(5.dp))
 
-                    Column(horizontalAlignment = Alignment.CenterHorizontally)
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight(0.80F)
+                    )
                     {
-                        Spacer(modifier = Modifier.padding(10.dp))
-                        TextField(
-                            readOnly = userDetailsViewModel.visibilityBt.value,
-                            modifier = Modifier.fillMaxWidth(),
-                            value = userDetailsViewModel.user.value.firstName,
-                            colors = TextFieldDefaults.textFieldColors(
-                                textColor = Color.Black,
-                                backgroundColor = LightGray1,
-                                placeholderColor = Color.White,
-                                cursorColor = Color.Black,
-                                focusedLabelColor = Color.Black,
-                                errorCursorColor = Color.Black,
-                                errorLabelColor = Color.Red,
-                                focusedIndicatorColor = Color.Transparent,
-                                unfocusedIndicatorColor = Color.Transparent,
-                                unfocusedLabelColor = Orange,
-                            ),
-                            onValueChange = {
-                                            userDetailsViewModel.state.firstName
-                            },
-                            shape= RoundedCornerShape(30.dp),
-                            label = { Text(text = "First Name", color = DarkGray1) }
-                        )
+                        item {
+                            Spacer(modifier = Modifier.padding(10.dp))
+                            TextField(
+                                modifier = Modifier.fillMaxWidth(),
+                                value = userDetailsViewModel.state.firstName,
+                                colors = TextFieldDefaults.textFieldColors(
+                                    textColor = Color.Black,
+                                    backgroundColor = LightGray1,
+                                    placeholderColor = Color.White,
+                                    cursorColor = Color.Black,
+                                    focusedLabelColor = Color.Black,
+                                    errorCursorColor = Color.Black,
+                                    errorLabelColor = Color.Red,
+                                    focusedIndicatorColor = Color.Transparent,
+                                    unfocusedIndicatorColor = Color.Transparent,
+                                    unfocusedLabelColor = Orange,
+                                ),
+                                onValueChange = {
+                                    userDetailsViewModel.onEvent(
+                                        context,
+                                        UserDetailsFormEvent.FirstNameChanged(it)
+                                    )
+                                },
+                                shape = RoundedCornerShape(30.dp),
+                                label = { Text(text = "First Name", color = DarkGray1) },
+                                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                                keyboardActions = KeyboardActions(
+                                    onNext = { focusManager.moveFocus(FocusDirection.Down) },
+                                )
+                            )
+                            if (userDetailsViewModel.state.firstNameError != null) {
+                                Text(
+                                    text = userDetailsViewModel.state.firstNameError!!,
+                                    color = MaterialTheme.colors.error,
+                                    fontSize = 14.sp,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    textAlign = TextAlign.End
+                                )
+                            }
 
-                        Spacer(modifier = Modifier.padding(10.dp))
-                        TextField(
-                            readOnly = userDetailsViewModel.visibilityBt.value,
-                            modifier = Modifier.fillMaxWidth(),
-                            value = userDetailsViewModel.user.value.lastName,
-                            colors = TextFieldDefaults.textFieldColors(
-                                textColor = Color.Black,
-                                backgroundColor = LightGray1,
-                                placeholderColor = Color.White,
-                                cursorColor = Color.Black,
-                                focusedLabelColor = Color.Black,
-                                errorCursorColor = Color.Black,
-                                errorLabelColor = Color.Red,
-                                focusedIndicatorColor = Color.Transparent,
-                                unfocusedIndicatorColor = Color.Transparent,
-                                unfocusedLabelColor = Orange,
-                            ),
-                            onValueChange = {
-                                            userDetailsViewModel.state.lastName
-                            },
-                            shape= RoundedCornerShape(30.dp),
-                            label = { Text(text = "Last Name", color = DarkGray1) }
-                        )
+                            Spacer(modifier = Modifier.padding(10.dp))
+                            TextField(
+                                modifier = Modifier.fillMaxWidth(),
+                                value = userDetailsViewModel.state.lastName,
+                                colors = TextFieldDefaults.textFieldColors(
+                                    textColor = Color.Black,
+                                    backgroundColor = LightGray1,
+                                    placeholderColor = Color.White,
+                                    cursorColor = Color.Black,
+                                    focusedLabelColor = Color.Black,
+                                    errorCursorColor = Color.Black,
+                                    errorLabelColor = Color.Red,
+                                    focusedIndicatorColor = Color.Transparent,
+                                    unfocusedIndicatorColor = Color.Transparent,
+                                    unfocusedLabelColor = Orange,
+                                ),
+                                onValueChange = {
+                                    userDetailsViewModel.onEvent(
+                                        context,
+                                        UserDetailsFormEvent.LastNameChanged(it)
+                                    )
+                                },
+                                shape = RoundedCornerShape(30.dp),
+                                label = { Text(text = "Last Name", color = DarkGray1) },
+                                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                                keyboardActions = KeyboardActions(
+                                    onNext = { focusManager.moveFocus(FocusDirection.Down) },
+                                )
+                            )
+                            if (userDetailsViewModel.state.lastNameError != null) {
+                                Text(
+                                    text = userDetailsViewModel.state.lastNameError!!,
+                                    color = MaterialTheme.colors.error,
+                                    fontSize = 14.sp,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    textAlign = TextAlign.End
+                                )
+                            }
 
-                        Spacer(modifier = Modifier.padding(10.dp))
-                        TextField(
-                            readOnly = userDetailsViewModel.visibilityBt.value,
-                            modifier = Modifier.fillMaxWidth(),
-                            value = userDetailsViewModel.user.value.dob,
-                            colors = TextFieldDefaults.textFieldColors(
-                                textColor = Color.Black,
-                                backgroundColor = LightGray1,
-                                placeholderColor = Color.White,
-                                cursorColor = Color.Black,
-                                focusedLabelColor = Color.Black,
-                                errorCursorColor = Color.Black,
-                                errorLabelColor = Color.Red,
-                                focusedIndicatorColor = Color.Transparent,
-                                unfocusedIndicatorColor = Color.Transparent,
-                                unfocusedLabelColor = Orange,
-                            ),
-                            onValueChange = {
-                                userDetailsViewModel.state.dob
-                            },
-                            shape= RoundedCornerShape(30.dp),
-                            label = { Text(text = "Date Of Birth", color = DarkGray1) }
-                        )
+//                            Spacer(modifier = Modifier.padding(10.dp))
+//                            TextField(
+//                                readOnly=true,
+//                                modifier = Modifier.fillMaxWidth(),
+//                                value = userDetailsViewModel.user.value.email,
+//                                colors = TextFieldDefaults.textFieldColors(
+//                                    textColor = Color.Black,
+//                                    backgroundColor = LightGray1,
+//                                    placeholderColor = Color.White,
+//                                    cursorColor = Color.Black,
+//                                    focusedLabelColor = Color.Black,
+//                                    errorCursorColor = Color.Black,
+//                                    errorLabelColor = Color.Red,
+//                                    focusedIndicatorColor = Color.Transparent,
+//                                    unfocusedIndicatorColor = Color.Transparent,
+//                                    unfocusedLabelColor = Orange,
+//                                ),
+//                                onValueChange = {
+//                                    userDetailsViewModel.onEvent(
+//                                        context,
+//                                        ProfileFormEvent.EmailChanged(it)
+//                                    )
+//                                },
+//                                shape = RoundedCornerShape(30.dp),
+//                                label = { Text(text = "Email", color = DarkGray1) }
+//                            )
 
-                        Spacer(modifier = Modifier.padding(10.dp))
-                        TextField(
-                            readOnly = userDetailsViewModel.visibilityBt.value,
-                            modifier = Modifier.fillMaxWidth(),
-                            value = userDetailsViewModel.user.value.email,
-                            colors = TextFieldDefaults.textFieldColors(
-                                textColor = Color.Black,
-                                backgroundColor = LightGray1,
-                                placeholderColor = Color.White,
-                                cursorColor = Color.Black,
-                                focusedLabelColor = Color.Black,
-                                errorCursorColor = Color.Black,
-                                errorLabelColor = Color.Red,
-                                focusedIndicatorColor = Color.Transparent,
-                                unfocusedIndicatorColor = Color.Transparent,
-                                unfocusedLabelColor = Orange,
-                            ),
-                            onValueChange = {
-                                userDetailsViewModel.state.email
-                            },
-                            shape= RoundedCornerShape(30.dp),
-                            label = { Text(text = "Email", color = DarkGray1) }
-                        )
 
-                        Spacer(modifier = Modifier.padding(10.dp))
-                        TextField(
-                            readOnly = userDetailsViewModel.visibilityBt.value,
-                            modifier = Modifier.fillMaxWidth(),
-                            value = userDetailsViewModel.user.value.phoneNumber,
-                            colors = TextFieldDefaults.textFieldColors(
-                                textColor = Color.Black,
-                                backgroundColor = LightGray1,
-                                placeholderColor = Color.White,
-                                cursorColor = Color.Black,
-                                focusedLabelColor = Color.Black,
-                                errorCursorColor = Color.Black,
-                                errorLabelColor = Color.Red,
-                                focusedIndicatorColor = Color.Transparent,
-                                unfocusedIndicatorColor = Color.Transparent,
-                                unfocusedLabelColor = Orange,
-                            ),
-                            onValueChange = {
-                                userDetailsViewModel.state.phoneNumber
-                            },
-                            shape= RoundedCornerShape(30.dp),
-                            label = { Text(text = "Phone Number", color = DarkGray1) }
-                        )
-                        Spacer(modifier = Modifier.padding(10.dp))
-//
-                        OutlinedButton(
-                            onClick = {
-                                      userDetailsViewModel.edit()
-                                Log.d("userdetails", userDetailsViewModel.visibilityBt.toString())
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth(0.6f)
-                                .height(40.dp),
+                            Spacer(modifier = Modifier.padding(10.dp))
+                            TextField(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .onFocusEvent {
+                                        if (it.isFocused) {
+                                            coroutineScope.launch {
+                                                viewRequesterForDatePicker.bringIntoView()
+                                            }
+                                        }
+                                    },
+                                value = userDetailsViewModel.state.phoneNumber,
+                                colors = TextFieldDefaults.textFieldColors(
+                                    textColor = Color.Black,
+                                    backgroundColor = LightGray1,
+                                    placeholderColor = Color.White,
+                                    cursorColor = Color.Black,
+                                    focusedLabelColor = Color.Black,
+                                    errorCursorColor = Color.Black,
+                                    errorLabelColor = Color.Red,
+                                    focusedIndicatorColor = Color.Transparent,
+                                    unfocusedIndicatorColor = Color.Transparent,
+                                    unfocusedLabelColor = Orange,
+                                ),
+                                onValueChange = {
+                                    userDetailsViewModel.onEvent(
+                                        context,
+                                        UserDetailsFormEvent.PhoneNumberChanged(it)
+                                    )
+                                },
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = KeyboardType.Phone,
+                                    imeAction = ImeAction.Next
+                                ),
+                                shape = RoundedCornerShape(30.dp),
+                                label = { Text(text = "Phone Number", color = DarkGray1) },
+                                keyboardActions = KeyboardActions(
+                                    onNext = { focusManager.moveFocus(FocusDirection.Down) },
+                                )
+                            )
+                            if (userDetailsViewModel.state.phoneNumberError != null) {
+                                Text(
+                                    text = userDetailsViewModel.state.phoneNumberError!!,
+                                    color = MaterialTheme.colors.error,
+                                    fontSize = 14.sp,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    textAlign = TextAlign.End
+                                )
+                            }
 
-                            shape = RoundedCornerShape(50),
-                            colors = ButtonDefaults.buttonColors(
-                                backgroundColor = DarkYellow,
-                                contentColor = Color.White
-                            ),
+                            Spacer(modifier = Modifier.padding(10.dp))
+                            TextField(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .onFocusEvent {
+                                        if (it.isFocused) {
+                                            coroutineScope.launch {
+                                                viewRequesterForDatePicker.bringIntoView()
+                                            }
+                                        }
+                                    },
+                                value = userDetailsViewModel.state.password,
+                                colors = TextFieldDefaults.textFieldColors(
+                                    textColor = Color.Black,
+                                    backgroundColor = LightGray1,
+                                    placeholderColor = Color.White,
+                                    cursorColor = Color.Black,
+                                    focusedLabelColor = Color.Black,
+                                    errorCursorColor = Color.Black,
+                                    errorLabelColor = Color.Red,
+                                    focusedIndicatorColor = Color.Transparent,
+                                    unfocusedIndicatorColor = Color.Transparent,
+                                    unfocusedLabelColor = Orange,
+                                ),
+                                onValueChange = {
+                                    userDetailsViewModel.onEvent(
+                                        context,
+                                        UserDetailsFormEvent.PasswordChanged(it)
+                                    )
+                                },
+                                keyboardOptions = KeyboardOptions(
+                                    imeAction = ImeAction.Next
+                                ),
+                                shape = RoundedCornerShape(30.dp),
+                                label = { Text(text = "Password", color = DarkGray1) },
+                                keyboardActions = KeyboardActions(
+                                    onNext = { mDatePickerDialog.show() },
+                                )
+                            )
+                            if (userDetailsViewModel.state.passwordError != null) {
+                                Text(
+                                    text = userDetailsViewModel.state.passwordError!!,
+                                    color = MaterialTheme.colors.error,
+                                    fontSize = 14.sp,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    textAlign = TextAlign.End
+                                )
+                            }
 
-                            ) {
-                            Text(text = "Edit Profile", fontSize = 20.sp, color = Color.Black)
+
+                            Spacer(modifier = Modifier.padding(10.dp))
+                            TextField(
+                                readOnly = true,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .bringIntoViewRequester(viewRequesterForDatePicker),
+                                value = userDetailsViewModel.state.date,
+                                colors = TextFieldDefaults.textFieldColors(
+                                    textColor = Color.Black,
+                                    backgroundColor = LightGray1,
+                                    placeholderColor = Color.White,
+                                    cursorColor = Color.Black,
+                                    focusedLabelColor = Color.Black,
+                                    errorCursorColor = Color.Black,
+                                    errorLabelColor = Color.Red,
+                                    focusedIndicatorColor = Color.Transparent,
+                                    unfocusedIndicatorColor = Color.Transparent,
+                                    unfocusedLabelColor = Orange,
+                                ),
+                                onValueChange = {
+                                    userDetailsViewModel.onEvent(
+                                        context,
+                                        UserDetailsFormEvent.CalenderChanged(it)
+                                    )
+                                },
+                                leadingIcon = {
+                                    IconButton(onClick = {
+                                        mDatePickerDialog.show()
+                                    }) {
+                                        Icon(
+                                            imageVector = Icons.TwoTone.EditCalendar,
+                                            contentDescription = "",
+                                        )
+                                    }
+                                },
+                                shape = RoundedCornerShape(30.dp),
+                                label = { Text(text = "Date Of Birth", color = DarkGray1) }
+                            )
+                            if (userDetailsViewModel.state.dateError != null) {
+                                Text(
+                                    text = userDetailsViewModel.state.dateError!!,
+                                    color = MaterialTheme.colors.error,
+                                    fontSize = 14.sp,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    textAlign = TextAlign.End
+                                )
+                            }
                         }
+                    }
+                    Spacer(modifier = Modifier.padding(10.dp))
+                    OutlinedButton(
+                        onClick = {
+                            userDetailsViewModel.onEvent(context, UserDetailsFormEvent.Submit)
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp)
+                            .padding(start = 20.dp, end = 20.dp),
+
+                        shape = RoundedCornerShape(50),
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = DarkYellow,
+                            contentColor = Color.White
+                        ),
+
+                        ) {
+                        Text(text = "Save Changes", fontSize = 20.sp, color = Color.Black)
                     }
 //                    {
 //                        Spacer(modifier = Modifier.padding(5.dp))
@@ -339,5 +535,20 @@ fun UserDetails(
                 }
             }
         }
+        TopAppBar(
+            title = { Text(text = "Beer App", color = Color.Black) },
+            backgroundColor = Color.Transparent,
+            elevation = 0.dp,
+            navigationIcon = {
+                IconButton(onClick = { navHostControllerLambda().navigateUp() }) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = "",
+                        tint = Color.Black
+                    )
+                }
+
+            },
+        )
     }
 }
