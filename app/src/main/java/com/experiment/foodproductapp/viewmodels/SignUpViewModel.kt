@@ -165,7 +165,7 @@ class SignUpViewModel(
             }
             catch (e: android.database.sqlite.SQLiteConstraintException){
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(context,"Registration Failed", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context,"Email already registered", Toast.LENGTH_SHORT).show()
                 }
                 false
             }

@@ -197,7 +197,7 @@ fun HomeScreenPage(
                                             )
                                         )
                                     )
-                                    .size(width = 30.dp, height = 30.dp)
+                                    .size(width = 30.dp, height = 30.dp),
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.Add,
