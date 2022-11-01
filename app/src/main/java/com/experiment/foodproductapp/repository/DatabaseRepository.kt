@@ -31,4 +31,7 @@ class DatabaseRepository(context: Context) {
     fun removeProduct(id: Int) = productDao.deleteProduct(id)
 
     fun readAllProducts() = productDao.readAllProducts()
+
+    fun setCount(id: Int,count: Int): Unit = productDao.setCount(id,count)
+    fun getCount(id: Int): Int = productDao.getCount(id)
 }

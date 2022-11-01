@@ -1,25 +1,19 @@
 package com.experiment.foodproductapp.views
 
-import android.util.Log
-import android.widget.Toast
+import android.content.Context
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.ShoppingBag
-import androidx.compose.material.icons.outlined.Favorite
-import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,15 +31,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.experiment.foodproductapp.R
 import com.experiment.foodproductapp.database.Product
 import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.viewmodels.ProductCartViewModel
-
-val arr = arrayOf(R.drawable.beer0,R.drawable.beer1,R.drawable.beer2,R.drawable.beer3)
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalAnimationApi::class)
 @Composable
@@ -133,9 +124,7 @@ fun ProductCart(
                     directions = setOf(DismissDirection.EndToStart),
                     dismissThresholds = { FractionalThreshold(0.2F) },
                     dismissContent = {
-
-                        CardView(item)
-
+                        CardView(item,context,productCartViewModel)
                     },
                     background = {
 
@@ -198,7 +187,7 @@ fun ProductCart(
                 )
 
                 Text(
-                    text = "Rs : ${productCartViewModel.computePrice()}",
+                    text = "Rs : ${productCartViewModel.sum.value}",
                     color = Color.White,
                     modifier = Modifier
                         .padding(end = 25.dp)
@@ -207,26 +196,6 @@ fun ProductCart(
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp,
                 )
-//                AnimatedContent(
-//                    targetState = productCartViewModel.cartList.size,
-//                    transitionSpec = {
-//                        slideInVertically(animationSpec = tween(400),
-//                            initialOffsetY = { fullHeight -> fullHeight }) with
-//                        slideOutVertically(animationSpec = tween(400),
-//                            targetOffsetY = { fullHeight -> -fullHeight })
-//                    }
-//                ) {
-//                    Text(
-//                        text = "Rs : ${productCartViewModel.computePrice()}",
-//                        color = Color.White,
-//                        modifier = Modifier
-//                            .padding(end = 25.dp)
-//                            .weight(1F),
-//                        textAlign = TextAlign.End,
-//                        fontWeight = FontWeight.Bold,
-//                        fontSize = 20.sp,
-//                    )
-//                }
             }
 
             //Checkout button
@@ -259,7 +228,17 @@ fun ProductCart(
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalCoilApi::class)
 @Composable
-fun CardView(item: Product){
+fun CardView(
+    item: Product,
+    context: Context,
+    productCartViewModel: ProductCartViewModel
+){
+    val quantity = remember{ mutableStateOf(0) }
+
+    LaunchedEffect(key1 = Unit){
+        productCartViewModel.getProductCount(context,item.id,quantity)
+    }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -268,12 +247,16 @@ fun CardView(item: Product){
         shape = RoundedCornerShape(15.dp),
         onClick = {  },
     ) {
-        Row {
+        Row(
+            modifier = Modifier.fillMaxWidth()
+        ) {
             //Product Image
-            Box {
+            Box(
+                modifier = Modifier.weight(2F)
+            ){
                 Image(
                     painter = rememberImagePainter(item.url),
-                    //painter = painterResource(id = arr[0]),
+                    //painter = painterResource(id = R.drawable.beer0),
                     contentDescription = "",
                     contentScale = ContentScale.Fit,
                     alignment = Alignment.CenterStart,
@@ -281,10 +264,12 @@ fun CardView(item: Product){
                 )
             }
 
+            //Title / Description
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(5.dp),
+                    .padding(5.dp)
+                    .weight(4F),
                 verticalArrangement = Arrangement.SpaceEvenly,
             ){
                 Text( // Title
@@ -292,31 +277,84 @@ fun CardView(item: Product){
                     style = MaterialTheme.typography.h5,
                     overflow = TextOverflow.Ellipsis,
                     text = item.title,
+                    //text = "Coolberg Non Alcoholic Beer - Mint",
                     fontFamily = titleFontFamily,
+                    fontSize = 20.sp,
                 )
                 Text( // Price
                     textAlign = TextAlign.Center,
                     color = Color.Black,
                     overflow = TextOverflow.Ellipsis,
-                    text = "MRP:Rs ${item.price}",
+                    text = "MRP:Rs 79",
                     fontFamily = descriptionFontFamily,
                 )
+            }
 
-                //Count button
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    //Add
-                    Box(
-                        modifier = Modifier
-                            .weight(2F)
-                            .background(Color.Transparent),
-                        contentAlignment = Alignment.Center,
+            //Count button
+            Row(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .weight(2F)
+                    .padding(end = 5.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                //Add
+                Box(
+                    modifier = Modifier
+                        .weight(2F)
+                        .background(Color.Transparent),
+                    contentAlignment = Alignment.Center,
+                ){
+                    Surface(
+                        elevation = 3.dp,
+                        color = Color.Transparent
                     ){
-                        Surface(
-                            elevation = 3.dp,
-                            color = Color.Transparent
+                        IconButton(
+                            onClick = {
+                                productCartViewModel.incrementProductCount(context,item.id,quantity)
+                            },
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(15))
+                                .background(
+                                    Brush.verticalGradient(
+                                        listOf(
+                                            Orange,
+                                            DarkYellow
+                                        )
+                                    )
+                                )
+                                .size(width = 25.dp, height = 25.dp)
                         ){
+                            Icon(
+                                imageVector = Icons.Default.Add,
+                                contentDescription = "",
+                                tint = Color.White,
+                            )
+                        }
+                    }
+                }
+
+                //Count Value
+                //Text(text = "1", textAlign = TextAlign.Center)
+                Text(text = quantity.value.toString(),textAlign = TextAlign.Center)
+
+                //Minus
+                Box(
+                    modifier = Modifier
+                        .weight(2F)
+                        .background(Color.Transparent),
+                    contentAlignment = Alignment.Center,
+                ){
+                    Surface(
+                        elevation = 3.dp,
+                        color = Color.Transparent
+                    ){
+                        //If Quantity is > 1 show Yellow button else show Grey button
+                        if(quantity.value > 1){
                             IconButton(
-                                onClick = {},
+                                onClick = {
+                                    productCartViewModel.decrementProductCount(context,item.id,quantity)
+                                },
                                 modifier = Modifier
                                     .clip(RoundedCornerShape(15))
                                     .background(
@@ -327,47 +365,29 @@ fun CardView(item: Product){
                                             )
                                         )
                                     )
-                                    .size(width = 25.dp, height = 25.dp)
+                                    .size(width = 25.dp, height = 25.dp),
+                                enabled = quantity.value > 1,
                             ){
                                 Icon(
-                                    imageVector = Icons.Default.Add,
+                                    imageVector = Icons.Filled.Remove,
                                     contentDescription = "",
                                     tint = Color.White,
                                 )
                             }
                         }
-                    }
-
-                    //Count Value
-                    Text(text = "def 0")
-
-                    //Minus
-                    Box(
-                        modifier = Modifier
-                            .weight(2F)
-                            .background(Color.Transparent),
-                        contentAlignment = Alignment.Center,
-                    ){
-                        Surface(
-                            elevation = 3.dp,
-                            color = Color.Transparent
-                        ){
+                        else{
                             IconButton(
-                                onClick = {},
+                                onClick = {
+                                    productCartViewModel.decrementProductCount(context,item.id,quantity)
+                                },
                                 modifier = Modifier
                                     .clip(RoundedCornerShape(15))
-                                    .background(
-                                        Brush.verticalGradient(
-                                            listOf(
-                                                Orange,
-                                                DarkYellow
-                                            )
-                                        )
-                                    )
-                                    .size(width = 25.dp, height = 25.dp)
+                                    .background(LightDarkGray)
+                                    .size(width = 25.dp, height = 25.dp),
+                                enabled = quantity.value > 1,
                             ){
                                 Icon(
-                                    imageVector = Icons.Default.Add,
+                                    imageVector = Icons.Filled.Remove,
                                     contentDescription = "",
                                     tint = Color.White,
                                 )
@@ -375,18 +395,172 @@ fun CardView(item: Product){
                         }
                     }
                 }
-
             }
         }
     }
 }
 
-@Preview(showBackground = true)
+@OptIn(ExperimentalMaterialApi::class)
+@Preview(showBackground = true, backgroundColor = 1)
 @Composable
 fun PrevPC() {
-    val navHostController = rememberNavController()
+//    val navHostController = rememberNavController()
+//
+//    FoodProductAppTheme {
+//        ProductCart(navHostControllerLambda = { navHostController })
+//    }
 
-    FoodProductAppTheme {
-        ProductCart(navHostControllerLambda = { navHostController })
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(5.dp)
+            .background(Color.White)
+    ){
+        for (i in 1..4){
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(110.dp),
+                elevation = 20.dp,
+                shape = RoundedCornerShape(15.dp),
+                onClick = {  },
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    //Product Image
+                    Box(
+                        modifier = Modifier.weight(2F)
+                    ){
+                        Image(
+                            //painter = rememberImagePainter(item.url),
+                            painter = painterResource(id = R.drawable.beer0),
+                            contentDescription = "",
+                            contentScale = ContentScale.Fit,
+                            alignment = Alignment.CenterStart,
+                            modifier = Modifier.padding(8.dp),
+                        )
+                    }
+
+                    //Title / Description
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(5.dp)
+                            .weight(4F),
+                        verticalArrangement = Arrangement.SpaceEvenly,
+                    ){
+                        Text( // Title
+                            textAlign = TextAlign.Start,
+                            style = MaterialTheme.typography.h5,
+                            overflow = TextOverflow.Ellipsis,
+                            //text = item.title,
+                            text = "Coolberg Non Alcoholic Beer - Mint",
+                            fontFamily = titleFontFamily,
+                            fontSize = 20.sp,
+                        )
+                        Text( // Price
+                            textAlign = TextAlign.Center,
+                            color = Color.Black,
+                            overflow = TextOverflow.Ellipsis,
+                            text = "MRP:Rs 79",
+                            fontFamily = descriptionFontFamily,
+                        )
+                    }
+
+                    //Count button
+                    Row(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .weight(2F)
+                            .padding(end = 5.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        //Add
+                        Box(
+                            modifier = Modifier
+                                .weight(2F)
+                                .background(Color.Transparent),
+                            contentAlignment = Alignment.Center,
+                        ){
+                            Surface(
+                                elevation = 3.dp,
+                                color = Color.Transparent
+                            ){
+                                IconButton(
+                                    onClick = {
+                                        //productCartViewModel.incrementProductCount(context,item.id,quantity)
+                                    },
+                                    modifier = Modifier
+                                        .clip(RoundedCornerShape(15))
+                                        .background(
+                                            Brush.verticalGradient(
+                                                listOf(
+                                                    Orange,
+                                                    DarkYellow
+                                                )
+                                            )
+                                        )
+                                        .size(width = 25.dp, height = 25.dp)
+                                ){
+                                    Icon(
+                                        imageVector = Icons.Default.Add,
+                                        contentDescription = "",
+                                        tint = Color.White,
+                                    )
+                                }
+                            }
+                        }
+
+                        //Count Value
+                        Text(text = "1", textAlign = TextAlign.Center)
+                        //Text(text = quantity.value.toString(),textAlign = TextAlign.Center)
+
+                        //Minus
+                        Box(
+                            modifier = Modifier
+                                .weight(2F)
+                                .background(Color.Transparent),
+                            contentAlignment = Alignment.Center,
+                        ){
+                            Surface(
+                                elevation = 3.dp,
+                                color = Color.Transparent
+                            ){
+                                IconButton(
+                                    onClick = {
+                                        //productCartViewModel.decrementProductCount(context,item.id,quantity)
+                                    },
+                                    modifier = Modifier
+                                        .clip(RoundedCornerShape(15))
+                                        .background(
+                                            Brush.verticalGradient(
+                                                listOf(
+                                                    Orange,
+                                                    DarkYellow
+                                                )
+                                            )
+                                        )
+                                        .size(width = 25.dp, height = 25.dp)
+                                        .clickable {
+
+                                        },
+
+                                    enabled = true,
+                                ){
+                                    Icon(
+                                        imageVector = Icons.Filled.Remove,
+                                        contentDescription = "",
+                                        tint = Color.White,
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            Spacer(modifier = Modifier.height(10.dp))
+        }
     }
 }
