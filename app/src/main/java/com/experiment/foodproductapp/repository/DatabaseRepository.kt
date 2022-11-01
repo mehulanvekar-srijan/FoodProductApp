@@ -21,8 +21,8 @@ class DatabaseRepository(context: Context) {
         return dao.getUserByEmail(email)
     }
 
-    fun updateUserByEmail(oldEmail:String,firstName:String,lastName:String,email:String,dob:String,password:String,phoneNumber:String){
-        dao.updateUserByEmail(oldEmail,firstName,lastName,email,dob,password,phoneNumber)
+    fun updateUserByEmail(email:String,firstName:String,lastName:String,dob:String,password:String,phoneNumber:String){
+        dao.updateUserByEmail(email,firstName,lastName,dob,password,phoneNumber)
     }
 
 

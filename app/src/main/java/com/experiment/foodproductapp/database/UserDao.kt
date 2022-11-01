@@ -16,7 +16,7 @@ interface UserDao {
     @Query("SELECT * FROM User WHERE email=:email")
     fun getUserByEmail(email: String): User
 
-    @Query("UPDATE User SET firstName=:firstName,lastname=:lastName,dob=:dob,email=:email,password=:password,phoneNumber=:phoneNumber WHERE email=:oldEmail ")
-    fun updateUserByEmail(oldEmail:String,firstName:String,lastName:String,email:String,dob:String,password:String,phoneNumber:String)
+    @Query("UPDATE User SET firstName=:firstName,lastname=:lastName,dob=:dob,password=:password,phoneNumber=:phoneNumber WHERE email=:email ")
+    fun updateUserByEmail(email:String,firstName:String,lastName:String,dob:String,password:String,phoneNumber:String)
 
 }
