@@ -13,6 +13,7 @@ data class User(
     var password: String,
     var dob: String,
     var phoneNumber: String,
+    var imagePath: String? = null
 ){
     constructor() : this("","","","","","") {}
 }

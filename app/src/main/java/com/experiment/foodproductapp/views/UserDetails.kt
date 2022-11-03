@@ -1,7 +1,11 @@
 package com.experiment.foodproductapp.views
 
 import android.app.DatePickerDialog
+import android.net.Uri
+import android.util.Log
 import android.widget.DatePicker
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -9,6 +13,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.relocation.bringIntoViewRequester
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -16,10 +21,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.twotone.EditCalendar
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,12 +43,15 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import coil.annotation.ExperimentalCoilApi
+import coil.compose.rememberImagePainter
 import com.experiment.foodproductapp.R
 import com.experiment.foodproductapp.domain.event.UserDetailsFormEvent
 import com.experiment.foodproductapp.ui.theme.DarkGray1
 import com.experiment.foodproductapp.ui.theme.DarkYellow
 import com.experiment.foodproductapp.ui.theme.LightGray1
 import com.experiment.foodproductapp.ui.theme.Orange
+import com.experiment.foodproductapp.utility.ComposeFileProvider
 import com.experiment.foodproductapp.viewmodels.UserDetailsViewModel
 import kotlinx.coroutines.launch
 import java.util.*
@@ -62,7 +67,7 @@ fun show() {
     UserDetails(navHostControllerLambda, email = string)
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalCoilApi::class)
 @Composable
 fun UserDetails(
     navHostControllerLambda: () -> NavHostController,
@@ -107,9 +112,53 @@ fun UserDetails(
 
         LaunchedEffect(key1 = Unit) {
             userDetailsViewModel.execute(context, email)
+            userDetailsViewModel.initProfilePicture(context,email) //Load image from db
         }
+
+        val imagePicker = rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.GetContent(),
+            onResult = { uri ->
+
+                //uri from argument requires permission to access it after relaunching the app
+                //Hence create a local file in Apps internal storage and copy the selected image
+                //into a local file, and save that uri in database
+
+                val localUri = ComposeFileProvider.getImageUri(context)
+                if (uri != null) {
+
+                    val inputStream = context.contentResolver.openInputStream(uri)
+                    val outputStream = context.contentResolver.openOutputStream(localUri)
+
+                    inputStream.use{
+                        if (outputStream != null) {
+                            it?.copyTo(outputStream)
+                        }
+                    }
+                }
+
+                userDetailsViewModel.hasImage.value = localUri != null           //Set has image
+                userDetailsViewModel.imageUri.value = localUri                   //Set URI
+                userDetailsViewModel.updateUserProfilePictureInDatabase(        //Update database
+                    context,email,localUri
+                )
+
+            })
+
+        var intermediateUri: Uri? = null
+        val cameraLauncher = rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.TakePicture(),
+            onResult = { status ->
+                userDetailsViewModel.hasImage.value = status                //Set has image
+                userDetailsViewModel.imageUri.value = intermediateUri       //Set URI
+                userDetailsViewModel.updateUserProfilePictureInDatabase(    //Update database
+                    context,email,intermediateUri
+                )
+            }
+        )
+
         Box(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
         ) {
             Image(
                 painter = painterResource(id = R.drawable.background_yellow_wave),
@@ -124,13 +173,46 @@ fun UserDetails(
                 horizontalAlignment = CenterHorizontally,
             ) {
 
-                Image(
-                    modifier = Modifier
-                        .fillMaxHeight(0.25F)
-                        .padding(25.dp),
-                    painter = painterResource(id = R.drawable.ic_profile),
-                    contentDescription = "Profile"
-                )
+                if (userDetailsViewModel.hasImage.value && userDetailsViewModel.imageUri.value != null){
+                    Image(painter = rememberImagePainter(userDetailsViewModel.imageUri.value),
+                        contentDescription = "Profile Pic",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .fillMaxHeight(0.25F)
+                            .padding(25.dp)
+                            .aspectRatio(1F)
+                            .clip(CircleShape)
+                    )
+                }
+                else{
+                    Image(
+                        painter = rememberImagePainter(R.drawable.ic_user),
+                        contentDescription = "Profile Pic",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .fillMaxHeight(0.25F)
+                            .padding(25.dp)
+                            .aspectRatio(1F)
+                            .clip(CircleShape)
+                    )
+                }
+
+                //Pick Click
+                Column {
+                    Button(onClick = { imagePicker.launch("image/*") }
+                    ) {
+                        Text(text = "pick")
+                    }
+                    Button(onClick = {
+                        val uri = ComposeFileProvider.getImageUri(context)
+                        cameraLauncher.launch(uri)
+                        intermediateUri = uri
+                    }
+                    ) {
+                        Text(text = "click")
+                    }
+                }
+
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -535,6 +617,7 @@ fun UserDetails(
                 }
             }
         }
+
         TopAppBar(
             title = { Text(text = "Beer App", color = Color.Black) },
             backgroundColor = Color.Transparent,

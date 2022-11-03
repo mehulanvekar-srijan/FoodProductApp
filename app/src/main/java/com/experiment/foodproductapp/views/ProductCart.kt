@@ -1,6 +1,7 @@
 package com.experiment.foodproductapp.views
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -38,7 +39,7 @@ import com.experiment.foodproductapp.database.Product
 import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.viewmodels.ProductCartViewModel
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalAnimationApi::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ProductCart(
     navHostControllerLambda: () -> NavHostController,
@@ -67,7 +68,6 @@ fun ProductCart(
             verticalArrangement = Arrangement.spacedBy(9.dp)
         ) {
             item {
-
                 TopAppBar(
                     title = {
                         Row(horizontalArrangement = Arrangement.Center) {
@@ -100,8 +100,6 @@ fun ProductCart(
                     backgroundColor = Color.Transparent,
                     elevation = 0.dp,
                 )
-
-
             }
 
             items(
@@ -124,7 +122,7 @@ fun ProductCart(
                     directions = setOf(DismissDirection.EndToStart),
                     dismissThresholds = { FractionalThreshold(0.2F) },
                     dismissContent = {
-                        CardView(item,context,productCartViewModel)
+                        CardView(item,productCartViewModel)
                     },
                     background = {
 
@@ -158,82 +156,27 @@ fun ProductCart(
 
         Spacer(modifier = Modifier.padding(5.dp))
 
-        Column( //Checkout Button
-            modifier = Modifier
-                .shadow(70.dp)
-                .clip(RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp))
-                .weight(1F)
-                .fillMaxSize()
-                .background(DarkYellow),
+        Box(modifier = Modifier
+            .shadow(70.dp)
+            .clip(RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp))
+            .weight(1F)
+            .fillMaxSize()
+            .background(DarkYellow)
         ){
-
-            //Price row
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(0.40F),
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(
-                    text = "Price ",
-                    color = Color.White,
-                    modifier = Modifier
-                        .padding(start = 25.dp)
-                        .weight(1F),
-                    textAlign = TextAlign.Start,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp,
-                )
-
-                Text(
-                    text = "Rs : ${productCartViewModel.sum.value}",
-                    color = Color.White,
-                    modifier = Modifier
-                        .padding(end = 25.dp)
-                        .weight(1F),
-                    textAlign = TextAlign.End,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp,
-                )
-            }
-
-            //Checkout button
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-            ) {
-                Button(
-                    modifier = Modifier
-                        .padding(start = 30.dp, end = 30.dp, top = 6.dp, bottom = 9.dp)
-                        .fillMaxSize(),
-                    onClick = { /*TODO*/ },
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = Color.White,
-                    ),
-                    shape = RoundedCornerShape(50),
-                ) {
-                    Text(
-                        text = "CHECKOUT",
-                        color = Color.Black,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.padding(5.dp))
+            CheckoutArea(productCartViewModel)
         }
+
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalCoilApi::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun CardView(
     item: Product,
-    context: Context,
     productCartViewModel: ProductCartViewModel
 ){
     val quantity = remember{ mutableStateOf(0) }
+    val context = LocalContext.current
 
     LaunchedEffect(key1 = Unit){
         productCartViewModel.getProductCount(context,item.id,quantity)
@@ -254,14 +197,7 @@ fun CardView(
             Box(
                 modifier = Modifier.weight(2F)
             ){
-                Image(
-                    painter = rememberImagePainter(item.url),
-                    //painter = painterResource(id = R.drawable.beer0),
-                    contentDescription = "",
-                    contentScale = ContentScale.Fit,
-                    alignment = Alignment.CenterStart,
-                    modifier = Modifier.padding(8.dp),
-                )
+                LoadImage(item)
             }
 
             //Title / Description
@@ -397,6 +333,80 @@ fun CardView(
                 }
             }
         }
+    }
+}
+
+@OptIn(ExperimentalCoilApi::class)
+@Composable
+fun LoadImage(item: Product){
+    Image(
+        painter = rememberImagePainter(item.url),
+        //painter = painterResource(id = R.drawable.beer0),
+        contentDescription = "",
+        contentScale = ContentScale.Fit,
+        alignment = Alignment.CenterStart,
+        modifier = Modifier.padding(8.dp),
+    )
+}
+
+@Composable
+fun CheckoutArea(productCartViewModel: ProductCartViewModel) {
+    Column{
+        //Price row
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(0.40F),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = "Price ",
+                color = Color.White,
+                modifier = Modifier
+                    .padding(start = 25.dp)
+                    .weight(1F),
+                textAlign = TextAlign.Start,
+                fontWeight = FontWeight.Bold,
+                fontSize = 20.sp,
+            )
+
+            Text(
+                text = "Rs : ${productCartViewModel.sum.value}",
+                color = Color.White,
+                modifier = Modifier
+                    .padding(end = 25.dp)
+                    .weight(1F),
+                textAlign = TextAlign.End,
+                fontWeight = FontWeight.Bold,
+                fontSize = 20.sp,
+            )
+        }
+
+        //Checkout button
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            Button(
+                modifier = Modifier
+                    .padding(start = 30.dp, end = 30.dp, top = 6.dp, bottom = 9.dp)
+                    .fillMaxSize(),
+                onClick = { /*TODO*/ },
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = Color.White,
+                ),
+                shape = RoundedCornerShape(50),
+            ) {
+                Text(
+                    text = "CHECKOUT",
+                    color = Color.Black,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.padding(5.dp))
     }
 }
 
