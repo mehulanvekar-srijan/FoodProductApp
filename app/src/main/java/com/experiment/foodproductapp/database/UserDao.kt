@@ -16,4 +16,14 @@ interface UserDao {
     @Query("SELECT * FROM User WHERE email=:email")
     fun getUserByEmail(email: String): User
 
+    @Query("UPDATE User SET firstName=:firstName,lastname=:lastName,dob=:dob,password=:password,phoneNumber=:phoneNumber WHERE email=:email ")
+    fun updateUserByEmail(email:String,firstName:String,lastName:String,dob:String,password:String,phoneNumber:String)
+
+
+    @Query("UPDATE User SET imagePath=:uri WHERE email=:email ")
+    fun updateUserProfilePicture(email:String,uri: String)
+
+    @Query("SELECT imagePath FROM User WHERE email=:email")
+    fun getImagePath(email: String): String
+
 }

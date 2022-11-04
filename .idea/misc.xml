@@ -34,10 +34,19 @@
         <entry key="../../../../layout/compose-model-1667177136025.xml" value="0.17440878378378377" />
         <entry key="../../../../layout/compose-model-1667181201560.xml" value="0.24957770270270271" />
         <entry key="../../../../layout/compose-model-1667214391936.xml" value="0.22001689189189189" />
-        <entry key="../../../../layout/compose-model-1667283793059.xml" value="0.25" />
+        <entry key="../../../../layout/compose-model-1667283678695.xml" value="0.165" />
+        <entry key="../../../../layout/compose-model-1667283793059.xml" value="0.22685185185185186" />
+        <entry key="../../../../layout/compose-model-1667301521404.xml" value="0.335" />
+        <entry key="../../../../layout/compose-model-1667309128428.xml" value="0.22001689189189189" />
+        <entry key="../../../../layout/compose-model-1667309140617.xml" value="0.45" />
+        <entry key="../../../../layout/compose-model-1667310232907.xml" value="0.375" />
+        <entry key="../../../../layout/compose-model-1667314976045.xml" value="0.335" />
+        <entry key="../../../../layout/compose-model-1667454520354.xml" value="0.22086148648648649" />
+        <entry key="../../../../layout/compose-model-1667456765099.xml" value="0.25" />
         <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.112" />
         <entry key="app/src/main/res/drawable/background_home_view.xml" value="0.112" />
         <entry key="app/src/main/res/drawable/background_yellow_wave.xml" value="0.1655" />
+        <entry key="app/src/main/res/drawable/ic_alcohol_percentage.xml" value="0.1485" />
         <entry key="app/src/main/res/drawable/ic_beer.xml" value="0.1285" />
         <entry key="app/src/main/res/drawable/ic_beer_bucket.xml" value="0.1205" />
         <entry key="app/src/main/res/drawable/ic_beer_cheers.xml" value="0.1205" />
@@ -54,12 +63,13 @@
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.112" />
         <entry key="app/src/main/res/drawable/ic_percentage_p.xml" value="0.1225" />
         <entry key="app/src/main/res/drawable/ic_profile.xml" value="0.1225" />
-        <entry key="app/src/main/res/drawable/ic_rupee.xml" value="0.1225" />
+        <entry key="app/src/main/res/drawable/ic_rupee.xml" value="0.1485" />
         <entry key="app/src/main/res/drawable/ic_rupee_2.xml" value="0.1225" />
         <entry key="app/src/main/res/drawable/ic_rupee_sv.xml" value="0.1225" />
         <entry key="app/src/main/res/drawable/ic_splash_beer.xml" value="0.1375" />
         <entry key="app/src/main/res/drawable/ic_stars.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_symbol_scatter_haikei.xml" value="0.1125" />
+        <entry key="app/src/main/res/drawable/ic_user.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_wine.xml" value="0.1375" />
       </map>
     </option>
