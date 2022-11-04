@@ -1,6 +1,8 @@
 package com.experiment.foodproductapp.viewmodels
 
 import android.content.Context
+import android.net.Uri
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
@@ -10,9 +12,7 @@ import com.experiment.foodproductapp.repository.DatabaseRepository
 import com.experiment.foodproductapp.domain.event.UserDetailsFormEvent
 import com.experiment.foodproductapp.domain.use_case.*
 import com.experiment.foodproductapp.states.UserDetailsFormState
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 
 class UserDetailsViewModel(private val validateFirstName: ValidateName = ValidateName(),
                            private val validateLastName: ValidateName = ValidateName(),
@@ -110,6 +110,34 @@ class UserDetailsViewModel(private val validateFirstName: ValidateName = Validat
                 date = _user.value.dob,
                 phoneNumber = _user.value.phoneNumber
             )
+        }
+    }
+
+    val hasImage = mutableStateOf(false)
+    val imageUri = mutableStateOf<Uri?>(null)
+
+    fun initProfilePicture(
+        context: Context,
+        email:String,
+    ){
+        viewModelScope.launch(Dispatchers.IO){
+            val imagePath: String? = DatabaseRepository(context).getImagePath(email)
+            if(imagePath != null){
+                imageUri.value = Uri.parse(imagePath)
+                hasImage.value = true
+            }
+            else hasImage.value = false
+            Log.d("testCam", "1 - initProfilePicture: imgPath =  ${imageUri.value}")
+        }
+    }
+
+    fun updateUserProfilePictureInDatabase(
+        context: Context,
+        email:String,
+        uri: Uri?,
+    ){
+        viewModelScope.launch(Dispatchers.IO){
+            DatabaseRepository(context).updateUserProfilePicture(email,uri.toString())
         }
     }
 }

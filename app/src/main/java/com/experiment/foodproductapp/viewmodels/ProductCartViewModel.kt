@@ -20,7 +20,7 @@ class ProductCartViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO){
             removeFromProductList(item)
             removeFromDatabase(context,item)
-            computePrice()
+            updateSum()
         }
     }
 
@@ -36,24 +36,20 @@ class ProductCartViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO){
             val list = DatabaseRepository(context).readAllProducts()
             list.forEach{ _cartList.add(it) }
-            computePrice()
+            updateSum()
         }
     }
 
     //===== count feature =====
-    private val _sum = mutableStateOf(initPrice())
+    private val _sum = mutableStateOf(computeSum())
     val sum = _sum
 
-    private fun initPrice(): Int{
-        var sum = 0
-        _cartList.forEach{ sum += (it.price * it.count) }
-        return sum
+    private fun computeSum(): Int = _cartList.fold(0){ result, value ->
+            result + (value.price * value.count)
     }
 
-    private fun computePrice(){
-        var sum = 0
-        _cartList.forEach{ sum += (it.price * it.count) }
-        _sum.value = sum
+    private fun updateSum() {
+        _sum.value = computeSum()
     }
 
     //Get count from db and set state
@@ -77,7 +73,7 @@ class ProductCartViewModel : ViewModel() {
             _cartList.forEach { if(it.id == id) it.count = currentCount }       //set count of list in RAM
             // or state.value = currentCount
 
-            computePrice()   // update sum vale
+            updateSum()   // update sum vale
         }
 
     }
@@ -96,7 +92,7 @@ class ProductCartViewModel : ViewModel() {
             _cartList.forEach { if(it.id == id) it.count = currentCount }       //set count of list in RAM
             // or state.value = currentCount
 
-            computePrice()     // update sum vale
+            updateSum()     // update sum vale
         }
 
     }
