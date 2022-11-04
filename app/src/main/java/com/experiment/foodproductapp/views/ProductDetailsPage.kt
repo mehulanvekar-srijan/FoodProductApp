@@ -58,9 +58,14 @@ val  productDetails =  Product(
 @Composable
 fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScreenViewModel: HomeScreenViewModel) {
 
-    //val productDetails = homeScreenViewModel.productForDetailPage
+    val productDetails = homeScreenViewModel.productForDetailPage
     val context = LocalContext.current
     val scrollState = rememberScrollState()
+    val quantity = remember {mutableStateOf(0)}
+
+    LaunchedEffect(key1 = Unit) {
+        homeScreenViewModel.getProductCount(context,productDetails!!.id,quantity)
+    }
 
     ChangeBarColors(statusColor = Color.White, navigationBarColor = DarkYellow)
 
@@ -187,17 +192,21 @@ fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScr
                         //Add
                         Box(
                             modifier = Modifier
-                                //.weight(2F)
                                 .background(Color.Transparent)
                                 .padding(end = 10.dp),
                             contentAlignment = Alignment.TopEnd
                         ){
                             Surface(
-                                //elevation = 3.dp,
                                 color = Color.Transparent
                             ){
                                 IconButton(
-                                    onClick = {},
+                                    onClick = {
+                                        homeScreenViewModel.incrementProductCount(
+                                            context,
+                                            productDetails!!.id,
+                                            quantity
+                                        )
+                                    },
                                     modifier = Modifier
                                         .clip(RoundedCornerShape(50))
                                         .background(
@@ -222,13 +231,12 @@ fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScr
                         //Count Value
                         Box(
                             modifier = Modifier
-                                //.weight(1F)
                                 .background(Color.Transparent)
                                 .clip(RoundedCornerShape(50)),
                             contentAlignment = Alignment.Center,
                         ) {
                             Text(
-                                text = "0",
+                                text = "" + quantity.value,
                                 style = TextStyle(
                                     fontSize = 25.sp,
                                 ),
@@ -242,17 +250,21 @@ fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScr
                         //Minus
                         Box(
                             modifier = Modifier
-                                //.weight(1F)
                                 .background(Color.Transparent)
                                 .padding(start = 10.dp),
                             contentAlignment = Alignment.TopEnd,
                         ){
                             Surface(
-                                //elevation = 3.dp,
                                 color = Color.Transparent
                             ){
                                 IconButton(
-                                    onClick = {},
+                                    onClick = {
+                                        homeScreenViewModel.decrementProductCount(
+                                            context,
+                                            productDetails!!.id,
+                                            quantity
+                                        )
+                                    },
                                     modifier = Modifier
                                         .clip(RoundedCornerShape(50))
                                         .background(
@@ -266,7 +278,7 @@ fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScr
                                         .size(width = 35.dp, height = 35.dp)
                                 ){
                                     Icon(
-                                        imageVector = Icons.Default.Add,
+                                        imageVector = Icons.Default.Remove,
                                         contentDescription = "",
                                         tint = Color.White,
                                     )

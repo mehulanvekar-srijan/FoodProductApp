@@ -48,7 +48,7 @@ fun ProductCart(
     val context = LocalContext.current
     ChangeBarColors(statusColor = Color.White, navigationBarColor = DarkYellow)
 
-    LaunchedEffect(key1 = Unit){
+    LaunchedEffect(key1 = Unit) {
         productCartViewModel.fetchCartList(context)
     }
 
