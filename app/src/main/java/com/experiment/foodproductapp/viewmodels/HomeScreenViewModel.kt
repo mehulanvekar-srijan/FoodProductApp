@@ -18,8 +18,8 @@ class HomeScreenViewModel : ViewModel() {
 
     private var userEmail  = mutableStateOf("")
 
-
-    var productForDetailPage by mutableStateOf<Product?>(null)
+    //creating empty object
+     var productForDetailPage by mutableStateOf<Product>(Product())
 
 
 

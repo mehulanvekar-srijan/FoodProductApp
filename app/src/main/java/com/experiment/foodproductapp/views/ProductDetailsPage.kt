@@ -59,8 +59,8 @@ import com.experiment.foodproductapp.viewmodels.HomeScreenViewModel
 //    val navHostController = rememberNavController()
 //    ProductDetailsPage({navHostController },viewModel())
 //}
-
-
+//
+//
 //val  productDetails =  Product(
 //    id = 0,
 //    url = "https://www.bigbasket.com/media/uploads/p/xxl/40213061_2-coolberg-non-alcoholic-beer-malt.jpg",
@@ -81,7 +81,7 @@ fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScr
     val quantity = remember {mutableStateOf(0)}
 
     LaunchedEffect(key1 = Unit) {
-        homeScreenViewModel.getProductCount(context,productDetails!!.id,quantity)
+        homeScreenViewModel.getProductCount(context,productDetails.id,quantity)
     }
 
     ChangeBarColors(statusColor = Color.White, navigationBarColor = DarkYellow)
@@ -133,7 +133,7 @@ fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScr
                             contentAlignment = Alignment.Center
                         ) {
                             Image(
-                                painter = rememberImagePainter(productDetails!!.url),
+                                painter = rememberImagePainter(productDetails.url),
                                 //painter = painterResource(id = R.drawable.beer),
                                 contentDescription = "",
                                 contentScale = ContentScale.FillWidth,
@@ -151,7 +151,7 @@ fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScr
                             .fillMaxWidth()
                     ) {
                         Text(
-                            text = productDetails!!.title,
+                            text = productDetails.title,
                             color = Color.DarkGray,
                             style = TextStyle(
                                 fontWeight = FontWeight.SemiBold,
@@ -173,7 +173,7 @@ fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScr
                     ) {
                         //item {
                         Text(
-                            text = productDetails!!.description,
+                            text = productDetails.description,
                             color = LightDarkGray,
                             style = TextStyle(
                                 fontSize = 17.sp,
@@ -218,7 +218,7 @@ fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScr
                                     onClick = {
                                         homeScreenViewModel.incrementProductCount(
                                             context,
-                                            productDetails!!.id,
+                                            productDetails.id,
                                             quantity
                                         )
                                     },
@@ -276,7 +276,7 @@ fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScr
                                     onClick = {
                                         homeScreenViewModel.decrementProductCount(
                                             context,
-                                            productDetails!!.id,
+                                            productDetails.id,
                                             quantity
                                         )
                                     },
@@ -318,8 +318,8 @@ fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScr
                 ) {
                     Column(
                         modifier = Modifier
-                            .fillMaxHeight()
-
+                            .fillMaxHeight(),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.ic_percentage_p),
@@ -355,7 +355,8 @@ fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScr
 
                     Column(
                         modifier = Modifier
-                            .fillMaxHeight()
+                            .fillMaxHeight(),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.ic_rupee_2),
@@ -364,7 +365,7 @@ fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScr
                         )
 
                         Text(
-                            text = "Rs. " + productDetails!!.price,
+                            text = "Rs. " + productDetails.price,
                             color = Color.White,
                             style = TextStyle(
                                 fontWeight = FontWeight.Normal,
@@ -389,7 +390,7 @@ fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScr
         },
         onProductAddClick = {
             if (quantity.value == 0) {
-                homeScreenViewModel.addProductToCart(productDetails!!, context)
+                homeScreenViewModel.addProductToCart(productDetails, context)
                 quantity.value++
             }
         }
