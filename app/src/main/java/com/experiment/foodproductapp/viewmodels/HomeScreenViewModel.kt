@@ -104,12 +104,7 @@ class HomeScreenViewModel : ViewModel() {
     //Get count from db and set state
     fun getProductCount(context: Context,id: Int,state: MutableState<Int>){
         viewModelScope.launch (Dispatchers.IO) {
-            try {
                 state.value = DatabaseRepository(context).getCount(id)
-            }
-            catch (e: android.database.sqlite.SQLiteConstraintException) {
-
-            }
         }
     }
 
@@ -117,20 +112,15 @@ class HomeScreenViewModel : ViewModel() {
     fun incrementProductCount(context: Context,id: Int,state: MutableState<Int>) {
         if (state.value == 0) {
             addProductToCart(productForDetailPage!!,context)
-            state.value += 1
         } else {
             viewModelScope.launch(Dispatchers.IO) {
-
                 var currentCount = DatabaseRepository(context).getCount(id)
                 currentCount += 1
-
                 DatabaseRepository(context).setCount(id = id, count = currentCount) //set count in db
             }
         }
-        //after updating count or adding product
-        //Log.d("product count", "incrementProductCount: ")
-        getProductCount(context = context, id = id, state = state) //set count of UI state
-        Log.d("productcount", "incrementProductCount: ${state.value}")
+        //after updating count or adding product update count state in UI
+        state.value += 1
     }
 
     //Get current count from db, decrement value, set state
@@ -139,14 +129,20 @@ class HomeScreenViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO){
 
             var currentCount = DatabaseRepository(context).getCount(id)
-            currentCount -= 1
+            if (currentCount != 0) {
+                currentCount -= 1
 
-            DatabaseRepository(context).setCount(id = id, count = currentCount) //set count in db
-            if (currentCount == 0) {
-                // remove product
-                removeFromDatabase(context,productForDetailPage!!)
+                DatabaseRepository(context).setCount(
+                    id = id,
+                    count = currentCount
+                ) //set count in db
+
+                if (currentCount == 0) {
+                    // remove product
+                    removeFromDatabase(context, productForDetailPage!!)
+                }
+               state.value = currentCount //set count of UI state
             }
-            getProductCount(context = context, id = id, state = state)          //set count of UI state
         }
     }
 }
