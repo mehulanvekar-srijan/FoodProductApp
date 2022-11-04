@@ -1,6 +1,7 @@
 package com.experiment.foodproductapp
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -12,6 +13,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.ui.theme.FoodProductAppTheme
+import com.experiment.foodproductapp.utility.payment
 import com.experiment.foodproductapp.viewmodels.HomeScreenViewModel
 import com.experiment.foodproductapp.views.*
 
@@ -60,14 +62,13 @@ class MainActivity : ComponentActivity() {
                         ProductCart(navHostControllerLambda)
                     }
                     composable(route = Screen.ProductDetailsScreen.route) {
-                        //val result =
-                        //    navHostController.previousBackStackEntry?.savedStateHandle?.get<Product>("product")
-                        // Log.d(TAG, "onCreate: ")
-
-                        // ProductDetailsPage (result)
                         ProductDetailsPage (
                             navHostControllerLambda,homeScreenViewModel = homeScreenViewModel
                         )
+                    }
+                    composable(route = Screen.PaymentScreen.route) {
+                        Log.d("testpayment", " in composable: ")
+                        payment(this@MainActivity)
                     }
                 }
             }

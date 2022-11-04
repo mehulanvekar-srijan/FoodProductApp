@@ -15,5 +15,5 @@ sealed class Screen(val route:String) {
         fun routeWithDate(data: String) = "HomeScreen/$data"
     }
     object ProductCart : Screen("ProductCart")
-
+    object PaymentScreen : Screen("PaymentScreen")
 }
