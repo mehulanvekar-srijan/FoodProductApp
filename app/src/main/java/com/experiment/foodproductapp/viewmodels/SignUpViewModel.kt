@@ -1,9 +1,7 @@
 package com.experiment.foodproductapp.viewmodels
 
-import android.app.DatePickerDialog
 import android.content.Context
 import android.util.Log
-import android.widget.DatePicker
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -19,9 +17,7 @@ import com.experiment.foodproductapp.states.SignUpFormState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
-import java.util.*
 
 class SignUpViewModel(
     private val validateFirstName: ValidateName = ValidateName(),

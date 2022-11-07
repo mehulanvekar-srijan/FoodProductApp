@@ -41,6 +41,7 @@ import com.experiment.foodproductapp.viewmodels.ProductCartViewModel
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ProductCart(
+    email:String?,
     navHostControllerLambda: () -> NavHostController,
     productCartViewModel: ProductCartViewModel = viewModel(),
 ) {
@@ -49,6 +50,9 @@ fun ProductCart(
     ChangeBarColors(statusColor = Color.White, navigationBarColor = DarkYellow)
 
     LaunchedEffect(key1 = Unit) {
+        if (email != null) {
+            productCartViewModel.email.value=email
+        }
         productCartViewModel.fetchCartList(context)
     }
 
@@ -165,7 +169,8 @@ fun ProductCart(
             CheckoutArea(
                 productCartViewModel = productCartViewModel,
                 navigate = {
-                    navHostControllerLambda().navigate(Screen.PaymentScreen.route)
+                    productCartViewModel.navigateToCheckout(navHostControllerLambda())
+//                    navHostControllerLambda().navigate(Screen.PaymentScreen.route)
                 }
             )
         }

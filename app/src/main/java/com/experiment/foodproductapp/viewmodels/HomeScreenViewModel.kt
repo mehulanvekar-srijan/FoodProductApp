@@ -74,7 +74,7 @@ class HomeScreenViewModel : ViewModel() {
         navHostController.navigate(Screen.UserDetails.routeWithDate(userEmail.value))
     }
     fun navigateToProductCart(navHostController: NavHostController){
-        navHostController.navigate(Screen.ProductCart.route)
+        navHostController.navigate(Screen.ProductCart.routeWithData(userEmail.value))
     }
 
     fun navigateToProductDetailsPage(navHostController: NavHostController){

@@ -5,7 +5,7 @@ import com.razorpay.Checkout
 import org.json.JSONObject
 
 
-fun payment(activity: Activity){
+fun payment(activity: Activity,email:String,phoneNumber:String,sum:String){
 
     Checkout.preload(activity)
     val co = Checkout()
@@ -20,7 +20,7 @@ fun payment(activity: Activity){
         options.put("theme.color", "#FDB515");
         options.put("currency","INR");
 //        options.put("order_id", "order_DBJOWzybf0sJbb");
-        options.put("amount","50000")//pass amount in currency subunits
+        options.put("amount", sum)//pass amount in currency subunits
 
 //        val retryObj = JSONObject();
 //        retryObj.put("enabled", true);
@@ -28,8 +28,8 @@ fun payment(activity: Activity){
 //        options.put("retry", retryObj);
 
         val prefill = JSONObject()
-        prefill.put("email","gaurav.kumar@example.com")
-        prefill.put("contact","9876543210")
+        prefill.put("email",email)
+        prefill.put("contact",phoneNumber)
 
         options.put("prefill",prefill)
         co.open(activity,options)

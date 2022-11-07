@@ -6,6 +6,8 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavHostController
+import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.database.Product
 import com.experiment.foodproductapp.repository.DatabaseRepository
 import kotlinx.coroutines.Dispatchers
@@ -15,6 +17,9 @@ class ProductCartViewModel : ViewModel() {
 
     private var _cartList = mutableStateListOf<Product>()
     val cartList = _cartList
+
+    private val _email = mutableStateOf("")
+    val email = _email
 
     fun onDismiss(context: Context,item: Product){
         viewModelScope.launch(Dispatchers.IO){
@@ -95,5 +100,10 @@ class ProductCartViewModel : ViewModel() {
             updateSum()     // update sum vale
         }
 
+    }
+
+    fun navigateToCheckout(navHostController: NavHostController){
+        _cartList.clear()
+        navHostController.navigate(Screen.CheckoutPage.routeWithData(email.value,sum.value))
     }
 }

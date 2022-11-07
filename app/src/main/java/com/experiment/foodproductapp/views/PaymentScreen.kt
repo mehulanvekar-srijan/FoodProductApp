@@ -1,6 +1,7 @@
 package com.experiment.foodproductapp.views
 
 import android.app.Activity
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,13 +16,19 @@ import com.experiment.foodproductapp.utility.payment
 
 @Composable
 fun PaymentScreen(
+    email: String?,
+    phoneNumber:String?,
+    sum: Int?,
     activityLambda: () -> Activity,
 ) {
-
+    Log.d("total1", sum.toString())
+    val total =sum.toString()
     val mainActivity = activityLambda() as MainActivity
 
     LaunchedEffect(key1 = Unit){
-        payment(mainActivity)
+        if (sum!=null) {
+            payment(mainActivity,email.toString(),phoneNumber.toString(),total)
+        }
     }
 
     if (mainActivity.status.value == true){
