@@ -12,12 +12,13 @@ data class User(
     var dob: String,
     var phoneNumber: String,
     var imagePath: String? = null,
+    var loggedIn: Boolean = false,
+
     var pincode: String? = null,
     var addressLine1: String? = null,
     var addressLine2: String? = null,
     var city: String? = null,
     var state: String? = null,
-
     ){
     constructor() : this("","","","","","") {}
 }

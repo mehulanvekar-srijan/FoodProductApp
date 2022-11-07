@@ -7,6 +7,8 @@ import android.widget.Toast
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavHostController
+import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.database.User
 import com.experiment.foodproductapp.repository.DatabaseRepository
 import com.experiment.foodproductapp.domain.event.UserDetailsFormEvent
@@ -138,6 +140,16 @@ class UserDetailsViewModel(private val validateFirstName: ValidateName = Validat
     ){
         viewModelScope.launch(Dispatchers.IO){
             DatabaseRepository(context).updateUserProfilePicture(email,uri.toString())
+        }
+    }
+
+
+    fun logOutUser(email: String,context: Context,navHostController: NavHostController){
+        viewModelScope.launch(Dispatchers.IO){
+            DatabaseRepository(context).updateLoginStatus(email = email,loggedIn = false)
+        }
+        navHostController.navigate(Screen.SignInScreen.route){
+            popUpTo(Screen.HomeScreen.route) { inclusive = true }
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.experiment.foodproductapp.views
 
+import android.util.Log
 import androidx.compose.animation.*
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -52,7 +53,6 @@ fun HomeScreenPage(
     navHostControllerLambda: () -> NavHostController,
     homeScreenViewModel: HomeScreenViewModel,
 ) {
-
     LaunchedEffect(key1 = Unit){ homeScreenViewModel.setEmail(email) }
 
     ChangeBarColors(navigationBarColor = Color.White)

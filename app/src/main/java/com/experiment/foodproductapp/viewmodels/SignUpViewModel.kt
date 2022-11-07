@@ -2,6 +2,8 @@ package com.experiment.foodproductapp.viewmodels
 
 import android.content.Context
 import android.util.Log
+import android.widget.DatePicker
+import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -18,6 +20,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.util.*
 
 class SignUpViewModel(
     private val validateFirstName: ValidateName = ValidateName(),
@@ -137,6 +141,9 @@ class SignUpViewModel(
 
     suspend fun navigateOnSucces(context: Context,navHostController: NavHostController) {
 
+        var success: Boolean? = null
+        val database = DatabaseRepository(context)
+
         val job = viewModelScope.launch(Dispatchers.IO){
             val user = User(
                 firstName = state.firstName,
@@ -146,14 +153,34 @@ class SignUpViewModel(
                 phoneNumber = state.phoneNumber,
                 dob = state.date,
             )
-            val database = DatabaseRepository(context)
-            database.addUser(user)
+
+            success = try {
+                database.addUser(user)
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(context,"Registration Successful", Toast.LENGTH_SHORT).show()
+                }
+                true
+            }
+            catch (e: android.database.sqlite.SQLiteConstraintException){
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(context,"Email already registered", Toast.LENGTH_SHORT).show()
+                }
+                false
+            }
         }
 
         job.join()
-        navHostController.navigate(Screen.SignInScreen.route){
-            popUpTo(Screen.SignUpScreen.route){inclusive=true}
-            popUpTo(Screen.SignInScreen.route){inclusive=true}
+
+        if(success != null && success == true){
+            //Update login status
+            viewModelScope.launch(Dispatchers.IO){
+                database.updateLoginStatus(email = state.email,loggedIn = true)
+            }
+
+            //Navigate
+            navHostController.navigate(Screen.HomeScreen.routeWithDate(state.email)){
+                popUpTo(Screen.SignUpScreen.route){inclusive=true}
+            }
         }
     }
 

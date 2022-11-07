@@ -20,6 +20,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.twotone.EditCalendar
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
@@ -630,8 +631,15 @@ fun UserDetails(
                         tint = Color.Black
                     )
                 }
-
             },
+            actions = {
+                IconButton(onClick = { userDetailsViewModel.logOutUser(email,context,navHostControllerLambda()) }) {
+                    Icon(
+                        imageVector = Icons.Default.Logout,
+                        contentDescription = "",
+                    )
+                }
+            }
         )
     }
 }

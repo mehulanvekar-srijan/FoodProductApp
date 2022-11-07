@@ -38,6 +38,12 @@ class DatabaseRepository(context: Context) {
         return dao.getImagePath(email)
     }
 
+    fun updateLoginStatus(email:String,loggedIn: Boolean){
+        dao.updateLoginStatus(email = email,loggedIn = loggedIn)
+    }
+
+    fun getLoggedInUser(): String? = dao.getLoggedInUser()
+
 
     fun addProduct(product: Product) = productDao.insertProduct(product)
 

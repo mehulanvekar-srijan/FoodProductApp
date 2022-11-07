@@ -84,6 +84,8 @@ class SignInViewModel(
             if (user != null) {
                 if (user.email == state.email && user.password == state.password ) {
 
+                    DatabaseRepository(context).updateLoginStatus(email = state.email,loggedIn = true)
+
                     withContext(Dispatchers.Main) {
 
                         Toast.makeText(context, "log in successfull", Toast.LENGTH_LONG).show()
