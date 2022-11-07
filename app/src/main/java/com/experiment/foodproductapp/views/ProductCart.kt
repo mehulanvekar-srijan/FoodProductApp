@@ -103,7 +103,7 @@ fun ProductCart(
 
             items(
                 items = productCartViewModel.cartList,
-                key = { it.hashCode() }
+                key = { it.id }
             ){ item ->
 
                 val dismissState = rememberDismissState(

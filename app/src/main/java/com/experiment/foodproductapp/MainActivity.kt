@@ -1,9 +1,9 @@
 package com.experiment.foodproductapp
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -13,21 +13,27 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.ui.theme.FoodProductAppTheme
-import com.experiment.foodproductapp.utility.payment
 import com.experiment.foodproductapp.viewmodels.HomeScreenViewModel
 import com.experiment.foodproductapp.views.*
+import com.razorpay.PaymentData
+import com.razorpay.PaymentResultWithDataListener
 
-class MainActivity : ComponentActivity() {
+class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
+
+    var navHostController: NavHostController? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val navHostController = rememberNavController()
-            val navHostControllerLambda : () -> NavHostController = { navHostController }
+
+            navHostController = rememberNavController()
+
+            val navHostControllerLambda : () -> NavHostController = { navHostController as NavHostController }
             val homeScreenViewModel: HomeScreenViewModel = viewModel()
 
             FoodProductAppTheme {
                 NavHost(
-                    navController = navHostController,
+                    navController = navHostController as NavHostController,
                     startDestination = Screen.SplashScreen.route
                 ) {
                     composable(route = Screen.SplashScreen.route) {
@@ -67,11 +73,21 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                     composable(route = Screen.PaymentScreen.route) {
-                        Log.d("testpayment", " in composable: ")
-                        payment(this@MainActivity)
+                        PaymentScreen { this@MainActivity }
                     }
                 }
             }
         }
+    }
+
+
+    val status by lazy {  mutableStateOf<Boolean?>(null)  }
+
+    override fun onPaymentSuccess(p0: String?, p1: PaymentData?) {
+        status.value = true
+    }
+
+    override fun onPaymentError(p0: Int, p1: String?, p2: PaymentData?) {
+        status.value = false
     }
 }

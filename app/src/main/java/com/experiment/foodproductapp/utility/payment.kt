@@ -9,7 +9,7 @@ fun payment(activity: Activity){
 
     Checkout.preload(activity)
     val co = Checkout()
-    co.setKeyID("") // Key removed for security reasons
+    co.setKeyID("rzp_test_IK3XzQPXxZsts7") // Key removed for security reasons
 
     try {
         val options = JSONObject()

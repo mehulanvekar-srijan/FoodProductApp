@@ -44,7 +44,9 @@ fun ForgotPassword(
     val focusManager = LocalFocusManager.current
 
     val inputList = remember { mutableStateListOf("","","","") }
-    val showEnterOTP = remember { mutableStateOf(true) }
+
+    val showEnterEmail = remember { mutableStateOf(true) }
+    val showEnterOTP = remember { mutableStateOf(false) }
     val showEnterPasswordTextField = remember { mutableStateOf(false) }
 
     Box(modifier = Modifier.fillMaxSize()){
@@ -71,16 +73,72 @@ fun ForgotPassword(
                 contentDescription = "brand logo"
             )
 
-            AnimatedVisibility(visible = showEnterOTP.value) {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clip(RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp))
-                        .background(Color.White),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
-                ){
-                    item {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp))
+                    .background(Color.White)
+                    .padding(20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+            ){
+                item {
+                    AnimatedVisibility(visible = showEnterEmail.value){
+                        Text(
+                            text = "Please enter your registered email",
+                            style = MaterialTheme.typography.h4,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(10.dp),
+                            fontWeight = FontWeight.Bold,
+                            fontFamily = titleFontFamily
+                        )
+                        Spacer(modifier = Modifier.padding(30.dp))
+                    }
+                }
+                item {
+                    AnimatedVisibility(visible = showEnterEmail.value){
+                        TextField(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            value = "",
+                            shape= RoundedCornerShape(30.dp),
+                            onValueChange = {},
+                            label = { Text(text = "Email", color = Color.Black) },
+                            colors = TextFieldDefaults.textFieldColors(
+                                textColor = Color.Black,
+                                backgroundColor = LightGray1,
+                                placeholderColor = Color.White,
+                                cursorColor = Color.Black,
+                                focusedLabelColor = Color.Black,
+                                errorCursorColor = Color.Black,
+                                errorLabelColor = Color.Red,
+                                focusedIndicatorColor = Color.Transparent,
+                                unfocusedIndicatorColor = Color.Transparent,
+                                unfocusedLabelColor = Orange,
+                            ),
+                        )
+                        Spacer(modifier = Modifier.padding(10.dp))
+                    }
+                }
+                item {
+                    AnimatedVisibility(visible = showEnterEmail.value){
+                        Button(
+                            onClick = {
+                                showEnterOTP.value = true
+                                showEnterEmail.value = false
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                backgroundColor = DarkYellow,
+                                contentColor = Color.White
+                            ),
+                        ) {
+                            Text(text = "Next")
+                        }
+                    }
+                }
+
+                item {
+                    AnimatedVisibility(visible = showEnterOTP.value){
                         Text(
                             text = "Enter 4 digit OTP sent via email",
                             style = MaterialTheme.typography.h4,
@@ -89,8 +147,11 @@ fun ForgotPassword(
                             fontWeight = FontWeight.Bold,
                             fontFamily = titleFontFamily
                         )
+                        Spacer(modifier = Modifier.padding(30.dp))
                     }
-                    item {
+                }
+                item {
+                    AnimatedVisibility(visible = showEnterOTP.value){
                         Row(
                             modifier = Modifier
                                 .padding(5.dp)
@@ -124,11 +185,11 @@ fun ForgotPassword(
                                 )
                             }
                         }
-                    }
-                    item {
                         Spacer(modifier = Modifier.padding(10.dp))
                     }
-                    item {
+                }
+                item {
+                    AnimatedVisibility(visible = showEnterOTP.value){
                         Button(
                             onClick = {
                                 var str = ""
@@ -145,19 +206,8 @@ fun ForgotPassword(
                         }
                     }
                 }
-            }
-
-            AnimatedVisibility(visible = showEnterPasswordTextField.value) {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clip(RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp))
-                        .background(Color.White)
-                        .padding(20.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
-                ){
-                    item {
+                item {
+                    AnimatedVisibility(visible = showEnterPasswordTextField.value){
                         Text(
                             text = "Please enter your new password",
                             style = MaterialTheme.typography.h4,
@@ -168,7 +218,9 @@ fun ForgotPassword(
                         )
                         Spacer(modifier = Modifier.padding(30.dp))
                     }
-                    item {
+                }
+                item {
+                    AnimatedVisibility(visible = showEnterPasswordTextField.value){
                         TextField(
                             modifier = Modifier
                                 .fillMaxWidth(),
@@ -189,9 +241,11 @@ fun ForgotPassword(
                                 unfocusedLabelColor = Orange,
                             ),
                         )
-                        Spacer(modifier = Modifier.padding(10.dp))
+                        Spacer(modifier = Modifier.padding(30.dp))
                     }
-                    item {
+                }
+                item {
+                    AnimatedVisibility(visible = showEnterPasswordTextField.value){
                         TextField(
                             modifier = Modifier
                                 .fillMaxWidth(),
@@ -216,9 +270,6 @@ fun ForgotPassword(
                 }
             }
         }
-
-
-
     }
 
 }

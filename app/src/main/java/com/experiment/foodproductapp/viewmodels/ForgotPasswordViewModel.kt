@@ -1,9 +1,13 @@
 package com.experiment.foodproductapp.viewmodels
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.experiment.foodproductapp.repository.DatabaseRepository
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -14,11 +18,16 @@ import okhttp3.RequestBody
 
 class ForgotPasswordViewModel : ViewModel() {
 
-    init {
-        sendOtp()
+    suspend fun isUserRegistered(context: Context, email: String) {
+        val deferred: Deferred<Boolean> = viewModelScope.async(Dispatchers.IO){
+            val result = DatabaseRepository(context).getUserByEmail(email)
+            result != null
+        }
+
+        deferred.await()
     }
 
-    private fun sendOtp(){
+    fun sendOtp(){
         val otp = (Math.random() * 9000).toInt() + 1000
         val client = OkHttpClient()
         val mediaType = "application/json".toMediaTypeOrNull()
