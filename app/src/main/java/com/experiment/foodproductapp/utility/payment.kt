@@ -34,7 +34,7 @@ fun payment(activity: Activity,email:String,phoneNumber:String,sum:String){
         options.put("prefill",prefill)
         co.open(activity,options)
 
-    }catch (e: Exception){
+    } catch (e: Exception) {
         e.printStackTrace()
     }
 }

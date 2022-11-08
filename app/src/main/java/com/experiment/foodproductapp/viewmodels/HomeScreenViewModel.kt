@@ -2,7 +2,6 @@ package com.experiment.foodproductapp.viewmodels
 
 import android.content.Context
 import android.util.Log
-import android.widget.Toast
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,7 +11,6 @@ import com.experiment.foodproductapp.database.Product
 import com.experiment.foodproductapp.repository.DatabaseRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class HomeScreenViewModel : ViewModel() {
 
@@ -71,7 +69,7 @@ class HomeScreenViewModel : ViewModel() {
     }
 
     fun navigateToUserDetails(navHostController: NavHostController){
-        navHostController.navigate(Screen.UserDetails.routeWithDate(userEmail.value))
+        navHostController.navigate(Screen.UserDetails.routeWithData(userEmail.value))
     }
     fun navigateToProductCart(navHostController: NavHostController){
         navHostController.navigate(Screen.ProductCart.routeWithData(userEmail.value))
