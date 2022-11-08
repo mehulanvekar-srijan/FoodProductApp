@@ -39,7 +39,7 @@ class ProductCartViewModel : ViewModel() {
 
     fun fetchCartList(context: Context){
         viewModelScope.launch(Dispatchers.IO){
-            val list = DatabaseRepository(context).readAllProducts()
+            val list = DatabaseRepository(context).readAllProducts(_email.value)
             list.forEach{ _cartList.add(it) }
             updateSum()
         }

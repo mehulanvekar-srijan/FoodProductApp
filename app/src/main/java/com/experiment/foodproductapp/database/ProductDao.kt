@@ -13,6 +13,9 @@ interface ProductDao {
     @Query("SELECT * FROM Product")
     fun readAllProducts() : MutableList<Product>
 
+    @Query("SELECT * FROM Product WHERE email = :email")
+    fun readAllProducts(email: String) : MutableList<Product>
+
     @Query("DELETE FROM Product WHERE id = :id")
     fun deleteProduct(id: Int)
 

@@ -86,6 +86,7 @@ class HomeScreenViewModel : ViewModel() {
     fun addProductToCart(item: Product,context: Context) {
         viewModelScope.launch(Dispatchers.IO){
             try {
+                item.email = userEmail.value
                 DatabaseRepository(context).addProduct(item)
             }
             catch (e: android.database.sqlite.SQLiteConstraintException){

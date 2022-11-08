@@ -5,6 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class Product(
+    var email: String? = null,
     @PrimaryKey var id: Int,
     var url: String,
     var title: String,
