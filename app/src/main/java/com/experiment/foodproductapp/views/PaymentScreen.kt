@@ -2,53 +2,128 @@ package com.experiment.foodproductapp.views
 
 import android.app.Activity
 import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.twotone.ThumbsUpDown
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.experiment.foodproductapp.MainActivity
+import com.experiment.foodproductapp.R
+import com.experiment.foodproductapp.constants.Screen
+import com.experiment.foodproductapp.ui.theme.LightDarkGray
+import com.experiment.foodproductapp.ui.theme.descriptionFontFamily
+import com.experiment.foodproductapp.ui.theme.titleFontFamily
 import com.experiment.foodproductapp.utility.payment
+import kotlinx.coroutines.delay
 
 @Composable
 fun PaymentScreen(
+    navHostControllerLambda: () -> NavHostController,
     email: String?,
-    phoneNumber:String?,
+    phoneNumber: String?,
     sum: Int?,
     activityLambda: () -> Activity,
 ) {
     Log.d("total1", sum.toString())
-    val total =sum.toString()
+    val total = sum.toString()
     val mainActivity = activityLambda() as MainActivity
 
-    LaunchedEffect(key1 = Unit){
-        if (sum!=null) {
-            payment(mainActivity,email.toString(),phoneNumber.toString(),total)
+    LaunchedEffect(key1 = Unit) {
+        if (sum != null) {
+            payment(mainActivity, email.toString(), phoneNumber.toString(), total)
         }
     }
 
-    if (mainActivity.status.value == true){
+    if (mainActivity.status.value == true) {
         Box(
             modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Green),
+                .fillMaxSize(),
             contentAlignment = Alignment.Center,
-        ){
-            Text(text = "Success")
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.background_yellow_wave),
+                contentDescription = "Background Image",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
+            Column(
+                Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Icon(
+                    modifier = Modifier.size(200.dp),
+                    painter = painterResource(id = R.drawable.ic_baseline_assignment_turned_in_24),
+                    contentDescription = "success"
+                )
+                Text(
+                    text = "Order Placed !",
+                    fontFamily = titleFontFamily,
+                    fontSize = 24.sp,
+                    color = Color.DarkGray
+                )
+                Text(
+                    text = "Your Order was Placed Successfully",
+                    fontFamily = descriptionFontFamily,
+                    color = Color.DarkGray
+                )
+            }
         }
     }
-    if (mainActivity.status.value == false){
+    if (mainActivity.status.value == false) {
+        LaunchedEffect(key1 = Unit) {
+            delay(3000)
+            navHostControllerLambda().navigate(Screen.ProductCart.routeWithData(email.toString())){
+                popUpTo(Screen.PaymentScreen.route){inclusive=true}
+                popUpTo(Screen.CheckoutPage.route){inclusive=true}
+                popUpTo(Screen.ProductCart.route){inclusive=true}
+            }
+        }
         Box(
             modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Red),
+                .fillMaxSize(),
             contentAlignment = Alignment.Center,
-        ){
-            Text(text = "Failed")
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.background_yellow_wave),
+                contentDescription = "Background Image",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
+            Column(
+                Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Icon(
+                    modifier = Modifier.size(200.dp),
+                    painter = painterResource(id = R.drawable.ic_baseline_assignment_late_24),
+                    contentDescription = "failure"
+                )
+                Text(
+                    text = "Payment Failed !",
+                    fontFamily = titleFontFamily,
+                    fontSize = 24.sp,
+                    color = Color.DarkGray
+                )
+                Text(
+                    text = "redirecting you to product cart",
+                    fontFamily = descriptionFontFamily,
+                    color = Color.DarkGray
+                )
+            }
         }
     }
 }

@@ -169,7 +169,9 @@ fun ProductCart(
             CheckoutArea(
                 productCartViewModel = productCartViewModel,
                 navigate = {
-                    productCartViewModel.navigateToCheckout(navHostControllerLambda())
+                    if(productCartViewModel.sum.value!=0) {
+                        productCartViewModel.navigateToCheckout(navHostControllerLambda())
+                    }
 //                    navHostControllerLambda().navigate(Screen.PaymentScreen.route)
                 }
             )

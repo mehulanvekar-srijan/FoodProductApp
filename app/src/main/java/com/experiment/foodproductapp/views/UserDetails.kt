@@ -9,6 +9,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.relocation.BringIntoViewRequester
@@ -182,6 +183,7 @@ fun UserDetails(
                             .fillMaxHeight(0.25F)
                             .padding(25.dp)
                             .aspectRatio(1F)
+                            .clickable { imagePicker.launch("image/*") }
                             .clip(CircleShape)
                     )
                 }
@@ -193,6 +195,7 @@ fun UserDetails(
                         modifier = Modifier
                             .fillMaxHeight(0.25F)
                             .padding(25.dp)
+                            .clickable{ imagePicker.launch("image/*") }
                             .aspectRatio(1F)
                             .clip(CircleShape)
                     )
@@ -200,17 +203,13 @@ fun UserDetails(
 
                 //Pick Click
                 Column {
-                    Button(onClick = { imagePicker.launch("image/*") }
-                    ) {
-                        Text(text = "pick")
-                    }
                     Button(onClick = {
                         val uri = ComposeFileProvider.getImageUri(context)
                         cameraLauncher.launch(uri)
                         intermediateUri = uri
                     }
                     ) {
-                        Text(text = "click")
+                        Text(text = "capture new image")
                     }
                 }
 

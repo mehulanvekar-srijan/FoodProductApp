@@ -1,6 +1,7 @@
 package com.experiment.foodproductapp
 
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.mutableStateOf
@@ -90,6 +91,7 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
                             navArgument("phoneNumber") { type = NavType.StringType },
                             navArgument("sum") { type = NavType.IntType } )) {
                         PaymentScreen(
+                            navHostControllerLambda,
                             it.arguments?.getString("email"),
                             it.arguments?.getString("phoneNumber"),
                             it.arguments?.getInt("sum")

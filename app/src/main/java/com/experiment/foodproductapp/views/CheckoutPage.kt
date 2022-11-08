@@ -1,11 +1,13 @@
 package com.experiment.foodproductapp.views
 
 import android.content.Context
-import android.widget.Toast
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.relocation.BringIntoViewRequester
+import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -18,31 +20,41 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.unit.toSize
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.experiment.foodproductapp.R
-import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.domain.event.CheckoutFormEvent
-import com.experiment.foodproductapp.domain.event.UserDetailsFormEvent
 import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.viewmodels.CheckoutPageViewModel
-import com.experiment.foodproductapp.viewmodels.ProductCartViewModel
-import com.experiment.foodproductapp.viewmodels.SignUpViewModel
+import kotlinx.coroutines.launch
 
+
+@Preview
+@Composable
+fun preview() {
+    val navHostController = rememberNavController()
+    val navHostControllerLambda: () -> NavHostController = {
+
+        navHostController
+    }
+    CheckoutPage("sahil@test.com", 500, navHostControllerLambda = navHostControllerLambda)
+}
+
+
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CheckoutPage(
     email: String?,
@@ -50,12 +62,41 @@ fun CheckoutPage(
     navHostControllerLambda: () -> NavHostController,
     checkoutPageViewModel: CheckoutPageViewModel = viewModel(),
 ) {
+    // Declaring a boolean value to store
+    // the expanded state of the Text Field
+    var mExpanded by remember { mutableStateOf(false) }
+
+    // Create a list of cities
+    val mCities = listOf(
+        "Goa",
+        "Maharashtra",
+        "Karnataka",
+        "Rajasthan",
+        "Kerala",
+        "Tamil Nadu",
+        "Andhra Pradesh"
+    )
+
+
+    // Up Icon when expanded and down icon when collapsed
+    val icon = if (mExpanded)
+        Icons.Filled.KeyboardArrowUp
+    else
+        Icons.Filled.KeyboardArrowDown
+
+    val viewRequesterForCity = remember { BringIntoViewRequester() }
+    val viewRequesterForState = remember { BringIntoViewRequester() }
 
     val focusManager = LocalFocusManager.current
+
+    val coroutineScope = rememberCoroutineScope()
+
     if (sum != null) {
-        checkoutPageViewModel.sum.value=sum
+        checkoutPageViewModel.sum.value = sum
     }
+
     val context = LocalContext.current
+
     ChangeBarColors(statusColor = Color.White, navigationBarColor = DarkYellow)
 
     LaunchedEffect(key1 = Unit) {
@@ -204,7 +245,8 @@ fun CheckoutPage(
 
                 Spacer(modifier = Modifier.padding(10.dp))
                 TextField(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth(),
                     value = checkoutPageViewModel.state.pincode,
                     colors = TextFieldDefaults.textFieldColors(
                         textColor = Color.Black,
@@ -227,7 +269,8 @@ fun CheckoutPage(
                     label = { Text(text = "Enter Pincode", color = DarkGray1) },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Phone,
-                        imeAction = ImeAction.Next),
+                        imeAction = ImeAction.Next
+                    ),
                     keyboardActions = KeyboardActions(
                         onNext = { focusManager.moveFocus(FocusDirection.Down) },
                     )
@@ -243,8 +286,17 @@ fun CheckoutPage(
                 }
 
                 Spacer(modifier = Modifier.padding(10.dp))
+
                 TextField(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .onFocusEvent {
+                            if (it.isFocused) {
+                                coroutineScope.launch {
+                                    viewRequesterForCity.bringIntoView()
+                                }
+                            }
+                        },
                     value = checkoutPageViewModel.state.addressLine1,
                     colors = TextFieldDefaults.textFieldColors(
                         textColor = Color.Black,
@@ -282,7 +334,15 @@ fun CheckoutPage(
 
                 Spacer(modifier = Modifier.padding(10.dp))
                 TextField(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .onFocusEvent {
+                            if (it.isFocused) {
+                                coroutineScope.launch {
+                                    viewRequesterForState.bringIntoView()
+                                }
+                            }
+                        },
                     value = checkoutPageViewModel.state.addressLine2,
                     colors = TextFieldDefaults.textFieldColors(
                         textColor = Color.Black,
@@ -320,7 +380,9 @@ fun CheckoutPage(
 
                 Spacer(modifier = Modifier.padding(10.dp))
                 TextField(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .bringIntoViewRequester(viewRequesterForCity),
                     value = checkoutPageViewModel.state.city,
                     colors = TextFieldDefaults.textFieldColors(
                         textColor = Color.Black,
@@ -343,7 +405,7 @@ fun CheckoutPage(
                     label = { Text(text = "City", color = DarkGray1) },
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                     keyboardActions = KeyboardActions(
-                        onNext = { focusManager.moveFocus(FocusDirection.Down) },
+                        onNext = { mExpanded = !mExpanded },
                     )
                 )
                 if (checkoutPageViewModel.state.cityError != null) {
@@ -357,7 +419,54 @@ fun CheckoutPage(
                 }
 
                 Spacer(modifier = Modifier.padding(10.dp))
-                States(checkoutPageViewModel)
+                Column() {
+                    TextField(
+                        readOnly = true,
+                        value = checkoutPageViewModel.state.state,
+                        shape = RoundedCornerShape(30.dp),
+                        colors = TextFieldDefaults.textFieldColors(
+                            textColor = Color.Black,
+                            backgroundColor = LightGray1,
+                            placeholderColor = Color.White,
+                            cursorColor = Color.Black,
+                            focusedLabelColor = Color.Black,
+                            errorCursorColor = Color.Black,
+                            errorLabelColor = Color.Red,
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent,
+                            unfocusedLabelColor = Orange,
+                        ),
+                        onValueChange = {
+                            checkoutPageViewModel.onEvent(CheckoutFormEvent.StateChanged(it))
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .bringIntoViewRequester(viewRequesterForState),
+                        label = { Text(text = "State", color = DarkGray1) },
+                        trailingIcon = {
+                            Icon(icon, "contentDescription",
+                                Modifier.clickable { mExpanded = !mExpanded })
+                        }
+                    )
+
+                    // Create a drop-down menu with list of cities,
+                    // when clicked, set the Text Field text as the city selected
+                    DropdownMenu(
+                        expanded = mExpanded,
+                        onDismissRequest = { mExpanded = false },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        mCities.forEach { label ->
+                            DropdownMenuItem(onClick = {
+                                checkoutPageViewModel.onEvent(CheckoutFormEvent.StateChanged(label))
+                                mExpanded = false
+                            }) {
+                                Text(text = label)
+                            }
+                        }
+                    }
+                }
                 if (checkoutPageViewModel.state.stateError != null) {
                     Text(
                         text = checkoutPageViewModel.state.stateError!!,
@@ -380,15 +489,16 @@ fun CheckoutPage(
                 .fillMaxSize()
                 .background(DarkYellow)
         ) {
-            CheckoutArea(context= context,
+            CheckoutArea(
                 checkoutPageViewModel = checkoutPageViewModel
             )
         }
     }
 }
 
+
 @Composable
-fun CheckoutArea(context:Context,
+fun CheckoutArea(
     checkoutPageViewModel: CheckoutPageViewModel
 ) {
     Column {
@@ -396,7 +506,7 @@ fun CheckoutArea(context:Context,
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(0.40F),
+                .fillMaxHeight(0.35F),
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -415,8 +525,7 @@ fun CheckoutArea(context:Context,
                 text = "Rs : ${checkoutPageViewModel.sum.value}",
                 color = Color.White,
                 modifier = Modifier
-                    .padding(end = 25.dp)
-                    .weight(1F),
+                    .padding(end = 25.dp),
                 textAlign = TextAlign.End,
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp,
@@ -430,9 +539,9 @@ fun CheckoutArea(context:Context,
         ) {
             Button(
                 modifier = Modifier
-                    .padding(start = 30.dp, end = 30.dp, top = 6.dp, bottom = 9.dp)
+                    .padding(start = 30.dp, end = 30.dp, top = 6.dp, bottom = 15.dp)
                     .fillMaxSize(),
-                onClick = {checkoutPageViewModel.onEvent(CheckoutFormEvent.Submit)},
+                onClick = { checkoutPageViewModel.onEvent(CheckoutFormEvent.Submit) },
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color.White,
                 ),
@@ -446,85 +555,88 @@ fun CheckoutArea(context:Context,
             }
         }
 
-        Spacer(modifier = Modifier.padding(5.dp))
+        Spacer(modifier = Modifier.padding(10.dp))
     }
 }
 
-@Composable
-fun States(checkoutPageViewModel: CheckoutPageViewModel) {
-
-    // Declaring a boolean value to store
-    // the expanded state of the Text Field
-    var mExpanded by remember { mutableStateOf(false) }
-
-    // Create a list of cities
-    val mCities = listOf(
-        "Goa",
-        "Maharashtra",
-        "Karnataka",
-        "Rajasthan",
-        "Kerala",
-        "Tamil Nadu",
-        "Andhra Pradesh"
-    )
-
-
-
-
-    // Up Icon when expanded and down icon when collapsed
-    val icon = if (mExpanded)
-        Icons.Filled.KeyboardArrowUp
-    else
-        Icons.Filled.KeyboardArrowDown
-
-    Column() {
-
-        // Create an Outlined Text Field
-        // with icon and not expanded
-        TextField(
-            readOnly = true,
-            value = checkoutPageViewModel.state.state,
-            shape = RoundedCornerShape(30.dp),
-            colors = TextFieldDefaults.textFieldColors(
-                textColor = Color.Black,
-                backgroundColor = LightGray1,
-                placeholderColor = Color.White,
-                cursorColor = Color.Black,
-                focusedLabelColor = Color.Black,
-                errorCursorColor = Color.Black,
-                errorLabelColor = Color.Red,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                unfocusedLabelColor = Orange,
-            ),
-            onValueChange = {
-                checkoutPageViewModel.onEvent(CheckoutFormEvent.StateChanged(it))
-            },
-            modifier = Modifier
-                .fillMaxWidth(),
-            label = { Text(text = "State", color = DarkGray1) },
-            trailingIcon = {
-                Icon(icon, "contentDescription",
-                    Modifier.clickable { mExpanded = !mExpanded })
-            }
-        )
-
-        // Create a drop-down menu with list of cities,
-        // when clicked, set the Text Field text as the city selected
-        DropdownMenu(
-            expanded = mExpanded,
-            onDismissRequest = { mExpanded = false },
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-            mCities.forEach { label ->
-                DropdownMenuItem(onClick = {
-                    checkoutPageViewModel.onEvent(CheckoutFormEvent.StateChanged(label))
-                    mExpanded = false
-                }) {
-                    Text(text = label)
-                }
-            }
-        }
-    }
-}
+//@OptIn(ExperimentalFoundationApi::class)
+//@Composable
+//fun States(
+//    viewRequesterForState: BringIntoViewRequester,
+//    checkoutPageViewModel: CheckoutPageViewModel
+//) {
+//
+//    // Declaring a boolean value to store
+//    // the expanded state of the Text Field
+//    var mExpanded by remember { mutableStateOf(false) }
+//
+//    // Create a list of cities
+//    val mCities = listOf(
+//        "Goa",
+//        "Maharashtra",
+//        "Karnataka",
+//        "Rajasthan",
+//        "Kerala",
+//        "Tamil Nadu",
+//        "Andhra Pradesh"
+//    )
+//
+//
+//    // Up Icon when expanded and down icon when collapsed
+//    val icon = if (mExpanded)
+//        Icons.Filled.KeyboardArrowUp
+//    else
+//        Icons.Filled.KeyboardArrowDown
+//
+//    Column() {
+//
+//        // Create an Outlined Text Field
+//        // with icon and not expanded
+//        TextField(
+//            readOnly = true,
+//            value = checkoutPageViewModel.state.state,
+//            shape = RoundedCornerShape(30.dp),
+//            colors = TextFieldDefaults.textFieldColors(
+//                textColor = Color.Black,
+//                backgroundColor = LightGray1,
+//                placeholderColor = Color.White,
+//                cursorColor = Color.Black,
+//                focusedLabelColor = Color.Black,
+//                errorCursorColor = Color.Black,
+//                errorLabelColor = Color.Red,
+//                focusedIndicatorColor = Color.Transparent,
+//                unfocusedIndicatorColor = Color.Transparent,
+//                unfocusedLabelColor = Orange,
+//            ),
+//            onValueChange = {
+//                checkoutPageViewModel.onEvent(CheckoutFormEvent.StateChanged(it))
+//            },
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .bringIntoViewRequester(viewRequesterForState),
+//            label = { Text(text = "State", color = DarkGray1) },
+//            trailingIcon = {
+//                Icon(icon, "contentDescription",
+//                    Modifier.clickable { mExpanded = !mExpanded })
+//            }
+//        )
+//
+//        // Create a drop-down menu with list of cities,
+//        // when clicked, set the Text Field text as the city selected
+//        DropdownMenu(
+//            expanded = mExpanded,
+//            onDismissRequest = { mExpanded = false },
+//            modifier = Modifier
+//                .fillMaxWidth()
+//        ) {
+//            mCities.forEach { label ->
+//                DropdownMenuItem(onClick = {
+//                    checkoutPageViewModel.onEvent(CheckoutFormEvent.StateChanged(label))
+//                    mExpanded = false
+//                }) {
+//                    Text(text = label)
+//                }
+//            }
+//        }
+//    }
+//}
