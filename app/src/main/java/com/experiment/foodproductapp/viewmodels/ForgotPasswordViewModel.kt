@@ -2,6 +2,7 @@ package com.experiment.foodproductapp.viewmodels
 
 import android.content.Context
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.experiment.foodproductapp.repository.DatabaseRepository
@@ -18,20 +19,48 @@ import okhttp3.RequestBody
 
 class ForgotPasswordViewModel : ViewModel() {
 
-    suspend fun isUserRegistered(context: Context, email: String) {
-        val deferred: Deferred<Boolean> = viewModelScope.async(Dispatchers.IO){
-            val result = DatabaseRepository(context).getUserByEmail(email)
-            result != null
-        }
+    private var otp = ""
 
-        deferred.await()
+    private val _inputEmail = mutableStateOf("")
+    val inputEmail = _inputEmail
+
+    private val _inputPassword = mutableStateOf("")
+    val inputPassword = _inputPassword
+
+    private val _inputOtp = mutableStateOf("")
+
+    fun setEmail(input: String) {
+        _inputEmail.value = input
     }
 
+    fun setOtp(input: String) {
+        _inputOtp.value = input
+    }
+
+    fun setPassword(input: String) {
+        _inputPassword.value = input
+    }
+
+    suspend fun isUserRegistered(context: Context): Boolean {
+
+        Log.d("testFP", "isUserRegistered: ${inputEmail.value}")
+
+        val deferred: Deferred<Boolean> = viewModelScope.async(Dispatchers.IO){
+            val result = DatabaseRepository(context).getUserByEmail(_inputEmail.value)
+            Log.d("testFP", "deferred: $result")
+            if(result == null) false else true
+        }
+
+        return deferred.await()
+    }
+
+
+
     fun sendOtp(){
-        val otp = (Math.random() * 9000).toInt() + 1000
+        otp = ( (Math.random() * 9000).toInt() + 1000 ).toString()
         val client = OkHttpClient()
         val mediaType = "application/json".toMediaTypeOrNull()
-        val content = """{"personalizations": [ { "to": [ { "email": "anvekarmehul@gmail.com" } ], "subject": "OTP" } ], "from": {"email": "noobdeshwar@gmail.com" },"content": [{ "type": "text/plain","value": "Your otp is $otp" }] }"""
+        val content = """{"personalizations": [ { "to": [ { "email": "${inputEmail.value}" } ], "subject": "OTP" } ], "from": {"email": "noobdeshwar@gmail.com" },"content": [{ "type": "text/plain","value": "Your otp is $otp" }] }"""
         val body = RequestBody.create(mediaType,content)
         val request = Request.Builder()
             .url("https://rapidprod-sendgrid-v1.p.rapidapi.com/mail/send")
@@ -43,7 +72,15 @@ class ForgotPasswordViewModel : ViewModel() {
 
         viewModelScope.launch(Dispatchers.IO){
             //val response = client.newCall(request).execute()
-            Log.d("testOTP", "sendOtp: $content")
+            Log.d("testFP", "sendOtp: $content")
+        }
+    }
+
+    fun verifyOtp(): Boolean =  if(_inputOtp.value == otp) true else false
+
+    fun changePassword(context: Context){
+        viewModelScope.launch(Dispatchers.IO){
+            DatabaseRepository(context).updatePassword(_inputEmail.value,_inputPassword.value)
         }
     }
 }

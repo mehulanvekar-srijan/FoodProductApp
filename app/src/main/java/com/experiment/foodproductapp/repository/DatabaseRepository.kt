@@ -44,15 +44,19 @@ class DatabaseRepository(context: Context) {
 
     fun getLoggedInUser(): String? = dao.getLoggedInUser()
 
+    fun updatePassword(email: String,password: String) = dao.updatePassword(email,password)
+
+
+
 
     fun addProduct(product: Product) = productDao.insertProduct(product)
 
-    fun removeProduct(id: Int) = productDao.deleteProduct(id)
+    fun removeProduct(id: Int,email: String) = productDao.deleteProduct(id,email)
 
-    fun readAllProducts(): MutableList<Product> = productDao.readAllProducts()
+    //fun readAllProducts(): MutableList<Product> = productDao.readAllProducts()
 
     fun readAllProducts(email: String): MutableList<Product> = productDao.readAllProducts(email)
 
-    fun setCount(id: Int,count: Int): Unit = productDao.setCount(id,count)
-    fun getCount(id: Int): Int = productDao.getCount(id)
+    fun setCount(id: Int,email: String,count: Int): Unit = productDao.setCount(id,email,count)
+    fun getCount(id: Int,email: String): Int = productDao.getCount(id,email)
 }

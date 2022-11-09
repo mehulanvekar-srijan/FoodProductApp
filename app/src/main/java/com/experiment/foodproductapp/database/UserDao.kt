@@ -32,8 +32,9 @@ interface UserDao {
     @Query("UPDATE User SET loggedIn=:loggedIn WHERE email=:email")
     fun updateLoginStatus(email:String,loggedIn: Boolean)
 
-
     @Query("SELECT email FROM User WHERE loggedIn=1")
     fun getLoggedInUser(): String?
 
+    @Query("UPDATE User SET password=:password WHERE email=:email")
+    fun updatePassword(email: String,password: String)
 }

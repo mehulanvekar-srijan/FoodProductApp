@@ -97,7 +97,7 @@ class HomeScreenViewModel : ViewModel() {
 
     private fun removeFromDatabase(context: Context,item: Product){
         viewModelScope.launch(Dispatchers.IO){
-            DatabaseRepository(context).removeProduct(item.id)
+            DatabaseRepository(context).removeProduct(id = item.id, email = userEmail.value)
         }
     }
 
@@ -106,7 +106,7 @@ class HomeScreenViewModel : ViewModel() {
     fun getProductCount(context: Context,id: Int,state: MutableState<Int>){
         viewModelScope.launch (Dispatchers.IO) {
             try {
-                state.value = DatabaseRepository(context).getCount(id)
+                state.value = DatabaseRepository(context).getCount(id = id, email = userEmail.value)
             }
             catch (e: android.database.sqlite.SQLiteConstraintException) {
 
@@ -122,10 +122,10 @@ class HomeScreenViewModel : ViewModel() {
         } else {
             viewModelScope.launch(Dispatchers.IO) {
 
-                var currentCount = DatabaseRepository(context).getCount(id)
+                var currentCount = DatabaseRepository(context).getCount(id = id, email = userEmail.value)
                 currentCount += 1
 
-                DatabaseRepository(context).setCount(id = id, count = currentCount) //set count in db
+                DatabaseRepository(context).setCount(id = id, count = currentCount, email = userEmail.value) //set count in db
             }
         }
         //after updating count or adding product
@@ -139,10 +139,10 @@ class HomeScreenViewModel : ViewModel() {
 
         viewModelScope.launch(Dispatchers.IO){
 
-            var currentCount = DatabaseRepository(context).getCount(id)
+            var currentCount = DatabaseRepository(context).getCount(id = id, email = userEmail.value)
             currentCount -= 1
 
-            DatabaseRepository(context).setCount(id = id, count = currentCount) //set count in db
+            DatabaseRepository(context).setCount(id = id, count = currentCount, email = userEmail.value) //set count in db
             if (currentCount == 0) {
                 // remove product
                 removeFromDatabase(context,productForDetailPage!!)
