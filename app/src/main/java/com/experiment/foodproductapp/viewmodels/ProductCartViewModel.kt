@@ -6,6 +6,8 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavHostController
+import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.database.Product
 import com.experiment.foodproductapp.repository.DatabaseRepository
 import kotlinx.coroutines.Dispatchers
@@ -15,6 +17,9 @@ class ProductCartViewModel : ViewModel() {
 
     private var _cartList = mutableStateListOf<Product>()
     val cartList = _cartList
+
+    private val _email = mutableStateOf("")
+    val email = _email
 
     fun onDismiss(context: Context,item: Product){
         viewModelScope.launch(Dispatchers.IO){
@@ -28,13 +33,13 @@ class ProductCartViewModel : ViewModel() {
 
     private fun removeFromDatabase(context: Context,item: Product){
         viewModelScope.launch(Dispatchers.IO){
-            DatabaseRepository(context).removeProduct(item.id)
+            DatabaseRepository(context).removeProduct(id = item.id, email = email.value)
         }
     }
 
     fun fetchCartList(context: Context){
         viewModelScope.launch(Dispatchers.IO){
-            val list = DatabaseRepository(context).readAllProducts()
+            val list = DatabaseRepository(context).readAllProducts(_email.value)
             list.forEach{ _cartList.add(it) }
             updateSum()
         }
@@ -55,7 +60,7 @@ class ProductCartViewModel : ViewModel() {
     //Get count from db and set state
     fun getProductCount(context: Context,id: Int,state: MutableState<Int>){
         viewModelScope.launch(Dispatchers.IO){
-            state.value = DatabaseRepository(context).getCount(id)
+            state.value = DatabaseRepository(context).getCount(id = id, email = email.value)
         }
     }
 
@@ -64,11 +69,11 @@ class ProductCartViewModel : ViewModel() {
 
         viewModelScope.launch(Dispatchers.IO){
 
-            var currentCount = DatabaseRepository(context).getCount(id)
+            var currentCount = DatabaseRepository(context).getCount(id = id, email = email.value)
 
             currentCount += 1
 
-            DatabaseRepository(context).setCount(id = id, count = currentCount) //set count in db
+            DatabaseRepository(context).setCount(id = id, count = currentCount, email = email.value) //set count in db
             getProductCount(context = context, id = id, state = state)          //set count of UI state
             _cartList.forEach { if(it.id == id) it.count = currentCount }       //set count of list in RAM
             // or state.value = currentCount
@@ -83,11 +88,11 @@ class ProductCartViewModel : ViewModel() {
 
         viewModelScope.launch(Dispatchers.IO){
 
-            var currentCount = DatabaseRepository(context).getCount(id)
+            var currentCount = DatabaseRepository(context).getCount(id = id, email = email.value)
 
             currentCount -= 1
 
-            DatabaseRepository(context).setCount(id = id, count = currentCount) //set count in db
+            DatabaseRepository(context).setCount(id = id, count = currentCount, email = email.value) //set count in db
             getProductCount(context = context, id = id, state = state)          //set count of UI state
             _cartList.forEach { if(it.id == id) it.count = currentCount }       //set count of list in RAM
             // or state.value = currentCount
@@ -95,5 +100,10 @@ class ProductCartViewModel : ViewModel() {
             updateSum()     // update sum vale
         }
 
+    }
+
+    fun navigateToCheckout(navHostController: NavHostController){
+        _cartList.clear()
+        navHostController.navigate(Screen.CheckoutPage.routeWithData(email.value,sum.value))
     }
 }

@@ -1,7 +1,5 @@
 package com.experiment.foodproductapp.views
 
-import android.content.Context
-import android.util.Log
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -35,6 +33,7 @@ import androidx.navigation.NavHostController
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.experiment.foodproductapp.R
+import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.database.Product
 import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.viewmodels.ProductCartViewModel
@@ -42,6 +41,7 @@ import com.experiment.foodproductapp.viewmodels.ProductCartViewModel
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ProductCart(
+    email:String?,
     navHostControllerLambda: () -> NavHostController,
     productCartViewModel: ProductCartViewModel = viewModel(),
 ) {
@@ -50,6 +50,9 @@ fun ProductCart(
     ChangeBarColors(statusColor = Color.White, navigationBarColor = DarkYellow)
 
     LaunchedEffect(key1 = Unit) {
+        if (email != null) {
+            productCartViewModel.email.value=email
+        }
         productCartViewModel.fetchCartList(context)
     }
 
@@ -104,7 +107,7 @@ fun ProductCart(
 
             items(
                 items = productCartViewModel.cartList,
-                key = { it.hashCode() }
+                key = { it.id }
             ){ item ->
 
                 val dismissState = rememberDismissState(
@@ -163,7 +166,15 @@ fun ProductCart(
             .fillMaxSize()
             .background(DarkYellow)
         ){
-            CheckoutArea(productCartViewModel)
+            CheckoutArea(
+                productCartViewModel = productCartViewModel,
+                navigate = {
+                    if(productCartViewModel.sum.value!=0) {
+                        productCartViewModel.navigateToCheckout(navHostControllerLambda())
+                    }
+//                    navHostControllerLambda().navigate(Screen.PaymentScreen.route)
+                }
+            )
         }
 
     }
@@ -341,7 +352,6 @@ fun CardView(
 fun LoadImage(item: Product){
     Image(
         painter = rememberImagePainter(item.url),
-        //painter = painterResource(id = R.drawable.beer0),
         contentDescription = "",
         contentScale = ContentScale.Fit,
         alignment = Alignment.CenterStart,
@@ -350,7 +360,10 @@ fun LoadImage(item: Product){
 }
 
 @Composable
-fun CheckoutArea(productCartViewModel: ProductCartViewModel) {
+fun CheckoutArea(
+    productCartViewModel: ProductCartViewModel,
+    navigate: ()->Unit = {},
+) {
     Column{
         //Price row
         Row(
@@ -392,7 +405,7 @@ fun CheckoutArea(productCartViewModel: ProductCartViewModel) {
                 modifier = Modifier
                     .padding(start = 30.dp, end = 30.dp, top = 6.dp, bottom = 9.dp)
                     .fillMaxSize(),
-                onClick = { /*TODO*/ },
+                onClick = navigate,
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color.White,
                 ),

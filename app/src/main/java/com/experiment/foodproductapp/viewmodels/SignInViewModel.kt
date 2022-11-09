@@ -5,7 +5,6 @@ import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -15,12 +14,9 @@ import com.experiment.foodproductapp.database.User
 import com.experiment.foodproductapp.domain.event.SignInFormEvent
 import com.experiment.foodproductapp.domain.use_case.EmptyPassword
 import com.experiment.foodproductapp.domain.use_case.ValidateEmail
-import com.experiment.foodproductapp.domain.use_case.ValidatePassword
 import com.experiment.foodproductapp.repository.DatabaseRepository
 import com.experiment.foodproductapp.states.SignInState
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -84,15 +80,15 @@ class SignInViewModel(
             if (user != null) {
                 if (user.email == state.email && user.password == state.password ) {
 
+                    DatabaseRepository(context).updateLoginStatus(email = state.email,loggedIn = true)
+
                     withContext(Dispatchers.Main) {
 
                         Toast.makeText(context, "log in successfull", Toast.LENGTH_LONG).show()
 
-                        navHostController.navigate(Screen.HomeScreen.routeWithDate(user.email)) {
+                        navHostController.navigate(Screen.HomeScreen.routeWithData(user.email)) {
                             popUpTo(Screen.SignInScreen.route) { inclusive = true }
                         }
-
-
                     }
 
                 } else {
@@ -108,7 +104,7 @@ class SignInViewModel(
         }
     }
 
-    sealed class ValidationEvent {
-        object Succcess : ValidationEvent()
-    }
+//    sealed class ValidationEvent {
+//        object Succcess : ValidationEvent()
+//    }
 }

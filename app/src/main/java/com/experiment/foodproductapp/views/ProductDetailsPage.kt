@@ -402,7 +402,6 @@ fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScr
 fun AppBar(
     navHostControllerLambda: () -> NavHostController,
     onProductCartClick: ()-> Unit = {},
-    onProductAddClick:  ()-> Unit = {}
 ) {
 
     TopAppBar(
@@ -416,16 +415,6 @@ fun AppBar(
 
         },
         actions = {
-            IconButton(onClick =  onProductAddClick ) {
-
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "",
-                    tint = DarkYellow
-                )
-
-            }
-
             IconButton(onClick = onProductCartClick) {
                 Icon(
                     imageVector = Icons.Default.ShoppingCart,

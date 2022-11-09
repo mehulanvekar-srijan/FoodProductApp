@@ -1,8 +1,10 @@
 package com.experiment.foodproductapp
 
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -14,18 +16,25 @@ import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.ui.theme.FoodProductAppTheme
 import com.experiment.foodproductapp.viewmodels.HomeScreenViewModel
 import com.experiment.foodproductapp.views.*
+import com.razorpay.PaymentData
+import com.razorpay.PaymentResultWithDataListener
 
-class MainActivity : ComponentActivity() {
+class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
+
+    var navHostController: NavHostController? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val navHostController = rememberNavController()
-            val navHostControllerLambda : () -> NavHostController = { navHostController }
+
+            navHostController = rememberNavController()
+
+            val navHostControllerLambda : () -> NavHostController = { navHostController as NavHostController }
             val homeScreenViewModel: HomeScreenViewModel = viewModel()
 
             FoodProductAppTheme {
                 NavHost(
-                    navController = navHostController,
+                    navController = navHostController as NavHostController,
                     startDestination = Screen.SplashScreen.route
                 ) {
                     composable(route = Screen.SplashScreen.route) {
@@ -56,21 +65,51 @@ class MainActivity : ComponentActivity() {
                         )
                     }
 
-                    composable(route = Screen.ProductCart.route) {
-                        ProductCart(navHostControllerLambda)
+                    composable(route = Screen.ProductCart.route,
+                            arguments = listOf(navArgument("email") { type = NavType.StringType } )
+                    ) {
+                        ProductCart(
+                            it.arguments?.getString("email"),
+                            navHostControllerLambda)
+                    }
+                    composable(route = Screen.CheckoutPage.route,
+                        arguments = listOf(navArgument("email") { type = NavType.StringType },
+                            navArgument("sum") { type = NavType.IntType } )
+                    ) {
+                        CheckoutPage(
+                            it.arguments?.getString("email"),
+                            it.arguments?.getInt("sum"),
+                            navHostControllerLambda)
                     }
                     composable(route = Screen.ProductDetailsScreen.route) {
-                        //val result =
-                        //    navHostController.previousBackStackEntry?.savedStateHandle?.get<Product>("product")
-                        // Log.d(TAG, "onCreate: ")
-
-                        // ProductDetailsPage (result)
                         ProductDetailsPage (
                             navHostControllerLambda,homeScreenViewModel = homeScreenViewModel
                         )
                     }
+                    composable(route = Screen.PaymentScreen.route,
+                        arguments = listOf(navArgument("email") { type = NavType.StringType },
+                            navArgument("phoneNumber") { type = NavType.StringType },
+                            navArgument("sum") { type = NavType.IntType } )) {
+                        PaymentScreen(
+                            navHostControllerLambda,
+                            it.arguments?.getString("email"),
+                            it.arguments?.getString("phoneNumber"),
+                            it.arguments?.getInt("sum")
+                        ) { this@MainActivity }
+                    }
                 }
             }
         }
+    }
+
+
+    val status by lazy {  mutableStateOf<Boolean?>(null)  }
+
+    override fun onPaymentSuccess(p0: String?, p1: PaymentData?) {
+        status.value = true
+    }
+
+    override fun onPaymentError(p0: Int, p1: String?, p2: PaymentData?) {
+        status.value = false
     }
 }

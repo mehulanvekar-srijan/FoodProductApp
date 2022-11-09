@@ -144,6 +144,7 @@ class SignUpViewModel(
     suspend fun navigateOnSucces(context: Context,navHostController: NavHostController) {
 
         var success: Boolean? = null
+        val database = DatabaseRepository(context)
 
         val job = viewModelScope.launch(Dispatchers.IO){
             val user = User(
@@ -154,9 +155,8 @@ class SignUpViewModel(
                 phoneNumber = state.phoneNumber,
                 dob = state.date,
             )
-            val database = DatabaseRepository(context)
 
-             success = try {
+            success = try {
                 database.addUser(user)
                 withContext(Dispatchers.Main) {
                     Toast.makeText(context,"Registration Successful", Toast.LENGTH_SHORT).show()
@@ -174,8 +174,13 @@ class SignUpViewModel(
         job.join()
 
         if(success != null && success == true){
-            navHostController.navigate(Screen.SignInScreen.route){
-                popUpTo(Screen.SignUpScreen.route){inclusive=true}
+            //Update login status
+            viewModelScope.launch(Dispatchers.IO){
+                database.updateLoginStatus(email = state.email,loggedIn = true)
+            }
+
+            //Navigate
+            navHostController.navigate(Screen.HomeScreen.routeWithData(state.email)){
                 popUpTo(Screen.SignInScreen.route){inclusive=true}
             }
         }

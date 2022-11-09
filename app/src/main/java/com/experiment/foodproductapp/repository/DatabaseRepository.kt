@@ -22,6 +22,10 @@ class DatabaseRepository(context: Context) {
         return dao.getUserByEmail(email)
     }
 
+    fun updateAddressByEmail(email:String,pincode:String,addressLine1:String,addressLine2:String,city:String,state:String){
+        dao.updateAddressByEmail(email,pincode,addressLine1,addressLine2,city,state)
+    }
+
     fun updateUserByEmail(email:String,firstName:String,lastName:String,dob:String,password:String,phoneNumber:String){
         dao.updateUserByEmail(email,firstName,lastName,dob,password,phoneNumber)
     }
@@ -34,13 +38,25 @@ class DatabaseRepository(context: Context) {
         return dao.getImagePath(email)
     }
 
+    fun updateLoginStatus(email:String,loggedIn: Boolean){
+        dao.updateLoginStatus(email = email,loggedIn = loggedIn)
+    }
+
+    fun getLoggedInUser(): String? = dao.getLoggedInUser()
+
+    fun updatePassword(email: String,password: String) = dao.updatePassword(email,password)
+
+
+
 
     fun addProduct(product: Product) = productDao.insertProduct(product)
 
-    fun removeProduct(id: Int) = productDao.deleteProduct(id)
+    fun removeProduct(id: Int,email: String) = productDao.deleteProduct(id,email)
 
-    fun readAllProducts() = productDao.readAllProducts()
+    //fun readAllProducts(): MutableList<Product> = productDao.readAllProducts()
 
-    fun setCount(id: Int,count: Int): Unit = productDao.setCount(id,count)
-    fun getCount(id: Int): Int = productDao.getCount(id)
+    fun readAllProducts(email: String): MutableList<Product> = productDao.readAllProducts(email)
+
+    fun setCount(id: Int,email: String,count: Int): Unit = productDao.setCount(id,email,count)
+    fun getCount(id: Int,email: String): Int = productDao.getCount(id,email)
 }

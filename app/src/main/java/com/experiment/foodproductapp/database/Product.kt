@@ -2,10 +2,12 @@ package com.experiment.foodproductapp.database
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import org.jetbrains.annotations.NotNull
 
-@Entity
+@Entity(primaryKeys = ["email","id"])
 data class Product(
-    @PrimaryKey var id: Int,
+    @NotNull var email: String = "",
+    @NotNull var id: Int,
     var url: String,
     var title: String,
     var description: String,
