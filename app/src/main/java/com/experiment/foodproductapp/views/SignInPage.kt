@@ -8,6 +8,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -19,17 +21,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusDirection
 
 
 import androidx.compose.ui.graphics.Color
 
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 
 import androidx.compose.ui.text.TextStyle
 
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -66,6 +71,7 @@ fun SignInPage(
 ) {
 
     ChangeBarColors(navigationBarColor = Color.White)
+    val focusManager = LocalFocusManager.current
     val context = LocalContext.current
     val state = signInViewModel.state
 
@@ -138,6 +144,10 @@ fun SignInPage(
                                     navHostControllerLambda()
                                 )
                             },
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                            keyboardActions = KeyboardActions(
+                                onNext = { focusManager.moveFocus(FocusDirection.Down) },
+                            ),
                             label = { Text("Email Address", color = Color.Black) },
                             singleLine = true,
                             modifier = Modifier
@@ -167,6 +177,10 @@ fun SignInPage(
                                 focusedIndicatorColor = Color.Transparent,
                                 unfocusedIndicatorColor = Color.Transparent,
                                 unfocusedLabelColor = Orange,
+                            ),
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                            keyboardActions = KeyboardActions(
+                                onNext = { focusManager.moveFocus(FocusDirection.Down) },
                             ),
                             onValueChange = {
                                 signInViewModel.onEvent(

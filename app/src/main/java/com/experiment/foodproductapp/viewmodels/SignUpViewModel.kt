@@ -180,6 +180,7 @@ class SignUpViewModel(
             //Navigate
             navHostController.navigate(Screen.HomeScreen.routeWithData(state.email)){
                 popUpTo(Screen.SignUpScreen.route){inclusive=true}
+                popUpTo(Screen.SignInScreen.route){inclusive=true}
             }
         }
     }

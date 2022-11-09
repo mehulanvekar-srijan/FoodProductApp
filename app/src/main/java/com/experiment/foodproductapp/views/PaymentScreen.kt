@@ -128,7 +128,8 @@ fun PaymentScreen(
                 Icon(
                     modifier = Modifier.size(200.dp),
                     painter = painterResource(id = R.drawable.ic_baseline_assignment_late_24),
-                    contentDescription = "failure"
+                    contentDescription = "failure",
+//                    tint = Color.Unspecified,
                 )
                 Text(
                     text = "Payment Failed !",
