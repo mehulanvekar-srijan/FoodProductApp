@@ -358,7 +358,6 @@ fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScr
     AppBar(
         navHostControllerLambda = navHostControllerLambda,
         onProductCartClick = {
-            homeScreenViewModel.addProductToCart(productDetails!!,context)
             homeScreenViewModel.navigateToProductCart(navHostControllerLambda())
         }
     )
@@ -368,7 +367,6 @@ fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScr
 fun AppBar(
     navHostControllerLambda: () -> NavHostController,
     onProductCartClick: ()-> Unit = {},
-    onProductAddClick:  ()-> Unit = {}
 ) {
     val liked = rememberSaveable { mutableStateOf(false) }
 
@@ -383,16 +381,6 @@ fun AppBar(
 
         },
         actions = {
-            IconButton(onClick =  onProductAddClick ) {
-
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "",
-                    tint = DarkYellow
-                )
-
-            }
-
             IconButton(onClick = onProductCartClick) {
                 Icon(imageVector = Icons.Default.ShoppingCart, contentDescription = "", tint = DarkYellow)
 
