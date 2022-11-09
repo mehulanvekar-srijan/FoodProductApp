@@ -59,6 +59,8 @@ fun HomeScreenPage(
 
     val context = LocalContext.current
 
+    val coroutineScope = rememberCoroutineScope()
+
     val listState = rememberLazyListState()
     val brandLogoSize = remember { mutableStateOf(Int.MAX_VALUE) }
 
@@ -175,10 +177,13 @@ fun HomeScreenPage(
                             }
                         }
                     }
+
+                    val iconColor = remember { Animatable(DarkPink) }
+
                     Box( //left Middle Add Icon
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(start = 17.dp,top = 70.dp)
+                            .padding(start = 17.dp, top = 70.dp)
                     ) {
                         Surface(
                             elevation = 3.dp,
@@ -187,16 +192,14 @@ fun HomeScreenPage(
                             IconButton(
                                 onClick = {
                                     homeScreenViewModel.addProductToCart(item,context)
+                                    coroutineScope.launch {
+                                        iconColor.animateTo(Orange, tween(50))
+                                        iconColor.animateTo(DarkPink, tween(200))
+                                    }
                                 },
                                 modifier = Modifier
                                     .clip(RoundedCornerShape(15))
-                                    .background(
-                                        Brush.verticalGradient(
-                                            listOf(
-                                                DarkPink, LightPink
-                                            )
-                                        )
-                                    )
+                                    .background(iconColor.value)
                                     .size(width = 30.dp, height = 30.dp),
                             ) {
                                 Icon(

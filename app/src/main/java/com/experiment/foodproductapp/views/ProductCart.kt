@@ -107,7 +107,7 @@ fun ProductCart(
 
             items(
                 items = productCartViewModel.cartList,
-                key = { it.id }
+//                key = { it.id }
             ){ item ->
 
                 val dismissState = rememberDismissState(
