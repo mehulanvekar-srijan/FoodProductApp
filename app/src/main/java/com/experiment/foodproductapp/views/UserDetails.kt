@@ -148,6 +148,9 @@ fun UserDetails(
         val cameraLauncher = rememberLauncherForActivityResult(
             contract = ActivityResultContracts.TakePicture(),
             onResult = { status ->
+
+                if (!status) return@rememberLauncherForActivityResult
+                
                 userDetailsViewModel.hasImage.value = status                //Set has image
                 userDetailsViewModel.imageUri.value = intermediateUri       //Set URI
                 userDetailsViewModel.updateUserProfilePictureInDatabase(    //Update database
@@ -193,13 +196,13 @@ fun UserDetails(
                         modifier = Modifier
                             .fillMaxHeight(0.25F)
                             .padding(25.dp)
-                            .clickable{ imagePicker.launch("image/*") }
+                            .clickable { imagePicker.launch("image/*") }
                             .aspectRatio(1F)
                             .clip(CircleShape)
                     )
                 }
 
-                //Pick Click
+                //Pick / Click
                 Column {
                     Button(onClick = {
                         val uri = ComposeFileProvider.getImageUri(context)
