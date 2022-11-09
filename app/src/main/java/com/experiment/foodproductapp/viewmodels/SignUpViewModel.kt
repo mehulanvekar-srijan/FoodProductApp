@@ -178,7 +178,7 @@ class SignUpViewModel(
             }
 
             //Navigate
-            navHostController.navigate(Screen.HomeScreen.routeWithDate(state.email)){
+            navHostController.navigate(Screen.HomeScreen.routeWithData(state.email)){
                 popUpTo(Screen.SignUpScreen.route){inclusive=true}
             }
         }

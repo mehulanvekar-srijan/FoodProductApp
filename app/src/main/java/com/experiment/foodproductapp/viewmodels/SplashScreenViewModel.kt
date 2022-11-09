@@ -30,7 +30,7 @@ class SplashScreenViewModel : ViewModel() {
             }
             else{
                 withContext(Dispatchers.Main) {
-                    navHostController.navigate(Screen.HomeScreen.routeWithDate(loggedInEmail)){
+                    navHostController.navigate(Screen.HomeScreen.routeWithData(loggedInEmail)){
                         popUpTo(Screen.SplashScreen.route){ inclusive = true }
                     }
                 }

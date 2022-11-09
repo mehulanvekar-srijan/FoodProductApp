@@ -3,12 +3,9 @@ package com.experiment.foodproductapp.views
 import android.app.Activity
 import android.util.Log
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.twotone.ThumbsUpDown
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -22,7 +19,6 @@ import androidx.navigation.NavHostController
 import com.experiment.foodproductapp.MainActivity
 import com.experiment.foodproductapp.R
 import com.experiment.foodproductapp.constants.Screen
-import com.experiment.foodproductapp.ui.theme.LightDarkGray
 import com.experiment.foodproductapp.ui.theme.descriptionFontFamily
 import com.experiment.foodproductapp.ui.theme.titleFontFamily
 import com.experiment.foodproductapp.utility.payment
@@ -47,10 +43,19 @@ fun PaymentScreen(
     }
 
     if (mainActivity.status.value == true) {
+        LaunchedEffect(key1 = Unit) {
+            delay(3000)
+            navHostControllerLambda().navigate(Screen.HomeScreen.routeWithData(email.toString())) {
+                popUpTo(Screen.PaymentScreen.route) { inclusive = true }
+                popUpTo(Screen.CheckoutPage.route) { inclusive = true }
+                popUpTo(Screen.ProductCart.route) { inclusive = true }
+                popUpTo(Screen.HomeScreen.route) { inclusive = true }
+            }
+            mainActivity.status.value = null
+        }
         Box(
             modifier = Modifier
                 .fillMaxSize(),
-            contentAlignment = Alignment.Center,
         ) {
             Image(
                 painter = painterResource(id = R.drawable.background_yellow_wave),
@@ -80,16 +85,29 @@ fun PaymentScreen(
                     color = Color.DarkGray
                 )
             }
+            Column(
+                modifier = Modifier.fillMaxSize()
+                    .padding(bottom = 20.dp),
+                verticalArrangement = Arrangement.Bottom,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "redirecting you to Home Page",
+                    fontFamily = descriptionFontFamily,
+                    color = Color.DarkGray
+                )
+            }
         }
     }
     if (mainActivity.status.value == false) {
         LaunchedEffect(key1 = Unit) {
             delay(3000)
-            navHostControllerLambda().navigate(Screen.ProductCart.routeWithData(email.toString())){
-                popUpTo(Screen.PaymentScreen.route){inclusive=true}
-                popUpTo(Screen.CheckoutPage.route){inclusive=true}
-                popUpTo(Screen.ProductCart.route){inclusive=true}
+            navHostControllerLambda().navigate(Screen.ProductCart.routeWithData(email.toString())) {
+                popUpTo(Screen.PaymentScreen.route) { inclusive = true }
+                popUpTo(Screen.CheckoutPage.route) { inclusive = true }
+                popUpTo(Screen.ProductCart.route)  { inclusive = true }
             }
+            mainActivity.status.value = null
         }
         Box(
             modifier = Modifier
@@ -118,6 +136,13 @@ fun PaymentScreen(
                     fontSize = 24.sp,
                     color = Color.DarkGray
                 )
+            }
+            Column(
+                modifier = Modifier.fillMaxSize()
+                    .padding(bottom = 20.dp),
+                verticalArrangement = Arrangement.Bottom,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 Text(
                     text = "redirecting you to product cart",
                     fontFamily = descriptionFontFamily,
