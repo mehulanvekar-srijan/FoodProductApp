@@ -75,7 +75,7 @@ class HomeScreenViewModel : ViewModel() {
         navHostController.navigate(Screen.ProductCart.routeWithData(userEmail.value))
     }
 
-    fun navigateToProductDetailsPage(navHostController: NavHostController){
+    fun navigateToProductDetailsPage(navHostController: NavHostController) {
         navHostController.navigate(Screen.ProductDetailsScreen.route){
             popUpTo(Screen.HomeScreen.route) {inclusive=false}
         }
@@ -87,7 +87,7 @@ class HomeScreenViewModel : ViewModel() {
                 item.email = userEmail.value
                 DatabaseRepository(context).addProduct(item)
             }
-            catch (e: android.database.sqlite.SQLiteConstraintException){
+            catch (e: android.database.sqlite.SQLiteConstraintException) {
 
             }
         }

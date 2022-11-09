@@ -105,7 +105,7 @@ fun PaymentScreen(
             navHostControllerLambda().navigate(Screen.ProductCart.routeWithData(email.toString())) {
                 popUpTo(Screen.PaymentScreen.route) { inclusive = true }
                 popUpTo(Screen.CheckoutPage.route) { inclusive = true }
-                popUpTo(Screen.ProductCart.route) { inclusive = true }
+                popUpTo(Screen.ProductCart.route)  { inclusive = true }
             }
             mainActivity.status.value = null
         }
