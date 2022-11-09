@@ -121,20 +121,19 @@ fun UserDetails(
             contract = ActivityResultContracts.GetContent(),
             onResult = { uri ->
 
+                if(uri == null) return@rememberLauncherForActivityResult
+
                 //uri from argument requires permission to access it after relaunching the app
                 //Hence create a local file in Apps internal storage and copy the selected image
                 //into a local file, and save that uri in database
 
                 val localUri = ComposeFileProvider.getImageUri(context)
-                if (uri != null) {
+                val inputStream = context.contentResolver.openInputStream(uri)
+                val outputStream = context.contentResolver.openOutputStream(localUri)
 
-                    val inputStream = context.contentResolver.openInputStream(uri)
-                    val outputStream = context.contentResolver.openOutputStream(localUri)
-
-                    inputStream.use{
-                        if (outputStream != null) {
-                            it?.copyTo(outputStream)
-                        }
+                inputStream.use{
+                    if (outputStream != null) {
+                        it?.copyTo(outputStream)
                     }
                 }
 
@@ -143,7 +142,6 @@ fun UserDetails(
                 userDetailsViewModel.updateUserProfilePictureInDatabase(        //Update database
                     context,email,localUri
                 )
-
             })
 
         var intermediateUri: Uri? = null
