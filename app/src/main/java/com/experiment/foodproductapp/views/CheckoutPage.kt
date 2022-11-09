@@ -1,6 +1,7 @@
 package com.experiment.foodproductapp.views
 
 import android.content.Context
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -54,7 +55,7 @@ fun preview() {
 }
 
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun CheckoutPage(
     email: String?,
@@ -420,7 +421,21 @@ fun CheckoutPage(
                 }
 
                 Spacer(modifier = Modifier.padding(10.dp))
-                Column() {
+//                OutlinedButton(
+//                    modifier = Modifier.fillMaxWidth(),
+//                    contentPadding = PaddingValues(0.dp,0.dp,0.dp,0.dp),
+//                    onClick = { mExpanded = !mExpanded },
+//                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
+//                    border = BorderStroke(width = 0.dp,color = Color.Transparent)
+//                ) 
+                ExposedDropdownMenuBox(
+                    expanded = mExpanded,
+                    onExpandedChange = {
+                        mExpanded = !mExpanded
+                    }
+                )
+                {
+
                     TextField(
                         readOnly = true,
                         value = checkoutPageViewModel.state.state,
