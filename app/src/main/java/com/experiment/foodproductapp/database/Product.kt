@@ -14,5 +14,5 @@ data class Product(
     var price: Int,
     var count: Int = 1,
 ) {
-    constructor() : this(-1,"","","",-1) {}
+    constructor() : this(id = -1, url = "", title = "", description = "", price = -1) {}
 }

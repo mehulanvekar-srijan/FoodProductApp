@@ -388,12 +388,7 @@ fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScr
         onProductCartClick = {
             homeScreenViewModel.navigateToProductCart(navHostControllerLambda())
         },
-        onProductAddClick = {
-            if (quantity.value == 0) {
-                homeScreenViewModel.addProductToCart(productDetails, context)
-                quantity.value++
-            }
-        }
+
 
     )
 }
