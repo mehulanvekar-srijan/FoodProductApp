@@ -2,6 +2,7 @@ package com.experiment.foodproductapp.repository
 
 import android.content.Context
 import android.net.Uri
+import com.experiment.foodproductapp.database.OrderDetails
 import com.experiment.foodproductapp.database.Product
 import com.experiment.foodproductapp.database.User
 import com.experiment.foodproductapp.database.UserDatabase
@@ -10,6 +11,7 @@ class DatabaseRepository(context: Context) {
 
     private val dao = UserDatabase.getDatabase(context).userDao()
     private val productDao = UserDatabase.getDatabase(context).productDao()
+    private val OrderDetailsDao = UserDatabase.getDatabase(context).orderDetailsDao()
 
 
     fun addUser(user: User) = dao.insertUser(user)
@@ -59,4 +61,6 @@ class DatabaseRepository(context: Context) {
 
     fun setCount(id: Int,email: String,count: Int): Unit = productDao.setCount(id,email,count)
     fun getCount(id: Int,email: String): Int = productDao.getCount(id,email)
+
+    fun insertOrder(order: OrderDetails) = OrderDetailsDao.insertOrder(order)
 }
