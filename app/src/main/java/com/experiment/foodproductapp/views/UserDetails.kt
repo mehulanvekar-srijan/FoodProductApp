@@ -172,7 +172,8 @@ fun UserDetails(
 
             //Main Column
             Column(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize()
+                    .padding(top = 20.dp),
                 horizontalAlignment = CenterHorizontally,
             ) {
 
