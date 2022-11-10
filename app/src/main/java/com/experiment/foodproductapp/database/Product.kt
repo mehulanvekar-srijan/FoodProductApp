@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 import org.jetbrains.annotations.NotNull
 
 @Entity(primaryKeys = ["email","id"])
-data class Product(
+open class Product(
     @NotNull var email: String = "",
     @NotNull var id: Int,
     var url: String,
