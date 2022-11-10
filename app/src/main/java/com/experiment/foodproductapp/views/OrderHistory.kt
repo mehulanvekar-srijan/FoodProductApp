@@ -52,7 +52,7 @@ fun preview2() {
 fun OrderDetails(
     email : String?,
     navHostControllerLambda: () -> NavHostController,
-    orderDetailsViewModel: OrderDetailsViewModel= viewModel(),
+    orderDetailsViewModel: OrderDetailsViewModel = viewModel(),
 ){
     ChangeBarColors(navigationBarColor = Color.White)
     val listState = rememberLazyListState()
@@ -73,7 +73,7 @@ fun OrderDetails(
             verticalArrangement = Arrangement.spacedBy(20.dp),
             state = listState,
         ) {
-            items(items = orderDetailsViewModel.orderlist ) { item ->
+            items(items = orderDetailsViewModel.finalList ) { item ->
 
                 Box(
                     modifier = Modifier
@@ -98,7 +98,8 @@ fun OrderDetails(
                                 Text( // Title
                                     textAlign = TextAlign.Start,
                                     overflow = TextOverflow.Ellipsis,
-                                    text = item.title,
+                                    //text = item.title,
+                                    text = "",
                                     fontFamily = titleFontFamily,
                                     fontSize = 24.sp,
                                     color = Color.DarkGray
@@ -106,7 +107,9 @@ fun OrderDetails(
                                 Text( // Description
                                     textAlign = TextAlign.Start,
                                     overflow = TextOverflow.Ellipsis,
-                                    text = item.description,
+                                    //text = item.description,
+                                    text = "",
+
                                     maxLines = 2,
                                     fontFamily = descriptionFontFamily,
                                     color = LightDarkGray
@@ -115,7 +118,8 @@ fun OrderDetails(
                                 Text( // Price
                                     textAlign = TextAlign.Center,
                                     overflow = TextOverflow.Ellipsis,
-                                    text = "MRP:Rs ${item.price}",
+                                    //text = "MRP:Rs ${item.price}",
+                                    text = "",
                                     fontFamily = descriptionFontFamily,
                                     color = LightDarkGray,
                                 )

@@ -21,12 +21,14 @@ import com.experiment.foodproductapp.R
 import com.experiment.foodproductapp.ui.theme.ChangeBarColors
 import com.experiment.foodproductapp.ui.theme.DarkYellow
 import com.experiment.foodproductapp.ui.theme.Orange
+import com.experiment.foodproductapp.viewmodels.OrderDetailsViewModel
 import com.experiment.foodproductapp.viewmodels.SplashScreenViewModel
 
 @Composable
 fun SplashScreenPage(
     navHostControllerLambda : () -> NavHostController,
     splashScreenViewModel: SplashScreenViewModel = viewModel(),
+    orderDetailsViewModel: OrderDetailsViewModel = viewModel(),
     animationDuration : Int = splashScreenViewModel.splashDuration.toInt() - 1000
 ) {
     val startAnimation = remember { mutableStateOf(false) }
@@ -75,7 +77,8 @@ fun SplashScreenPage(
 
     LaunchedEffect(key1 = Unit) {
         startAnimation.value = true
-        splashScreenViewModel.execute(context,navHostControllerLambda())}
+        splashScreenViewModel.execute(context,navHostControllerLambda())
+    }
 }
 
 @Composable

@@ -2,7 +2,7 @@ package com.experiment.foodproductapp.database
 
 import androidx.room.Entity
 
-@Entity
+@Entity(primaryKeys = ["email","id","orderId"])
 class OrderDetails(
     email: String,
     id: Int,
