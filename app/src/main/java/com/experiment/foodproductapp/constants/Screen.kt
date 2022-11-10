@@ -17,6 +17,9 @@ sealed class Screen(val route:String) {
     object ProductCart : Screen("ProductCart/{email}"){
         fun routeWithData(data: String) = "ProductCart/$data"
     }
+    object OrderDetails : Screen("OrderDetails/{email}"){
+        fun routeWithData(data: String) = "OrderDetails/$data"
+    }
     object CheckoutPage : Screen("CheckoutPage/{email}/{sum}"){
         fun routeWithData(email: String,sum:Int) = "CheckoutPage/$email/$sum"
     }

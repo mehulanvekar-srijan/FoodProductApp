@@ -3,6 +3,7 @@ package com.experiment.foodproductapp.viewmodels
 import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -16,35 +17,40 @@ import kotlinx.coroutines.withContext
 
 class OrderDetailsViewModel: ViewModel() {
 
-    var finalList = mutableListOf<MutableList<OrderDetails>>()
-    val email = "romi@romi.com"
+    var finalList = mutableStateListOf<MutableList<OrderDetails>>()
+    val email = mutableStateOf("")
 
     fun fetchOrderList(context: Context) {
         var orderCount = 1
-        do {
-            val order = mutableListOf<OrderDetails>()
-            var list = DatabaseRepository(context).readAllOrderDetails(email, orderCount)
+        viewModelScope.launch(Dispatchers.IO) {
+            do {
+                val order = mutableListOf<OrderDetails>()
+                val list = DatabaseRepository(context).readAllOrderDetails(email.value, orderCount)
 
-            Log.d("orderDetails", " list value fetchOrderList: $list")
+                Log.d("orderDetails", " list value fetchOrderList: $list")
 
 
-            list.forEach {
-                order.add(it)
-            }
+                list.forEach {
+                    order.add(it)
+                }
 
-            for (element in order) {
-                Log.d("orderDetails", " list value fetchOrderList: ${element.title} and count of orderis ${order.count()}")
+                for (element in order) {
+                    Log.d(
+                        "orderDetails",
+                        " list value fetchOrderList: ${element.title} and count of orderis ${order.count()}"
+                    )
 
-            }
-            if (list.isNotEmpty()) {
-                //finalList.add(order.subList(0,order.count()))
-                finalList.add(order)
-                Log.d("orderDetails", "fetchOrderList: ")
-            }
+                }
+                if (list.isNotEmpty()) {
+                    //finalList.add(order.subList(0,order.count()))
+                    finalList.add(order)
+                    Log.d("orderDetails", "fetchOrderList: ")
+                }
 
-            orderCount++
+                orderCount++
 
-        } while (list.isNotEmpty())
+            } while (list.isNotEmpty())
+        }
 
         Log.d("orderDetails", "count of total orders: ${finalList.count()}")
 

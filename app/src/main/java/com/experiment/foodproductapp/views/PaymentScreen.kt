@@ -45,8 +45,8 @@ fun PaymentScreen(
     if (mainActivity.status.value == true) {
         LaunchedEffect(key1 = Unit) {
             delay(3000)
-            navHostControllerLambda().navigate(Screen.HomeScreen.routeWithData(email.toString())) {
-                popUpTo(Screen.HomeScreen.route) { inclusive = true }
+            navHostControllerLambda().navigate(Screen.OrderDetails.routeWithData(email.toString())) {
+                popUpTo(Screen.ProductCart.route) { inclusive = true }
             }
             mainActivity.status.value = null
         }

@@ -97,6 +97,13 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
                             it.arguments?.getInt("sum")
                         ) { this@MainActivity }
                     }
+                    composable(route = Screen.OrderDetails.route,
+                        arguments = listOf(navArgument("email") { type = NavType.StringType } )
+                    ) {
+                        OrderDetails(
+                            it.arguments?.getString("email"),
+                            navHostControllerLambda)
+                    }
                 }
             }
         }
