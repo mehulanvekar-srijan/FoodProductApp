@@ -63,4 +63,6 @@ class DatabaseRepository(context: Context) {
     fun getCount(id: Int,email: String): Int = productDao.getCount(id,email)
 
     fun insertOrder(order: OrderDetails) = OrderDetailsDao.insertOrder(order)
+
+    fun readAllOrderDetails(email: String,count: Int): List<OrderDetails> = OrderDetailsDao.readAllOrderDetails(email,count)
 }
