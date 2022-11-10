@@ -1,5 +1,11 @@
 package com.experiment.foodproductapp.viewmodels
 
-class OrderDetailsViewModel {
+import androidx.lifecycle.ViewModel
+import com.experiment.foodproductapp.database.OrderDetails
+
+class OrderDetailsViewModel: ViewModel() {
+
+    val orderlist= mutableListOf<OrderDetails>()
+
 
 }

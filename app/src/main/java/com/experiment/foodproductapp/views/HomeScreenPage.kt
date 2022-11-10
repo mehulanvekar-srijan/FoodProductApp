@@ -32,11 +32,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberImagePainter
 import com.experiment.foodproductapp.R
 import com.experiment.foodproductapp.repository.DatabaseRepository
@@ -45,13 +47,23 @@ import com.experiment.foodproductapp.viewmodels.HomeScreenViewModel
 import kotlinx.coroutines.launch
 import kotlin.math.min
 
+@Preview
+@Composable
+fun preview3() {
+    val navHostController = rememberNavController()
+    val navHostControllerLambda: () -> NavHostController = {
+
+        navHostController
+    }
+    HomeScreenPage("sahil@test.com", navHostControllerLambda = navHostControllerLambda)
+}
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun HomeScreenPage(
     email : String?,
     navHostControllerLambda: () -> NavHostController,
-    homeScreenViewModel: HomeScreenViewModel,
+    homeScreenViewModel: HomeScreenViewModel= viewModel(),
 ) {
     LaunchedEffect(key1 = Unit){ homeScreenViewModel.setEmail(email) }
 
