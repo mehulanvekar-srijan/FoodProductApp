@@ -14,5 +14,5 @@ open class Product(
     var price: Int,
     var count: Int = 1,
 ) {
-    constructor() : this(id = -1, url = "", title = "", description = "", price = -1) {}
+    constructor() : this(id = -1, url = "", title = "", description = "", price = -1, count = 1) {}
 }

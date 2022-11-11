@@ -77,6 +77,10 @@ class HomeScreenViewModel : ViewModel() {
         navHostController.navigate(Screen.ProductCart.routeWithData(userEmail.value))
     }
 
+    fun navigateToOrderDetailsPage(navHostController: NavHostController) {
+        navHostController.navigate(Screen.OrderDetails.routeWithData(userEmail.value))
+    }
+
     fun navigateToProductDetailsPage(navHostController: NavHostController) {
         navHostController.navigate(Screen.ProductDetailsScreen.route) {
             popUpTo(Screen.HomeScreen.route) { inclusive = false }

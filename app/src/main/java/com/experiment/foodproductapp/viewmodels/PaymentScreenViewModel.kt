@@ -45,10 +45,11 @@ class PaymentScreenViewModel : ViewModel() {
                         id = item.id,
                         url = item.url,
                         title = item.title,
+                        count=item.count,
                         description =  item.description,
                         price = item.price,
                         orderId = orderId,
-                        canceled = false
+                        canceled = false,
                     )
 
                     DatabaseRepository(context).insertOrder(order)

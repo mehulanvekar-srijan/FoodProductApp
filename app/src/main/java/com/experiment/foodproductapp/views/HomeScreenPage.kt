@@ -12,6 +12,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.ManageAccounts
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.outlined.Favorite
@@ -61,11 +62,11 @@ fun preview3() {
 @OptIn(ExperimentalMaterialApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun HomeScreenPage(
-    email : String?,
+    email: String?,
     navHostControllerLambda: () -> NavHostController,
-    homeScreenViewModel: HomeScreenViewModel= viewModel(),
+    homeScreenViewModel: HomeScreenViewModel = viewModel(),
 ) {
-    LaunchedEffect(key1 = Unit){ homeScreenViewModel.setEmail(email) }
+    LaunchedEffect(key1 = Unit) { homeScreenViewModel.setEmail(email) }
 
     ChangeBarColors(navigationBarColor = Color.White)
 
@@ -77,29 +78,29 @@ fun HomeScreenPage(
     val brandLogoSize = remember { mutableStateOf(Int.MAX_VALUE) }
 
     val animatedAppBarBackgroundColor = animateColorAsState(
-        targetValue = if((listState.firstVisibleItemScrollOffset >= (brandLogoSize.value/2)) || (listState.firstVisibleItemIndex > 0)) Orange
+        targetValue = if ((listState.firstVisibleItemScrollOffset >= (brandLogoSize.value / 2)) || (listState.firstVisibleItemIndex > 0)) Orange
         else Color.Transparent,
         animationSpec = tween(1),
     )
     val animatedAppBarContentColor = animateColorAsState(
-        targetValue = if((listState.firstVisibleItemScrollOffset >= (brandLogoSize.value/2)) || (listState.firstVisibleItemIndex > 0)) Color.White
+        targetValue = if ((listState.firstVisibleItemScrollOffset >= (brandLogoSize.value / 2)) || (listState.firstVisibleItemIndex > 0)) Color.White
         else Color.Transparent,
         animationSpec = tween(1),
     )
 
     val animatedAppBarBrandIconColor = animateColorAsState(
-        targetValue = if((listState.firstVisibleItemScrollOffset >= (brandLogoSize.value/2)) || (listState.firstVisibleItemIndex > 0)) Color.Unspecified
+        targetValue = if ((listState.firstVisibleItemScrollOffset >= (brandLogoSize.value / 2)) || (listState.firstVisibleItemIndex > 0)) Color.Unspecified
         else Color.Transparent,
         animationSpec = tween(1),
     )
 
     val animatedAppBarElevation = animateDpAsState(
-        targetValue = if((listState.firstVisibleItemScrollOffset >= (brandLogoSize.value/2)) || (listState.firstVisibleItemIndex > 0)) 3.dp
+        targetValue = if ((listState.firstVisibleItemScrollOffset >= (brandLogoSize.value / 2)) || (listState.firstVisibleItemIndex > 0)) 3.dp
         else 0.dp,
         animationSpec = tween(1),
     )
 
-    Box(modifier = Modifier.fillMaxSize()){
+    Box(modifier = Modifier.fillMaxSize()) {
 
         //Background Image
         BackgroundImage()
@@ -112,11 +113,11 @@ fun HomeScreenPage(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(20.dp),
             state = listState,
-        ){
+        ) {
 
             //Brand Logo
             item {
-                BrandLogo(listState = listState,brandLogoSize = brandLogoSize)
+                BrandLogo(listState = listState, brandLogoSize = brandLogoSize)
             }
 
             //Products
@@ -126,7 +127,7 @@ fun HomeScreenPage(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(180.dp),
-                ){
+                ) {
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -160,7 +161,7 @@ fun HomeScreenPage(
                             Column(
                                 modifier = Modifier.fillMaxSize(),
                                 verticalArrangement = Arrangement.SpaceEvenly,
-                            ){
+                            ) {
                                 Text( // Title
                                     textAlign = TextAlign.Start,
                                     overflow = TextOverflow.Ellipsis,
@@ -178,7 +179,8 @@ fun HomeScreenPage(
                                     color = LightDarkGray
                                 )
 
-                                Text( // Price
+                                Text(
+                                    // Price
                                     textAlign = TextAlign.Center,
                                     overflow = TextOverflow.Ellipsis,
                                     text = "MRP:Rs ${item.price}",
@@ -200,10 +202,10 @@ fun HomeScreenPage(
                         Surface(
                             elevation = 3.dp,
                             color = Color.Transparent
-                        ){
+                        ) {
                             IconButton(
                                 onClick = {
-                                    homeScreenViewModel.addProductToCart(item,context)
+                                    homeScreenViewModel.addProductToCart(item, context)
                                     coroutineScope.launch {
                                         iconColor.animateTo(Orange, tween(50))
                                         iconColor.animateTo(DarkPink, tween(200))
@@ -227,7 +229,7 @@ fun HomeScreenPage(
             }
 
             //Space
-            item{ Spacer(modifier = Modifier.padding(5.dp)) }
+            item { Spacer(modifier = Modifier.padding(5.dp)) }
         }
 
         //Top App Bar
@@ -241,6 +243,9 @@ fun HomeScreenPage(
             },
             onProductCartClick = {
                 homeScreenViewModel.navigateToProductCart(navHostControllerLambda())
+            },
+            onOrderDetailsClick = {
+                homeScreenViewModel.navigateToOrderDetailsPage(navHostControllerLambda())
             }
         )
     }
@@ -268,8 +273,9 @@ fun AppBar(
     animatedAppBarContentColor: State<Color>,
     animatedAppBarBrandIconColor: State<Color>,
     animatedAppBarElevation: State<Dp>,
-    onUserProfileClick: ()->Unit = {},
-    onProductCartClick: ()->Unit = {},
+    onUserProfileClick: () -> Unit = {},
+    onProductCartClick: () -> Unit = {},
+    onOrderDetailsClick: () -> Unit = {},
 ) {
     TopAppBar(
         title = { Text(text = "Beer App", color = animatedAppBarContentColor.value) },
@@ -285,11 +291,27 @@ fun AppBar(
         },
         actions = {
             IconButton(onClick = onUserProfileClick) {
-                Icon(imageVector = Icons.Default.ManageAccounts, contentDescription = "", tint = Color.White)
+                Icon(
+                    imageVector = Icons.Default.ManageAccounts,
+                    contentDescription = "",
+                    tint = Color.White
+                )
+            }
+
+            IconButton(onClick = onOrderDetailsClick) {
+                Icon(
+                    imageVector = Icons.Default.History,
+                    contentDescription = "",
+                    tint = Color.White
+                )
             }
 
             IconButton(onClick = onProductCartClick) {
-                Icon(imageVector = Icons.Default.ShoppingCart, contentDescription = "", tint = Color.White)
+                Icon(
+                    imageVector = Icons.Default.ShoppingCart,
+                    contentDescription = "",
+                    tint = Color.White
+                )
             }
         }
     )
