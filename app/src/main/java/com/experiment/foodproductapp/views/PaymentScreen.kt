@@ -12,9 +12,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.experiment.foodproductapp.MainActivity
 import com.experiment.foodproductapp.R
@@ -22,6 +24,7 @@ import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.ui.theme.descriptionFontFamily
 import com.experiment.foodproductapp.ui.theme.titleFontFamily
 import com.experiment.foodproductapp.utility.payment
+import com.experiment.foodproductapp.viewmodels.PaymentScreenViewModel
 import kotlinx.coroutines.delay
 
 @Composable
@@ -30,11 +33,13 @@ fun PaymentScreen(
     email: String?,
     phoneNumber: String?,
     sum: Int?,
+    paymentScreenViewModel: PaymentScreenViewModel = viewModel(),
     activityLambda: () -> Activity,
 ) {
     Log.d("total1", sum.toString())
     val total = sum.toString()
     val mainActivity = activityLambda() as MainActivity
+    val context = LocalContext.current
 
     LaunchedEffect(key1 = Unit) {
         if (sum != null) {
@@ -44,11 +49,12 @@ fun PaymentScreen(
 
     if (mainActivity.status.value == true) {
         LaunchedEffect(key1 = Unit) {
-            delay(3000)
-            navHostControllerLambda().navigate(Screen.OrderDetails.routeWithData(email.toString())) {
-                popUpTo(Screen.ProductCart.route) { inclusive = true }
-            }
-            mainActivity.status.value = null
+            paymentScreenViewModel.navigateOnSuccess(
+                navHostController = navHostControllerLambda(),
+                context = context,
+                email = email,
+                activity = mainActivity,
+            )
         }
         Box(
             modifier = Modifier
@@ -83,7 +89,8 @@ fun PaymentScreen(
                 )
             }
             Column(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .fillMaxSize()
                     .padding(bottom = 20.dp),
                 verticalArrangement = Arrangement.Bottom,
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -98,11 +105,12 @@ fun PaymentScreen(
     }
     if (mainActivity.status.value == false) {
         LaunchedEffect(key1 = Unit) {
-            delay(3000)
-            navHostControllerLambda().navigate(Screen.ProductCart.routeWithData(email.toString())) {
-                popUpTo(Screen.ProductCart.route)  { inclusive = true }
-            }
-            mainActivity.status.value = null
+            paymentScreenViewModel.navigateOnFailure(
+                navHostController = navHostControllerLambda(),
+                context = context,
+                email = email,
+                activity = mainActivity,
+            )
         }
         Box(
             modifier = Modifier
@@ -134,7 +142,8 @@ fun PaymentScreen(
                 )
             }
             Column(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .fillMaxSize()
                     .padding(bottom = 20.dp),
                 verticalArrangement = Arrangement.Bottom,
                 horizontalAlignment = Alignment.CenterHorizontally

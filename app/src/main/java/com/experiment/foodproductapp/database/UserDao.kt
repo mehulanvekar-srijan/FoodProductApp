@@ -37,4 +37,10 @@ interface UserDao {
 
     @Query("UPDATE User SET password=:password WHERE email=:email")
     fun updatePassword(email: String,password: String)
+
+    @Query("SELECT latestOrderId FROM User WHERE email=:email")
+    fun getLatestOrderId(email: String): Int
+
+    @Query("UPDATE User SET latestOrderId=:orderId WHERE email=:email")
+    fun updateLatestOrderId(email: String, orderId: Int)
 }

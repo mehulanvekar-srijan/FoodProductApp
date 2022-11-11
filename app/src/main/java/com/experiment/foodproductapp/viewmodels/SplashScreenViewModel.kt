@@ -22,7 +22,7 @@ class SplashScreenViewModel : ViewModel() {
 
             delay(splashDuration)
 
-            dummyData(context)
+            //dummyData(context)
 
             val loggedInEmail: String? = DatabaseRepository(context).getLoggedInUser()
 
@@ -48,7 +48,7 @@ class SplashScreenViewModel : ViewModel() {
             try {
                 DatabaseRepository(context).insertOrder(
                     OrderDetails(
-                        email = "romi@romi.com",
+                        email = "meh@ul.com",
                         id = 0,
                         url = "https://products3.imgix.drizly.com/ci-budweiser-24269668d4e23c97.jpeg",
                         title = "Coolberg Non Alcoholic Beer - Malt",
@@ -60,7 +60,7 @@ class SplashScreenViewModel : ViewModel() {
                 )
                 DatabaseRepository(context).insertOrder(
                     OrderDetails(
-                        email = "romi@romi.com",
+                        email = "meh@ul.com",
                         id = 1,
                         url = "https://products3.imgix.drizly.com/ci-budweiser-24269668d4e23c97.jpeg",
                         title = "Coolberg Non Alcoholic Beer - Mint",
@@ -72,7 +72,7 @@ class SplashScreenViewModel : ViewModel() {
                 )
                 DatabaseRepository(context).insertOrder(
                     OrderDetails(
-                        email = "romi@romi.com",
+                        email = "meh@ul.com",
                         id = 2,
                         url = "https://products3.imgix.drizly.com/ci-budweiser-24269668d4e23c97.jpeg",
                         title = "Coolberg Non Alcoholic Beer - Mint",
@@ -84,7 +84,7 @@ class SplashScreenViewModel : ViewModel() {
                 )
                 DatabaseRepository(context).insertOrder(
                     OrderDetails(
-                        email = "romi@romi.com",
+                        email = "meh@ul.com",
                         id = 0,
                         url = "https://products3.imgix.drizly.com/ci-budweiser-24269668d4e23c97.jpeg",
                         title = "Coolberg Non Alcoholic Beer - Mint",
@@ -96,7 +96,7 @@ class SplashScreenViewModel : ViewModel() {
                 )
                 DatabaseRepository(context).insertOrder(
                     OrderDetails(
-                        email = "romi@romi.com",
+                        email = "meh@ul.com",
                         id = 1,
                         url = "https://products3.imgix.drizly.com/ci-budweiser-24269668d4e23c97.jpeg",
                         title = "Coolberg Non Alcoholic Beer - Mint",
@@ -114,7 +114,7 @@ class SplashScreenViewModel : ViewModel() {
 
             val finalList = mutableListOf<MutableList<OrderDetails>>()
 
-            val email = "romi@romi.com"
+            val email = "meh@ul.com"
 
 
             var orderCount = 1

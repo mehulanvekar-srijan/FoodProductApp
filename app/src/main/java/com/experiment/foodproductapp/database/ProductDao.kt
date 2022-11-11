@@ -30,6 +30,9 @@ interface ProductDao {
     @Query("DELETE FROM Product WHERE id = :id AND email = :email")
     fun deleteProduct(id: Int,email: String)
 
+    @Query("DELETE FROM Product WHERE email = :email")
+    fun deleteAllProductByEmail(email: String)
+
     @Query("UPDATE Product SET count = :count WHERE id = :id AND email = :email")
     fun setCount(id: Int,email: String,count: Int)
 

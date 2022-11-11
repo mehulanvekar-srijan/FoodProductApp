@@ -1,9 +1,7 @@
 package com.experiment.foodproductapp.database
 
 import androidx.room.Entity
-import androidx.room.Index
 import androidx.room.PrimaryKey
-import java.util.*
 
 @Entity
 data class User(
@@ -21,6 +19,8 @@ data class User(
     var addressLine2: String? = null,
     var city: String? = null,
     var state: String? = null,
+
+    var latestOrderId: Int = 1,
     ){
     constructor() : this("","","","","","") {}
 }

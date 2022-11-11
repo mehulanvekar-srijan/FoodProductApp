@@ -14,6 +14,7 @@ class DatabaseRepository(context: Context) {
     private val OrderDetailsDao = UserDatabase.getDatabase(context).orderDetailsDao()
 
 
+    //User
     fun addUser(user: User) = dao.insertUser(user)
 
     fun readAllUsers() : List<User> {
@@ -48,12 +49,17 @@ class DatabaseRepository(context: Context) {
 
     fun updatePassword(email: String,password: String) = dao.updatePassword(email,password)
 
+    fun getLatestOrderId(email: String) = dao.getLatestOrderId(email)
+
+    fun updateLatestOrderId(email: String, orderId: Int) = dao.updateLatestOrderId(email,orderId)
 
 
 
+    //Product
     fun addProduct(product: Product) = productDao.insertProduct(product)
 
     fun removeProduct(id: Int,email: String) = productDao.deleteProduct(id,email)
+    fun deleteAllProductByEmail(email: String) = productDao.deleteAllProductByEmail(email)
 
     //fun readAllProducts(): MutableList<Product> = productDao.readAllProducts()
 
@@ -62,6 +68,8 @@ class DatabaseRepository(context: Context) {
     fun setCount(id: Int,email: String,count: Int): Unit = productDao.setCount(id,email,count)
     fun getCount(id: Int,email: String): Int = productDao.getCount(id,email)
 
+
+    //Order details
     fun insertOrder(order: OrderDetails) = OrderDetailsDao.insertOrder(order)
 
     fun readAllOrderDetails(email: String,count: Int): MutableList<OrderDetails> = OrderDetailsDao.readAllOrderDetails(email,count)
