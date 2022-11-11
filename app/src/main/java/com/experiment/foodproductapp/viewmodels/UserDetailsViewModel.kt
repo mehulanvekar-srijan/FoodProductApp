@@ -9,6 +9,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.experiment.foodproductapp.constants.Screen
+import com.experiment.foodproductapp.database.OrderDetails
+import com.experiment.foodproductapp.database.Product
 import com.experiment.foodproductapp.database.User
 import com.experiment.foodproductapp.repository.DatabaseRepository
 import com.experiment.foodproductapp.domain.event.UserDetailsFormEvent
@@ -22,6 +24,8 @@ class UserDetailsViewModel(private val validateFirstName: ValidateName = Validat
                            private val validatePhoneNumber: ValidatePhoneNumber = ValidatePhoneNumber(),
                            private val validateDateChange: ValidateName = ValidateName()
 ) : ViewModel() {
+
+
 
     private val _user: MutableState<User> = mutableStateOf(User())
     val user: State<User> = _user
@@ -95,7 +99,7 @@ class UserDetailsViewModel(private val validateFirstName: ValidateName = Validat
                 state.password,
                 state.phoneNumber
             )
-            withContext(Dispatchers.Main){
+            withContext(Dispatchers.Main) {
                 Toast.makeText(context, "Updation Successful", Toast.LENGTH_LONG).show()
             }
         }
@@ -121,7 +125,7 @@ class UserDetailsViewModel(private val validateFirstName: ValidateName = Validat
     fun initProfilePicture(
         context: Context,
         email:String,
-    ){
+    ) {
         viewModelScope.launch(Dispatchers.IO){
             val imagePath: String? = DatabaseRepository(context).getImagePath(email)
             if(imagePath != null){

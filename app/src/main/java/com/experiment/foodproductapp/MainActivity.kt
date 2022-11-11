@@ -27,6 +27,8 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
         super.onCreate(savedInstanceState)
         setContent {
 
+
+
             navHostController = rememberNavController()
 
             val navHostControllerLambda : () -> NavHostController = { navHostController as NavHostController }

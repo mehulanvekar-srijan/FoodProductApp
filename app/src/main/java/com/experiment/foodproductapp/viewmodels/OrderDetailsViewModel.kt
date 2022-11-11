@@ -2,8 +2,10 @@ package com.experiment.foodproductapp.viewmodels
 
 import android.content.Context
 import android.util.Log
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -16,6 +18,14 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class OrderDetailsViewModel: ViewModel() {
+
+    // to access the order on description page
+    var orderDetails = mutableListOf<OrderDetails>()
+
+    //assign the details of the order clicked on
+    fun addOrder(newOrder: MutableList<OrderDetails>) {
+        orderDetails = newOrder
+    }
 
     var finalList = mutableStateListOf<MutableList<OrderDetails>>()
     val email = mutableStateOf("")

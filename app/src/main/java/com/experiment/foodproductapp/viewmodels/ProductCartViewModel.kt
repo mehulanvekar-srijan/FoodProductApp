@@ -21,7 +21,7 @@ class ProductCartViewModel : ViewModel() {
     private val _email = mutableStateOf("")
     val email = _email
 
-    fun onDismiss(context: Context,item: Product){
+    fun onDismiss(context: Context,item: Product) {
         viewModelScope.launch(Dispatchers.IO){
             removeFromProductList(item)
             removeFromDatabase(context,item)
@@ -49,7 +49,7 @@ class ProductCartViewModel : ViewModel() {
     private val _sum = mutableStateOf(computeSum())
     val sum = _sum
 
-    private fun computeSum(): Int = _cartList.fold(0){ result, value ->
+    private fun computeSum(): Int = _cartList.fold(0) { result, value ->
             result + (value.price * value.count)
     }
 
