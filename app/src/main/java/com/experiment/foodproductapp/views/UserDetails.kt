@@ -621,7 +621,7 @@ fun UserDetails(
         }
 
         TopAppBar(
-            title = { Text(text = "Beer App", color = Color.Black) },
+            title = { Text(text = "Beer App", color = Color.White) },
             backgroundColor = Color.Transparent,
             elevation = 0.dp,
             navigationIcon = {
@@ -629,7 +629,7 @@ fun UserDetails(
                     Icon(
                         imageVector = Icons.Default.ArrowBack,
                         contentDescription = "",
-                        tint = Color.Black
+                        tint = Color.White
                     )
                 }
             },
@@ -638,6 +638,7 @@ fun UserDetails(
                     Icon(
                         imageVector = Icons.Default.Logout,
                         contentDescription = "",
+                        tint = Color.White
                     )
                 }
             }

@@ -197,7 +197,7 @@ fun CardView(
         modifier = Modifier
             .fillMaxWidth()
             .height(110.dp),
-        elevation = 20.dp,
+        elevation = 5.dp,
         shape = RoundedCornerShape(15.dp),
         onClick = {  },
     ) {

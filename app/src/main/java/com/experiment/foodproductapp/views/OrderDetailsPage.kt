@@ -73,7 +73,7 @@ fun OrderDetails(
         TopAppBar(
             title = { Text(text = "Order Details", color = Color.White) },
             backgroundColor = Color.Transparent,
-            elevation = 2.dp,
+            elevation = 0.dp,
         )
 
         //Main Column

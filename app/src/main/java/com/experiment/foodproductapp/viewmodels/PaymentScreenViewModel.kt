@@ -58,11 +58,11 @@ class PaymentScreenViewModel : ViewModel() {
                 //Update order Id
                 DatabaseRepository(context).updateLatestOrderId(email,++orderId)
 
-                delay(3000)
+                delay(2000)
 
                 withContext(Dispatchers.Main){
                     navHostController.navigate(Screen.HomeScreen.routeWithData(email)){
-                        popUpTo(Screen.ProductCart.route) { inclusive = true }
+                        popUpTo(Screen.HomeScreen.route) { inclusive = true }
                     }
                     activity.status.value = null
                 }
@@ -85,7 +85,7 @@ class PaymentScreenViewModel : ViewModel() {
     ){
         viewModelScope.launch(Dispatchers.Main){
             if(email != null) {
-                delay(3000)
+                delay(2000)
                 navHostController.navigate(Screen.ProductCart.routeWithData(email)){
                     popUpTo(Screen.ProductCart.route)  { inclusive = true }
                 }
