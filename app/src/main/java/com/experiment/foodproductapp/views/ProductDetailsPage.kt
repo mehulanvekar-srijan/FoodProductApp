@@ -3,6 +3,7 @@ package com.experiment.foodproductapp.views
 
 
 import android.graphics.Paint
+import android.text.style.LineHeightSpan
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -35,6 +36,7 @@ import androidx.compose.ui.res.painterResource
 
 
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -172,21 +174,40 @@ fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScr
                             .fillMaxWidth()
                     ) {
                         //item {
-                        Text(
-                            text = productDetails.description,
-                            color = LightDarkGray,
-                            style = TextStyle(
-                                fontSize = 17.sp,
-                                //letterSpacing = 1.sp,
-                                fontFamily = descriptionFontFamily
-                            ),
-                            //maxLines = 5,
-                            overflow = TextOverflow.Clip,
-                            textAlign = TextAlign.Justify,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 40.dp, end = 20.dp)
-                        )
+                        if (scrollState.value == 0) {
+                            Text(
+                                text = productDetails.description,
+                                color = LightDarkGray,
+                                style = TextStyle(
+                                    fontSize = 17.sp,
+                                    //letterSpacing = 1.sp,
+                                    fontFamily = descriptionFontFamily
+                                ),
+                                maxLines = 4,
+
+                                overflow = TextOverflow.Ellipsis,
+                                textAlign = TextAlign.Justify,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 40.dp, end = 20.dp)
+                            )
+                        } else  {
+                            Text(
+                                text = productDetails.description,
+                                color = LightDarkGray,
+                                style = TextStyle(
+                                    fontSize = 17.sp,
+                                    //letterSpacing = 1.sp,
+                                    fontFamily = descriptionFontFamily
+                                ),
+                                overflow = TextOverflow.Ellipsis,
+                                //overflow = TextOverflow.Clip,
+                                textAlign = TextAlign.Justify,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 40.dp, end = 20.dp)
+                            )
+                        }
                     }
                 }
 
@@ -244,23 +265,24 @@ fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScr
                         }
 
                         //Count Value
-                        Box(
-                            modifier = Modifier
-                                .background(Color.Transparent)
-                                .clip(RoundedCornerShape(50)),
-                            contentAlignment = Alignment.Center,
-                        ) {
+//                        Box(
+//                            modifier = Modifier,
+//                                //.background(Color.Transparent)
+//                                //.clip(RoundedCornerShape(25)),
+//                            contentAlignment = Alignment.Center,
+//                        ) {
                             Text(
                                 text = "" + quantity.value,
                                 style = TextStyle(
                                     fontSize = 25.sp,
                                 ),
+                                color = DarkYellow,
                                 modifier = Modifier
-                                    .background(DarkYellow)
+                                    //.background(DarkYellow)
                                     .padding(start = 20.dp, end = 20.dp)
                             )
 
-                        }
+                        //}
 
                         //Minus
                         Box(
@@ -324,16 +346,17 @@ fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScr
                         Image(
                             painter = painterResource(id = R.drawable.ic_percentage_p),
                             contentDescription = "",
-                            modifier = Modifier.fillMaxHeight(.7f)
+                            modifier = Modifier.fillMaxHeight(.5f)
                         )
                         Text(
-                            text = "5" + "% v/v",
+                            text = "5" + "% Alc",
                             color = Color.White,
                             style = TextStyle(
                                 fontWeight = FontWeight.Normal,
-                                fontSize = 25.sp,
+                                fontSize = 20.sp,
                                 letterSpacing = 1.sp
                             ),
+                            fontFamily = descriptionFontFamily,
                             textAlign = TextAlign.Center,
                             modifier = Modifier
                                 .align(Alignment.CenterHorizontally)
@@ -361,7 +384,7 @@ fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScr
                         Image(
                             painter = painterResource(id = R.drawable.ic_rupee_2),
                             contentDescription = "",
-                            modifier = Modifier.fillMaxHeight(.7f)
+                            modifier = Modifier.fillMaxHeight(.5f)
                         )
 
                         Text(
@@ -369,9 +392,10 @@ fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScr
                             color = Color.White,
                             style = TextStyle(
                                 fontWeight = FontWeight.Normal,
-                                fontSize = 25.sp,
+                                fontSize = 20.sp,
                                 letterSpacing = 1.sp
                             ),
+                            fontFamily = descriptionFontFamily,
                             textAlign = TextAlign.Center,
                             modifier = Modifier
                                 .align(Alignment.CenterHorizontally)
@@ -400,7 +424,7 @@ fun AppBar(
 ) {
 
     TopAppBar(
-        title = { Text(text = "Beer App", color = DarkYellow) },
+        title = { },
         backgroundColor = Color.Transparent,
         elevation = 0.dp,
         navigationIcon = {
