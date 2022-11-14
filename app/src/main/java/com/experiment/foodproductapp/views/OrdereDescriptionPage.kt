@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -66,6 +68,15 @@ fun OrderDescriptionPage(
                     title = { Text(text = "Order Details", color = Color.White) },
                     backgroundColor = Color.Transparent,
                     elevation = 0.dp,
+                    navigationIcon = {
+                        IconButton(onClick = { navHostControllerLambda().navigateUp() }) {
+                            Icon(
+                                imageVector = Icons.Default.ArrowBack,
+                                contentDescription = "",
+                                tint = Color.White
+                            )
+                        }
+                    },
                 )
             }
 

@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.outlined.Help
 import androidx.compose.material.icons.outlined.HelpCenter
 import androidx.compose.material.icons.outlined.HelpOutline
@@ -76,6 +77,15 @@ fun OrderDetails(
             title = { Text(text = "Order Details", color = Color.White) },
             backgroundColor = Color.Transparent,
             elevation = 0.dp,
+            navigationIcon = {
+                IconButton(onClick = { navHostControllerLambda().navigateUp() }) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = "",
+                        tint = Color.White
+                    )
+                }
+            },
         )
 
         //Main Column
