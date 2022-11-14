@@ -280,7 +280,7 @@ fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScr
                                 color = DarkYellow,
                                 modifier = Modifier
                                     //.background(DarkYellow)
-                                    .padding(start = 20.dp, end = 20.dp)
+                                    .padding(start = 5.dp, end = 5.dp)
                             )
 
                         //}
@@ -345,7 +345,7 @@ fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScr
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Image(
-                            painter = painterResource(id = R.drawable.ic_percentage_p),
+                            painter = painterResource(id = R.drawable.ic_percentage_percent),
                             contentDescription = "",
                             modifier = Modifier.fillMaxHeight(.5f)
                         )
@@ -362,18 +362,18 @@ fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScr
                             modifier = Modifier
                                 .align(Alignment.CenterHorizontally)
                         )
-                        Text(
-                            text = "Alcohol",
-                            color = Color.White,
-                            style = TextStyle(
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 20.sp,
-                                letterSpacing = 1.sp
-                            ),
-                            modifier = Modifier
-                                .padding(start = 10.dp, end = 10.dp, bottom = 10.dp)
-                            //textAlign = TextAlign.Center,
-                        )
+//                        Text(
+//                            text = "Alcohol",
+//                            color = Color.White,
+//                            style = TextStyle(
+//                                fontWeight = FontWeight.Bold,
+//                                fontSize = 20.sp,
+//                                letterSpacing = 1.sp
+//                            ),
+//                            modifier = Modifier
+//                                .padding(start = 10.dp, end = 10.dp, bottom = 10.dp)
+//                            //textAlign = TextAlign.Center,
+//                        )
                     }
 
 

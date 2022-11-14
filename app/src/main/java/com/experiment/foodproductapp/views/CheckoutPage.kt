@@ -127,7 +127,7 @@ fun CheckoutPage(
             title = {
                 Row(horizontalArrangement = Arrangement.Center) {
                     Text(
-                        text = "Checkout ",
+                        text = "Shipping Details ",
                         fontFamily = titleFontFamily,
                         fontWeight = FontWeight.Bold,
                         color = DarkYellow,
