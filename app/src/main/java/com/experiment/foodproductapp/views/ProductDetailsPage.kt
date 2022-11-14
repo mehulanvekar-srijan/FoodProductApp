@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
 
 import androidx.compose.ui.layout.ContentScale
@@ -382,9 +383,11 @@ fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScr
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Image(
-                            painter = painterResource(id = R.drawable.ic_rupee_2),
+                            painter = painterResource(id = R.drawable.ic_rupee_sv),
                             contentDescription = "",
+                            //olorFilter = ColorFilter.tint(color = Color.White),
                             modifier = Modifier.fillMaxHeight(.5f)
+
                         )
 
                         Text(
@@ -412,8 +415,6 @@ fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScr
         onProductCartClick = {
             homeScreenViewModel.navigateToProductCart(navHostControllerLambda())
         },
-
-
     )
 }
 
