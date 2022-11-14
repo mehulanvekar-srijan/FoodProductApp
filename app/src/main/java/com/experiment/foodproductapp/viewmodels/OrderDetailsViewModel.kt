@@ -9,7 +9,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavHostController
 import androidx.room.Index
+import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.database.OrderDetails
 import com.experiment.foodproductapp.database.Product
 import com.experiment.foodproductapp.repository.DatabaseRepository
@@ -25,6 +27,13 @@ class OrderDetailsViewModel: ViewModel() {
     //assign the details of the order clicked on
     fun addOrder(newOrder: MutableList<OrderDetails>) {
         orderDetails = newOrder
+    }
+
+
+    fun navigateToProductOrderDescriptionPage(navHostController: NavHostController) {
+        navHostController.navigate(Screen.OrderDescriptionPage.route) {
+            popUpTo(Screen.OrderDetails.route) { inclusive = false }
+        }
     }
 
     var finalList = mutableStateListOf<MutableList<OrderDetails>>()

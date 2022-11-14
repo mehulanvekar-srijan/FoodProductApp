@@ -53,23 +53,23 @@ import com.experiment.foodproductapp.ui.theme.*
 
 import com.experiment.foodproductapp.viewmodels.HomeScreenViewModel
 
-//@Preview
-//@Composable
-//fun Preview() {
-//    val navHostController = rememberNavController()
-//    ProductDetailsPage({navHostController },viewModel())
-//}
-//
-//
-//val  productDetails =  Product(
-//    id = 0,
-//    url = "https://www.bigbasket.com/media/uploads/p/xxl/40213061_2-coolberg-non-alcoholic-beer-malt.jpg",
-//    title = "Coolberg Non Alcoholic Beer - Malt",
-//    description = "Coolberg Malt Beer is a Non-Alcoholic Beer. This NAB has toasty notes of barley malts and hops and a distinctive musky aroma. It is made from the finest natural barley malts extracts. It is carbonated and has a serious spunk. As it contains less carbonation and often develops a beer-like head when poured into a glass. It is a perfect blend of crisp, bold and smooth flavour. Enjoy it with your choice of snack in the evening or serve it at a party.",
-//    price = 79,
-//    count = 0,
-////alcohol = 5
-//)
+@Preview
+@Composable
+fun Preview() {
+    val navHostController = rememberNavController()
+    ProductDetailsPage({navHostController },viewModel())
+}
+
+
+val  productDetails =  Product(
+    id = 0,
+    url = "https://www.bigbasket.com/media/uploads/p/xxl/40213061_2-coolberg-non-alcoholic-beer-malt.jpg",
+    title = "Coolberg Non Alcoholic Beer - Malt",
+    description = "Coolberg Malt Beer is a Non-Alcoholic Beer. This NAB has toasty notes of barley malts and hops and a distinctive musky aroma. It is made from the finest natural barley malts extracts. It is carbonated and has a serious spunk. As it contains less carbonation and often develops a beer-like head when poured into a glass. It is a perfect blend of crisp, bold and smooth flavour. Enjoy it with your choice of snack in the evening or serve it at a party.",
+    price = 79,
+    count = 0,
+//alcohol = 5
+)
 
 
 @Composable

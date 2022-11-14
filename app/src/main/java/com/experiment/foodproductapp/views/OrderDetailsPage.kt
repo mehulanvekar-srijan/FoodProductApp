@@ -8,6 +8,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -54,12 +55,13 @@ fun OrderDetails(
 ) {
     val context = LocalContext.current
 
-    ChangeBarColors(navigationBarColor = Color.White)
+    ChangeBarColors(navigationBarColor = DarkYellow)
 
     val interactionSource = MutableInteractionSource()
 
     LaunchedEffect(key1 = Unit) {
         orderDetailsViewModel.email.value = email.toString()
+        orderDetailsViewModel.finalList.clear()
         orderDetailsViewModel.fetchOrderList(context)
     }
 
@@ -82,9 +84,10 @@ fun OrderDetails(
                 .fillMaxSize()
                 .padding(top = 70.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(20.dp)
+            verticalArrangement = Arrangement.spacedBy(20.dp),
         ) {
             items(items = orderDetailsViewModel.finalList) { item ->
+
 
                 Box(
                     modifier = Modifier
@@ -98,7 +101,12 @@ fun OrderDetails(
                             .padding(start = 15.dp, end = 15.dp),
                         elevation = 5.dp,
                         shape = RoundedCornerShape(10),
-                        onClick = {},
+                        onClick = {
+                            orderDetailsViewModel.addOrder(item)
+                            orderDetailsViewModel.navigateToProductOrderDescriptionPage(
+                                navHostController = navHostControllerLambda()
+                            )
+                        },
                     ) {
                         Row {
                             var sum = 0
@@ -146,8 +154,7 @@ fun OrderDetails(
                                             indication = null
                                         )
                                         .padding(top = 10.dp),
-
-                                    ) {
+                                ) {
                                     Row(verticalAlignment = Alignment.CenterVertically) {
                                         Icon(
                                             imageVector = Icons.Outlined.HelpOutline,
@@ -188,7 +195,7 @@ fun OrderDetails(
 @Composable
 fun BackgroundImage1() {
     Image(
-        painter = painterResource(id = R.drawable.background_home_view),
+        painter = painterResource(id = R.drawable.background_yellow_wave),
         contentDescription = "Background Image",
         contentScale = ContentScale.Crop,
         modifier = Modifier.fillMaxSize()

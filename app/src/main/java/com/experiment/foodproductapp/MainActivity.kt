@@ -15,6 +15,7 @@ import androidx.navigation.navArgument
 import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.ui.theme.FoodProductAppTheme
 import com.experiment.foodproductapp.viewmodels.HomeScreenViewModel
+import com.experiment.foodproductapp.viewmodels.OrderDetailsViewModel
 import com.experiment.foodproductapp.views.*
 import com.razorpay.PaymentData
 import com.razorpay.PaymentResultWithDataListener
@@ -33,6 +34,7 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
 
             val navHostControllerLambda : () -> NavHostController = { navHostController as NavHostController }
             val homeScreenViewModel: HomeScreenViewModel = viewModel()
+            val orderScreenViewModel: OrderDetailsViewModel = viewModel()
 
             FoodProductAppTheme {
                 NavHost(
@@ -104,7 +106,15 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
                     ) {
                         OrderDetails(
                             it.arguments?.getString("email"),
-                            navHostControllerLambda)
+                            navHostControllerLambda,
+                            orderDetailsViewModel = orderScreenViewModel
+                        )
+                    }
+
+                    composable(route = Screen.OrderDescriptionPage.route) {
+                        OrderDescriptionPage (
+                            navHostControllerLambda, orderDetailsViewModel = orderScreenViewModel
+                        )
                     }
                 }
             }
