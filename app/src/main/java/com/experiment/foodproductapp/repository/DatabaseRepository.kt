@@ -1,29 +1,21 @@
 package com.experiment.foodproductapp.repository
 
 import android.content.Context
-import android.net.Uri
-import com.experiment.foodproductapp.database.OrderDetails
-import com.experiment.foodproductapp.database.Product
-import com.experiment.foodproductapp.database.User
-import com.experiment.foodproductapp.database.UserDatabase
+import com.experiment.foodproductapp.database.*
 
 class DatabaseRepository(context: Context) {
 
     private val dao = UserDatabase.getDatabase(context).userDao()
     private val productDao = UserDatabase.getDatabase(context).productDao()
-    private val OrderDetailsDao = UserDatabase.getDatabase(context).orderDetailsDao()
-
+    private val orderDetailsDao = UserDatabase.getDatabase(context).orderDetailsDao()
+    private val rewardsDao = UserDatabase.getDatabase(context).rewardsDao()
 
     //User
     fun addUser(user: User) = dao.insertUser(user)
 
-    fun readAllUsers() : List<User> {
-        return dao.readAllUsers()
-    }
+    fun readAllUsers() : List<User> = dao.readAllUsers()
 
-    fun getUserByEmail(email: String) : User {
-        return dao.getUserByEmail(email)
-    }
+    fun getUserByEmail(email: String) : User = dao.getUserByEmail(email)
 
     fun updateAddressByEmail(email:String,pincode:String,addressLine1:String,addressLine2:String,city:String,state:String){
         dao.updateAddressByEmail(email,pincode,addressLine1,addressLine2,city,state)
@@ -33,13 +25,9 @@ class DatabaseRepository(context: Context) {
         dao.updateUserByEmail(email,firstName,lastName,dob,password,phoneNumber)
     }
 
-    fun updateUserProfilePicture(email:String,uri: String){
-        dao.updateUserProfilePicture(email,uri)
-    }
+    fun updateUserProfilePicture(email:String,uri: String) = dao.updateUserProfilePicture(email,uri)
 
-    fun getImagePath(email:String) : String{
-        return dao.getImagePath(email)
-    }
+    fun getImagePath(email:String) : String = dao.getImagePath(email)
 
     fun updateLoginStatus(email:String,loggedIn: Boolean){
         dao.updateLoginStatus(email = email,loggedIn = loggedIn)
@@ -59,18 +47,25 @@ class DatabaseRepository(context: Context) {
     fun addProduct(product: Product) = productDao.insertProduct(product)
 
     fun removeProduct(id: Int,email: String) = productDao.deleteProduct(id,email)
-    fun deleteAllProductByEmail(email: String) = productDao.deleteAllProductByEmail(email)
 
-    //fun readAllProducts(): MutableList<Product> = productDao.readAllProducts()
+    fun deleteAllProductByEmail(email: String) = productDao.deleteAllProductByEmail(email)
 
     fun readAllProducts(email: String): MutableList<Product> = productDao.readAllProducts(email)
 
     fun setCount(id: Int,email: String,count: Int): Unit = productDao.setCount(id,email,count)
+
     fun getCount(id: Int,email: String): Int = productDao.getCount(id,email)
 
 
-    //Order details
-    fun insertOrder(order: OrderDetails) = OrderDetailsDao.insertOrder(order)
 
-    fun readAllOrderDetails(email: String,count: Int): MutableList<OrderDetails> = OrderDetailsDao.readAllOrderDetails(email,count)
+    //Order details
+    fun insertOrder(order: OrderDetails) = orderDetailsDao.insertOrder(order)
+
+    fun readAllOrderDetails(email: String,count: Int): MutableList<OrderDetails> {
+        return orderDetailsDao.readAllOrderDetails(email,count)
+    }
+
+
+    //Rewards
+    fun insertReward(rewards: Rewards) = rewardsDao.insertReward(rewards)
 }

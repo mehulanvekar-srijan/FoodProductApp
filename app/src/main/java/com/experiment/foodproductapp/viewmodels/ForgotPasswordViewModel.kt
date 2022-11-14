@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.experiment.foodproductapp.BuildConfig
 import com.experiment.foodproductapp.repository.DatabaseRepository
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -66,7 +67,7 @@ class ForgotPasswordViewModel : ViewModel() {
             .url("https://rapidprod-sendgrid-v1.p.rapidapi.com/mail/send")
             .post(body)
             .addHeader("content-type", "application/json")
-            .addHeader("X-RapidAPI-Key", "183c81c00dmsh801338fe53ee411p13ccf8jsna84ec8addb52")
+            .addHeader("X-RapidAPI-Key", BuildConfig.EMAIL_API_KEY)
             .addHeader("X-RapidAPI-Host", "rapidprod-sendgrid-v1.p.rapidapi.com")
             .build()
 
