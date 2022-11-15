@@ -64,33 +64,6 @@ class SplashScreenViewModel : ViewModel() {
 
 
             //====================
-
-
-            val allRewards: List<Rewards> = DatabaseRepository(context).readAllRewards()
-            val allRewardsUsed : List<RewardsUsed> = DatabaseRepository(context).readAllRewardsUsed("meh@ul.com")
-            val availableRewards : MutableList<Rewards> = mutableListOf()
-
-            allRewards.forEach { rewards ->
-
-                var flag = false
-
-                for(i in allRewardsUsed.indices){
-
-                    if(rewards.code == allRewardsUsed[i].code){
-                        flag = true
-                        break
-                    }
-
-                }
-
-                if(!flag) availableRewards.add(rewards)
-
-            }
-
-            Log.d("testRew", "readAllRewards: $allRewards")
-            Log.d("testRew", "readAllRewardsUsed: $allRewardsUsed")
-            Log.d("testRew", "availableRewards: $availableRewards")
-
         }
     }
 
