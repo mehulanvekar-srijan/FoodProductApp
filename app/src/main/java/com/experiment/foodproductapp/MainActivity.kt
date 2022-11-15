@@ -120,6 +120,9 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
                     composable(route = Screen.MapScreen.route) {
                         MapScreen()
                     }
+                    composable(route = Screen.Rewards.route) {
+                        Reward(navHostControllerLambda)
+                    }
                 }
             }
         }

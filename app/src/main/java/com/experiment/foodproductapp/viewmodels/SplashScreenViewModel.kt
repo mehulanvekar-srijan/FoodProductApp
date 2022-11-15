@@ -24,7 +24,7 @@ class SplashScreenViewModel : ViewModel() {
 
             delay(splashDuration)
 
-            dummyData(context)
+//            dummyData(context)
 
             val loggedInEmail: String? = DatabaseRepository(context).getLoggedInUser()
 
@@ -37,7 +37,9 @@ class SplashScreenViewModel : ViewModel() {
             }
             else{
                 withContext(Dispatchers.Main) {
-                    navHostController.navigate(Screen.HomeScreen.routeWithData(loggedInEmail)){
+                    navHostController.navigate(Screen.Rewards.route)
+//                    navHostController.navigate(Screen.HomeScreen.routeWithData(loggedInEmail))
+                    {
                         popUpTo(Screen.SplashScreen.route){ inclusive = true }
                     }
                 }
