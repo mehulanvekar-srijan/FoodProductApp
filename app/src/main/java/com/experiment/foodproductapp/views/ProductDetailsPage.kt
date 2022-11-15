@@ -76,7 +76,10 @@ val  productDetails =  Product(
 
 
 @Composable
-fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScreenViewModel: HomeScreenViewModel) {
+fun ProductDetailsPage(
+    navHostControllerLambda: () -> NavHostController,
+    homeScreenViewModel: HomeScreenViewModel
+) {
 
     val productDetails = homeScreenViewModel.productForDetailPage
     val context = LocalContext.current
@@ -180,7 +183,7 @@ fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScr
                                 text = productDetails.description,
                                 color = LightDarkGray,
                                 style = TextStyle(
-                                    fontSize = 17.sp,
+                                    fontSize = 16.sp,
                                     //letterSpacing = 1.sp,
                                     fontFamily = descriptionFontFamily
                                 ),
@@ -314,7 +317,7 @@ fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScr
                                             )
                                         )
                                         .size(width = 35.dp, height = 35.dp)
-                                ){
+                                ) {
                                     Icon(
                                         imageVector = Icons.Default.Remove,
                                         contentDescription = "",
@@ -329,7 +332,7 @@ fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScr
                 }
             }
 
-            Spacer(modifier = Modifier.padding(top = 10.dp))
+            Spacer(modifier = Modifier.padding(top = 20.dp))
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -362,18 +365,6 @@ fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScr
                             modifier = Modifier
                                 .align(Alignment.CenterHorizontally)
                         )
-//                        Text(
-//                            text = "Alcohol",
-//                            color = Color.White,
-//                            style = TextStyle(
-//                                fontWeight = FontWeight.Bold,
-//                                fontSize = 20.sp,
-//                                letterSpacing = 1.sp
-//                            ),
-//                            modifier = Modifier
-//                                .padding(start = 10.dp, end = 10.dp, bottom = 10.dp)
-//                            //textAlign = TextAlign.Center,
-//                        )
                     }
 
 
@@ -387,7 +378,6 @@ fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScr
                             contentDescription = "",
                             //olorFilter = ColorFilter.tint(color = Color.White),
                             modifier = Modifier.fillMaxHeight(.5f)
-
                         )
 
                         Text(

@@ -113,6 +113,7 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
 
                     composable(route = Screen.OrderDescriptionPage.route) {
                         OrderDescriptionPage (
+                            //navHostControllerLambda
                             navHostControllerLambda, orderDetailsViewModel = orderScreenViewModel
                         )
                     }
