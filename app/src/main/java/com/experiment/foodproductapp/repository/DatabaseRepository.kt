@@ -9,6 +9,7 @@ class DatabaseRepository(context: Context) {
     private val productDao = UserDatabase.getDatabase(context).productDao()
     private val orderDetailsDao = UserDatabase.getDatabase(context).orderDetailsDao()
     private val rewardsDao = UserDatabase.getDatabase(context).rewardsDao()
+    private val rewardsUsedDao = UserDatabase.getDatabase(context).rewardsUsedDao()
 
     //User
     fun addUser(user: User) = dao.insertUser(user)
@@ -68,4 +69,14 @@ class DatabaseRepository(context: Context) {
 
     //Rewards
     fun insertReward(rewards: Rewards) = rewardsDao.insertReward(rewards)
+    fun readAllRewards() : List<Rewards> = rewardsDao.readAllRewards()
+
+
+    //RewardsUsedDao
+    fun insertRewardUsed(rewardsUsed: RewardsUsed) = rewardsUsedDao.insertRewardUsed(rewardsUsed)
+    fun readAllRewardsUsed(email: String) : List<RewardsUsed> = rewardsUsedDao.readAllRewardsUsed(email)
+
+    //fun listOfAvailableRewards(email: String) = rewardsUsedDao.listOfAvailableRewards(email)
+
+
 }
