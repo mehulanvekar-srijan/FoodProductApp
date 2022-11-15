@@ -37,8 +37,7 @@ class SplashScreenViewModel : ViewModel() {
             }
             else{
                 withContext(Dispatchers.Main) {
-                    navHostController.navigate(Screen.Rewards.route)
-//                    navHostController.navigate(Screen.HomeScreen.routeWithData(loggedInEmail))
+                    navHostController.navigate(Screen.HomeScreen.routeWithData(loggedInEmail))
                     {
                         popUpTo(Screen.SplashScreen.route){ inclusive = true }
                     }
@@ -50,20 +49,7 @@ class SplashScreenViewModel : ViewModel() {
     private fun dummyData(context: Context) {
         viewModelScope.launch(Dispatchers.IO){
 
-            listOf(
-                Rewards("MX6969","offer","get 10% off"),
-                Rewards("DX6969","discount","get 20% off"),
-                Rewards("SX6969","discount","get 30% off"),
-            ).forEach { DatabaseRepository(context).insertReward(it) }
-
-            listOf(
-                RewardsUsed(id = 0, email = "meh@ul.com", code = "MX6969"),
-                RewardsUsed(id = 0,email = "meh@ul.com",code = "SX6969"),
-                RewardsUsed(id = 0,email  = "romi@romi.com",code = "DX6969"),
-            ).forEach { DatabaseRepository(context).insertRewardUsed(it) }
-
-
-            //====================
+            DatabaseRepository(context).updateRewardPoints("meh@ul.com",0)
         }
     }
 

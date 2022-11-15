@@ -47,12 +47,14 @@ fun PaymentScreen(
         }
     }
 
-    if (mainActivity.status.value == true) {
+
+    if (mainActivity.status.value == true) { //Payment success
         LaunchedEffect(key1 = Unit) {
             paymentScreenViewModel.navigateOnSuccess(
                 navHostController = navHostControllerLambda(),
                 context = context,
                 email = email,
+                sum = sum,
                 activity = mainActivity,
             )
         }
@@ -103,7 +105,7 @@ fun PaymentScreen(
             }
         }
     }
-    if (mainActivity.status.value == false) {
+    if (mainActivity.status.value == false) { //Payment failure
         LaunchedEffect(key1 = Unit) {
             paymentScreenViewModel.navigateOnFailure(
                 navHostController = navHostControllerLambda(),

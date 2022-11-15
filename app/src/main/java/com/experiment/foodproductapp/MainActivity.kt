@@ -1,7 +1,9 @@
 package com.experiment.foodproductapp
 
 import android.os.Bundle
+import android.util.Log
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.mutableStateOf
@@ -132,10 +134,24 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
     val status by lazy {  mutableStateOf<Boolean?>(null)  }
 
     override fun onPaymentSuccess(p0: String?, p1: PaymentData?) {
+        try{
+            Log.d("testPay", "onPaymentSuccess: p0=$p0 , p1=${p1?.data}")
+
+        }
+        catch (e: Exception){
+            Log.d("testPay", "some error $e")
+        }
         status.value = true
     }
 
     override fun onPaymentError(p0: Int, p1: String?, p2: PaymentData?) {
+        try{
+            Log.d("testPay", "onPaymentError: p0=$p0 , p1=${p2?.data}")
+
+        }
+        catch (e: Exception){
+            Log.d("testPay", "some error $e")
+        }
         status.value = false
     }
 }
