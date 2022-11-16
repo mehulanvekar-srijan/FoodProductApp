@@ -41,6 +41,13 @@ class RewardsPageViewModel : ViewModel() {
         return list.isEmpty()
     }
 
+    fun setRedeemedAmount(context: Context, email: String, amount :Int){
+        viewModelScope.launch(Dispatchers.IO) {
+            val currentRedeemedAmount = DatabaseRepository(context).getRedeemedAmount(email)
+            DatabaseRepository(context).updateRedeemedAmount(email,currentRedeemedAmount+amount)
+        }
+    }
+
     fun checkLevel(): Level {
         return when (rewardPointsState.value) {
             in 0..100 -> Level.Bronze

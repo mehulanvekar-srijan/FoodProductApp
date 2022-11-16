@@ -46,6 +46,10 @@ class DatabaseRepository(context: Context) {
 
     fun getRewardPoints(email: String): Int = userDao.getRewardPoints(email)
 
+    fun updateRedeemedAmount(email: String, redeemedAmount: Int) = userDao.updateRedeemedAmount(email,redeemedAmount)
+
+    fun getRedeemedAmount(email: String): Int = userDao.getRedeemedAmount(email)
+
 
     //Product
     fun addProduct(product: Product) = productDao.insertProduct(product)

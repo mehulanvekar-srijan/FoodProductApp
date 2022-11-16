@@ -26,6 +26,7 @@ data class User(
 
     //Rewards
     var rewardPoints: Int = 0,
+    var redeemedAmount: Int = 0,
     ){
     constructor() : this("","","","","","")
 }
