@@ -120,8 +120,8 @@ class CheckoutPageViewModel(
         }
     }
 
-    suspend fun navigateOnSuccess(context: Context,navHostController: NavHostController) {
-        val job =viewModelScope.launch(Dispatchers.IO) {
+    suspend fun navigateOnSuccess(context: Context,navHostController: NavHostController, redeemedAmount: Int) {
+        val job = viewModelScope.launch(Dispatchers.IO) {
             val database = DatabaseRepository(context)
             database.updateAddressByEmail(
                 state.email,
@@ -133,12 +133,21 @@ class CheckoutPageViewModel(
             )
         }
         job.join()
-        navHostController.navigate(Screen.PaymentScreen.routeWithData(state.email,state.phoneNumber,sum.value*100))
+
+        Log.d("testredeemAmount", "CheckoutPageViewModel: email=${state.email} , finalSum=${sum.value * 100} , redeemAmount=${redeemedAmount}")
+
+        navHostController.navigate(
+            Screen.PaymentScreen.routeWithData(
+                email = state.email,
+                phoneNumber = state.phoneNumber,
+                sum = sum.value*100,
+                redeemedAmount = redeemedAmount
+            )
+        )
         Log.d("TAG",(sum.value*100).toString())
     }
+
     sealed class ValidationEvent{
         object Success:ValidationEvent()
     }
-
-
 }

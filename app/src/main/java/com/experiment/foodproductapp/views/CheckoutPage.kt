@@ -50,18 +50,17 @@ import kotlinx.coroutines.launch
 fun preview() {
     val navHostController = rememberNavController()
     val navHostControllerLambda: () -> NavHostController = {
-
         navHostController
     }
-    CheckoutPage("sahil@test.com", 500, navHostControllerLambda = navHostControllerLambda)
+    CheckoutPage("sahil@test.com", 500, 0,navHostControllerLambda)
 }
-
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun CheckoutPage(
     email: String?,
     sum: Int?,
+    redeemedAmount: Int?,
     navHostControllerLambda: () -> NavHostController,
     checkoutPageViewModel: CheckoutPageViewModel = viewModel(),
 ) {
@@ -110,7 +109,9 @@ fun CheckoutPage(
         checkoutPageViewModel.validationEvents.collect { event ->
             when (event) {
                 is CheckoutPageViewModel.ValidationEvent.Success -> {
-                    checkoutPageViewModel.navigateOnSuccess(context, navHostControllerLambda())
+                    if(redeemedAmount != null) {
+                        checkoutPageViewModel.navigateOnSuccess(context, navHostControllerLambda(), redeemedAmount)
+                    }
                 }
             }
         }

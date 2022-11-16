@@ -82,12 +82,16 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
                     }
                     composable(
                         route = Screen.CheckoutPage.route,
-                        arguments = listOf(navArgument("email") { type = NavType.StringType },
-                            navArgument("sum") { type = NavType.IntType })
+                        arguments = listOf(
+                            navArgument("email") { type = NavType.StringType },
+                            navArgument("sum") { type = NavType.IntType },
+                            navArgument("redeemedAmount") { type = NavType.IntType },
+                        )
                     ) {
                         CheckoutPage(
                             it.arguments?.getString("email"),
                             it.arguments?.getInt("sum"),
+                            it.arguments?.getInt("redeemedAmount"),
                             navHostControllerLambda
                         )
                     }
@@ -98,15 +102,19 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
                     }
                     composable(
                         route = Screen.PaymentScreen.route,
-                        arguments = listOf(navArgument("email") { type = NavType.StringType },
+                        arguments = listOf(
+                            navArgument("email") { type = NavType.StringType },
                             navArgument("phoneNumber") { type = NavType.StringType },
-                            navArgument("sum") { type = NavType.IntType })
+                            navArgument("sum") { type = NavType.IntType },
+                            navArgument("redeemedAmount") { type = NavType.IntType },
+                        )
                     ) {
                         PaymentScreen(
-                            navHostControllerLambda,
-                            it.arguments?.getString("email"),
-                            it.arguments?.getString("phoneNumber"),
-                            it.arguments?.getInt("sum")
+                            navHostControllerLambda = navHostControllerLambda,
+                            email = it.arguments?.getString("email"),
+                            phoneNumber = it.arguments?.getString("phoneNumber"),
+                            sum = it.arguments?.getInt("sum"),
+                            redeemedAmount = it.arguments?.getInt("redeemedAmount")
                         ) { this@MainActivity }
                     }
                     composable(

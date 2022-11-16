@@ -33,6 +33,7 @@ fun PaymentScreen(
     email: String?,
     phoneNumber: String?,
     sum: Int?,
+    redeemedAmount: Int?,
     paymentScreenViewModel: PaymentScreenViewModel = viewModel(),
     activityLambda: () -> Activity,
 ) {
@@ -55,6 +56,7 @@ fun PaymentScreen(
                 context = context,
                 email = email,
                 sum = sum,
+                redeemedAmount = redeemedAmount,
                 activity = mainActivity,
             )
         }

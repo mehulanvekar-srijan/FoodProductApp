@@ -14,6 +14,7 @@ import com.experiment.foodproductapp.repository.DatabaseRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlin.math.abs
 
 class ProductCartViewModel : ViewModel() {
 
@@ -111,8 +112,19 @@ class ProductCartViewModel : ViewModel() {
     }
 
     fun navigateToCheckout(navHostController: NavHostController){
+        //Before navigating compute remaining redeemAmount
+        val value = _redeemAmount.value - _finalSum.value
+        if(value < 0) _redeemAmount.value = 0
+        else _redeemAmount.value = abs(value)
+
+        //Clear the cart list
         _cartList.clear()
-        navHostController.navigate(Screen.CheckoutPage.routeWithData(email.value,finalSum.value))
+
+        Log.d("testredeemAmount", "ProductCartViewModel: email=${email.value} , finalSum=${finalSum.value} , redeemAmount=${redeemAmount.value}")
+
+        navHostController.navigate(
+            Screen.CheckoutPage.routeWithData(email.value,finalSum.value,redeemAmount.value)
+        )
     }
 
 

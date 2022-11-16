@@ -23,6 +23,7 @@ class PaymentScreenViewModel : ViewModel() {
         context: Context,
         email: String?,
         sum: Int?,
+        redeemedAmount: Int?,
         activity: MainActivity,
     ){
 
@@ -67,6 +68,11 @@ class PaymentScreenViewModel : ViewModel() {
                     DatabaseRepository(context).updateRewardPoints(email = email, rewardPoints = currentRewardPoints)
                     Log.d("testPTS", "navigateOnSuccess: sum=$sum rp=$rewardPoints crp=$currentRewardPoints")
                 }
+
+                //Update the remaining Redeemed Amount
+                Log.d("testredeemAmount", "PaymentScreenViewModel: email=${email} , finalSum=${sum} , redeemAmount=${redeemedAmount}")
+
+                if(redeemedAmount != null) DatabaseRepository(context).updateRedeemedAmount(email,redeemedAmount)
 
                 delay(2000)
 
