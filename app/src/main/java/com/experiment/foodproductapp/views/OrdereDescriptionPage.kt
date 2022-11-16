@@ -1,17 +1,14 @@
 package com.experiment.foodproductapp.views
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -27,6 +24,29 @@ import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.viewmodels.OrderDetailsViewModel
 import java.math.RoundingMode
 import java.text.DecimalFormat
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.*
+import androidx.compose.material.Text
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import coil.compose.rememberImagePainter
+
+
+
+
 
 @Preview
 @Composable
@@ -40,220 +60,290 @@ fun Preview4() {
 }
 
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun OrderDescriptionPage(
     navHostControllerLambda: () -> NavHostController,
     orderDetailsViewModel: OrderDetailsViewModel = viewModel()
 ) {
 
-    ChangeBarColors(navigationBarColor = DarkYellow)
+    ChangeBarColors(statusColor = Color.White, navigationBarColor = Color.White)
     val df = DecimalFormat("#.##")
     df.roundingMode = RoundingMode.DOWN
+    var sum = 0
+
 
     Box(
-        modifier = Modifier.fillMaxSize()
-        //background(DarkYellow)
+        modifier = Modifier
+            .background(Color.White)
+            .fillMaxSize()
     ) {
-        BackgroundImageForDescription()
 
-        LazyColumn(
+        Column(
             modifier = Modifier
-                .fillMaxSize(),
-            //horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(10.dp),
-        ) {
-            item {
-                TopAppBar(
-                    title = { Text(text = "Order Details", color = Color.White) },
-                    backgroundColor = Color.Transparent,
-                    elevation = 0.dp,
-                    navigationIcon = {
-                        IconButton(onClick = { navHostControllerLambda().navigateUp() }) {
-                            Icon(
-                                imageVector = Icons.Default.ArrowBack,
-                                contentDescription = "",
-                                tint = Color.White
-                            )
-                        }
-                    },
+                .fillMaxSize()
+                .background(
+                    Brush.verticalGradient(0f to Color.Gray, 1000f to Color.White)
                 )
+        ) {
+            TopAppBar(
+                title = { Text(text = "Order Details", color = Color.White) },
+                backgroundColor = Color.White,
+                elevation = 0.dp,
+                navigationIcon = {
+                    IconButton(onClick = { navHostControllerLambda().navigateUp() }) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "",
+                            tint = DarkYellow
+                        )
+                    }
+                },
+            )
+
+            Image(
+                painter = rememberImagePainter("https://img.freepik.com/free-photo/glass-bottles-beer-with-glass-ice-dark-background_1150-8899.jpg?w=1800&t=st=1668510784~exp=1668511384~hmac=42d4cfbe3cb90558df3640a8ab42e896db228c61c752648f20bb6e0ceb87b586"),
+                contentDescription = "Background Image",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(.45f)
+            )
+
+        }
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+
+            Column(
+                modifier = Modifier
+                    .background(Color.Transparent)
+                    .fillMaxWidth()
+                    .fillMaxHeight(.35f)
+            ) {
+
             }
 
-            item {
-                Card(
+            Column(
+                modifier = Modifier
+                    .background(Color.White)
+                    .fillMaxWidth(.8f)
+                    .fillMaxHeight(.85f),
 
-                    modifier = Modifier
+                //.border(1.dp, Color.Black),
+
+            ) {
+                Column(modifier = Modifier.padding(15.dp)) {
+                    val item = orderDetailsViewModel.orderDetails
+                    Text(
+                        text = "Order No: #" + item[0].orderId,
+                        fontFamily = titleFontFamily,
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color.DarkGray,
+                        modifier = Modifier.padding(bottom = 10.dp)
+                    )
+                    Text(
+                        text = "Total Items: " + item.size.toString(),
+                        fontFamily = titleFontFamily,
+                        fontSize = 22.sp,
+                        color = Color.DarkGray,
+                        fontWeight = FontWeight.SemiBold,
+                    )
+                }
+
+                Divider(
+                    color = Color.LightGray, modifier = Modifier
                         .fillMaxWidth()
-                        .fillMaxHeight()
-                        .padding(start = 10.dp, end = 10.dp),
-                    elevation = 5.dp,
-                    shape = RoundedCornerShape(5),
+                        .padding(start = 15.dp, end = 15.dp)
+                        .width(2.dp)
+
+                )
+                val lazyListState = rememberLazyListState()
+                //Spacer(modifier = Modifier.height(35.dp))
+                LazyColumn(
+                    modifier = Modifier.simpleVerticalScrollbar(lazyListState),
+                    state = lazyListState
                 ) {
-                    Column(modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight()
-                    ) {
-                        Spacer(modifier = Modifier.height(20.dp))
+                    items(items = orderDetailsViewModel.orderDetails) { item ->
+                        Spacer(modifier = Modifier.height(35.dp))
+                        //for (element in orderDetailsViewModel.orderDetails) {
+                        //   val item = element
 
-                        Column(modifier = Modifier.padding(15.dp)) {
-                            val item = orderDetailsViewModel.orderDetails
-                            Text(
-                                //text = "# 1",
-                                text = "Order No: #" + item[0].orderId,
-                                //  modifier = Modifier.padding(top = 20.dp, bottom = 15.dp),
-                                fontFamily = titleFontFamily,
-                                fontSize = 24.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color.DarkGray,
-                                modifier = Modifier.padding(bottom = 10.dp)
-                            )
-                            Text(
-                                //text = "4 items",
-                                text = "Total Items: " + item.size.toString(),
-                                //modifier = Modifier.padding(bottom = 5.dp),
-                                fontFamily = titleFontFamily,
-                                fontSize = 24.sp,
-                                color = Color.DarkGray,
-                                fontWeight = FontWeight.Bold,
-                            )
-                        }
-
-                        Divider(
-                            color = Color.DarkGray, modifier = Modifier
+                        Row(
+                            modifier = Modifier
                                 .fillMaxWidth()
-                                .width(2.dp)
-                        )
-
-                        var sum = 0
-
-                        Row(modifier = Modifier.fillMaxSize()) {
-                            Column(
-                                modifier = Modifier.padding(15.dp),
-                                verticalArrangement = Arrangement.spacedBy(10.dp),
-                            ) {
-                                Spacer(modifier = Modifier.height(35.dp))
-
-                                for (element in orderDetailsViewModel.orderDetails) {
+                            //.padding(top = 25.dp),
+                        ) {
 
 
-                                    val item = element
-
-
-                                    Row(
-                                        modifier = Modifier.fillMaxWidth(),
-                                    ) {
-
-                                        Column(
-                                            modifier = Modifier
-                                                //.padding(start = 15.dp)
-                                                .fillMaxWidth(.65F)
-
-                                        ) {
-                                            Text(
-                                                //text = "Coolberg Non Alcoholic Beer - Malt" + " (" + 4 + ")",
-                                                text = item.title + " x" + item.count ,
-                                                fontSize = 18.sp,
-                                                fontFamily = descriptionFontFamily,
-                                                fontWeight = FontWeight.Thin,
-                                            )
-                                        }
-                                        Column(
-                                            modifier = Modifier
-                                                .fillMaxWidth(),
-                                            horizontalAlignment = Alignment.CenterHorizontally
-                                        ) {
-                                            Text(
-                                                //text = "Rs. " + 79,
-                                                text = "Rs. " + item.price* item.count,
-                                                fontSize = 18.sp,
-                                                textAlign = TextAlign.End,
-                                                fontFamily = descriptionFontFamily,
-                                                fontWeight = FontWeight.Thin,
-                                            )
-                                        }
-                                    }
-                                    sum += item.price * item.count
-                                }
-                            }
-                        }
-
-                        Divider(
-                            color = Color.DarkGray, modifier = Modifier
-                                .fillMaxWidth()
-                                .width(2.dp)
-                        )
-                        Spacer(modifier = Modifier.height(50.dp))
-
-                        Row(modifier = Modifier.fillMaxWidth()) {
                             Text(
-                                text = "Item Total:",
+                                text = item.title + " x" + item.count,
+                                fontSize = 18.sp,
                                 fontFamily = descriptionFontFamily,
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.SemiBold,
+                                fontWeight = FontWeight.Thin,
                                 modifier = Modifier
                                     .padding(start = 15.dp)
                                     .fillMaxWidth(.65f)
+
+                            )
+
+
+                            Text(
+                                text = "Rs. " + item.price * item.count,
+                                fontSize = 18.sp,
+                                fontFamily = descriptionFontFamily,
+                                fontWeight = FontWeight.Thin,
+                                modifier = Modifier
+                                    .padding(start = 15.dp)
+                                    .fillMaxWidth()
+                            )
+                            sum += item.price * item.count
+
+                        }
+
+                    }
+
+                    item {
+                        Spacer(modifier = Modifier.height(3.dp))
+
+                        Divider(
+                            color = Color.LightGray, modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 15.dp, end = 15.dp, top = 5.dp)
+                                .width(2.dp)
+                        )
+                        Spacer(modifier = Modifier.height(35.dp))
+                    }
+                    // Log.d("CheckSum", "OrderDescriptionPage outside lazy: Sum is: $sum")
+
+                    item {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 10.dp)
+                        ) {
+                            //Log.d("CheckSum", "OrderDescriptionPage: Sum is: $sum")
+
+                            Text(
+                                text = "Item Total:",
+                                fontFamily = descriptionFontFamily,
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Thin,
+                                modifier = Modifier
+                                    .padding(start = 15.dp)
+                                    .fillMaxWidth(.6f)
                             )
 
                             Text(
                                 text = "Rs. ${df.format(sum * .82)}",
                                 fontFamily = descriptionFontFamily,
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Thin,
                                 modifier = Modifier
-                                    .padding(start = 15.dp)
+                                    .padding(start = 15.dp, end = 15.dp)
                                     .fillMaxWidth()
 
                             )
                         }
+                    }
 
-                        Row(modifier = Modifier.fillMaxWidth()) {
+                    item {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 10.dp)
+                        ) {
                             Text(
                                 text = "Tax:",
                                 fontFamily = descriptionFontFamily,
-                                fontSize = 20.sp,
+                                fontSize = 18.sp,
                                 fontWeight = FontWeight.SemiBold,
                                 modifier = Modifier
                                     .padding(start = 15.dp)
-                                    .fillMaxWidth(.65f)
+                                    .fillMaxWidth(.6f)
                             )
 
                             Text(
                                 text = "Rs. ${df.format(sum * .18)}",
                                 fontFamily = descriptionFontFamily,
-                                fontSize = 20.sp,
+                                fontSize = 18.sp,
                                 fontWeight = FontWeight.SemiBold,
                                 modifier = Modifier
                                     .padding(start = 15.dp)
                                     .fillMaxWidth()
                             )
                         }
+                    }
 
-                        Row(modifier = Modifier.fillMaxWidth()) {
+                    item {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 10.dp)
+                        ) {
                             Text(
                                 text = "Amount Paid:",
                                 fontFamily = descriptionFontFamily,
-                                fontSize = 20.sp,
+                                fontSize = 18.sp,
                                 fontWeight = FontWeight.SemiBold,
                                 modifier = Modifier
                                     .padding(start = 15.dp)
-                                    .fillMaxWidth(.65f)
+                                    .fillMaxWidth(.6f)
                             )
 
                             Text(
-                                text = "Rs. $sum",
+                                text = "Rs. ${sum}",
                                 fontFamily = descriptionFontFamily,
-                                fontSize = 20.sp,
+                                fontSize = 18.sp,
                                 fontWeight = FontWeight.SemiBold,
                                 modifier = Modifier
                                     .padding(start = 15.dp)
                                     .fillMaxWidth()
                             )
                         }
-                        Spacer(modifier = Modifier.height(20.dp))
+                        Spacer(modifier = Modifier.height(5.dp))
+                    }
+
+
+                    //Log.d("CheckSum", "OrderDescriptionPage end of lazy: Sum is: $sum")
+
+                }
+                Log.d("CheckSum", "OrderDescriptionPage outside lazy: Sum is: $sum")
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(),
+                horizontalArrangement = Arrangement.End
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth(.2f)
+                        .fillMaxHeight()
+                        .background(DarkYellow),
+                    //.border(1.dp, Color.Black),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    IconButton(
+                        onClick = { },
+                        modifier = Modifier
+
+                            .size(width = 40.dp, height = 35.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Home,
+                            contentDescription = "",
+                            tint = Color.White,
+                            modifier = Modifier
+                                .fillMaxSize()
+                        )
                     }
                 }
+
             }
         }
     }
@@ -261,11 +351,28 @@ fun OrderDescriptionPage(
 
 
 @Composable
-fun BackgroundImageForDescription() {
-    Image(
-        painter = painterResource(id = R.drawable.background_yellow_wave),
-        contentDescription = "Background Image",
-        contentScale = ContentScale.Crop,
-        modifier = Modifier.fillMaxSize()
-    )
+fun Modifier.simpleVerticalScrollbar(
+    state: LazyListState,
+    width: Dp = 4.dp
+): Modifier {
+
+    return drawWithContent {
+        drawContent()
+
+        val firstVisibleElementIndex = state.layoutInfo.visibleItemsInfo.firstOrNull()?.index
+
+        // Draw scrollbar if scrolling or if the animation is still running and lazy column has content
+        if (firstVisibleElementIndex != null) {
+            val elementHeight = this.size.height / state.layoutInfo.totalItemsCount
+            val scrollbarOffsetY = firstVisibleElementIndex * elementHeight
+            val scrollbarHeight = state.layoutInfo.visibleItemsInfo.size * elementHeight
+
+            drawRect(
+                color = Color.Red,
+                topLeft = Offset(this.size.width - width.toPx(), scrollbarOffsetY),
+                size = Size(width.toPx(), scrollbarHeight),
+                //alpha = alpha
+            )
+        }
+    }
 }
