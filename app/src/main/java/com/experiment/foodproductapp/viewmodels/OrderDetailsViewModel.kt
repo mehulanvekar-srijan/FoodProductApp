@@ -29,6 +29,8 @@ class OrderDetailsViewModel: ViewModel() {
         orderDetails = newOrder
     }
 
+    var sum: Int = 0
+
 
     fun navigateToProductOrderDescriptionPage(navHostController: NavHostController) {
         navHostController.navigate(Screen.OrderDescriptionPage.route) {

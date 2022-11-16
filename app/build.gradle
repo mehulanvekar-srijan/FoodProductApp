@@ -91,4 +91,11 @@ dependencies {
     // Razorpay
 //    implementation 'com.razorpay:checkout:1.6.26'
     implementation 'com.razorpay:checkout:1.5.13'
+//scroll bar
+    //implementation 'com.github.BILLyTheLiTTle:LazyColumns:0.2.7'
+
 }
+
+//dependencies {
+//    implementation 'com.github.BILLyTheLiTTle:LazyColumns:0.2.7'
+//}
