@@ -31,10 +31,10 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
         setContent {
 
 
-
             navHostController = rememberNavController()
 
-            val navHostControllerLambda : () -> NavHostController = { navHostController as NavHostController }
+            val navHostControllerLambda: () -> NavHostController =
+                { navHostController as NavHostController }
             val homeScreenViewModel: HomeScreenViewModel = viewModel()
             val orderScreenViewModel: OrderDetailsViewModel = viewModel()
 
@@ -57,13 +57,13 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
                     }
                     composable(
                         route = Screen.UserDetails.route,
-                        arguments = listOf(navArgument("email") { type = NavType.StringType } )
+                        arguments = listOf(navArgument("email") { type = NavType.StringType })
                     ) {
-                        UserDetails(navHostControllerLambda,it.arguments?.getString("email"))
+                        UserDetails(navHostControllerLambda, it.arguments?.getString("email"))
                     }
                     composable(
                         route = Screen.HomeScreen.route,
-                        arguments = listOf(navArgument("email") { type = NavType.StringType } )
+                        arguments = listOf(navArgument("email") { type = NavType.StringType })
                     ) {
                         HomeScreenPage(
                             it.arguments?.getString("email"),
@@ -71,31 +71,37 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
                         )
                     }
 
-                    composable(route = Screen.ProductCart.route,
-                            arguments = listOf(navArgument("email") { type = NavType.StringType } )
+                    composable(
+                        route = Screen.ProductCart.route,
+                        arguments = listOf(navArgument("email") { type = NavType.StringType })
                     ) {
                         ProductCart(
                             it.arguments?.getString("email"),
-                            navHostControllerLambda)
+                            navHostControllerLambda
+                        )
                     }
-                    composable(route = Screen.CheckoutPage.route,
+                    composable(
+                        route = Screen.CheckoutPage.route,
                         arguments = listOf(navArgument("email") { type = NavType.StringType },
-                            navArgument("sum") { type = NavType.IntType } )
+                            navArgument("sum") { type = NavType.IntType })
                     ) {
                         CheckoutPage(
                             it.arguments?.getString("email"),
                             it.arguments?.getInt("sum"),
-                            navHostControllerLambda)
-                    }
-                    composable(route = Screen.ProductDetailsScreen.route) {
-                        ProductDetailsPage (
-                            navHostControllerLambda,homeScreenViewModel = homeScreenViewModel
+                            navHostControllerLambda
                         )
                     }
-                    composable(route = Screen.PaymentScreen.route,
+                    composable(route = Screen.ProductDetailsScreen.route) {
+                        ProductDetailsPage(
+                            navHostControllerLambda, homeScreenViewModel = homeScreenViewModel
+                        )
+                    }
+                    composable(
+                        route = Screen.PaymentScreen.route,
                         arguments = listOf(navArgument("email") { type = NavType.StringType },
                             navArgument("phoneNumber") { type = NavType.StringType },
-                            navArgument("sum") { type = NavType.IntType } )) {
+                            navArgument("sum") { type = NavType.IntType })
+                    ) {
                         PaymentScreen(
                             navHostControllerLambda,
                             it.arguments?.getString("email"),
@@ -103,8 +109,9 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
                             it.arguments?.getInt("sum")
                         ) { this@MainActivity }
                     }
-                    composable(route = Screen.OrderDetails.route,
-                        arguments = listOf(navArgument("email") { type = NavType.StringType } )
+                    composable(
+                        route = Screen.OrderDetails.route,
+                        arguments = listOf(navArgument("email") { type = NavType.StringType })
                     ) {
                         OrderDetails(
                             it.arguments?.getString("email"),
@@ -114,7 +121,7 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
                     }
 
                     composable(route = Screen.OrderDescriptionPage.route) {
-                        OrderDescriptionPage (
+                        OrderDescriptionPage(
                             navHostControllerLambda, orderDetailsViewModel = orderScreenViewModel
                         )
                     }
@@ -122,8 +129,15 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
                     composable(route = Screen.MapScreen.route) {
                         MapScreen()
                     }
-                    composable(route = Screen.Rewards.route) {
-                        Reward(navHostControllerLambda)
+
+                    composable(
+                        route = Screen.Rewards.route,
+                        arguments = listOf(navArgument("email") { type = NavType.StringType })
+                    ) {
+                        Reward(
+                            it.arguments?.getString("email"),
+                            navHostControllerLambda
+                        )
                     }
                 }
             }
@@ -131,7 +145,7 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
     }
 
 
-    val status by lazy {  mutableStateOf<Boolean?>(null)  }
+    val status by lazy { mutableStateOf<Boolean?>(null) }
 
     override fun onPaymentSuccess(p0: String?, p1: PaymentData?) {
         try{

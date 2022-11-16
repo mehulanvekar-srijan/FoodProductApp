@@ -22,6 +22,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Logout
+import androidx.compose.material.icons.filled.Stars
 import androidx.compose.material.icons.twotone.EditCalendar
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
@@ -205,7 +206,8 @@ fun UserDetails(
 
                 //Pick / Click
                 Column {
-                    Button(onClick = {
+                    Button(
+                        shape = RoundedCornerShape(50),onClick = {
                         val uri = ComposeFileProvider.getImageUri(context)
                         cameraLauncher.launch(uri)
                         intermediateUri = uri
@@ -634,6 +636,13 @@ fun UserDetails(
                 }
             },
             actions = {
+                IconButton(onClick = { userDetailsViewModel.navigateToRewards(email,navHostControllerLambda()) }) {
+                    Icon(
+                        imageVector = Icons.Default.Stars,
+                        contentDescription = "",
+                        tint = Color.White
+                    )
+                }
                 IconButton(onClick = { userDetailsViewModel.logOutUser(email,context,navHostControllerLambda()) }) {
                     Icon(
                         imageVector = Icons.Default.Logout,

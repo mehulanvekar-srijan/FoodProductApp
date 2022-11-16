@@ -147,6 +147,10 @@ class UserDetailsViewModel(private val validateFirstName: ValidateName = Validat
         }
     }
 
+    fun navigateToRewards(email: String,navHostController: NavHostController){
+        navHostController.navigate(Screen.Rewards.routeWithData(email))
+    }
+
 
     fun logOutUser(email: String,context: Context,navHostController: NavHostController){
         viewModelScope.launch(Dispatchers.IO){

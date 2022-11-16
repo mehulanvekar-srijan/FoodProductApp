@@ -1,5 +1,7 @@
 package com.experiment.foodproductapp.views
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.MutatePriority
 import androidx.compose.foundation.background
@@ -9,57 +11,97 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Circle
+import androidx.compose.material.icons.filled.ContentCopy
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.MilitaryTech
+import androidx.compose.material.icons.outlined.Redeem
+import androidx.compose.material.icons.outlined.Star
+import androidx.compose.material.icons.outlined.StarRate
+import androidx.compose.material.icons.twotone.GifBox
+import androidx.compose.material.icons.twotone.Redeem
+import androidx.compose.material.icons.twotone.Star
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.ClipboardManager
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.font.FontWeight.Companion.Bold
+import androidx.compose.ui.text.font.FontWeight.Companion.Medium
+import androidx.compose.ui.text.font.FontWeight.Companion.SemiBold
+import androidx.compose.ui.text.font.FontWeight.Companion.Thin
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.experiment.foodproductapp.R
 import com.experiment.foodproductapp.database.Rewards
-import com.experiment.foodproductapp.ui.theme.ChangeBarColors
-import com.experiment.foodproductapp.ui.theme.DarkYellow
-import com.experiment.foodproductapp.ui.theme.descriptionFontFamily
-import com.experiment.foodproductapp.ui.theme.titleFontFamily
+import com.experiment.foodproductapp.domain.event.SignupFormEvent
+import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.viewmodels.RewardsPageViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.math.RoundingMode
+import java.text.DecimalFormat
 
-private const val DELAY_BETWEEN_SCROLL_MS = 8L
-private const val SCROLL_DX = 1f
+@Composable
+@Preview
+fun show1() {
+    val string = "Sahil"
+    val navHostController = rememberNavController()
+    val navHostControllerLambda: () -> NavHostController = {
+        navHostController
+    }
+    Reward(email = string, navHostControllerLambda)
+}
 
 @Composable
 fun Reward(
+    email: String?,
     navHostControllerLambda: () -> NavHostController,
     rewardsPageViewModel: RewardsPageViewModel = viewModel()
 ) {
-    ChangeBarColors(navigationBarColor = DarkYellow)
-    val context = LocalContext.current
-    val lazyListState = rememberLazyListState()
-    var itemsListState = listOf<Rewards>()
+    ChangeBarColors(navigationBarColor = Color.White)
 
-//    LaunchedEffect(key1 = Unit){
-//        rewardsPageViewModel.getRewards(context)
-//    }
+    val text = "http://www.beerbasket.co/ryfagr"
+
+    val clipboardManager: ClipboardManager = LocalClipboardManager.current
+
+    val context = LocalContext.current
+
+    LaunchedEffect(key1 = Unit) {
+        rewardsPageViewModel.getRewardPoints(context, email.toString())
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        //Background Image
+//        Background Image
         BackgroundImage2()
 
-        //top bar
+//        bottom box
+        BottomBox()
+
+//      Top Bar
         TopAppBar(
-            title = { Text(text = "Rewards", color = Color.White) },
+            title = { Text(text = "", color = Color.White) },
             backgroundColor = Color.Transparent,
             elevation = 0.dp,
             navigationIcon = {
@@ -72,84 +114,422 @@ fun Reward(
                 }
             },
         )
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
 
-            LazyRow(
-                state = lazyListState,
+        BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+            val height = maxHeight / 100f
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(300.dp)
+                    .fillMaxSize()
+                    .padding(start = 25.dp, end = 25.dp),
+                verticalArrangement = Arrangement.Bottom
             ) {
-                items(items = rewardsPageViewModel.rewards) { item ->
-                    Box(
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(height * 14)
+                        .padding(end = 10.dp, top = 16.dp, bottom = 10.dp),
+                ) {
+                    Text(
+                        text = "Welcome to",
+                        fontFamily = titleFontFamily,
+                        fontSize = 18.sp,
+                        color = Color.White
+                    )
+                    Text(
+                        text = "Rewards",
+                        fontFamily = titleFontFamily,
+                        fontSize = 30.sp,
+                        color = Color.White
+                    )
+
+                }
+                Card(
+                    modifier = Modifier
+                        .background(Color.Transparent)
+                        .fillMaxWidth()
+                        .height(height * 15),
+                    elevation = 30.dp,
+                    shape = RoundedCornerShape(20.dp)
+                ) {
+                    Row(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .height(300.dp)
+                            .fillMaxSize()
+                            .padding(start = 10.dp, end = 10.dp, top = 10.dp, bottom = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Card(
+                        Icon(
+                            imageVector = Icons.Outlined.StarRate,
+                            contentDescription = "",
+                            tint = Color.Black,
+                            modifier = Modifier.size(50.dp)
+                        )
+                        Text(
+                            text = "Points",
+                            modifier = Modifier.padding(5.dp),
+                            fontFamily = titleFontFamily,
+                            fontSize = 24.sp
+                        )
+                        Column(
                             modifier = Modifier
-                                .fillParentMaxWidth()
-                                .height(400.dp)
-                                .padding(start = 15.dp, end = 15.dp),
-                            elevation = 10.dp,
-                            shape = RoundedCornerShape(10),
+                                .fillMaxSize()
+                                .padding(end = 20.dp),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.End
                         ) {
-                            Column(
+                            Text(
+                                text = rewardsPageViewModel.rewardPointsState.value.toString(),
+                                fontFamily = titleFontFamily,
+                                fontSize = 40.sp,
+                                textAlign = TextAlign.End
+                            )
+                            Text(
+                                text = "Equals Rs" + (rewardsPageViewModel.rewardPointsState.value / 10).toString(),
+                                fontFamily = descriptionFontFamily,
+                                textAlign = TextAlign.End
+                            )
+                        }
+                    }
+
+                }
+                Spacer(Modifier.height(height * 2))
+
+                Card(
+                    modifier = Modifier
+                        .background(Color.Transparent)
+                        .fillMaxWidth()
+                        .height(height * 18),
+                    elevation = 30.dp,
+                    shape = RoundedCornerShape(20.dp)
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(start = 10.dp, end = 10.dp, top = 10.dp, bottom = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .fillMaxWidth(0.25f),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.Redeem,
+                                contentDescription = "",
+                                Modifier.size(40.dp)
+                            )
+                            Text(
+                                text = "Redeem",
+                                modifier = Modifier.padding(5.dp),
+                                fontFamily = titleFontFamily,
+                                fontSize = 22.sp
+                            )
+                        }
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(start = 5.dp, end = 20.dp),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.End,
+                        ) {
+                            TextField(
+                                value = "",
+                                colors = TextFieldDefaults.textFieldColors(
+                                    textColor = Color.Black,
+                                    backgroundColor = LightGray1,
+                                    placeholderColor = Color.White,
+                                    cursorColor = Color.Black,
+                                    errorIndicatorColor = Color.Transparent,
+                                    focusedLabelColor = Color.Black,
+                                    errorCursorColor = Color.Black,
+                                    errorLabelColor = Color.Red,
+                                    focusedIndicatorColor = Color.Transparent,
+                                    unfocusedIndicatorColor = Color.Transparent,
+                                    unfocusedLabelColor = Orange,
+                                ),
+                                shape = RoundedCornerShape(20.dp),
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = KeyboardType.Phone
+                                ),
+                                onValueChange = {
+
+                                })
+
+                            Spacer(modifier = Modifier.height(5.dp))
+
+                            Button(
+                                onClick = {
+                                },
                                 modifier = Modifier
-                                    .fillMaxWidth(),
-                                horizontalAlignment = Alignment.CenterHorizontally
+                                    .fillMaxWidth(.4f)
+                                    .height(22.dp),
+                                contentPadding = PaddingValues(0.dp),
+                                shape = RoundedCornerShape(50),
+                                colors = ButtonDefaults.buttonColors(
+                                    backgroundColor = DarkYellow,
+                                    contentColor = Color.White
+                                ),
+                                elevation = ButtonDefaults.elevation(
+                                    defaultElevation = 5.dp
+                                )
                             ) {
                                 Text(
-                                    modifier = Modifier.padding(top = 30.dp),
-                                    text = item.code,
-                                    fontFamily = titleFontFamily,
-                                    fontSize = 24.sp
-                                )
-                                Text(
-                                    modifier = Modifier.padding(top = 30.dp),
-                                    text = item.description,
-                                    fontFamily = descriptionFontFamily,
-                                    fontSize = 24.sp
-                                )
-                                Text(
-                                    modifier = Modifier.padding(top = 60.dp),
-                                    text = item.title,
-                                    fontFamily = descriptionFontFamily,
-                                    fontSize = 24.sp
+                                    modifier = Modifier.fillMaxSize(),
+                                    text = "Redeem",
+                                    color = Color.White,
+                                    fontSize = 14.sp,
+                                    textAlign = TextAlign.Center
                                 )
                             }
                         }
                     }
-                    Spacer(modifier = Modifier.width(20.dp))
-                    if (item == rewardsPageViewModel.rewards.last()) {
-                        val currentList = itemsListState
 
-                        val secondPart = currentList.subList(0, lazyListState.firstVisibleItemIndex)
-                        val firstPart = currentList.subList(lazyListState.firstVisibleItemIndex, currentList.size)
+                }
 
-                        rememberCoroutineScope().launch {
-                            val SCROLL_DX_INT = 100
-                            lazyListState.scrollToItem(0, maxOf(0, lazyListState.firstVisibleItemScrollOffset - SCROLL_DX_INT))
+                Spacer(Modifier.height(height * 2))
+
+                Card(
+                    modifier = Modifier
+                        .background(Color.Transparent)
+                        .fillMaxWidth()
+                        .height(height * 15),
+                    elevation = 30.dp,
+                    shape = RoundedCornerShape(20.dp)
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(start = 10.dp, end = 10.dp, top = 10.dp, bottom = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.MilitaryTech,
+                            contentDescription = "",
+                            Modifier.size(50.dp)
+                        )
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(start = 10.dp),
+                        ) {
+                            Spacer(modifier = Modifier.height(10.dp))
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = rewardsPageViewModel.checkLevel().toString(),
+                                    fontFamily = titleFontFamily,
+                                    fontSize = 20.sp,
+                                    textAlign = TextAlign.Center
+                                )
+                                Text(
+                                    modifier = Modifier.padding(start = 5.dp, top = 3.dp),
+                                    text = "(Level " + rewardsPageViewModel.getLevel(
+                                        rewardsPageViewModel.checkLevel().toString()
+                                    ) + ")",
+                                    fontFamily = descriptionFontFamily,
+                                    fontWeight = Thin,
+                                    fontSize = 16.sp,
+                                    textAlign = TextAlign.Center
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(10.dp))
+
+                            if (rewardsPageViewModel.checkLevel().toString() == "Gold") {
+                                Text(
+                                    text = "You are already in the Top Level",
+                                    fontSize = 16.sp,
+                                    textAlign = TextAlign.Center,
+                                    fontWeight = Medium,
+                                    fontFamily = FontFamily.SansSerif
+                                )
+                            } else {
+                                Text(
+                                    text = rewardsPageViewModel.getDifference(
+                                        rewardsPageViewModel.checkLevel().toString()
+                                    ) + " Points to Next Level",
+                                    fontSize = 16.sp,
+                                    textAlign = TextAlign.Center,
+                                    fontWeight = Medium,
+                                    fontFamily = FontFamily.SansSerif
+                                )
+                            }
+
+                            Spacer(modifier = Modifier.height(10.dp))
+
+                            Log.d("Progress",rewardsPageViewModel.calculateProgress(
+                                rewardsPageViewModel.rewardPointsState.value).toString())
+                            LinearProgressIndicator(
+                                modifier = Modifier.fillMaxWidth(0.70f),
+                                progress = rewardsPageViewModel.calculateProgress(
+                                    rewardsPageViewModel.rewardPointsState.value
+                                )
+                            )
                         }
 
-                        itemsListState = firstPart + secondPart
                     }
+
+                }
+
+                Spacer(Modifier.height(height * 2))
+
+                Card(
+                    modifier = Modifier
+                        .background(Color.Transparent)
+                        .fillMaxWidth()
+                        .padding(bottom = 10.dp)
+                        .height(height * 25),
+                    elevation = 30.dp,
+                    shape = RoundedCornerShape(20.dp)
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(start = 15.dp, end = 10.dp, top = 10.dp, bottom = 10.dp),
+                    ) {
+                        Text(
+                            text = "Refer Your Friends",
+                            fontFamily = titleFontFamily,
+                            fontSize = 18.sp,
+                            textAlign = TextAlign.Center
+                        )
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 5.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                modifier = Modifier.size(10.dp),
+                                imageVector = Icons.Filled.Circle,
+                                contentDescription = "",
+                                tint = Orange
+                            )
+                            Text(
+                                text = " You get",
+                                fontFamily = descriptionFontFamily,
+                                fontSize = 16.sp,
+                                textAlign = TextAlign.Center
+                            )
+                            Text(
+                                text = " 200 Reward Points",
+                                fontFamily = titleFontFamily,
+                                fontSize = 16.sp,
+                                textAlign = TextAlign.Center
+                            )
+
+                        }
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 5.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                modifier = Modifier.size(10.dp),
+                                imageVector = Icons.Filled.Circle,
+                                contentDescription = "",
+                                tint = Orange
+                            )
+                            Text(
+                                text = " They get",
+                                fontFamily = descriptionFontFamily,
+                                fontSize = 18.sp,
+                                textAlign = TextAlign.Center
+                            )
+                            Text(
+                                text = " 100 Reward Points",
+                                fontFamily = titleFontFamily,
+                                fontSize = 18.sp,
+                                textAlign = TextAlign.Center
+                            )
+
+                        }
+
+                        Spacer(modifier = Modifier.height(3.dp))
+
+                        Row(modifier = Modifier.fillMaxWidth()) {
+
+                            TextField(
+                                readOnly = true,
+                                modifier = Modifier
+                                    .fillMaxWidth(0.76f),
+                                value = text,
+                                maxLines = 1,
+                                colors = TextFieldDefaults.textFieldColors(
+                                    textColor = Color.DarkGray,
+                                    backgroundColor = LightGray1,
+                                    placeholderColor = Color.White,
+                                    cursorColor = Color.Black,
+                                    errorIndicatorColor = Color.Transparent,
+                                    focusedLabelColor = Color.Black,
+                                    errorCursorColor = Color.Black,
+                                    errorLabelColor = Color.Red,
+                                    focusedIndicatorColor = Color.Transparent,
+                                    unfocusedIndicatorColor = Color.Transparent,
+                                    unfocusedLabelColor = Orange,
+                                ),
+                                shape=RoundedCornerShape(topStart = 15.dp, bottomStart = 15.dp),
+                                onValueChange = {
+                                })
+
+                            Button(
+                                modifier = Modifier
+                                    .height(55.dp)
+                                    .fillMaxWidth(),
+                                onClick = {
+                                          clipboardManager.setText(AnnotatedString(text=text))
+                                    Toast.makeText(context,"Text copied to clipboard",Toast.LENGTH_SHORT).show()
+                                },
+                                shape=RoundedCornerShape(topEnd = 15.dp, bottomEnd = 15.dp),
+                                // Uses ButtonDefaults.ContentPadding by default
+                                contentPadding = PaddingValues(0.dp)
+                            ) {
+                                // Inner content including an icon and a text label
+                                Icon(
+                                    Icons.Filled.ContentCopy,
+                                    contentDescription = "Copy",
+                                )
+                                Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                                Text("Copy")
+                            }
+
+                        }
+
+                        Spacer(modifier = Modifier.height(5.dp))
+
+                        Text(
+                            modifier = Modifier.padding(start = 10.dp),
+                            text = "You have referred 0 friends",
+                            fontFamily = titleFontFamily,
+                            fontSize = 16.sp,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+
                 }
             }
         }
     }
-    LaunchedEffect(Unit) {
-        autoScroll(lazyListState)
-    }
 }
 
-private tailrec suspend fun autoScroll(lazyListState: LazyListState) {
-    lazyListState.scroll(MutatePriority.PreventUserInput) {
-        scrollBy(SCROLL_DX)
+@Composable
+fun BottomBox() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Bottom
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxHeight(0.75f)
+                .fillMaxWidth()
+                .background(Color.White)
+        )
     }
-    delay(DELAY_BETWEEN_SCROLL_MS)
-
-    autoScroll(lazyListState)
 }
 
 @Composable
@@ -161,3 +541,108 @@ fun BackgroundImage2() {
         modifier = Modifier.fillMaxSize()
     )
 }
+
+
+//@Composable
+//fun Reward(
+//    navHostControllerLambda: () -> NavHostController,
+//    rewardsPageViewModel: RewardsPageViewModel = viewModel()
+//) {
+//    ChangeBarColors(navigationBarColor = DarkYellow)
+//    val context = LocalContext.current
+//    val lazyListState = rememberLazyListState()
+//    var itemsListState = listOf<Rewards>()
+//
+////    LaunchedEffect(key1 = Unit){
+////        rewardsPageViewModel.getRewards(context)
+////    }
+//
+//    Box(modifier = Modifier.fillMaxSize()) {
+//        //Background Image
+//        BackgroundImage2()
+//
+//        //top bar
+//        TopAppBar(
+//            title = { Text(text = "Rewards", color = Color.White) },
+//            backgroundColor = Color.Transparent,
+//            elevation = 0.dp,
+//            navigationIcon = {
+//                IconButton(onClick = { navHostControllerLambda().navigateUp() }) {
+//                    Icon(
+//                        imageVector = Icons.Default.ArrowBack,
+//                        contentDescription = "",
+//                        tint = Color.White
+//                    )
+//                }
+//            },
+//        )
+//        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+//
+//            LazyRow(
+//                state = lazyListState,
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .height(300.dp)
+//            ) {
+//                items(items = rewardsPageViewModel.rewards) { item ->
+//                    Box(
+//                        modifier = Modifier
+//                            .fillMaxWidth()
+//                            .height(300.dp)
+//                    ) {
+//                        Card(
+//                            modifier = Modifier
+//                                .fillParentMaxWidth()
+//                                .height(400.dp)
+//                                .padding(start = 15.dp, end = 15.dp),
+//                            elevation = 10.dp,
+//                            shape = RoundedCornerShape(10),
+//                        ) {
+//                            Column(
+//                                modifier = Modifier
+//                                    .fillMaxWidth(),
+//                                horizontalAlignment = Alignment.CenterHorizontally
+//                            ) {
+//                                Text(
+//                                    modifier = Modifier.padding(top = 30.dp),
+//                                    text = item.code,
+//                                    fontFamily = titleFontFamily,
+//                                    fontSize = 24.sp
+//                                )
+//                                Text(
+//                                    modifier = Modifier.padding(top = 30.dp),
+//                                    text = item.description,
+//                                    fontFamily = descriptionFontFamily,
+//                                    fontSize = 24.sp
+//                                )
+//                                Text(
+//                                    modifier = Modifier.padding(top = 60.dp),
+//                                    text = item.title,
+//                                    fontFamily = descriptionFontFamily,
+//                                    fontSize = 24.sp
+//                                )
+//                            }
+//                        }
+//                    }
+////                    Spacer(modifier = Modifier.width(20.dp))
+////                    if (item == rewardsPageViewModel.rewards.last()) {
+////                        val currentList = itemsListState
+////
+////                        val secondPart = currentList.subList(0, lazyListState.firstVisibleItemIndex)
+////                        val firstPart = currentList.subList(lazyListState.firstVisibleItemIndex, currentList.size)
+////
+////                        rememberCoroutineScope().launch {
+////                            val SCROLL_DX_INT = 100
+////                            lazyListState.scrollToItem(0, maxOf(0, lazyListState.firstVisibleItemScrollOffset - SCROLL_DX_INT))
+////                        }
+////
+////                        itemsListState = firstPart + secondPart
+////                    }
+//                }
+//            }
+//        }
+//    }
+////    LaunchedEffect(Unit) {
+////        autoScroll(lazyListState)
+////    }
+//}

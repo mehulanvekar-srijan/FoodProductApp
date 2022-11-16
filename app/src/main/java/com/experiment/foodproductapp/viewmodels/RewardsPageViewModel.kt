@@ -17,22 +17,22 @@ class RewardsPageViewModel : ViewModel() {
 
     //TODO: remove rewards list
     val rewards = listOf(
-        Rewards("offer","MX6969","get 10% off"),
-        Rewards("offerfirst","MX6979","get a drink free on first order")
+        Rewards("offer", "MX6969", "get 10% off"),
+        Rewards("offerfirst", "MX6979", "get a drink free on first order")
     )
 
     private val _rewardPointsState = mutableStateOf(0)
     val rewardPointsState = _rewardPointsState
 
-    fun getRewardPoints(context: Context, email: String){
-        viewModelScope.launch(Dispatchers.IO){
+    fun getRewardPoints(context: Context, email: String) {
+        viewModelScope.launch(Dispatchers.IO) {
             _rewardPointsState.value = DatabaseRepository(context).getRewardPoints(email)
         }
     }
 
-    fun updateRewardPoints(context: Context, email: String, rewardPoints: Int){
-        viewModelScope.launch(Dispatchers.IO){
-            DatabaseRepository(context).updateRewardPoints(email,rewardPoints)
+    fun updateRewardPoints(context: Context, email: String, rewardPoints: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            DatabaseRepository(context).updateRewardPoints(email, rewardPoints)
         }
     }
 
@@ -41,11 +41,43 @@ class RewardsPageViewModel : ViewModel() {
         return list.isEmpty()
     }
 
-    fun checkLevel() : Level {
+    fun checkLevel(): Level {
         return when (rewardPointsState.value) {
-            in 1..100 -> Level.Bronze
+            in 0..100 -> Level.Bronze
             in 101..500 -> Level.Silver
             else -> Level.Gold
+        }
+    }
+
+    fun getLevel(level: String): String {
+        return if (level == "Bronze") {
+            "1"
+        } else if (level == "Silver") {
+            "2"
+        } else {
+            "3"
+        }
+    }
+
+    fun getDifference(level: String): String {
+        return if (level == "Bronze") {
+            (100-rewardPointsState.value).toString()
+        } else {
+            (500-rewardPointsState.value).toString()
+        }
+    }
+
+    fun calculateProgress(value: Int): Float {
+        return when (value) {
+            in 0..100 -> {
+                (value/101.0f)
+            }
+            in 101..500 -> {
+                (value/501f)
+            }
+            else -> {
+                1f
+            }
         }
     }
 

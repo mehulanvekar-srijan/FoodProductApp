@@ -165,7 +165,7 @@ fun OrderDescriptionPage(
                                         ) {
                                             Text(
                                                 //text = "Rs. " + 79,
-                                                text = "Rs. " + item.price,
+                                                text = "Rs. " + item.price* item.count,
                                                 fontSize = 18.sp,
                                                 textAlign = TextAlign.End,
                                                 fontFamily = descriptionFontFamily,
