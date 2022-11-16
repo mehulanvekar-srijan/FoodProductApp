@@ -3,13 +3,8 @@ package com.experiment.foodproductapp.views
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.MutatePriority
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -17,21 +12,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Circle
 import androidx.compose.material.icons.filled.ContentCopy
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.MilitaryTech
 import androidx.compose.material.icons.outlined.Redeem
-import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material.icons.outlined.StarRate
-import androidx.compose.material.icons.twotone.GifBox
-import androidx.compose.material.icons.twotone.Redeem
-import androidx.compose.material.icons.twotone.Star
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ClipboardManager
@@ -40,10 +28,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.font.FontWeight.Companion.Medium
-import androidx.compose.ui.text.font.FontWeight.Companion.SemiBold
 import androidx.compose.ui.text.font.FontWeight.Companion.Thin
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -54,14 +39,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.experiment.foodproductapp.R
-import com.experiment.foodproductapp.database.Rewards
-import com.experiment.foodproductapp.domain.event.SignupFormEvent
 import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.viewmodels.RewardsPageViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.math.RoundingMode
-import java.text.DecimalFormat
 
 @Composable
 @Preview
@@ -234,7 +214,7 @@ fun Reward(
                             horizontalAlignment = Alignment.End,
                         ) {
                             TextField(
-                                value = "",
+                                value = rewardsPageViewModel.redeemedpoints.value,
                                 colors = TextFieldDefaults.textFieldColors(
                                     textColor = Color.Black,
                                     backgroundColor = LightGray1,
@@ -253,13 +233,13 @@ fun Reward(
                                     keyboardType = KeyboardType.Phone
                                 ),
                                 onValueChange = {
-
+                                    rewardsPageViewModel.updateUserPoints(it)
                                 })
 
                             Spacer(modifier = Modifier.height(5.dp))
 
                             Button(
-                                onClick = {
+                                onClick = { rewardsPageViewModel.validateRewards(context,email.toString()).show()
                                 },
                                 modifier = Modifier
                                     .fillMaxWidth(.4f)
@@ -359,8 +339,11 @@ fun Reward(
 
                             Spacer(modifier = Modifier.height(10.dp))
 
-                            Log.d("Progress",rewardsPageViewModel.calculateProgress(
-                                rewardsPageViewModel.rewardPointsState.value).toString())
+                            Log.d(
+                                "Progress", rewardsPageViewModel.calculateProgress(
+                                    rewardsPageViewModel.rewardPointsState.value
+                                ).toString()
+                            )
                             LinearProgressIndicator(
                                 modifier = Modifier.fillMaxWidth(0.70f),
                                 progress = rewardsPageViewModel.calculateProgress(
@@ -471,7 +454,7 @@ fun Reward(
                                     unfocusedIndicatorColor = Color.Transparent,
                                     unfocusedLabelColor = Orange,
                                 ),
-                                shape=RoundedCornerShape(topStart = 15.dp, bottomStart = 15.dp),
+                                shape = RoundedCornerShape(topStart = 15.dp, bottomStart = 15.dp),
                                 onValueChange = {
                                 })
 
@@ -480,10 +463,14 @@ fun Reward(
                                     .height(55.dp)
                                     .fillMaxWidth(),
                                 onClick = {
-                                          clipboardManager.setText(AnnotatedString(text=text))
-                                    Toast.makeText(context,"Text copied to clipboard",Toast.LENGTH_SHORT).show()
+                                    clipboardManager.setText(AnnotatedString(text = text))
+                                    Toast.makeText(
+                                        context,
+                                        "Text copied to clipboard",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 },
-                                shape=RoundedCornerShape(topEnd = 15.dp, bottomEnd = 15.dp),
+                                shape = RoundedCornerShape(topEnd = 15.dp, bottomEnd = 15.dp),
                                 // Uses ButtonDefaults.ContentPadding by default
                                 contentPadding = PaddingValues(0.dp)
                             ) {

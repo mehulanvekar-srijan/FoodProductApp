@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.rememberImagePainter
 import com.experiment.foodproductapp.R
 import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.viewmodels.OrderDetailsViewModel
@@ -44,7 +45,7 @@ fun Preview2() {
 
         navHostController
     }
-    OrderDetails("romi@romi.com", navHostControllerLambda = navHostControllerLambda)
+    OrderDetails("sahil@test.com", navHostControllerLambda = navHostControllerLambda)
 }
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -68,7 +69,7 @@ fun OrderDetails(
 
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
 
-        val height = (maxHeight / 100f) * 20
+        val height = (maxHeight / 100f) * 15
         //Background Image
         BackgroundImage1()
 
@@ -96,7 +97,7 @@ fun OrderDetails(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(20.dp),
         ) {
-            items(items = orderDetailsViewModel.finalList) { item ->
+            items(items = orderDetailsViewModel.finalList.reversed()) { item ->
 
 
                 Box(
@@ -119,43 +120,25 @@ fun OrderDetails(
                         },
                     ) {
                         Row {
-                            var sum = 0
                             Column(
                                 modifier = Modifier
-                                    .padding(start = 15.dp)
-                                    .fillMaxWidth(.7F)
-                                    .fillMaxHeight()
+                                    .padding(start = 30.dp)
+                                    .fillMaxWidth(.5F)
+                                    .fillMaxHeight(),
                             ) {
-                                var index = 0
                                 Text(
-                                    text = "# " + item[index].orderId,
-                                    modifier = Modifier.padding(top = 20.dp, bottom = 15.dp),
+                                    text = "Order No: # " + item[0].orderId,
+                                    modifier = Modifier.padding(top = 20.dp, bottom = 10.dp),
                                     overflow = TextOverflow.Ellipsis,
                                     fontFamily = titleFontFamily,
                                     fontSize = 19.sp,
                                 )
                                 Text(
-                                    text = item.size.toString() + " items",
+                                    text = "Total Items: " + item.size.toString(),
                                     modifier = Modifier.padding(bottom = 5.dp),
                                     fontFamily = titleFontFamily,
                                     fontSize = 19.sp,
                                 )
-                                Column(modifier = Modifier.height(35.dp)) {
-                                    val count = 2
-
-                                    do {
-                                        if (index < count) {
-                                            Text(
-                                                text = item[index].title + " x" + item[index].count,
-                                                maxLines = 1,
-                                                fontSize = 14.sp,
-                                                overflow = TextOverflow.Ellipsis,
-                                            )
-                                        }
-                                        sum += item[index].price * item[index].count
-                                        index++
-                                    } while (index < item.size)
-                                }
                                 Box(
                                     modifier = Modifier
                                         .clickable(
@@ -163,7 +146,7 @@ fun OrderDetails(
                                             onClick = {},
                                             indication = null
                                         )
-                                        .padding(top = 10.dp),
+                                        .padding(top = 5.dp),
                                 ) {
                                     Row(verticalAlignment = Alignment.CenterVertically) {
                                         Icon(
@@ -188,11 +171,18 @@ fun OrderDetails(
                                 verticalArrangement = Arrangement.Center,
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-
+                                Image(
+                                    painter = rememberImagePainter("https://products3.imgix.drizly.com/ci-budweiser-24269668d4e23c97.jpeg"),
+                                    contentDescription = "",
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .fillMaxHeight(.7f)
+                                )
                                 Text(
-                                    text = "Rs : $sum",
+                                    text = "Rs : ${orderDetailsViewModel.calculateSum(item)}",
                                     fontFamily = titleFontFamily,
                                 )
+
                             }
                         }
                     }

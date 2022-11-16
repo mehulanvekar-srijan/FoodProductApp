@@ -2,6 +2,7 @@ package com.experiment.foodproductapp.viewmodels
 
 import android.content.Context
 import android.util.Log
+import android.view.MenuItem
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -34,6 +35,16 @@ class OrderDetailsViewModel: ViewModel() {
         navHostController.navigate(Screen.OrderDescriptionPage.route) {
             popUpTo(Screen.OrderDetails.route) { inclusive = false }
         }
+    }
+
+    fun calculateSum(item: MutableList<OrderDetails>):Int{
+        var sum=0
+        var index=0
+        do {
+            sum += item[index].price * item[index].count
+            index++
+        } while (index < item.size)
+        return sum
     }
 
     var finalList = mutableStateListOf<MutableList<OrderDetails>>()

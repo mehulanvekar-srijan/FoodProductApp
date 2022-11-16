@@ -1,25 +1,24 @@
 package com.experiment.foodproductapp.viewmodels
 
 import android.content.Context
-import android.util.Log
+import android.widget.Toast
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.experiment.foodproductapp.constants.Level
 import com.experiment.foodproductapp.database.Product
-import com.experiment.foodproductapp.database.Rewards
-import com.experiment.foodproductapp.database.RewardsUsed
 import com.experiment.foodproductapp.repository.DatabaseRepository
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 class RewardsPageViewModel : ViewModel() {
 
-    //TODO: remove rewards list
-    val rewards = listOf(
-        Rewards("offer", "MX6969", "get 10% off"),
-        Rewards("offerfirst", "MX6979", "get a drink free on first order")
-    )
+    private val _redeemedpoints = mutableStateOf("")
+    val redeemedpoints = _redeemedpoints
+
+    val sum = mutableStateOf(0)
 
     private val _rewardPointsState = mutableStateOf(0)
     val rewardPointsState = _rewardPointsState
@@ -29,6 +28,15 @@ class RewardsPageViewModel : ViewModel() {
             _rewardPointsState.value = DatabaseRepository(context).getRewardPoints(email)
         }
     }
+    fun setRewardPoints(context: Context, email: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            DatabaseRepository(context).updateRewardPoints(email,rewardPointsState.value)
+        }
+    }
+
+    fun updateUserPoints(value: String) {
+        _redeemedpoints.value = value
+    }
 
     fun updateRewardPoints(context: Context, email: String, rewardPoints: Int) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -36,15 +44,23 @@ class RewardsPageViewModel : ViewModel() {
         }
     }
 
-    fun isCartEmpty(context: Context, email: String): Boolean {
-        val list: List<Product> = DatabaseRepository(context).readAllProducts(email)
-        return list.isEmpty()
+    suspend fun isCartEmpty(context: Context, email: String): Boolean {
+        val deferred: Deferred<Boolean> = viewModelScope.async(Dispatchers.IO) {
+            val list: List<Product> = DatabaseRepository(context).readAllProducts(email)
+            while (list.isNotEmpty()) {
+                for (item in list) {
+                    sum.value = +item.price * item.count
+                }
+            }
+            list.isEmpty()
+        }
+        return deferred.await()
     }
 
-    fun setRedeemedAmount(context: Context, email: String, amount :Int){
+    private fun setRedeemedAmount(context: Context, email: String, amount: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            val currentRedeemedAmount = DatabaseRepository(context).getRedeemedAmount(email)
-            DatabaseRepository(context).updateRedeemedAmount(email,currentRedeemedAmount+amount)
+            val currentRedeemedAmount = DatabaseRepository(context).getRedeemedAmount(email) * 10
+            DatabaseRepository(context).updateRedeemedAmount(email, (currentRedeemedAmount + amount)/10)
         }
     }
 
@@ -68,23 +84,53 @@ class RewardsPageViewModel : ViewModel() {
 
     fun getDifference(level: String): String {
         return if (level == "Bronze") {
-            (100-rewardPointsState.value).toString()
+            (100 - rewardPointsState.value).toString()
         } else {
-            (500-rewardPointsState.value).toString()
+            (500 - rewardPointsState.value).toString()
         }
     }
 
     fun calculateProgress(value: Int): Float {
         return when (value) {
             in 0..100 -> {
-                (value/101.0f)
+                (value / 101.0f)
             }
             in 101..500 -> {
-                (value/501f)
+                (value / 501f)
             }
             else -> {
                 1f
             }
+        }
+    }
+
+    fun validateRewards(context: Context, email: String): Toast {
+
+        if (redeemedpoints.value == "") {
+
+            return Toast.makeText(context, "Enter points", Toast.LENGTH_SHORT)
+
+        }
+        else if (redeemedpoints.value.toInt() > rewardPointsState.value) {
+
+            return Toast.makeText(context, "Not enough points to redeem", Toast.LENGTH_SHORT)
+        }
+        else if (redeemedpoints.value.toInt() in 0..9) {
+
+            return Toast.makeText(context, "Minimum points to be redeemed should be 10", Toast.LENGTH_SHORT)
+
+        }
+        else if (redeemedpoints.value.toInt()%10!=0) {
+
+            return Toast.makeText(context, "Points should be redeemed in multiples of 10", Toast.LENGTH_SHORT)
+
+        }
+        else{
+            setRedeemedAmount(context,email,redeemedpoints.value.toInt())
+            rewardPointsState.value -=redeemedpoints.value.toInt()
+            setRewardPoints(context,email)
+            redeemedpoints.value=""
+            return Toast.makeText(context, "Points redeemed successfully", Toast.LENGTH_SHORT)
         }
     }
 
