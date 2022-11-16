@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.experiment.foodproductapp.R
@@ -52,6 +53,7 @@ fun ProductCart(
     LaunchedEffect(key1 = Unit) {
         if (email != null) {
             productCartViewModel.email.value=email
+            productCartViewModel.initRedeemAmount(context,email)
         }
         productCartViewModel.fetchCartList(context)
     }
@@ -66,7 +68,7 @@ fun ProductCart(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .weight(6F)
+                .weight(7F)
                 .padding(top = 8.dp, start = 8.dp, end = 8.dp),
             verticalArrangement = Arrangement.spacedBy(9.dp)
         ) {
@@ -102,6 +104,15 @@ fun ProductCart(
                     },
                     backgroundColor = Color.Transparent,
                     elevation = 0.dp,
+                    actions = {
+                        IconButton(onClick = { /*TODO*/ }) {
+                            Icon(
+                                imageVector = Icons.Default.Stars,
+                                contentDescription = "Rewards Page",
+                                tint = DarkYellow
+                            )
+                        }
+                    }
                 )
             }
 
@@ -162,7 +173,7 @@ fun ProductCart(
         Box(modifier = Modifier
             .shadow(70.dp)
             .clip(RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp))
-            .weight(1F)
+            .weight(2F)
             .fillMaxSize()
             .background(DarkYellow)
         ){
@@ -365,16 +376,76 @@ fun CheckoutArea(
     navigate: ()->Unit = {},
 ) {
     Column{
-        //Price row
+
+        //Sum row
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(0.40F),
+                .weight(1F)
+                .padding(top = 2.dp),
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
                 text = "Price ",
+                color = Color.White,
+                modifier = Modifier
+                    .padding(start = 25.dp),
+                textAlign = TextAlign.Start,
+                fontSize = 20.sp,
+            )
+
+            Text(
+                text = "Rs : ${productCartViewModel.sum.value}",
+                color = Color.White,
+                modifier = Modifier
+                    .padding(end = 25.dp)
+                    .weight(1F),
+                textAlign = TextAlign.End,
+                fontSize = 20.sp,
+            )
+        }
+
+        //Redeem Amount
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1F),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = "Redeem Amount ",
+                color = Color.White,
+                modifier = Modifier
+                    .padding(start = 25.dp)
+                    .weight(1F),
+                textAlign = TextAlign.Start,
+                fontSize = 20.sp,
+            )
+
+            Text(
+                text = "Rs : ${productCartViewModel.redeemAmount.value}",
+                color = Color.White,
+                modifier = Modifier
+                    .padding(end = 25.dp)
+                    .weight(1F),
+                textAlign = TextAlign.End,
+                fontSize = 20.sp,
+            )
+        }
+
+        //Final Amount
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1F)
+                .padding(bottom = 2.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = "Final Amount ",
                 color = Color.White,
                 modifier = Modifier
                     .padding(start = 25.dp)
@@ -385,7 +456,7 @@ fun CheckoutArea(
             )
 
             Text(
-                text = "Rs : ${productCartViewModel.sum.value}",
+                text = "Rs : ${productCartViewModel.finalSum.value}",
                 color = Color.White,
                 modifier = Modifier
                     .padding(end = 25.dp)
@@ -399,11 +470,11 @@ fun CheckoutArea(
         //Checkout button
         Box(
             modifier = Modifier
-                .fillMaxSize()
+                .weight(1F),
         ) {
             Button(
                 modifier = Modifier
-                    .padding(start = 30.dp, end = 30.dp, top = 6.dp, bottom = 9.dp)
+                    .padding(start = 30.dp, end = 30.dp, top = 2.dp, bottom = 1.dp)
                     .fillMaxSize(),
                 onClick = navigate,
                 colors = ButtonDefaults.buttonColors(
@@ -419,7 +490,7 @@ fun CheckoutArea(
             }
         }
 
-        Spacer(modifier = Modifier.padding(5.dp))
+        Spacer(modifier = Modifier.padding(2.dp))
     }
 }
 
@@ -427,163 +498,164 @@ fun CheckoutArea(
 @Preview(showBackground = true, backgroundColor = 1)
 @Composable
 fun PrevPC() {
-//    val navHostController = rememberNavController()
-//
-//    FoodProductAppTheme {
-//        ProductCart(navHostControllerLambda = { navHostController })
-//    }
 
+    val navHostController = rememberNavController()
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(5.dp)
-            .background(Color.White)
-    ){
-        for (i in 1..4){
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(110.dp),
-                elevation = 20.dp,
-                shape = RoundedCornerShape(15.dp),
-                onClick = {  },
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    //Product Image
-                    Box(
-                        modifier = Modifier.weight(2F)
-                    ){
-                        Image(
-                            //painter = rememberImagePainter(item.url),
-                            painter = painterResource(id = R.drawable.beer0),
-                            contentDescription = "",
-                            contentScale = ContentScale.Fit,
-                            alignment = Alignment.CenterStart,
-                            modifier = Modifier.padding(8.dp),
-                        )
-                    }
-
-                    //Title / Description
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(5.dp)
-                            .weight(4F),
-                        verticalArrangement = Arrangement.SpaceEvenly,
-                    ){
-                        Text( // Title
-                            textAlign = TextAlign.Start,
-                            style = MaterialTheme.typography.h5,
-                            overflow = TextOverflow.Ellipsis,
-                            //text = item.title,
-                            text = "Coolberg Non Alcoholic Beer - Mint",
-                            fontFamily = titleFontFamily,
-                            fontSize = 20.sp,
-                        )
-                        Text( // Price
-                            textAlign = TextAlign.Center,
-                            color = Color.Black,
-                            overflow = TextOverflow.Ellipsis,
-                            text = "MRP:Rs 79",
-                            fontFamily = descriptionFontFamily,
-                        )
-                    }
-
-                    //Count button
-                    Row(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .weight(2F)
-                            .padding(end = 5.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        //Add
-                        Box(
-                            modifier = Modifier
-                                .weight(2F)
-                                .background(Color.Transparent),
-                            contentAlignment = Alignment.Center,
-                        ){
-                            Surface(
-                                elevation = 3.dp,
-                                color = Color.Transparent
-                            ){
-                                IconButton(
-                                    onClick = {
-                                        //productCartViewModel.incrementProductCount(context,item.id,quantity)
-                                    },
-                                    modifier = Modifier
-                                        .clip(RoundedCornerShape(15))
-                                        .background(
-                                            Brush.verticalGradient(
-                                                listOf(
-                                                    Orange,
-                                                    DarkYellow
-                                                )
-                                            )
-                                        )
-                                        .size(width = 25.dp, height = 25.dp)
-                                ){
-                                    Icon(
-                                        imageVector = Icons.Default.Add,
-                                        contentDescription = "",
-                                        tint = Color.White,
-                                    )
-                                }
-                            }
-                        }
-
-                        //Count Value
-                        Text(text = "1", textAlign = TextAlign.Center)
-                        //Text(text = quantity.value.toString(),textAlign = TextAlign.Center)
-
-                        //Minus
-                        Box(
-                            modifier = Modifier
-                                .weight(2F)
-                                .background(Color.Transparent),
-                            contentAlignment = Alignment.Center,
-                        ){
-                            Surface(
-                                elevation = 3.dp,
-                                color = Color.Transparent
-                            ){
-                                IconButton(
-                                    onClick = {
-                                        //productCartViewModel.decrementProductCount(context,item.id,quantity)
-                                    },
-                                    modifier = Modifier
-                                        .clip(RoundedCornerShape(15))
-                                        .background(
-                                            Brush.verticalGradient(
-                                                listOf(
-                                                    Orange,
-                                                    DarkYellow
-                                                )
-                                            )
-                                        )
-                                        .size(width = 25.dp, height = 25.dp)
-                                        .clickable {
-
-                                        },
-
-                                    enabled = true,
-                                ){
-                                    Icon(
-                                        imageVector = Icons.Filled.Remove,
-                                        contentDescription = "",
-                                        tint = Color.White,
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            Spacer(modifier = Modifier.height(10.dp))
-        }
+    FoodProductAppTheme {
+        ProductCart(navHostControllerLambda = { navHostController }, email = "meh@ul.com")
     }
+
+
+//    Column(
+//        modifier = Modifier
+//            .fillMaxSize()
+//            .padding(5.dp)
+//            .background(Color.White)
+//    ){
+//        for (i in 1..4){
+//            Card(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .height(110.dp),
+//                elevation = 20.dp,
+//                shape = RoundedCornerShape(15.dp),
+//                onClick = {  },
+//            ) {
+//                Row(
+//                    modifier = Modifier.fillMaxWidth()
+//                ) {
+//                    //Product Image
+//                    Box(
+//                        modifier = Modifier.weight(2F)
+//                    ){
+//                        Image(
+//                            //painter = rememberImagePainter(item.url),
+//                            painter = painterResource(id = R.drawable.beer0),
+//                            contentDescription = "",
+//                            contentScale = ContentScale.Fit,
+//                            alignment = Alignment.CenterStart,
+//                            modifier = Modifier.padding(8.dp),
+//                        )
+//                    }
+//
+//                    //Title / Description
+//                    Column(
+//                        modifier = Modifier
+//                            .fillMaxSize()
+//                            .padding(5.dp)
+//                            .weight(4F),
+//                        verticalArrangement = Arrangement.SpaceEvenly,
+//                    ){
+//                        Text( // Title
+//                            textAlign = TextAlign.Start,
+//                            style = MaterialTheme.typography.h5,
+//                            overflow = TextOverflow.Ellipsis,
+//                            //text = item.title,
+//                            text = "Coolberg Non Alcoholic Beer - Mint",
+//                            fontFamily = titleFontFamily,
+//                            fontSize = 20.sp,
+//                        )
+//                        Text( // Price
+//                            textAlign = TextAlign.Center,
+//                            color = Color.Black,
+//                            overflow = TextOverflow.Ellipsis,
+//                            text = "MRP:Rs 79",
+//                            fontFamily = descriptionFontFamily,
+//                        )
+//                    }
+//
+//                    //Count button
+//                    Row(
+//                        modifier = Modifier
+//                            .fillMaxHeight()
+//                            .weight(2F)
+//                            .padding(end = 5.dp),
+//                        verticalAlignment = Alignment.CenterVertically
+//                    ) {
+//                        //Add
+//                        Box(
+//                            modifier = Modifier
+//                                .weight(2F)
+//                                .background(Color.Transparent),
+//                            contentAlignment = Alignment.Center,
+//                        ){
+//                            Surface(
+//                                elevation = 3.dp,
+//                                color = Color.Transparent
+//                            ){
+//                                IconButton(
+//                                    onClick = {
+//                                        //productCartViewModel.incrementProductCount(context,item.id,quantity)
+//                                    },
+//                                    modifier = Modifier
+//                                        .clip(RoundedCornerShape(15))
+//                                        .background(
+//                                            Brush.verticalGradient(
+//                                                listOf(
+//                                                    Orange,
+//                                                    DarkYellow
+//                                                )
+//                                            )
+//                                        )
+//                                        .size(width = 25.dp, height = 25.dp)
+//                                ){
+//                                    Icon(
+//                                        imageVector = Icons.Default.Add,
+//                                        contentDescription = "",
+//                                        tint = Color.White,
+//                                    )
+//                                }
+//                            }
+//                        }
+//
+//                        //Count Value
+//                        Text(text = "1", textAlign = TextAlign.Center)
+//                        //Text(text = quantity.value.toString(),textAlign = TextAlign.Center)
+//
+//                        //Minus
+//                        Box(
+//                            modifier = Modifier
+//                                .weight(2F)
+//                                .background(Color.Transparent),
+//                            contentAlignment = Alignment.Center,
+//                        ){
+//                            Surface(
+//                                elevation = 3.dp,
+//                                color = Color.Transparent
+//                            ){
+//                                IconButton(
+//                                    onClick = {
+//                                        //productCartViewModel.decrementProductCount(context,item.id,quantity)
+//                                    },
+//                                    modifier = Modifier
+//                                        .clip(RoundedCornerShape(15))
+//                                        .background(
+//                                            Brush.verticalGradient(
+//                                                listOf(
+//                                                    Orange,
+//                                                    DarkYellow
+//                                                )
+//                                            )
+//                                        )
+//                                        .size(width = 25.dp, height = 25.dp)
+//                                        .clickable {
+//
+//                                        },
+//
+//                                    enabled = true,
+//                                ){
+//                                    Icon(
+//                                        imageVector = Icons.Filled.Remove,
+//                                        contentDescription = "",
+//                                        tint = Color.White,
+//                                    )
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//            Spacer(modifier = Modifier.height(10.dp))
+//        }
+//    }
 }
