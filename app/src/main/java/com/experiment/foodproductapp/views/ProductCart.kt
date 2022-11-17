@@ -4,7 +4,6 @@ import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -21,7 +20,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -33,8 +31,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
-import com.experiment.foodproductapp.R
-import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.database.Product
 import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.viewmodels.ProductCartViewModel
@@ -53,7 +49,8 @@ fun ProductCart(
     LaunchedEffect(key1 = Unit) {
         if (email != null) {
             productCartViewModel.email.value=email
-            productCartViewModel.initRedeemAmount(context,email)
+            //productCartViewModel.initRedeemAmount(context,email)
+            productCartViewModel.initTotalPointsAndRedeemedAmount(context,email)
         }
         productCartViewModel.fetchCartList(context)
     }
@@ -105,7 +102,12 @@ fun ProductCart(
                     backgroundColor = Color.Transparent,
                     elevation = 0.dp,
                     actions = {
-                        IconButton(onClick = { /*TODO*/ }) {
+                        IconButton(onClick = {
+                            productCartViewModel.navigateToRewards(
+                                navHostController = navHostControllerLambda(),
+                                email = email,
+                            )
+                        }) {
                             Icon(
                                 imageVector = Icons.Default.Stars,
                                 contentDescription = "Rewards Page",
@@ -181,7 +183,7 @@ fun ProductCart(
                 productCartViewModel = productCartViewModel,
                 navigate = {
                     if(productCartViewModel.sum.value!=0) {
-                        productCartViewModel.navigateToCheckout(navHostControllerLambda())
+                        productCartViewModel.navigateToCheckout(navHostControllerLambda(),context)
                     }
 //                    navHostControllerLambda().navigate(Screen.PaymentScreen.route)
                 }
@@ -392,7 +394,7 @@ fun CheckoutArea(
                 modifier = Modifier
                     .padding(start = 25.dp),
                 textAlign = TextAlign.Start,
-                fontSize = 20.sp,
+                fontSize = 18.sp,
             )
 
             Text(
@@ -402,7 +404,7 @@ fun CheckoutArea(
                     .padding(end = 25.dp)
                     .weight(1F),
                 textAlign = TextAlign.End,
-                fontSize = 20.sp,
+                fontSize = 18.sp,
             )
         }
 
@@ -421,17 +423,18 @@ fun CheckoutArea(
                     .padding(start = 25.dp)
                     .weight(1F),
                 textAlign = TextAlign.Start,
-                fontSize = 20.sp,
+                fontSize = 18.sp,
             )
 
             Text(
-                text = "Rs : ${productCartViewModel.redeemAmount.value}",
+                ///text = "Rs : ${productCartViewModel.redeemAmount.value}",
+                text = "Rs : ${productCartViewModel.sum.value - productCartViewModel.finalSum.value}",
                 color = Color.White,
                 modifier = Modifier
                     .padding(end = 25.dp)
                     .weight(1F),
                 textAlign = TextAlign.End,
-                fontSize = 20.sp,
+                fontSize = 18.sp,
             )
         }
 

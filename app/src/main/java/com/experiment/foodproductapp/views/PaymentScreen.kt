@@ -20,12 +20,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.experiment.foodproductapp.MainActivity
 import com.experiment.foodproductapp.R
-import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.ui.theme.descriptionFontFamily
 import com.experiment.foodproductapp.ui.theme.titleFontFamily
 import com.experiment.foodproductapp.utility.payment
 import com.experiment.foodproductapp.viewmodels.PaymentScreenViewModel
-import kotlinx.coroutines.delay
 
 @Composable
 fun PaymentScreen(
@@ -33,7 +31,7 @@ fun PaymentScreen(
     email: String?,
     phoneNumber: String?,
     sum: Int?,
-    redeemedAmount: Int?,
+    points: Int?,
     paymentScreenViewModel: PaymentScreenViewModel = viewModel(),
     activityLambda: () -> Activity,
 ) {
@@ -56,7 +54,7 @@ fun PaymentScreen(
                 context = context,
                 email = email,
                 sum = sum,
-                redeemedAmount = redeemedAmount,
+                points = points,
                 activity = mainActivity,
             )
         }

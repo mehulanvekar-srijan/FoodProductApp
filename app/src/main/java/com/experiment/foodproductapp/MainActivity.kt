@@ -2,8 +2,6 @@ package com.experiment.foodproductapp
 
 import android.os.Bundle
 import android.util.Log
-import android.view.WindowManager
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.mutableStateOf
@@ -85,13 +83,13 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
                         arguments = listOf(
                             navArgument("email") { type = NavType.StringType },
                             navArgument("sum") { type = NavType.IntType },
-                            navArgument("redeemedAmount") { type = NavType.IntType },
+                            navArgument("points") { type = NavType.IntType },
                         )
                     ) {
                         CheckoutPage(
                             it.arguments?.getString("email"),
                             it.arguments?.getInt("sum"),
-                            it.arguments?.getInt("redeemedAmount"),
+                            it.arguments?.getInt("points"),
                             navHostControllerLambda
                         )
                     }
@@ -106,7 +104,7 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
                             navArgument("email") { type = NavType.StringType },
                             navArgument("phoneNumber") { type = NavType.StringType },
                             navArgument("sum") { type = NavType.IntType },
-                            navArgument("redeemedAmount") { type = NavType.IntType },
+                            navArgument("points") { type = NavType.IntType },
                         )
                     ) {
                         PaymentScreen(
@@ -114,7 +112,7 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
                             email = it.arguments?.getString("email"),
                             phoneNumber = it.arguments?.getString("phoneNumber"),
                             sum = it.arguments?.getInt("sum"),
-                            redeemedAmount = it.arguments?.getInt("redeemedAmount")
+                            points = it.arguments?.getInt("points")
                         ) { this@MainActivity }
                     }
                     composable(
@@ -156,10 +154,12 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
     val status by lazy { mutableStateOf<Boolean?>(null) }
 
     override fun onPaymentSuccess(p0: String?, p1: PaymentData?) {
+        Log.d("testredeemAmount", "onPaymentSuccess: p0=$p0 p1=$p1")
         status.value = true
     }
 
     override fun onPaymentError(p0: Int, p1: String?, p2: PaymentData?) {
+        Log.d("testredeemAmount", "onPaymentError: p0=$p0 p1=$p1 p2=$p2")
         status.value = false
     }
 }

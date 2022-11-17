@@ -23,7 +23,7 @@ class PaymentScreenViewModel : ViewModel() {
         context: Context,
         email: String?,
         sum: Int?,
-        redeemedAmount: Int?,
+        points: Int?,
         activity: MainActivity,
     ){
 
@@ -70,9 +70,15 @@ class PaymentScreenViewModel : ViewModel() {
                 }
 
                 //Update the remaining Redeemed Amount
-                Log.d("testredeemAmount", "PaymentScreenViewModel: email=${email} , finalSum=${sum} , redeemAmount=${redeemedAmount}")
+                Log.d("testredeemAmount", "PaymentScreenViewModel: email=${email} , finalSum=${sum} , points=${points}")
 
-                if(redeemedAmount != null) DatabaseRepository(context).updateRedeemedAmount(email,redeemedAmount)
+                //Update points
+                if(points != null && sum != null) {
+                    //sum is multiplied by 100 in previous screen, Hence divide it my 100
+                    val value = (sum/100) / 2
+                    Log.d("testredeemAmount", "PaymentScreenViewModel: email=${email} , finalSum=${sum} , new points=${points + value}")
+                    DatabaseRepository(context).updateRewardPoints(email,points + value)
+                }
 
                 delay(2000)
 

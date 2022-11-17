@@ -36,6 +36,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
@@ -127,6 +128,7 @@ fun OrderDescriptionPage(
 
             Column(
                 modifier = Modifier
+                    .shadow(20.dp)
                     .background(Color.White)
                     .fillMaxWidth(.8f)
                     .fillMaxHeight(.85f),

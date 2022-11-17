@@ -26,11 +26,11 @@ sealed class Screen(val route:String) {
     object OrderDetails : Screen("OrderDetails/{email}"){
         fun routeWithData(data: String) = "OrderDetails/$data"
     }
-    object CheckoutPage : Screen("CheckoutPage/{email}/{sum}/{redeemedAmount}"){
-        fun routeWithData(email: String,sum:Int, redeemedAmount: Int) = "CheckoutPage/$email/$sum/$redeemedAmount"
+    object CheckoutPage : Screen("CheckoutPage/{email}/{sum}/{points}"){
+        fun routeWithData(email: String,sum:Int, points: Int) = "CheckoutPage/$email/$sum/$points"
     }
-    object PaymentScreen : Screen("PaymentScreen/{email}/{phoneNumber}/{sum}/{redeemedAmount}"){
-        fun routeWithData(email: String,phoneNumber:String,sum:Int, redeemedAmount: Int) = "PaymentScreen/$email/$phoneNumber/$sum/$redeemedAmount"
+    object PaymentScreen : Screen("PaymentScreen/{email}/{phoneNumber}/{sum}/{points}"){
+        fun routeWithData(email: String,phoneNumber:String,sum:Int, points: Int) = "PaymentScreen/$email/$phoneNumber/$sum/$points"
     }
     object MapScreen : Screen("MapScreen")
 }

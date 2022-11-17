@@ -28,9 +28,10 @@ class RewardsPageViewModel : ViewModel() {
             _rewardPointsState.value = DatabaseRepository(context).getRewardPoints(email)
         }
     }
+
     fun setRewardPoints(context: Context, email: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            DatabaseRepository(context).updateRewardPoints(email,rewardPointsState.value)
+            DatabaseRepository(context).updateRewardPoints(email, rewardPointsState.value)
         }
     }
 
@@ -60,7 +61,10 @@ class RewardsPageViewModel : ViewModel() {
     private fun setRedeemedAmount(context: Context, email: String, amount: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             val currentRedeemedAmount = DatabaseRepository(context).getRedeemedAmount(email) * 10
-            DatabaseRepository(context).updateRedeemedAmount(email, (currentRedeemedAmount + amount)/10)
+            DatabaseRepository(context).updateRedeemedAmount(
+                email,
+                (currentRedeemedAmount + amount) / 10
+            )
         }
     }
 
@@ -110,26 +114,30 @@ class RewardsPageViewModel : ViewModel() {
 
             return Toast.makeText(context, "Enter points", Toast.LENGTH_SHORT)
 
-        }
-        else if (redeemedpoints.value.toInt() > rewardPointsState.value) {
+        } else if (redeemedpoints.value.toInt() > rewardPointsState.value) {
 
             return Toast.makeText(context, "Not enough points to redeem", Toast.LENGTH_SHORT)
-        }
-        else if (redeemedpoints.value.toInt() in 0..9) {
+        } else if (redeemedpoints.value.toInt() in 0..9) {
 
-            return Toast.makeText(context, "Minimum points to be redeemed should be 10", Toast.LENGTH_SHORT)
+            return Toast.makeText(
+                context,
+                "Minimum points to be redeemed should be 10",
+                Toast.LENGTH_SHORT
+            )
 
-        }
-        else if (redeemedpoints.value.toInt()%10!=0) {
+        } else if (redeemedpoints.value.toInt() % 10 != 0) {
 
-            return Toast.makeText(context, "Points should be redeemed in multiples of 10", Toast.LENGTH_SHORT)
+            return Toast.makeText(
+                context,
+                "Points should be redeemed in multiples of 10",
+                Toast.LENGTH_SHORT
+            )
 
-        }
-        else{
-            setRedeemedAmount(context,email,redeemedpoints.value.toInt())
-            rewardPointsState.value -=redeemedpoints.value.toInt()
-            setRewardPoints(context,email)
-            redeemedpoints.value=""
+        } else {
+            setRedeemedAmount(context, email, redeemedpoints.value.toInt())
+            rewardPointsState.value -= redeemedpoints.value.toInt()
+            setRewardPoints(context, email)
+            redeemedpoints.value = ""
             return Toast.makeText(context, "Points redeemed successfully", Toast.LENGTH_SHORT)
         }
     }

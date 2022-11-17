@@ -1,8 +1,6 @@
 package com.experiment.foodproductapp.views
 
-import android.content.Context
 import android.util.Log
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -60,7 +58,7 @@ fun preview() {
 fun CheckoutPage(
     email: String?,
     sum: Int?,
-    redeemedAmount: Int?,
+    points: Int?,
     navHostControllerLambda: () -> NavHostController,
     checkoutPageViewModel: CheckoutPageViewModel = viewModel(),
 ) {
@@ -109,8 +107,8 @@ fun CheckoutPage(
         checkoutPageViewModel.validationEvents.collect { event ->
             when (event) {
                 is CheckoutPageViewModel.ValidationEvent.Success -> {
-                    if(redeemedAmount != null) {
-                        checkoutPageViewModel.navigateOnSuccess(context, navHostControllerLambda(), redeemedAmount)
+                    if(points != null) {
+                        checkoutPageViewModel.navigateOnSuccess(context, navHostControllerLambda(), points)
                     }
                 }
             }

@@ -2,6 +2,9 @@ package com.experiment.foodproductapp.views
 
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -353,11 +356,14 @@ fun Reward(
                                     rewardsPageViewModel.rewardPointsState.value
                                 ).toString()
                             )
+
+                            val animatedProgress = animateFloatAsState(
+                                targetValue = rewardsPageViewModel.calculateProgress(rewardsPageViewModel.rewardPointsState.value),
+                                animationSpec = tween(1000, easing = FastOutSlowInEasing)
+                            )
                             LinearProgressIndicator(
                                 modifier = Modifier.fillMaxWidth(0.70f),
-                                progress = rewardsPageViewModel.calculateProgress(
-                                    rewardsPageViewModel.rewardPointsState.value
-                                )
+                                progress = animatedProgress.value
                             )
                         }
 

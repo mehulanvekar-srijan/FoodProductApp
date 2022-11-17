@@ -6,6 +6,7 @@ import android.util.Log
 import android.widget.DatePicker
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -20,14 +21,15 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Logout
-import androidx.compose.material.icons.filled.Stars
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.twotone.EditCalendar
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
@@ -173,52 +175,81 @@ fun UserDetails(
 
             //Main Column
             Column(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .fillMaxSize()
                     .padding(top = 20.dp),
                 horizontalAlignment = CenterHorizontally,
             ) {
 
-                if (userDetailsViewModel.hasImage.value && userDetailsViewModel.imageUri.value != null){
-                    Image(painter = rememberImagePainter(userDetailsViewModel.imageUri.value),
-                        contentDescription = "Profile Pic",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .fillMaxHeight(0.25F)
-                            .padding(25.dp)
-                            .aspectRatio(1F)
-                            .clickable { imagePicker.launch("image/*") }
-                            .clip(CircleShape)
-                    )
-                }
-                else{
-                    Image(
-                        painter = rememberImagePainter(R.drawable.ic_user),
-                        contentDescription = "Profile Pic",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .fillMaxHeight(0.25F)
-                            .padding(25.dp)
-                            .clickable { imagePicker.launch("image/*") }
-                            .aspectRatio(1F)
-                            .clip(CircleShape)
-                    )
-                }
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    val imageClickedState = remember{ mutableStateOf(false) }
+                    //Profile Pic
+                    if (userDetailsViewModel.hasImage.value && userDetailsViewModel.imageUri.value != null){
+                        Image(
+                            painter = rememberImagePainter(userDetailsViewModel.imageUri.value),
+                            contentDescription = "Profile Pic",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxHeight(0.25F)
+                                .padding(25.dp)
+                                .aspectRatio(1F)
+                                .clickable {
+                                    imageClickedState.value = !imageClickedState.value
+                                }
+                                .clip(CircleShape)
+                        )
+                    }
+                    else{
+                        Image(
+                            painter = rememberImagePainter(R.drawable.ic_user),
+                            contentDescription = "Profile Pic",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxHeight(0.25F)
+                                .padding(25.dp)
+                                .clickable{
+                                    imageClickedState.value = !imageClickedState.value
+                                }
+                                .aspectRatio(1F)
+                                .clip(CircleShape)
+                        )
+                    }
 
-                //Pick / Click
-                Column {
-                    Button(
-                        shape = RoundedCornerShape(50),onClick = {
-                        val uri = ComposeFileProvider.getImageUri(context)
-                        cameraLauncher.launch(uri)
-                        intermediateUri = uri
+                    //Pick / Click Button
+                    AnimatedVisibility(visible = imageClickedState.value) {
+                        Column(
+                            horizontalAlignment = CenterHorizontally,
+                            verticalArrangement = Arrangement.Center,
+                        ) {
+                            IconButton(onClick = {
+                                val uri = ComposeFileProvider.getImageUri(context)
+                                cameraLauncher.launch(uri)
+                                intermediateUri = uri
+                            }) {
+                                Icon(
+                                    imageVector = Icons.Default.Camera,
+                                    contentDescription = "Click Image",
+                                )
+                            }
+                            IconButton(onClick = {
+                                imagePicker.launch("image/*")
+                            }) {
+                                Icon(
+                                    imageVector = Icons.Default.Edit,
+                                    contentDescription = "Pick Image",
+                                )
+                            }
+                        }
                     }
-                    ) {
-                        Text(text = "capture new image")
-                    }
+
                 }
 
                 Column(
                     modifier = Modifier
+                        .shadow(30.dp)
                         .fillMaxSize()
                         .clip(RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp))
                         .background(Color.White)
