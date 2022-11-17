@@ -233,7 +233,7 @@ fun OrderDetails(
             ) {
                 OutlinedButton(
                     onClick = {
-                        orderDetailsViewModel.navigateToHomeScreenPage(navHostController = navHostControllerLambda())
+                        navHostControllerLambda().navigateUp()
                     },
                     modifier = Modifier
                         .fillMaxWidth()
