@@ -60,8 +60,8 @@ class PaymentScreenViewModel : ViewModel() {
 
                 //Compute and save reward points
                 if(sum != null){
-                    //sum is multiplied by 100 in previous screen, Hence divide it my 100
-                    val rewardPoints = (sum/100) / 10
+                    //sum is multiplied by 100 in previous screen, Hence divide it by 100
+                    val rewardPoints = (sum/100) / 2
                     var currentRewardPoints = DatabaseRepository(context).getRewardPoints(email = email)
                     currentRewardPoints += rewardPoints
                     DatabaseRepository(context).updateRewardPoints(email = email, rewardPoints = currentRewardPoints)
