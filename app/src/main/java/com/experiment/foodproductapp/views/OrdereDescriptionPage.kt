@@ -329,7 +329,9 @@ fun OrderDescriptionPage(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     IconButton(
-                        onClick = { },
+                        onClick = {
+                                  orderDetailsViewModel.navigateToHomeScreenPage(navHostController = navHostControllerLambda())
+                        },
                         modifier = Modifier
 
                             .size(width = 40.dp, height = 35.dp)

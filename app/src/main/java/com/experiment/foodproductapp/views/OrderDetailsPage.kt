@@ -36,6 +36,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberImagePainter
 import com.experiment.foodproductapp.R
+import com.experiment.foodproductapp.domain.event.UserDetailsFormEvent
 import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.viewmodels.OrderDetailsViewModel
 
@@ -192,9 +193,9 @@ fun OrderDetails(
             }
         }
     } else {
+
         Box(modifier = Modifier.fillMaxSize()) {
             BackgroundImage1()
-
             TopAppBar(
                 title = { Text(text = "Order Details", color = Color.White) },
                 backgroundColor = Color.Transparent,
@@ -209,6 +210,7 @@ fun OrderDetails(
                     }
                 },
             )
+
             Column(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
@@ -220,9 +222,37 @@ fun OrderDetails(
                     fontWeight = FontWeight.Thin,
                     fontSize = 20 .sp,
                     textAlign = TextAlign.Center,
-                    fontFamily = descriptionFontFamily
+                    fontFamily = descriptionFontFamily,
                 )
+
             }
+
+            Column(
+                modifier = Modifier.fillMaxSize().padding(bottom = 5.dp),
+                verticalArrangement = Arrangement.Bottom,
+            ) {
+                OutlinedButton(
+                    onClick = {
+                        orderDetailsViewModel.navigateToHomeScreenPage(navHostController = navHostControllerLambda())
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp)
+                        .padding(start = 20.dp, end = 20.dp),
+
+                    shape = RoundedCornerShape(50),
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = Color.White,
+                        contentColor = DarkYellow
+                    ),
+                ) {
+                    Text(
+                        text = "Click Here to Order",
+                        fontSize = 20.sp, color = Color.Black
+                    )
+                }
+            }
+
         }
     }
 }
