@@ -19,6 +19,13 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
+
+        //For API Keys
+        Properties properties = new Properties()
+        properties.load(project.rootProject.file("local.properties").newDataInputStream())
+        buildConfigField "String", "EMAIL_API_KEY", "\"${properties.getProperty("EMAIL_API_KEY")}\""
+        buildConfigField "String", "RAZORPAY_API_KEY", "\"${properties.getProperty("RAZORPAY_API_KEY")}\""
+        manifestPlaceholders = [MAPS_API_KEY: "${properties.getProperty('MAPS_API_KEY')}"]
     }
 
     buildTypes {
@@ -91,6 +98,15 @@ dependencies {
     // Razorpay
 //    implementation 'com.razorpay:checkout:1.6.26'
     implementation 'com.razorpay:checkout:1.5.13'
+
+    //Google Maps
+    implementation "com.google.maps.android:maps-compose:1.0.0"
+    implementation "com.google.android.gms:play-services-maps:18.0.2"
+    implementation "com.google.android.gms:play-services-location:15.0.1"
+
+    //Permissions request
+    implementation 'com.google.accompanist:accompanist-permissions:0.18.0'
+
 //scroll bar
     //implementation 'com.github.BILLyTheLiTTle:LazyColumns:0.2.7'
 

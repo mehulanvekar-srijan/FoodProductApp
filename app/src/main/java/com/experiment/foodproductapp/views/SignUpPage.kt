@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
@@ -112,7 +113,7 @@ fun SignupPage(
     )
 
 
-    LaunchedEffect(key1 = context) {
+    LaunchedEffect(key1 = Unit) {
         signUpViewModel.validationEvents.collect { event ->
             when (event) {
                 is SignUpViewModel.ValidationEvent.Success -> {
@@ -148,6 +149,7 @@ fun SignupPage(
 
             Column(
                 modifier = Modifier
+                    .shadow(30.dp)
                     .fillMaxSize()
                     .clip(RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp))
                     .background(Color.White)

@@ -9,6 +9,8 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.database.OrderDetails
+import com.experiment.foodproductapp.database.Rewards
+import com.experiment.foodproductapp.database.RewardsUsed
 import com.experiment.foodproductapp.repository.DatabaseRepository
 import kotlinx.coroutines.*
 import java.lang.Exception
@@ -22,7 +24,7 @@ class SplashScreenViewModel : ViewModel() {
 
             delay(splashDuration)
 
-            //dummyData(context)
+//            dummyData(context)
 
             val loggedInEmail: String? = DatabaseRepository(context).getLoggedInUser()
 
@@ -35,7 +37,8 @@ class SplashScreenViewModel : ViewModel() {
             }
             else{
                 withContext(Dispatchers.Main) {
-                    navHostController.navigate(Screen.HomeScreen.routeWithData(loggedInEmail)){
+                    navHostController.navigate(Screen.HomeScreen.routeWithData(loggedInEmail))
+                    {
                         popUpTo(Screen.SplashScreen.route){ inclusive = true }
                     }
                 }
@@ -43,126 +46,12 @@ class SplashScreenViewModel : ViewModel() {
         }
     }
 
-//    private fun dummyData(context: Context) {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            try {
-//                DatabaseRepository(context).insertOrder(
-//                    OrderDetails(
-//                        email = "meh@ul.com",
-//                        id = 0,
-//                        url = "https://products3.imgix.drizly.com/ci-budweiser-24269668d4e23c97.jpeg",
-//                        title = "Coolberg Non Alcoholic Beer - Malt",
-//                        description = "Coolberg Malt Beer is a Non-Alcoholic Beer. This NAB has toasty notes of barley malts and hops and a distinctive musky aroma. It is made from the finest natural barley malts extracts. It is carbonated and has a serious spunk. As it contains less carbonation and often develops a beer-like head when poured into a glass. It is a perfect blend of crisp, bold and smooth flavour. Enjoy it with your choice of snack in the evening or serve it at a party.",
-//                        price = 79,
-//                        orderId = 1,
-//                        canceled = false
-//                    )
-//                )
-//                DatabaseRepository(context).insertOrder(
-//                    OrderDetails(
-//                        email = "meh@ul.com",
-//                        id = 1,
-//                        url = "https://products3.imgix.drizly.com/ci-budweiser-24269668d4e23c97.jpeg",
-//                        title = "Coolberg Non Alcoholic Beer - Mint",
-//                        description = "Coolberg Malt Beer is a Non-Alcoholic Beer. This NAB has toasty notes of barley malts and hops and a distinctive musky aroma. It is made from the finest natural barley malts extracts. It is carbonated and has a serious spunk. As it contains less carbonation and often develops a beer-like head when poured into a glass. It is a perfect blend of crisp, bold and smooth flavour. Enjoy it with your choice of snack in the evening or serve it at a party.",
-//                        price = 79,
-//                        orderId = 1,
-//                        canceled = false,
-//                    )
-//                )
-//                DatabaseRepository(context).insertOrder(
-//                    OrderDetails(
-//                        email = "meh@ul.com",
-//                        id = 2,
-//                        url = "https://products3.imgix.drizly.com/ci-budweiser-24269668d4e23c97.jpeg",
-//                        title = "Coolberg Non Alcoholic Beer - Mint",
-//                        description = "Coolberg Malt Beer is a Non-Alcoholic Beer. This NAB has toasty notes of barley malts and hops and a distinctive musky aroma. It is made from the finest natural barley malts extracts. It is carbonated and has a serious spunk. As it contains less carbonation and often develops a beer-like head when poured into a glass. It is a perfect blend of crisp, bold and smooth flavour. Enjoy it with your choice of snack in the evening or serve it at a party.",
-//                        price = 79,
-//                        orderId = 2,
-//                        canceled = false,
-//                    )
-//                )
-//                DatabaseRepository(context).insertOrder(
-//                    OrderDetails(
-//                        email = "meh@ul.com",
-//                        id = 0,
-//                        url = "https://products3.imgix.drizly.com/ci-budweiser-24269668d4e23c97.jpeg",
-//                        title = "Coolberg Non Alcoholic Beer - Mint",
-//                        description = "Coolberg Malt Beer is a Non-Alcoholic Beer. This NAB has toasty notes of barley malts and hops and a distinctive musky aroma. It is made from the finest natural barley malts extracts. It is carbonated and has a serious spunk. As it contains less carbonation and often develops a beer-like head when poured into a glass. It is a perfect blend of crisp, bold and smooth flavour. Enjoy it with your choice of snack in the evening or serve it at a party.",
-//                        price = 79,
-//                        orderId = 2,
-//                        canceled = false,
-//                    )
-//                )
-//                DatabaseRepository(context).insertOrder(
-//                    OrderDetails(
-//                        email = "meh@ul.com",
-//                        id = 1,
-//                        url = "https://products3.imgix.drizly.com/ci-budweiser-24269668d4e23c97.jpeg",
-//                        title = "Coolberg Non Alcoholic Beer - Mint",
-//                        description = "Coolberg Malt Beer is a Non-Alcoholic Beer. This NAB has toasty notes of barley malts and hops and a distinctive musky aroma. It is made from the finest natural barley malts extracts. It is carbonated and has a serious spunk. As it contains less carbonation and often develops a beer-like head when poured into a glass. It is a perfect blend of crisp, bold and smooth flavour. Enjoy it with your choice of snack in the evening or serve it at a party.",
-//                        price = 79,
-//                        orderId = 2,
-//                        canceled = false,
-//                    )
-//                )
-//
-//            }
-//            catch (e: android.database.sqlite.SQLiteConstraintException){ }
-//
-//
-//
-//            val finalList = mutableListOf<MutableList<OrderDetails>>()
-//
-//            val email = "meh@ul.com"
-//
-//
-//            var orderCount = 1
-//
-//            fun fetchOrderList(context: Context) {
-//
-//                do {
-//                    val order = mutableListOf<OrderDetails>()
-//                         val list = DatabaseRepository(context).readAllOrderDetails(email, orderCount)
-//
-//                        Log.d("orderDetails", " list value fetchOrderList: $list")
-//
-//
-//                        list.forEach {
-//                            order.add(it)
-//                        }
-//
-//                    for (element in order) {
-//                        Log.d("orderDetails", " list value fetchOrderList: ${element.title} and count of orderis ${order.count()}")
-//
-//                    }
-//                    if (list.isNotEmpty()) {
-//                        //finalList.add(order.subList(0,order.count()))
-//                        finalList.add(order)
-//                        Log.d("orderDetails", "fetchOrderList: ")
-//                    }
-//
-//                        orderCount++
-//
-//                } while (list.isNotEmpty())
-//
-//                Log.d("orderDetails", "count of total orders: ${finalList.count()}")
-//
-//
-//
-//                for (element in finalList) {
-//                    val ord = element
-//                    Log.d("orderDetails", "no of prod in each item: ${ord.count()}")
-//                  for (element in ord) {
-//                      Log.d("orderDetails", "title : ${element.title}   number: ${element.orderId}")
-//                  }
-//                   // Log.d("orderDetails", "fetchOrderList: $element")
-//                }
-//            }
-//
-//            fetchOrderList(context)
-//        }
-//
-//    }
+    private fun dummyData(context: Context) {
+        viewModelScope.launch(Dispatchers.IO){
+
+            DatabaseRepository(context).updateRewardPoints("meh@ul.com",0)
+        }
+    }
+
 
 }

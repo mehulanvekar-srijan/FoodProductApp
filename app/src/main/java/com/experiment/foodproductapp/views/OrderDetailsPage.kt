@@ -25,6 +25,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -32,7 +34,9 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.rememberImagePainter
 import com.experiment.foodproductapp.R
+import com.experiment.foodproductapp.domain.event.UserDetailsFormEvent
 import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.viewmodels.OrderDetailsViewModel
 
@@ -44,7 +48,7 @@ fun Preview2() {
 
         navHostController
     }
-    OrderDetails("romi@romi.com", navHostControllerLambda = navHostControllerLambda)
+    OrderDetails("sahil@test.com", navHostControllerLambda = navHostControllerLambda)
 }
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -58,146 +62,197 @@ fun OrderDetails(
 
     ChangeBarColors(navigationBarColor = DarkYellow)
 
-    val interactionSource = MutableInteractionSource()
-
     LaunchedEffect(key1 = Unit) {
         orderDetailsViewModel.email.value = email.toString()
         orderDetailsViewModel.finalList.clear()
         orderDetailsViewModel.fetchOrderList(context)
     }
 
-    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+    if (orderDetailsViewModel.finalList.isNotEmpty()) {
+        BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
 
-        val height = (maxHeight / 100f) * 20
-        //Background Image
-        BackgroundImage1()
+            val height = (maxHeight / 100f) * 15
+            //Background Image
+            BackgroundImage1()
 
-        //top bar
-        TopAppBar(
-            title = { Text(text = "Order Details", color = Color.White) },
-            backgroundColor = Color.Transparent,
-            elevation = 0.dp,
-            navigationIcon = {
-                IconButton(onClick = { navHostControllerLambda().navigateUp() }) {
-                    Icon(
-                        imageVector = Icons.Default.ArrowBack,
-                        contentDescription = "",
-                        tint = Color.White
-                    )
-                }
-            },
-        )
+            //top bar
+            TopAppBar(
+                title = { Text(text = "Order Details", color = Color.White) },
+                backgroundColor = Color.Transparent,
+                elevation = 0.dp,
+                navigationIcon = {
+                    IconButton(onClick = { navHostControllerLambda().navigateUp() }) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "",
+                            tint = Color.White
+                        )
+                    }
+                },
+            )
 
-        //Main Column
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(top = 70.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(20.dp),
-        ) {
-            items(items = orderDetailsViewModel.finalList) { item ->
+            //Main Column
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = 70.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(20.dp),
+            ) {
+                items(items = orderDetailsViewModel.finalList.reversed()) { item ->
 
 
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(height)
-                ) {
-                    Card(
+                    Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(height)
-                            .padding(start = 15.dp, end = 15.dp),
-                        elevation = 5.dp,
-                        shape = RoundedCornerShape(10),
-                        onClick = {
-                            orderDetailsViewModel.addOrder(item)
-                            orderDetailsViewModel.navigateToProductOrderDescriptionPage(
-                                navHostController = navHostControllerLambda()
-                            )
-                        },
                     ) {
-                        Row {
-                            var sum = 0
-                            Column(
-                                modifier = Modifier
-                                    .padding(start = 15.dp)
-                                    .fillMaxWidth(.7F)
-                                    .fillMaxHeight()
-                            ) {
-                                var index = 0
-                                Text(
-                                    text = "# " + item[index].orderId,
-                                    modifier = Modifier.padding(top = 20.dp, bottom = 15.dp),
-                                    overflow = TextOverflow.Ellipsis,
-                                    fontFamily = titleFontFamily,
-                                    fontSize = 19.sp,
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(height)
+                                .padding(start = 15.dp, end = 15.dp),
+                            elevation = 5.dp,
+                            shape = RoundedCornerShape(10),
+                            onClick = {
+                                orderDetailsViewModel.addOrder(item)
+                                orderDetailsViewModel.navigateToProductOrderDescriptionPage(
+                                    navHostController = navHostControllerLambda()
                                 )
-                                Text(
-                                    text = item.size.toString() + " items",
-                                    modifier = Modifier.padding(bottom = 5.dp),
-                                    fontFamily = titleFontFamily,
-                                    fontSize = 19.sp,
-                                )
-                                Column(modifier = Modifier.height(35.dp)) {
-                                    val count = 2
-
-                                    do {
-                                        if (index < count) {
-                                            Text(
-                                                text = item[index].title + " x" + item[index].count,
-                                                maxLines = 1,
-                                                fontSize = 14.sp,
-                                                overflow = TextOverflow.Ellipsis,
-                                            )
-                                        }
-                                        sum += item[index].price * item[index].count
-                                        index++
-                                    } while (index < item.size)
-                                }
-                                Box(
+                            },
+                        ) {
+                            Row {
+                                Column(
                                     modifier = Modifier
-                                        .clickable(
-                                            interactionSource = interactionSource,
-                                            onClick = {},
-                                            indication = null
-                                        )
-                                        .padding(top = 10.dp),
+                                        .padding(start = 30.dp)
+                                        .fillMaxWidth(.5F)
+                                        .fillMaxHeight(),
+                                    verticalArrangement = Arrangement.Center
                                 ) {
-                                    Row(verticalAlignment = Alignment.CenterVertically) {
-                                        Icon(
-                                            imageVector = Icons.Outlined.HelpOutline,
-                                            modifier = Modifier.size(19.dp),
-                                            tint = DarkRed,
-                                            contentDescription = "Help",
-                                        )
+                                    Text(
+                                        text = "Order No: # " + item[0].orderId,
+                                        modifier = Modifier.padding(bottom = 10.dp),
+                                        overflow = TextOverflow.Ellipsis,
+                                        fontFamily = titleFontFamily,
+                                        fontSize = 19.sp,
+                                    )
+                                    Text(
+                                        text = "Total Items: " + item.size.toString(),
+                                        fontFamily = titleFontFamily,
+                                        fontSize = 19.sp,
+                                    )
+//                                Box(
+//                                    modifier = Modifier
+//                                        .clickable(
+//                                            interactionSource = interactionSource,
+//                                            onClick = {},
+//                                            indication = null
+//                                        )
+//                                        .padding(top = 5.dp),
+//                                ) {
+//                                    Row(verticalAlignment = Alignment.CenterVertically) {
+//                                        Icon(
+//                                            imageVector = Icons.Outlined.HelpOutline,
+//                                            modifier = Modifier.size(19.dp),
+//                                            tint = DarkRed,
+//                                            contentDescription = "Help",
+//                                        )
+//
+//                                        Text(
+//                                            color = DarkRed,
+//                                            text = "Support",
+//                                            fontFamily = titleFontFamily,
+//                                            fontSize = 15.sp,
+//                                        )
+//                                    }
+//                                }
 
-                                        Text(
-                                            color = DarkRed,
-                                            text = "Support",
-                                            fontFamily = titleFontFamily,
-                                            fontSize = 15.sp,
-                                        )
-                                    }
                                 }
+                                Column(
+                                    modifier = Modifier.fillMaxSize(),
+                                    verticalArrangement = Arrangement.Center,
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Image(
+                                        painter = rememberImagePainter("https://products3.imgix.drizly.com/ci-budweiser-24269668d4e23c97.jpeg"),
+                                        contentDescription = "",
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .fillMaxHeight(.7f)
+                                    )
+                                    Text(
+                                        text = "Rs : ${orderDetailsViewModel.calculateSum(item)}",
+                                        fontFamily = titleFontFamily,
+                                    )
 
-                            }
-                            Column(
-                                modifier = Modifier.fillMaxSize(),
-                                verticalArrangement = Arrangement.Center,
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-
-                                Text(
-                                    text = "Rs : $sum",
-                                    fontFamily = titleFontFamily,
-                                )
+                                }
                             }
                         }
                     }
                 }
             }
+        }
+    } else {
+
+        Box(modifier = Modifier.fillMaxSize()) {
+            BackgroundImage1()
+            TopAppBar(
+                title = { Text(text = "Order Details", color = Color.White) },
+                backgroundColor = Color.Transparent,
+                elevation = 0.dp,
+                navigationIcon = {
+                    IconButton(onClick = { navHostControllerLambda().navigateUp() }) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "",
+                            tint = Color.White
+                        )
+                    }
+                },
+            )
+
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = "There are no items in the cart",
+                    fontWeight = FontWeight.Thin,
+                    fontSize = 20 .sp,
+                    textAlign = TextAlign.Center,
+                    fontFamily = descriptionFontFamily,
+                )
+
+            }
+
+            Column(
+                modifier = Modifier.fillMaxSize().padding(bottom = 5.dp),
+                verticalArrangement = Arrangement.Bottom,
+            ) {
+                OutlinedButton(
+                    onClick = {
+                        orderDetailsViewModel.navigateToHomeScreenPage(navHostController = navHostControllerLambda())
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp)
+                        .padding(start = 20.dp, end = 20.dp),
+
+                    shape = RoundedCornerShape(50),
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = Color.White,
+                        contentColor = DarkYellow
+                    ),
+                ) {
+                    Text(
+                        text = "Click Here to Order",
+                        fontSize = 20.sp, color = Color.Black
+                    )
+                }
+            }
+
         }
     }
 }

@@ -2,7 +2,6 @@ package com.experiment.foodproductapp.viewmodels
 
 import android.content.Context
 import android.util.Log
-import android.widget.Toast
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -18,7 +17,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class CheckoutPageViewModel(
     private val validatePinCode: ValidatePincode = ValidatePincode(),
@@ -120,8 +118,8 @@ class CheckoutPageViewModel(
         }
     }
 
-    suspend fun navigateOnSuccess(context: Context,navHostController: NavHostController) {
-        val job =viewModelScope.launch(Dispatchers.IO) {
+    suspend fun navigateOnSuccess(context: Context, navHostController: NavHostController, points: Int) {
+        val job = viewModelScope.launch(Dispatchers.IO) {
             val database = DatabaseRepository(context)
             database.updateAddressByEmail(
                 state.email,
@@ -133,12 +131,21 @@ class CheckoutPageViewModel(
             )
         }
         job.join()
-        navHostController.navigate(Screen.PaymentScreen.routeWithData(state.email,state.phoneNumber,sum.value*100))
+
+        Log.d("testredeemAmount", "CheckoutPageViewModel: email=${state.email} , finalSum=${sum.value * 100} , points=${points}")
+
+        navHostController.navigate(
+            Screen.PaymentScreen.routeWithData(
+                email = state.email,
+                phoneNumber = state.phoneNumber,
+                sum = sum.value*100,
+                points = points
+            )
+        )
         Log.d("TAG",(sum.value*100).toString())
     }
+
     sealed class ValidationEvent{
         object Success:ValidationEvent()
     }
-
-
 }

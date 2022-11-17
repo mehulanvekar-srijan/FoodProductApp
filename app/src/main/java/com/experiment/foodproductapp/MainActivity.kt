@@ -1,7 +1,7 @@
 package com.experiment.foodproductapp
 
 import android.os.Bundle
-import android.view.WindowManager
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.mutableStateOf
@@ -32,7 +32,8 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
 
             navHostController = rememberNavController()
 
-            val navHostControllerLambda : () -> NavHostController = { navHostController as NavHostController }
+            val navHostControllerLambda: () -> NavHostController =
+                { navHostController as NavHostController }
             val homeScreenViewModel: HomeScreenViewModel = viewModel()
             val orderScreenViewModel: OrderDetailsViewModel = viewModel()
 
@@ -55,13 +56,13 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
                     }
                     composable(
                         route = Screen.UserDetails.route,
-                        arguments = listOf(navArgument("email") { type = NavType.StringType } )
+                        arguments = listOf(navArgument("email") { type = NavType.StringType })
                     ) {
-                        UserDetails(navHostControllerLambda,it.arguments?.getString("email"))
+                        UserDetails(navHostControllerLambda, it.arguments?.getString("email"))
                     }
                     composable(
                         route = Screen.HomeScreen.route,
-                        arguments = listOf(navArgument("email") { type = NavType.StringType } )
+                        arguments = listOf(navArgument("email") { type = NavType.StringType })
                     ) {
                         HomeScreenPage(
                             it.arguments?.getString("email"),
@@ -69,40 +70,55 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
                         )
                     }
 
-                    composable(route = Screen.ProductCart.route,
-                            arguments = listOf(navArgument("email") { type = NavType.StringType } )
+                    composable(
+                        route = Screen.ProductCart.route,
+                        arguments = listOf(navArgument("email") { type = NavType.StringType })
                     ) {
                         ProductCart(
                             it.arguments?.getString("email"),
-                            navHostControllerLambda)
+                            navHostControllerLambda
+                        )
                     }
-                    composable(route = Screen.CheckoutPage.route,
-                        arguments = listOf(navArgument("email") { type = NavType.StringType },
-                            navArgument("sum") { type = NavType.IntType } )
+                    composable(
+                        route = Screen.CheckoutPage.route,
+                        arguments = listOf(
+                            navArgument("email") { type = NavType.StringType },
+                            navArgument("sum") { type = NavType.IntType },
+                            navArgument("points") { type = NavType.IntType },
+                        )
                     ) {
                         CheckoutPage(
                             it.arguments?.getString("email"),
                             it.arguments?.getInt("sum"),
-                            navHostControllerLambda)
-                    }
-                    composable(route = Screen.ProductDetailsScreen.route) {
-                        ProductDetailsPage (
-                            navHostControllerLambda,homeScreenViewModel = homeScreenViewModel
+                            it.arguments?.getInt("points"),
+                            navHostControllerLambda
                         )
                     }
-                    composable(route = Screen.PaymentScreen.route,
-                        arguments = listOf(navArgument("email") { type = NavType.StringType },
+                    composable(route = Screen.ProductDetailsScreen.route) {
+                        ProductDetailsPage(
+                            navHostControllerLambda, homeScreenViewModel = homeScreenViewModel
+                        )
+                    }
+                    composable(
+                        route = Screen.PaymentScreen.route,
+                        arguments = listOf(
+                            navArgument("email") { type = NavType.StringType },
                             navArgument("phoneNumber") { type = NavType.StringType },
-                            navArgument("sum") { type = NavType.IntType } )) {
+                            navArgument("sum") { type = NavType.IntType },
+                            navArgument("points") { type = NavType.IntType },
+                        )
+                    ) {
                         PaymentScreen(
-                            navHostControllerLambda,
-                            it.arguments?.getString("email"),
-                            it.arguments?.getString("phoneNumber"),
-                            it.arguments?.getInt("sum")
+                            navHostControllerLambda = navHostControllerLambda,
+                            email = it.arguments?.getString("email"),
+                            phoneNumber = it.arguments?.getString("phoneNumber"),
+                            sum = it.arguments?.getInt("sum"),
+                            points = it.arguments?.getInt("points")
                         ) { this@MainActivity }
                     }
-                    composable(route = Screen.OrderDetails.route,
-                        arguments = listOf(navArgument("email") { type = NavType.StringType } )
+                    composable(
+                        route = Screen.OrderDetails.route,
+                        arguments = listOf(navArgument("email") { type = NavType.StringType })
                     ) {
                         OrderDetails(
                             it.arguments?.getString("email"),
@@ -112,9 +128,22 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
                     }
 
                     composable(route = Screen.OrderDescriptionPage.route) {
-                        OrderDescriptionPage (
-                            //navHostControllerLambda
+                        OrderDescriptionPage(
                             navHostControllerLambda, orderDetailsViewModel = orderScreenViewModel
+                        )
+                    }
+
+                    composable(route = Screen.MapScreen.route) {
+                        MapScreen()
+                    }
+
+                    composable(
+                        route = Screen.Rewards.route,
+                        arguments = listOf(navArgument("email") { type = NavType.StringType })
+                    ) {
+                        Reward(
+                            it.arguments?.getString("email"),
+                            navHostControllerLambda
                         )
                     }
                 }
@@ -123,13 +152,15 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
     }
 
 
-    val status by lazy {  mutableStateOf<Boolean?>(null)  }
+    val status by lazy { mutableStateOf<Boolean?>(null) }
 
     override fun onPaymentSuccess(p0: String?, p1: PaymentData?) {
+        Log.d("testredeemAmount", "onPaymentSuccess: p0=$p0 p1=$p1")
         status.value = true
     }
 
     override fun onPaymentError(p0: Int, p1: String?, p2: PaymentData?) {
+        Log.d("testredeemAmount", "onPaymentError: p0=$p0 p1=$p1 p2=$p2")
         status.value = false
     }
 }

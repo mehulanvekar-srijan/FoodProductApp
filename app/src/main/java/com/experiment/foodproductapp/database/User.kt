@@ -14,13 +14,19 @@ data class User(
     var imagePath: String? = null,
     var loggedIn: Boolean = false,
 
+    //Address
     var pincode: String? = null,
     var addressLine1: String? = null,
     var addressLine2: String? = null,
     var city: String? = null,
     var state: String? = null,
 
+    //Order History
     var latestOrderId: Int = 1,
+
+    //Rewards
+    var rewardPoints: Int = 0,
+    var redeemedAmount: Int = 0,
     ){
-    constructor() : this("","","","","","") {}
+    constructor() : this("","","","","","")
 }

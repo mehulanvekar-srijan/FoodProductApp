@@ -1,6 +1,7 @@
 package com.experiment.foodproductapp.utility
 
 import android.app.Activity
+import com.experiment.foodproductapp.BuildConfig
 import com.razorpay.Checkout
 import org.json.JSONObject
 
@@ -9,7 +10,7 @@ fun payment(activity: Activity,email:String,phoneNumber:String,sum:String){
 
     Checkout.preload(activity)
     val co = Checkout()
-    co.setKeyID("rzp_test_IK3XzQPXxZsts7") // Key removed for security reasons
+    co.setKeyID(BuildConfig.RAZORPAY_API_KEY)
 
     try {
         val options = JSONObject()

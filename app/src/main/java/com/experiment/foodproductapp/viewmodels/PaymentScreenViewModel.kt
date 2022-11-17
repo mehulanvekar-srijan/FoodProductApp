@@ -22,6 +22,8 @@ class PaymentScreenViewModel : ViewModel() {
         navHostController: NavHostController,
         context: Context,
         email: String?,
+        sum: Int?,
+        points: Int?,
         activity: MainActivity,
     ){
 
@@ -37,8 +39,7 @@ class PaymentScreenViewModel : ViewModel() {
                 //Fetch latest order Id
                 var orderId = DatabaseRepository(context).getLatestOrderId(email)
 
-
-
+                //Add the order details in DB
                 cartList.forEach{ item ->
                     val order = OrderDetails(
                         email = item.email,
@@ -57,6 +58,27 @@ class PaymentScreenViewModel : ViewModel() {
 
                 //Update order Id
                 DatabaseRepository(context).updateLatestOrderId(email,++orderId)
+
+                //Compute and save reward points
+                if(sum != null){
+                    //sum is multiplied by 100 in previous screen, Hence divide it by 100
+                    val rewardPoints = (sum/100) / 2
+                    var currentRewardPoints = DatabaseRepository(context).getRewardPoints(email = email)
+                    currentRewardPoints += rewardPoints
+                    DatabaseRepository(context).updateRewardPoints(email = email, rewardPoints = currentRewardPoints)
+                    Log.d("testPTS", "navigateOnSuccess: sum=$sum rp=$rewardPoints crp=$currentRewardPoints")
+                }
+
+                //Update the remaining Redeemed Amount
+                Log.d("testredeemAmount", "PaymentScreenViewModel: email=${email} , finalSum=${sum} , points=${points}")
+
+                //Update points
+                if(points != null && sum != null) {
+                    //sum is multiplied by 100 in previous screen, Hence divide it my 100
+                    val value = (sum/100) / 2
+                    Log.d("testredeemAmount", "PaymentScreenViewModel: email=${email} , finalSum=${sum} , new points=${points + value}")
+                    DatabaseRepository(context).updateRewardPoints(email,points + value)
+                }
 
                 delay(2000)
 

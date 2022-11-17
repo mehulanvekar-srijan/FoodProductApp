@@ -20,12 +20,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.experiment.foodproductapp.MainActivity
 import com.experiment.foodproductapp.R
-import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.ui.theme.descriptionFontFamily
 import com.experiment.foodproductapp.ui.theme.titleFontFamily
 import com.experiment.foodproductapp.utility.payment
 import com.experiment.foodproductapp.viewmodels.PaymentScreenViewModel
-import kotlinx.coroutines.delay
 
 @Composable
 fun PaymentScreen(
@@ -33,6 +31,7 @@ fun PaymentScreen(
     email: String?,
     phoneNumber: String?,
     sum: Int?,
+    points: Int?,
     paymentScreenViewModel: PaymentScreenViewModel = viewModel(),
     activityLambda: () -> Activity,
 ) {
@@ -47,12 +46,15 @@ fun PaymentScreen(
         }
     }
 
-    if (mainActivity.status.value == true) {
+
+    if (mainActivity.status.value == true) { //Payment success
         LaunchedEffect(key1 = Unit) {
             paymentScreenViewModel.navigateOnSuccess(
                 navHostController = navHostControllerLambda(),
                 context = context,
                 email = email,
+                sum = sum,
+                points = points,
                 activity = mainActivity,
             )
         }
@@ -103,7 +105,7 @@ fun PaymentScreen(
             }
         }
     }
-    if (mainActivity.status.value == false) {
+    if (mainActivity.status.value == false) { //Payment failure
         LaunchedEffect(key1 = Unit) {
             paymentScreenViewModel.navigateOnFailure(
                 navHostController = navHostControllerLambda(),

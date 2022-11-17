@@ -1,8 +1,6 @@
 package com.experiment.foodproductapp.views
 
-import android.content.Context
 import android.util.Log
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -50,18 +48,17 @@ import kotlinx.coroutines.launch
 fun preview() {
     val navHostController = rememberNavController()
     val navHostControllerLambda: () -> NavHostController = {
-
         navHostController
     }
-    CheckoutPage("sahil@test.com", 500, navHostControllerLambda = navHostControllerLambda)
+    CheckoutPage("sahil@test.com", 500, 0,navHostControllerLambda)
 }
-
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun CheckoutPage(
     email: String?,
     sum: Int?,
+    points: Int?,
     navHostControllerLambda: () -> NavHostController,
     checkoutPageViewModel: CheckoutPageViewModel = viewModel(),
 ) {
@@ -110,7 +107,9 @@ fun CheckoutPage(
         checkoutPageViewModel.validationEvents.collect { event ->
             when (event) {
                 is CheckoutPageViewModel.ValidationEvent.Success -> {
-                    checkoutPageViewModel.navigateOnSuccess(context, navHostControllerLambda())
+                    if(points != null) {
+                        checkoutPageViewModel.navigateOnSuccess(context, navHostControllerLambda(), points)
+                    }
                 }
             }
         }

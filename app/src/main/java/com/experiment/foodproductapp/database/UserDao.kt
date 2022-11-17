@@ -43,4 +43,16 @@ interface UserDao {
 
     @Query("UPDATE User SET latestOrderId=:orderId WHERE email=:email")
     fun updateLatestOrderId(email: String, orderId: Int)
+
+    @Query("UPDATE User SET rewardPoints=:rewardPoints WHERE email=:email")
+    fun updateRewardPoints(email: String, rewardPoints: Int)
+
+    @Query("SELECT rewardPoints FROM User WHERE email=:email")
+    fun getRewardPoints(email: String): Int
+
+    @Query("UPDATE User SET redeemedAmount=:redeemedAmount WHERE email=:email")
+    fun updateRedeemedAmount(email: String, redeemedAmount: Int)
+
+    @Query("SELECT redeemedAmount FROM User WHERE email=:email")
+    fun getRedeemedAmount(email: String): Int
 }
