@@ -278,9 +278,11 @@ fun ForgotPassword(
                         TextField(
                             modifier = Modifier
                                 .fillMaxWidth(),
-                            value = "",
+                            value = forgotPasswordViewModel.confirmPassword.value,
                             shape= RoundedCornerShape(30.dp),
-                            onValueChange = {},
+                            onValueChange = {
+                                 forgotPasswordViewModel.setConfirmPassword(it)
+                            },
                             label = { Text(text = "Confirm password", color = Color.Black) },
                             colors = TextFieldDefaults.textFieldColors(
                                 textColor = Color.Black,

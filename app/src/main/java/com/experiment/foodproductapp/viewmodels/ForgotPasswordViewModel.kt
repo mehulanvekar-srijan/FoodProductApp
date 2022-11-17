@@ -2,15 +2,13 @@ package com.experiment.foodproductapp.viewmodels
 
 import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.experiment.foodproductapp.BuildConfig
 import com.experiment.foodproductapp.repository.DatabaseRepository
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
@@ -28,6 +26,9 @@ class ForgotPasswordViewModel : ViewModel() {
     private val _inputPassword = mutableStateOf("")
     val inputPassword = _inputPassword
 
+    private val _confirmPassword = mutableStateOf("")
+    val confirmPassword = _confirmPassword
+
     private val _inputOtp = mutableStateOf("")
 
     fun setEmail(input: String) {
@@ -40,6 +41,10 @@ class ForgotPasswordViewModel : ViewModel() {
 
     fun setPassword(input: String) {
         _inputPassword.value = input
+    }
+
+    fun setConfirmPassword(input: String) {
+        _confirmPassword.value = input
     }
 
     suspend fun isUserRegistered(context: Context): Boolean {
@@ -55,13 +60,11 @@ class ForgotPasswordViewModel : ViewModel() {
         return deferred.await()
     }
 
-
-
     fun sendOtp(){
         otp = ( (Math.random() * 9000).toInt() + 1000 ).toString()
         val client = OkHttpClient()
         val mediaType = "application/json".toMediaTypeOrNull()
-        val content = """{"personalizations": [ { "to": [ { "email": "${inputEmail.value}" } ], "subject": "OTP" } ], "from": {"email": "noobdeshwar@gmail.com" },"content": [{ "type": "text/plain","value": "Your otp is $otp" }] }"""
+        val content = """{"personalizations": [ { "to": [ { "email": "${inputEmail.value}" } ], "subject": "OTP" } ], "from": {"email": "mehul.anvekar@srijan.net" },"content": [{ "type": "text/plain","value": "Your otp is $otp" }] }"""
         val body = RequestBody.create(mediaType,content)
         val request = Request.Builder()
             .url("https://rapidprod-sendgrid-v1.p.rapidapi.com/mail/send")
@@ -73,15 +76,20 @@ class ForgotPasswordViewModel : ViewModel() {
 
         viewModelScope.launch(Dispatchers.IO){
             //val response = client.newCall(request).execute()
-            Log.d("testFP", "sendOtp: $content")
+            Log.d("testFP", "sendOtp: $otp content=$content")
         }
     }
 
     fun verifyOtp(): Boolean =  if(_inputOtp.value == otp) true else false
 
     fun changePassword(context: Context){
-        viewModelScope.launch(Dispatchers.IO){
-            DatabaseRepository(context).updatePassword(_inputEmail.value,_inputPassword.value)
+        if(inputPassword.value == confirmPassword.value){
+            viewModelScope.launch(Dispatchers.IO){
+                DatabaseRepository(context).updatePassword(_inputEmail.value,_inputPassword.value)
+                withContext(Dispatchers.Main) { Toast.makeText(context,"Password updated",Toast.LENGTH_SHORT).show() }
+            }
+        } else {
+            Toast.makeText(context,"Password does not match",Toast.LENGTH_SHORT).show()
         }
     }
 }
