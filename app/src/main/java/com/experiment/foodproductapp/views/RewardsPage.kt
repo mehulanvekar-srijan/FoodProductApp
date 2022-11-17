@@ -212,57 +212,66 @@ fun Reward(
                                 .padding(start = 5.dp, end = 20.dp),
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.End,
-                        ) {
-                            TextField(
-                                value = rewardsPageViewModel.redeemedpoints.value,
-                                colors = TextFieldDefaults.textFieldColors(
-                                    textColor = Color.Black,
-                                    backgroundColor = LightGray1,
-                                    placeholderColor = Color.White,
-                                    cursorColor = Color.Black,
-                                    errorIndicatorColor = Color.Transparent,
-                                    focusedLabelColor = Color.Black,
-                                    errorCursorColor = Color.Black,
-                                    errorLabelColor = Color.Red,
-                                    focusedIndicatorColor = Color.Transparent,
-                                    unfocusedIndicatorColor = Color.Transparent,
-                                    unfocusedLabelColor = Orange,
-                                ),
-                                shape = RoundedCornerShape(20.dp),
-                                keyboardOptions = KeyboardOptions(
-                                    keyboardType = KeyboardType.Phone
-                                ),
-                                onValueChange = {
-                                    rewardsPageViewModel.updateUserPoints(it)
-                                })
+                        ){
+                            Text(
+                                text = "You can Redeem 10 Points for equivalent of Rs.1",
+                                modifier = Modifier.padding(5.dp),
+                                fontFamily = titleFontFamily,
+                                fontSize = 20.sp
+                            )
 
-                            Spacer(modifier = Modifier.height(5.dp))
-
-                            Button(
-                                onClick = { rewardsPageViewModel.validateRewards(context,email.toString()).show()
-                                },
-                                modifier = Modifier
-                                    .fillMaxWidth(.4f)
-                                    .height(22.dp),
-                                contentPadding = PaddingValues(0.dp),
-                                shape = RoundedCornerShape(50),
-                                colors = ButtonDefaults.buttonColors(
-                                    backgroundColor = DarkYellow,
-                                    contentColor = Color.White
-                                ),
-                                elevation = ButtonDefaults.elevation(
-                                    defaultElevation = 5.dp
-                                )
-                            ) {
-                                Text(
-                                    modifier = Modifier.fillMaxSize(),
-                                    text = "Redeem",
-                                    color = Color.White,
-                                    fontSize = 14.sp,
-                                    textAlign = TextAlign.Center
-                                )
-                            }
                         }
+//                        ) {
+//                            TextField(
+//                                value = rewardsPageViewModel.redeemedpoints.value,
+//                                colors = TextFieldDefaults.textFieldColors(
+//                                    textColor = Color.Black,
+//                                    backgroundColor = LightGray1,
+//                                    placeholderColor = Color.White,
+//                                    cursorColor = Color.Black,
+//                                    errorIndicatorColor = Color.Transparent,
+//                                    focusedLabelColor = Color.Black,
+//                                    errorCursorColor = Color.Black,
+//                                    errorLabelColor = Color.Red,
+//                                    focusedIndicatorColor = Color.Transparent,
+//                                    unfocusedIndicatorColor = Color.Transparent,
+//                                    unfocusedLabelColor = Orange,
+//                                ),
+//                                shape = RoundedCornerShape(20.dp),
+//                                keyboardOptions = KeyboardOptions(
+//                                    keyboardType = KeyboardType.Phone
+//                                ),
+//                                onValueChange = {
+//                                    rewardsPageViewModel.updateUserPoints(it)
+//                                })
+//
+//                            Spacer(modifier = Modifier.height(5.dp))
+//
+//                            Button(
+//                                onClick = { rewardsPageViewModel.validateRewards(context,email.toString()).show()
+//                                },
+//                                modifier = Modifier
+//                                    .fillMaxWidth(.4f)
+//                                    .height(22.dp),
+//                                contentPadding = PaddingValues(0.dp),
+//                                shape = RoundedCornerShape(50),
+//                                colors = ButtonDefaults.buttonColors(
+//                                    backgroundColor = DarkYellow,
+//                                    contentColor = Color.White
+//                                ),
+//                                elevation = ButtonDefaults.elevation(
+//                                    defaultElevation = 5.dp
+//                                )
+//                            ) {
+//                                Text(
+//                                    modifier = Modifier.fillMaxSize(),
+//                                    text = "Redeem",
+//                                    color = Color.White,
+//                                    fontSize = 14.sp,
+//                                    textAlign = TextAlign.Center
+//                                )
+//                            }
+//                        }
                     }
 
                 }
@@ -463,7 +472,7 @@ fun Reward(
                                     .height(55.dp)
                                     .fillMaxWidth(),
                                 onClick = {
-                                    clipboardManager.setText(AnnotatedString(text = text))
+//                                    clipboardManager.setText(AnnotatedString(text = text))
                                     Toast.makeText(
                                         context,
                                         "Text copied to clipboard",

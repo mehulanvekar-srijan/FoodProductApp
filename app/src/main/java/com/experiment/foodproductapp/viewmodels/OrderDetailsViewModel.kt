@@ -37,6 +37,12 @@ class OrderDetailsViewModel: ViewModel() {
         }
     }
 
+    fun navigateToHomeScreenPage(navHostController: NavHostController) {
+        navHostController.navigate(Screen.HomeScreen.route) {
+            popUpTo(Screen.HomeScreen.route) { inclusive = true }
+        }
+    }
+
     fun calculateSum(item: MutableList<OrderDetails>):Int{
         var sum=0
         var index=0
