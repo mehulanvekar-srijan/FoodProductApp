@@ -67,8 +67,6 @@ fun Reward(
 
     val text = "http://www.beerbasket.co/ryfagr"
 
-    val clipboardManager: ClipboardManager = LocalClipboardManager.current
-
     val context = LocalContext.current
 
     LaunchedEffect(key1 = Unit) {
@@ -478,7 +476,6 @@ fun Reward(
                                     .height(55.dp)
                                     .fillMaxWidth(),
                                 onClick = {
-//                                    clipboardManager.setText(AnnotatedString(text = text))
                                     Toast.makeText(
                                         context,
                                         "Text copied to clipboard",

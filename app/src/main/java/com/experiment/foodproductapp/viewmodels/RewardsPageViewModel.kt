@@ -70,8 +70,8 @@ class RewardsPageViewModel : ViewModel() {
 
     fun checkLevel(): Level {
         return when (rewardPointsState.value) {
-            in 0..100 -> Level.Bronze
-            in 101..500 -> Level.Silver
+            in 0..500 -> Level.Bronze
+            in 501..1000 -> Level.Silver
             else -> Level.Gold
         }
     }
@@ -88,19 +88,19 @@ class RewardsPageViewModel : ViewModel() {
 
     fun getDifference(level: String): String {
         return if (level == "Bronze") {
-            (100 - rewardPointsState.value).toString()
-        } else {
             (500 - rewardPointsState.value).toString()
+        } else {
+            (1000 - rewardPointsState.value).toString()
         }
     }
 
     fun calculateProgress(value: Int): Float {
         return when (value) {
-            in 0..100 -> {
-                (value / 101.0f)
+            in 0..500 -> {
+                (value / 501.0f)
             }
-            in 101..500 -> {
-                (value / 501f)
+            in 501..1000 -> {
+                (value / 1001f)
             }
             else -> {
                 1f

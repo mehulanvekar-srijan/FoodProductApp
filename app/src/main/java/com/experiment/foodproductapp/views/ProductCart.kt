@@ -4,6 +4,7 @@ import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -20,6 +21,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -31,6 +33,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
+import com.experiment.foodproductapp.R
+import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.database.Product
 import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.viewmodels.ProductCartViewModel
@@ -38,7 +42,7 @@ import com.experiment.foodproductapp.viewmodels.ProductCartViewModel
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ProductCart(
-    email:String?,
+    email: String?,
     navHostControllerLambda: () -> NavHostController,
     productCartViewModel: ProductCartViewModel = viewModel(),
 ) {
@@ -48,9 +52,9 @@ fun ProductCart(
 
     LaunchedEffect(key1 = Unit) {
         if (email != null) {
-            productCartViewModel.email.value=email
+            productCartViewModel.email.value = email
             //productCartViewModel.initRedeemAmount(context,email)
-            productCartViewModel.initTotalPointsAndRedeemedAmount(context,email)
+            productCartViewModel.initTotalPointsAndRedeemedAmount(context, email)
         }
         productCartViewModel.fetchCartList(context)
     }
@@ -121,13 +125,13 @@ fun ProductCart(
             items(
                 items = productCartViewModel.cartList,
                 key = { it.id } // Caused n Solved multiple issues. Learn it.
-            ){ item ->
+            ) { item ->
 
                 val dismissState = rememberDismissState(
                     initialValue = DismissValue.Default,
                     confirmStateChange = {
-                        if(it == DismissValue.DismissedToStart){
-                            productCartViewModel.onDismiss(context,item)
+                        if (it == DismissValue.DismissedToStart) {
+                            productCartViewModel.onDismiss(context, item)
                         }
                         true
                     }
@@ -138,12 +142,12 @@ fun ProductCart(
                     directions = setOf(DismissDirection.EndToStart),
                     dismissThresholds = { FractionalThreshold(0.2F) },
                     dismissContent = {
-                        CardView(item,productCartViewModel)
+                        CardView(item, productCartViewModel)
                     },
                     background = {
 
                         val color = animateColorAsState(
-                            targetValue = when(dismissState.targetValue) {
+                            targetValue = when (dismissState.targetValue) {
                                 DismissValue.DismissedToStart -> Color.Red
                                 DismissValue.Default -> LightDarkGray
                                 else -> Color.Transparent
@@ -151,15 +155,17 @@ fun ProductCart(
                             animationSpec = tween(100)
                         )
 
-                        Box( //Red background
+                        Box(
+                            //Red background
                             modifier = Modifier
                                 .fillMaxSize()
                                 .clip(RoundedCornerShape(15.dp))
                                 .background(color.value)
                                 .padding(end = 25.dp),
                             contentAlignment = Alignment.CenterEnd,
-                        ){
-                            Icon( //Dustbin Icon
+                        ) {
+                            Icon(
+                                //Dustbin Icon
                                 imageVector = Icons.Default.Delete,
                                 contentDescription = "",
                                 tint = Color.White,
@@ -172,18 +178,19 @@ fun ProductCart(
 
         Spacer(modifier = Modifier.padding(5.dp))
 
-        Box(modifier = Modifier
-            .shadow(70.dp)
-            .clip(RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp))
-            .weight(2F)
-            .fillMaxSize()
-            .background(DarkYellow)
-        ){
+        Box(
+            modifier = Modifier
+                .shadow(70.dp)
+                .clip(RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp))
+                .weight(2F)
+                .fillMaxSize()
+                .background(DarkYellow)
+        ) {
             CheckoutArea(
                 productCartViewModel = productCartViewModel,
                 navigate = {
-                    if(productCartViewModel.sum.value!=0) {
-                        productCartViewModel.navigateToCheckout(navHostControllerLambda(),context)
+                    if (productCartViewModel.sum.value != 0) {
+                        productCartViewModel.navigateToCheckout(navHostControllerLambda(), context)
                     }
 //                    navHostControllerLambda().navigate(Screen.PaymentScreen.route)
                 }
@@ -198,12 +205,12 @@ fun ProductCart(
 fun CardView(
     item: Product,
     productCartViewModel: ProductCartViewModel
-){
-    val quantity = remember{ mutableStateOf(0) }
+) {
+    val quantity = remember { mutableStateOf(0) }
     val context = LocalContext.current
 
-    LaunchedEffect(key1 = Unit){
-        productCartViewModel.getProductCount(context,item.id,quantity)
+    LaunchedEffect(key1 = Unit) {
+        productCartViewModel.getProductCount(context, item.id, quantity)
     }
 
     Card(
@@ -212,7 +219,7 @@ fun CardView(
             .height(110.dp),
         elevation = 5.dp,
         shape = RoundedCornerShape(15.dp),
-        onClick = {  },
+        onClick = { },
     ) {
         Row(
             modifier = Modifier.fillMaxWidth()
@@ -220,7 +227,7 @@ fun CardView(
             //Product Image
             Box(
                 modifier = Modifier.weight(2F)
-            ){
+            ) {
                 LoadImage(item)
             }
 
@@ -231,8 +238,9 @@ fun CardView(
                     .padding(5.dp)
                     .weight(4F),
                 verticalArrangement = Arrangement.SpaceEvenly,
-            ){
-                Text( // Title
+            ) {
+                Text(
+                    // Title
                     textAlign = TextAlign.Start,
                     style = MaterialTheme.typography.h5,
                     overflow = TextOverflow.Ellipsis,
@@ -241,11 +249,12 @@ fun CardView(
                     fontFamily = titleFontFamily,
                     fontSize = 20.sp,
                 )
-                Text( // Price
+                Text(
+                    // Price
                     textAlign = TextAlign.Center,
                     color = Color.Black,
                     overflow = TextOverflow.Ellipsis,
-                    text = "MRP:Rs 79",
+                    text = "MRP:Rs ${item.price}",
                     fontFamily = descriptionFontFamily,
                 )
             }
@@ -264,14 +273,18 @@ fun CardView(
                         .weight(2F)
                         .background(Color.Transparent),
                     contentAlignment = Alignment.Center,
-                ){
+                ) {
                     Surface(
                         elevation = 3.dp,
                         color = Color.Transparent
-                    ){
+                    ) {
                         IconButton(
                             onClick = {
-                                productCartViewModel.incrementProductCount(context,item.id,quantity)
+                                productCartViewModel.incrementProductCount(
+                                    context,
+                                    item.id,
+                                    quantity
+                                )
                             },
                             modifier = Modifier
                                 .clip(RoundedCornerShape(15))
@@ -284,7 +297,7 @@ fun CardView(
                                     )
                                 )
                                 .size(width = 25.dp, height = 25.dp)
-                        ){
+                        ) {
                             Icon(
                                 imageVector = Icons.Default.Add,
                                 contentDescription = "",
@@ -296,7 +309,7 @@ fun CardView(
 
                 //Count Value
                 //Text(text = "1", textAlign = TextAlign.Center)
-                Text(text = quantity.value.toString(),textAlign = TextAlign.Center)
+                Text(text = quantity.value.toString(), textAlign = TextAlign.Center)
 
                 //Minus
                 Box(
@@ -304,16 +317,20 @@ fun CardView(
                         .weight(2F)
                         .background(Color.Transparent),
                     contentAlignment = Alignment.Center,
-                ){
+                ) {
                     Surface(
                         elevation = 3.dp,
                         color = Color.Transparent
-                    ){
+                    ) {
                         //If Quantity is > 1 show Yellow button else show Grey button
-                        if(quantity.value > 1){
+                        if (quantity.value > 1) {
                             IconButton(
                                 onClick = {
-                                    productCartViewModel.decrementProductCount(context,item.id,quantity)
+                                    productCartViewModel.decrementProductCount(
+                                        context,
+                                        item.id,
+                                        quantity
+                                    )
                                 },
                                 modifier = Modifier
                                     .clip(RoundedCornerShape(15))
@@ -327,25 +344,28 @@ fun CardView(
                                     )
                                     .size(width = 25.dp, height = 25.dp),
                                 enabled = quantity.value > 1,
-                            ){
+                            ) {
                                 Icon(
                                     imageVector = Icons.Filled.Remove,
                                     contentDescription = "",
                                     tint = Color.White,
                                 )
                             }
-                        }
-                        else{
+                        } else {
                             IconButton(
                                 onClick = {
-                                    productCartViewModel.decrementProductCount(context,item.id,quantity)
+                                    productCartViewModel.decrementProductCount(
+                                        context,
+                                        item.id,
+                                        quantity
+                                    )
                                 },
                                 modifier = Modifier
                                     .clip(RoundedCornerShape(15))
                                     .background(LightDarkGray)
                                     .size(width = 25.dp, height = 25.dp),
                                 enabled = quantity.value > 1,
-                            ){
+                            ) {
                                 Icon(
                                     imageVector = Icons.Filled.Remove,
                                     contentDescription = "",
@@ -362,7 +382,7 @@ fun CardView(
 
 @OptIn(ExperimentalCoilApi::class)
 @Composable
-fun LoadImage(item: Product){
+fun LoadImage(item: Product) {
     Image(
         painter = rememberImagePainter(item.url),
         contentDescription = "",
@@ -375,16 +395,15 @@ fun LoadImage(item: Product){
 @Composable
 fun CheckoutArea(
     productCartViewModel: ProductCartViewModel,
-    navigate: ()->Unit = {},
+    navigate: () -> Unit = {},
 ) {
-    Column{
+    Column {
 
         //Sum row
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1F)
-                .padding(top = 2.dp),
+                .padding(top = 10.dp),
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -401,7 +420,7 @@ fun CheckoutArea(
                 text = "Rs : ${productCartViewModel.sum.value}",
                 color = Color.White,
                 modifier = Modifier
-                    .padding(end = 25.dp)
+                    .padding(end = 48.dp)
                     .weight(1F),
                 textAlign = TextAlign.End,
                 fontSize = 18.sp,
@@ -409,33 +428,64 @@ fun CheckoutArea(
         }
 
         //Redeem Amount
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1F),
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
+        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             Text(
                 text = "Redeem Amount ",
-                color = Color.White,
+                color = if (productCartViewModel.checkedState.value) {
+                    Color.White
+                } else {
+                    LightDarkGray
+                },
                 modifier = Modifier
-                    .padding(start = 25.dp)
-                    .weight(1F),
+                    .padding(start = 25.dp),
                 textAlign = TextAlign.Start,
-                fontSize = 18.sp,
+                fontSize = 20.sp,
             )
-
-            Text(
-                ///text = "Rs : ${productCartViewModel.redeemAmount.value}",
-                text = "Rs : ${productCartViewModel.sum.value - productCartViewModel.finalSum.value}",
-                color = Color.White,
+            Row(
                 modifier = Modifier
-                    .padding(end = 25.dp)
+                    .fillMaxWidth()
                     .weight(1F),
-                textAlign = TextAlign.End,
-                fontSize = 18.sp,
-            )
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.End
+            ) {
+
+                Text(
+                    text = if (productCartViewModel.checkedState.value) {
+                        "Rs : ${productCartViewModel.sum.value - productCartViewModel.finalSum.value}"
+                    } else {
+                        "Rs : 0"
+                    },
+                    color = if (productCartViewModel.checkedState.value) {
+                        Color.White
+                    } else {
+                        LightDarkGray
+                    },
+                    modifier = Modifier
+                        .weight(1F),
+                    textAlign = TextAlign.End,
+                    fontSize = 20.sp,
+                )
+                Checkbox(
+                    enabled = productCartViewModel.sum.value >= 100 && productCartViewModel.redeemAmount.value > 10,
+                    modifier = Modifier.padding(0.dp),
+                    colors = CheckboxDefaults.colors(
+                        checkedColor = Color.White,
+                        uncheckedColor = LightDarkGray,
+                        checkmarkColor = Color.Black
+                    ),
+                    // below line we are setting
+                    // the state of checkbox.
+                    checked = productCartViewModel.checkedState.value,
+                    // below line is use to add on check
+                    // change to our checkbox.
+                    onCheckedChange = {
+                        productCartViewModel.checkedState.value = it
+                        if(productCartViewModel.sum.value>=100) {
+                            productCartViewModel.updateFinalSum()
+                        }
+                    },
+                )
+            }
         }
 
         //Final Amount
@@ -462,7 +512,7 @@ fun CheckoutArea(
                 text = "Rs : ${productCartViewModel.finalSum.value}",
                 color = Color.White,
                 modifier = Modifier
-                    .padding(end = 25.dp)
+                    .padding(end = 45.dp)
                     .weight(1F),
                 textAlign = TextAlign.End,
                 fontWeight = FontWeight.Bold,
