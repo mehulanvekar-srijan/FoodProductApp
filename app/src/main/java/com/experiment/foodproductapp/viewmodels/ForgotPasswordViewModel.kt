@@ -57,7 +57,7 @@ class ForgotPasswordViewModel : ViewModel() {
 
 
 
-    fun sendOtp(){
+    fun sendOtp() {
         otp = ( (Math.random() * 9000).toInt() + 1000 ).toString()
         val client = OkHttpClient()
         val mediaType = "application/json".toMediaTypeOrNull()
