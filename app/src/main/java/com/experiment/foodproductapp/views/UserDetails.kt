@@ -37,6 +37,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -63,7 +64,7 @@ import java.util.*
 
 @Composable
 @Preview
-fun show() {
+fun Show() {
     val string = "Sahil"
     val navHostController = rememberNavController()
     val navHostControllerLambda: () -> NavHostController = {
@@ -117,14 +118,14 @@ fun UserDetails(
 
         LaunchedEffect(key1 = Unit) {
             userDetailsViewModel.execute(context, email)
-            userDetailsViewModel.initProfilePicture(context,email) //Load image from db
+            userDetailsViewModel.initProfilePicture(context, email) //Load image from db
         }
 
         val imagePicker = rememberLauncherForActivityResult(
             contract = ActivityResultContracts.GetContent(),
             onResult = { uri ->
 
-                if(uri == null) return@rememberLauncherForActivityResult
+                if (uri == null) return@rememberLauncherForActivityResult
 
                 //uri from argument requires permission to access it after relaunching the app
                 //Hence create a local file in Apps internal storage and copy the selected image
@@ -134,7 +135,7 @@ fun UserDetails(
                 val inputStream = context.contentResolver.openInputStream(uri)
                 val outputStream = context.contentResolver.openOutputStream(localUri)
 
-                inputStream.use{
+                inputStream.use {
                     if (outputStream != null) {
                         it?.copyTo(outputStream)
                     }
@@ -143,7 +144,7 @@ fun UserDetails(
                 userDetailsViewModel.hasImage.value = localUri != null           //Set has image
                 userDetailsViewModel.imageUri.value = localUri                   //Set URI
                 userDetailsViewModel.updateUserProfilePictureInDatabase(        //Update database
-                    context,email,localUri
+                    context, email, localUri
                 )
             })
 
@@ -153,11 +154,11 @@ fun UserDetails(
             onResult = { status ->
 
                 if (!status) return@rememberLauncherForActivityResult
-                
+
                 userDetailsViewModel.hasImage.value = status                //Set has image
                 userDetailsViewModel.imageUri.value = intermediateUri       //Set URI
                 userDetailsViewModel.updateUserProfilePictureInDatabase(    //Update database
-                    context,email,intermediateUri
+                    context, email, intermediateUri
                 )
             }
         )
@@ -185,9 +186,9 @@ fun UserDetails(
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    val imageClickedState = remember{ mutableStateOf(false) }
+                    val imageClickedState = remember { mutableStateOf(false) }
                     //Profile Pic
-                    if (userDetailsViewModel.hasImage.value && userDetailsViewModel.imageUri.value != null){
+                    if (userDetailsViewModel.hasImage.value && userDetailsViewModel.imageUri.value != null) {
                         Image(
                             painter = rememberImagePainter(userDetailsViewModel.imageUri.value),
                             contentDescription = "Profile Pic",
@@ -201,8 +202,7 @@ fun UserDetails(
                                 }
                                 .clip(CircleShape)
                         )
-                    }
-                    else{
+                    } else {
                         Image(
                             painter = rememberImagePainter(R.drawable.ic_user),
                             contentDescription = "Profile Pic",
@@ -210,7 +210,7 @@ fun UserDetails(
                             modifier = Modifier
                                 .fillMaxHeight(0.25F)
                                 .padding(25.dp)
-                                .clickable{
+                                .clickable {
                                     imageClickedState.value = !imageClickedState.value
                                 }
                                 .aspectRatio(1F)
@@ -257,7 +257,7 @@ fun UserDetails(
                 ) {
                     Text(
                         modifier = Modifier.fillMaxWidth(),
-                        text = "Profile",
+                        text = stringResource(id = R.string.profile_string),
                         color = Color.Black,
                         style = TextStyle(
                             fontWeight = FontWeight.Bold,
@@ -298,7 +298,12 @@ fun UserDetails(
                                     )
                                 },
                                 shape = RoundedCornerShape(30.dp),
-                                label = { Text(text = "First Name", color = DarkGray1) },
+                                label = {
+                                    Text(
+                                        text = stringResource(id = R.string.first_name_string),
+                                        color = DarkGray1
+                                    )
+                                },
                                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                                 keyboardActions = KeyboardActions(
                                     onNext = { focusManager.moveFocus(FocusDirection.Down) },
@@ -337,7 +342,12 @@ fun UserDetails(
                                     )
                                 },
                                 shape = RoundedCornerShape(30.dp),
-                                label = { Text(text = "Last Name", color = DarkGray1) },
+                                label = {
+                                    Text(
+                                        text = stringResource(id = R.string.last_name_string),
+                                        color = DarkGray1
+                                    )
+                                },
                                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                                 keyboardActions = KeyboardActions(
                                     onNext = { focusManager.moveFocus(FocusDirection.Down) },
@@ -416,7 +426,12 @@ fun UserDetails(
                                     imeAction = ImeAction.Next
                                 ),
                                 shape = RoundedCornerShape(30.dp),
-                                label = { Text(text = "Phone Number", color = DarkGray1) },
+                                label = {
+                                    Text(
+                                        text = stringResource(id = R.string.phone_number_string),
+                                        color = DarkGray1
+                                    )
+                                },
                                 keyboardActions = KeyboardActions(
                                     onNext = { focusManager.moveFocus(FocusDirection.Down) },
                                 )
@@ -465,7 +480,12 @@ fun UserDetails(
                                     imeAction = ImeAction.Next
                                 ),
                                 shape = RoundedCornerShape(30.dp),
-                                label = { Text(text = "Password", color = DarkGray1) },
+                                label = {
+                                    Text(
+                                        text = stringResource(id = R.string.password_string),
+                                        color = DarkGray1
+                                    )
+                                },
                                 keyboardActions = KeyboardActions(
                                     onNext = { mDatePickerDialog.show() },
                                 )
@@ -517,7 +537,12 @@ fun UserDetails(
                                     }
                                 },
                                 shape = RoundedCornerShape(30.dp),
-                                label = { Text(text = "Date Of Birth", color = DarkGray1) }
+                                label = {
+                                    Text(
+                                        text = stringResource(id = R.string.date_of_birth_string),
+                                        color = DarkGray1
+                                    )
+                                }
                             )
                             if (userDetailsViewModel.state.dateError != null) {
                                 Text(
@@ -547,7 +572,11 @@ fun UserDetails(
                         ),
 
                         ) {
-                        Text(text = "Save Changes", fontSize = 20.sp, color = Color.Black)
+                        Text(
+                            text = stringResource(id = R.string.save_changes_string),
+                            fontSize = 20.sp,
+                            color = Color.Black
+                        )
                     }
 //                    {
 //                        Spacer(modifier = Modifier.padding(5.dp))
@@ -654,7 +683,7 @@ fun UserDetails(
         }
 
         TopAppBar(
-            title = { Text(text = "Beer App", color = Color.White) },
+            title = { Text(text = stringResource(id = R.string.app_name), color = Color.White) },
             backgroundColor = Color.Transparent,
             elevation = 0.dp,
             navigationIcon = {
@@ -667,14 +696,25 @@ fun UserDetails(
                 }
             },
             actions = {
-                IconButton(onClick = { userDetailsViewModel.navigateToRewards(email,navHostControllerLambda()) }) {
+                IconButton(onClick = {
+                    userDetailsViewModel.navigateToRewards(
+                        email,
+                        navHostControllerLambda()
+                    )
+                }) {
                     Icon(
                         imageVector = Icons.Default.Stars,
                         contentDescription = "",
                         tint = Color.White
                     )
                 }
-                IconButton(onClick = { userDetailsViewModel.logOutUser(email,context,navHostControllerLambda()) }) {
+                IconButton(onClick = {
+                    userDetailsViewModel.logOutUser(
+                        email,
+                        context,
+                        navHostControllerLambda()
+                    )
+                }) {
                     Icon(
                         imageVector = Icons.Default.Logout,
                         contentDescription = "",

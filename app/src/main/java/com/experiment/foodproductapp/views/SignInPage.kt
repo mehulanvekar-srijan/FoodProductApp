@@ -31,6 +31,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 
 import androidx.compose.ui.text.TextStyle
 
@@ -53,6 +54,7 @@ import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.domain.event.SignInFormEvent
 import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.viewmodels.SignInViewModel
+
 //
 //@Preview
 //@Composable
@@ -111,7 +113,7 @@ fun SignInPage(
                 verticalArrangement = Arrangement.Center,
             ) {
                 Text(
-                    text = "Sign In",
+                    text = stringResource(id = R.string.sign_in_string),
                     color = Color.Black,
                     style = TextStyle(
                         fontWeight = FontWeight.Bold,
@@ -126,7 +128,7 @@ fun SignInPage(
                         TextField(
 
                             value = state.email,
-                            shape= RoundedCornerShape(30.dp),
+                            shape = RoundedCornerShape(30.dp),
                             colors = TextFieldDefaults.textFieldColors(
                                 textColor = Color.Black,
                                 backgroundColor = LightGray1,
@@ -150,7 +152,12 @@ fun SignInPage(
                             keyboardActions = KeyboardActions(
                                 onNext = { focusManager.moveFocus(FocusDirection.Down) },
                             ),
-                            label = { Text("Email Address", color = Color.Black) },
+                            label = {
+                                Text(
+                                    text = stringResource(id = R.string.email_address_string),
+                                    color = Color.Black
+                                )
+                            },
                             singleLine = true,
                             modifier = Modifier
                                 .fillMaxWidth(0.8f)
@@ -167,7 +174,7 @@ fun SignInPage(
                         Spacer(modifier = Modifier.padding(top = 8.dp))
                         TextField(
                             value = state.password,
-                            shape= RoundedCornerShape(30.dp),
+                            shape = RoundedCornerShape(30.dp),
                             colors = TextFieldDefaults.textFieldColors(
                                 textColor = Color.Black,
                                 backgroundColor = LightGray1,
@@ -208,7 +215,12 @@ fun SignInPage(
                                     )
                                 }
                             },
-                            label = { Text("Password", color = Color.Black) },
+                            label = {
+                                Text(
+                                    text = stringResource(id = R.string.password_string),
+                                    color = Color.Black
+                                )
+                            },
                             singleLine = true,
                             visualTransformation = if (signInViewModel.passwordVisibility.value) VisualTransformation.None
                             else PasswordVisualTransformation(),
@@ -245,12 +257,16 @@ fun SignInPage(
                             ),
 
                             ) {
-                            Text(text = "Sign In", fontSize = 22.sp, color = Color.Black)
+                            Text(
+                                text = stringResource(id = R.string.sign_in_string),
+                                fontSize = 22.sp,
+                                color = Color.Black
+                            )
                         }
 
                         Spacer(modifier = Modifier.padding(15.dp))
                         Text(
-                            text = "Create An Account",
+                            text = stringResource(id = R.string.create_an_account_string),
                             color = DarkYellow,
                             modifier = Modifier.clickable(onClick = {
                                 signInViewModel.navigate(
@@ -262,7 +278,7 @@ fun SignInPage(
                         )
                         Spacer(modifier = Modifier.padding(10.dp))
                         Text(
-                            text = "Forgot Password?",
+                            text = stringResource(id = R.string.forgot_password_string),
                             color = DarkYellow,
                             modifier = Modifier.clickable(onClick = {
                                 signInViewModel.navigate(

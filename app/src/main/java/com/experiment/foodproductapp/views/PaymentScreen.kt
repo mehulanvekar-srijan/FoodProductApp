@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -79,13 +80,13 @@ fun PaymentScreen(
                     contentDescription = "success"
                 )
                 Text(
-                    text = "Order Placed !",
+                    text = stringResource(id = R.string.order_placed_string),
                     fontFamily = titleFontFamily,
                     fontSize = 24.sp,
                     color = Color.DarkGray
                 )
                 Text(
-                    text = "Your Order was Placed Successfully",
+                    text = stringResource(id = R.string.your_order_was_placed_successfully_string),
                     fontFamily = descriptionFontFamily,
                     color = Color.DarkGray
                 )
@@ -98,7 +99,7 @@ fun PaymentScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "redirecting you to Home Page",
+                    text = stringResource(id = R.string.redirecting_you_to_home_page_string),
                     fontFamily = descriptionFontFamily,
                     color = Color.DarkGray
                 )
@@ -137,7 +138,7 @@ fun PaymentScreen(
 //                    tint = Color.Unspecified,
                 )
                 Text(
-                    text = "Payment Failed !",
+                    text = stringResource(id = R.string.payment_failed_string),
                     fontFamily = titleFontFamily,
                     fontSize = 24.sp,
                     color = Color.DarkGray
@@ -151,7 +152,7 @@ fun PaymentScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "redirecting you to product cart",
+                    text = stringResource(id = R.string.redirecting_you_to_product_cart_string),
                     fontFamily = descriptionFontFamily,
                     color = Color.DarkGray
                 )

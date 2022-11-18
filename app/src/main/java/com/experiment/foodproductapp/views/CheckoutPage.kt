@@ -25,6 +25,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -50,7 +52,7 @@ fun preview() {
     val navHostControllerLambda: () -> NavHostController = {
         navHostController
     }
-    CheckoutPage("sahil@test.com", 500, 0,navHostControllerLambda)
+    CheckoutPage("sahil@test.com", 500, 0, navHostControllerLambda)
 }
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
@@ -65,17 +67,6 @@ fun CheckoutPage(
     // Declaring a boolean value to store
     // the expanded state of the Text Field
     var mExpanded by remember { mutableStateOf(false) }
-
-    // Create a list of cities
-    val mCities = listOf(
-        "Goa",
-        "Maharashtra",
-        "Karnataka",
-        "Rajasthan",
-        "Kerala",
-        "Tamil Nadu",
-        "Andhra Pradesh"
-    )
 
 
     // Up Icon when expanded and down icon when collapsed
@@ -107,8 +98,12 @@ fun CheckoutPage(
         checkoutPageViewModel.validationEvents.collect { event ->
             when (event) {
                 is CheckoutPageViewModel.ValidationEvent.Success -> {
-                    if(points != null) {
-                        checkoutPageViewModel.navigateOnSuccess(context, navHostControllerLambda(), points)
+                    if (points != null) {
+                        checkoutPageViewModel.navigateOnSuccess(
+                            context,
+                            navHostControllerLambda(),
+                            points
+                        )
                     }
                 }
             }
@@ -126,7 +121,7 @@ fun CheckoutPage(
             title = {
                 Row(horizontalArrangement = Arrangement.Center) {
                     Text(
-                        text = "Shipping Details ",
+                        text = stringResource(id = R.string.shipping_details_string) + " ",
                         fontFamily = titleFontFamily,
                         fontWeight = FontWeight.Bold,
                         color = DarkYellow,
@@ -185,7 +180,12 @@ fun CheckoutPage(
                     onValueChange = {
                     },
                     shape = RoundedCornerShape(30.dp),
-                    label = { Text(text = "First Name", color = DarkGray1) },
+                    label = {
+                        Text(
+                            text = stringResource(id = R.string.first_name_string),
+                            color = DarkGray1
+                        )
+                    },
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                     keyboardActions = KeyboardActions(
                         onNext = { focusManager.moveFocus(FocusDirection.Down) },
@@ -212,7 +212,12 @@ fun CheckoutPage(
                     onValueChange = {
                     },
                     shape = RoundedCornerShape(30.dp),
-                    label = { Text(text = "Last Name", color = DarkGray1) },
+                    label = {
+                        Text(
+                            text = stringResource(id = R.string.last_name_string),
+                            color = DarkGray1
+                        )
+                    },
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                     keyboardActions = KeyboardActions(
                         onNext = { focusManager.moveFocus(FocusDirection.Down) },
@@ -239,7 +244,12 @@ fun CheckoutPage(
                     onValueChange = {
                     },
                     shape = RoundedCornerShape(30.dp),
-                    label = { Text(text = "Phone Number", color = DarkGray1) },
+                    label = {
+                        Text(
+                            text = stringResource(id = R.string.phone_number_string),
+                            color = DarkGray1
+                        )
+                    },
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                     keyboardActions = KeyboardActions(
                         onNext = { focusManager.moveFocus(FocusDirection.Down) },
@@ -269,7 +279,12 @@ fun CheckoutPage(
                         )
                     },
                     shape = RoundedCornerShape(30.dp),
-                    label = { Text(text = "Enter Pincode", color = DarkGray1) },
+                    label = {
+                        Text(
+                            text = stringResource(id = R.string.enter_pincode_string),
+                            color = DarkGray1
+                        )
+                    },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Phone,
                         imeAction = ImeAction.Next
@@ -319,7 +334,12 @@ fun CheckoutPage(
                         )
                     },
                     shape = RoundedCornerShape(30.dp),
-                    label = { Text(text = "Flat, House no., Building", color = DarkGray1) },
+                    label = {
+                        Text(
+                            text = stringResource(id = R.string.flat_house_string),
+                            color = DarkGray1
+                        )
+                    },
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                     keyboardActions = KeyboardActions(
                         onNext = { focusManager.moveFocus(FocusDirection.Down) },
@@ -365,7 +385,12 @@ fun CheckoutPage(
                         )
                     },
                     shape = RoundedCornerShape(30.dp),
-                    label = { Text(text = "Area, Street", color = DarkGray1) },
+                    label = {
+                        Text(
+                            text = stringResource(id = R.string.area_street_string),
+                            color = DarkGray1
+                        )
+                    },
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                     keyboardActions = KeyboardActions(
                         onNext = { focusManager.moveFocus(FocusDirection.Down) },
@@ -405,7 +430,12 @@ fun CheckoutPage(
                         )
                     },
                     shape = RoundedCornerShape(30.dp),
-                    label = { Text(text = "City", color = DarkGray1) },
+                    label = {
+                        Text(
+                            text = stringResource(id = R.string.city_string),
+                            color = DarkGray1
+                        )
+                    },
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                     keyboardActions = KeyboardActions(
                         onNext = { mExpanded = !mExpanded },
@@ -459,9 +489,14 @@ fun CheckoutPage(
                         modifier = Modifier
                             .fillMaxWidth()
                             .bringIntoViewRequester(viewRequesterForState),
-                        label = { Text(text = "State", color = DarkGray1) },
+                        label = {
+                            Text(
+                                text = stringResource(id = R.string.state_string),
+                                color = DarkGray1
+                            )
+                        },
                         trailingIcon = {
-                            Icon(icon, "contentDescription",
+                            Icon(icon, "",
                                 Modifier.clickable { mExpanded = !mExpanded })
                         }
                     )
@@ -474,7 +509,7 @@ fun CheckoutPage(
                         modifier = Modifier
                             .fillMaxWidth()
                     ) {
-                        mCities.forEach { label ->
+                        stringArrayResource(id = R.array.state).forEach { label ->
                             DropdownMenuItem(onClick = {
                                 checkoutPageViewModel.onEvent(CheckoutFormEvent.StateChanged(label))
                                 mExpanded = false
@@ -886,12 +921,15 @@ fun CheckoutArea(
     width: Dp,
 ) {
 
-    val textHeight: Dp = (height/100)*40
-    val buttonHeight: Dp = (height/100)*60
+    val textHeight: Dp = (height / 100) * 40
+    val buttonHeight: Dp = (height / 100) * 60
     val buttonPadding: Dp = (height / 100) * 5
     val buttonFontSize: Dp = (buttonHeight / 100) * 25
 
-    Log.d("testResp", "CheckoutArea: h=$height , th=$textHeight , bh=$buttonHeight , bth=$buttonFontSize")
+    Log.d(
+        "testResp",
+        "CheckoutArea: h=$height , th=$textHeight , bh=$buttonHeight , bth=$buttonFontSize"
+    )
     //var multiplier by remember { mutableStateOf(1f) }
 
     Column {
@@ -904,7 +942,7 @@ fun CheckoutArea(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                text = "Total ",
+                text = stringResource(id = R.string.total_string) + " ",
                 color = Color.White,
                 modifier = Modifier
                     .padding(start = 25.dp)
@@ -915,7 +953,7 @@ fun CheckoutArea(
             )
 
             Text(
-                text = "Rs : ${checkoutPageViewModel.sum.value}",
+                text = stringResource(id = R.string.rs_string) + " " + checkoutPageViewModel.sum.value,
                 color = Color.White,
                 modifier = Modifier
                     .padding(end = 25.dp),
@@ -947,7 +985,7 @@ fun CheckoutArea(
                 shape = RoundedCornerShape(50),
             ) {
                 Text(
-                    text = "Proceed to Payment",
+                    text = stringResource(id = R.string.proceed_to_payment_string),
                     color = Color.Black,
                     maxLines = 1,
                     fontSize = buttonFontSize.value.sp

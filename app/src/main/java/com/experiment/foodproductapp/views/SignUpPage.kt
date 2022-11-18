@@ -36,6 +36,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -58,13 +59,13 @@ import java.util.*
 
 @Preview
 @Composable
-fun preview1(){
+fun preview1() {
     val navHostController = rememberNavController()
     val navHostControllerLambda: () -> NavHostController = {
 
         navHostController
     }
-    SignupPage(navHostControllerLambda =navHostControllerLambda)
+    SignupPage(navHostControllerLambda = navHostControllerLambda)
 }
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
@@ -153,12 +154,11 @@ fun SignupPage(
                     .fillMaxSize()
                     .clip(RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp))
                     .background(Color.White)
-                    .padding(top = 10.dp, start = 28.dp, end = 28.dp, bottom = 10.dp)
-                ,
+                    .padding(top = 10.dp, start = 28.dp, end = 28.dp, bottom = 10.dp),
             ) {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
-                    text = "Sign Up",
+                    text = stringResource(id = R.string.sign_up_string),
                     textAlign = TextAlign.Center,
                     style = TextStyle(
                         fontWeight = FontWeight.Bold,
@@ -196,9 +196,14 @@ fun SignupPage(
                             onValueChange = {
                                 signUpViewModel.onEvent(SignupFormEvent.FirstNameChanged(it))
                             },
-                            shape= RoundedCornerShape(30.dp),
+                            shape = RoundedCornerShape(30.dp),
                             isError = state.firstNameError != null,
-                            label = { Text(text = "First Name", color = Color.Black) },
+                            label = {
+                                Text(
+                                    text = stringResource(id = R.string.first_name_string),
+                                    color = Color.Black
+                                )
+                            },
                             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                             keyboardActions = KeyboardActions(
                                 onNext = { focusManager.moveFocus(FocusDirection.Down) },
@@ -235,9 +240,14 @@ fun SignupPage(
                             onValueChange = {
                                 signUpViewModel.onEvent(SignupFormEvent.LastNameChanged(it))
                             },
-                            shape= RoundedCornerShape(30.dp),
+                            shape = RoundedCornerShape(30.dp),
                             isError = state.lastNameError != null,
-                            label = { Text(text = "Last Name", color = Color.Black) },
+                            label = {
+                                Text(
+                                    text = stringResource(id = R.string.last_name_string),
+                                    color = Color.Black
+                                )
+                            },
                             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                             keyboardActions = KeyboardActions(
                                 onNext = { focusManager.moveFocus(FocusDirection.Down) },
@@ -259,7 +269,7 @@ fun SignupPage(
                             modifier = Modifier
                                 .fillMaxWidth(),
                             value = state.phoneNumber,
-                            shape= RoundedCornerShape(30.dp),
+                            shape = RoundedCornerShape(30.dp),
                             colors = TextFieldDefaults.textFieldColors(
                                 textColor = Color.Black,
                                 backgroundColor = LightGray1,
@@ -281,7 +291,12 @@ fun SignupPage(
                             onValueChange = {
                                 signUpViewModel.onEvent(SignupFormEvent.PhoneNumberChanged(it))
                             },
-                            label = { Text(text = "Enter Phone Number", color = Color.Black) },
+                            label = {
+                                Text(
+                                    text = stringResource(id = R.string.enter_phone_number_string),
+                                    color = Color.Black
+                                )
+                            },
                             keyboardActions = KeyboardActions(
                                 onNext = { focusManager.moveFocus(FocusDirection.Down) },
                             )
@@ -309,7 +324,7 @@ fun SignupPage(
                                     }
                                 },
                             value = state.email,
-                            shape= RoundedCornerShape(30.dp),
+                            shape = RoundedCornerShape(30.dp),
                             colors = TextFieldDefaults.textFieldColors(
                                 textColor = Color.Black,
                                 backgroundColor = LightGray1,
@@ -327,12 +342,16 @@ fun SignupPage(
                             keyboardOptions = KeyboardOptions(
                                 //keyboardType = KeyboardType.Email,
                                 imeAction = ImeAction.Next,
-                            )
-                            ,
+                            ),
                             onValueChange = {
                                 signUpViewModel.onEvent(SignupFormEvent.EmailChanged(it))
                             },
-                            label = { Text(text = "Enter Email", color = Color.Black) },
+                            label = {
+                                Text(
+                                    text = stringResource(id = R.string.enter_email_string),
+                                    color = Color.Black
+                                )
+                            },
                             keyboardActions = KeyboardActions(
                                 onNext = { focusManager.moveFocus(FocusDirection.Down) },
                             )
@@ -353,11 +372,16 @@ fun SignupPage(
                             modifier = Modifier
                                 .fillMaxWidth(),
                             value = state.password,
-                            shape= RoundedCornerShape(30.dp),
+                            shape = RoundedCornerShape(30.dp),
                             onValueChange = {
                                 signUpViewModel.onEvent(SignupFormEvent.PasswordChanged(it))
                             },
-                            label = { Text(text = "Enter password", color = Color.Black) },
+                            label = {
+                                Text(
+                                    text = stringResource(id = R.string.enter_password_string),
+                                    color = Color.Black
+                                )
+                            },
                             colors = TextFieldDefaults.textFieldColors(
                                 textColor = Color.Black,
                                 backgroundColor = LightGray1,
@@ -381,7 +405,9 @@ fun SignupPage(
                                     Icons.Filled.Visibility
                                 else Icons.Filled.VisibilityOff
                                 val description =
-                                    if (signUpViewModel.passwordVisible.value) "Hide password" else "Show password"
+                                    if (signUpViewModel.passwordVisible.value) stringResource(id = R.string.hide_password_string) else stringResource(
+                                        id = R.string.show_password_string
+                                    )
 
                                 IconButton(onClick = { signUpViewModel.passwordchange() }) {
                                     Icon(imageVector = image, description)
@@ -415,7 +441,7 @@ fun SignupPage(
                                     }
                                 },
                             value = state.repeatedPassword,
-                            shape= RoundedCornerShape(30.dp),
+                            shape = RoundedCornerShape(30.dp),
                             onValueChange = {
                                 signUpViewModel.onEvent(
                                     SignupFormEvent.ConfirmPasswordChanged(
@@ -423,7 +449,12 @@ fun SignupPage(
                                     )
                                 )
                             },
-                            label = { Text(text = "Confirm password", color = Color.Black) },
+                            label = {
+                                Text(
+                                    text = stringResource(id = R.string.confirm_password_string),
+                                    color = Color.Black
+                                )
+                            },
                             colors = TextFieldDefaults.textFieldColors(
                                 textColor = Color.Black,
                                 backgroundColor = LightGray1,
@@ -447,7 +478,9 @@ fun SignupPage(
                                     Icons.Filled.Visibility
                                 else Icons.Filled.VisibilityOff
                                 val description =
-                                    if (signUpViewModel.confirmPasswordVisible.value) "Hide password" else "Show password"
+                                    if (signUpViewModel.confirmPasswordVisible.value) stringResource(
+                                        id = R.string.hide_password_string
+                                    ) else stringResource(id = R.string.show_password_string)
 
                                 IconButton(onClick = {
                                     signUpViewModel.confirmpasswordchange()
@@ -477,14 +510,19 @@ fun SignupPage(
                                 .fillMaxWidth()
                                 .bringIntoViewRequester(viewRequesterForConfirmDatePicker),
                             value = state.date,
-                            shape= RoundedCornerShape(30.dp),
+                            shape = RoundedCornerShape(30.dp),
                             isError = state.dateError != null,
                             onValueChange = {
                                 signUpViewModel.onEvent(
                                     SignupFormEvent.CalenderChanged(it)
                                 )
                             },
-                            label = { Text(text = "Date of Birth", color = Color.Black) },
+                            label = {
+                                Text(
+                                    text = stringResource(id = R.string.date_of_birth_string),
+                                    color = Color.Black
+                                )
+                            },
                             colors = TextFieldDefaults.textFieldColors(
                                 textColor = Color.Black,
                                 backgroundColor = LightGray1,
@@ -540,7 +578,10 @@ fun SignupPage(
                         defaultElevation = 5.dp
                     )
                 ) {
-                    Text(text = "CREATE ACCOUNT", color = Color.Black)
+                    Text(
+                        text = stringResource(id = R.string.create_account_string),
+                        color = Color.Black
+                    )
                 }
 
             }

@@ -30,6 +30,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -40,6 +41,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.experiment.foodproductapp.R
 import com.experiment.foodproductapp.repository.DatabaseRepository
@@ -59,7 +61,7 @@ fun preview3() {
     HomeScreenPage("sahil@test.com", navHostControllerLambda = navHostControllerLambda)
 }
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalAnimationApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalCoilApi::class)
 @Composable
 fun HomeScreenPage(
     email: String?,
@@ -186,7 +188,7 @@ fun HomeScreenPage(
                                     // Price
                                     textAlign = TextAlign.Center,
                                     overflow = TextOverflow.Ellipsis,
-                                    text = "MRP:Rs ${item.price}",
+                                    text = stringResource(id = R.string.mrp_rs_string) + " " + item.price,
                                     fontFamily = descriptionFontFamily,
                                     color = LightDarkGray,
                                 )
@@ -252,9 +254,6 @@ fun HomeScreenPage(
             }
         )
     }
-
-//    val count = remember{ mutableStateOf(0) }
-//    SideEffect { Log.d("testRecomp", "HomeScreenPage : ${count.value++}") }
 }
 
 @Composable
@@ -265,9 +264,6 @@ fun BackgroundImage() {
         contentScale = ContentScale.Crop,
         modifier = Modifier.fillMaxSize()
     )
-
-//    val count = remember{ mutableStateOf(0) }
-//    SideEffect { Log.d("testRecomp", "BackgroundImage : ${count.value++}") }
 }
 
 @Composable
@@ -281,7 +277,12 @@ fun AppBar(
     onOrderDetailsClick: () -> Unit = {},
 ) {
     TopAppBar(
-        title = { Text(text = "Beer App", color = animatedAppBarContentColor.value) },
+        title = {
+            Text(
+                text = stringResource(id = R.string.app_name),
+                color = animatedAppBarContentColor.value
+            )
+        },
         backgroundColor = animatedAppBarBackgroundColor.value,
         elevation = animatedAppBarElevation.value,
         navigationIcon = {
@@ -343,8 +344,6 @@ fun BrandLogo(
         painter = painterResource(id = R.drawable.ic_beer_cheers),
         contentDescription = "brand logo",
     )
-//    val count = remember{ mutableStateOf(0) }
-//    SideEffect { Log.d("testRecomp", "BrandLogo: ${count.value++}") }
 }
 
 

@@ -43,12 +43,10 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
+import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
-
-
-
 
 
 @Preview
@@ -63,6 +61,7 @@ fun Preview4() {
 }
 
 
+@OptIn(ExperimentalCoilApi::class)
 @Composable
 fun OrderDescriptionPage(
     navHostControllerLambda: () -> NavHostController,
@@ -94,7 +93,12 @@ fun OrderDescriptionPage(
                 )
         ) {
             TopAppBar(
-                title = { Text(text = "Order Details", color = Color.White) },
+                title = {
+                    Text(
+                        text = stringResource(id = R.string.order_details_string),
+                        color = Color.White
+                    )
+                },
                 backgroundColor = Color.White,
                 elevation = 0.dp,
                 navigationIcon = {
@@ -146,7 +150,7 @@ fun OrderDescriptionPage(
                 Column(modifier = Modifier.padding(15.dp)) {
                     val item = orderDetailsViewModel.orderDetails
                     Text(
-                        text = "Order No: #" + item[0].orderId,
+                        text = stringResource(id = R.string.order_no_string) + item[0].orderId,
                         fontFamily = titleFontFamily,
                         fontSize = 22.sp,
                         fontWeight = FontWeight.SemiBold,
@@ -154,7 +158,7 @@ fun OrderDescriptionPage(
                         modifier = Modifier.padding(bottom = 10.dp)
                     )
                     Text(
-                        text = "Total Items: " + item.size.toString(),
+                        text = stringResource(id = R.string.total_items_string) + " " + item.size.toString(),
                         fontFamily = titleFontFamily,
                         fontSize = 22.sp,
                         color = Color.DarkGray,
@@ -200,7 +204,7 @@ fun OrderDescriptionPage(
 
 
                             Text(
-                                text = "Rs. " + item.price * item.count,
+                                text = stringResource(id = R.string.rs_dot_string) + " " + item.price * item.count,
                                 fontSize = 18.sp,
                                 fontFamily = descriptionFontFamily,
                                 fontWeight = FontWeight.Thin,
@@ -236,7 +240,7 @@ fun OrderDescriptionPage(
                             //Log.d("CheckSum", "OrderDescriptionPage: Sum is: $sum")
 
                             Text(
-                                text = "Item Total:",
+                                text = stringResource(id = R.string.item_total_string),
                                 fontFamily = descriptionFontFamily,
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Thin,
@@ -246,7 +250,7 @@ fun OrderDescriptionPage(
                             )
 
                             Text(
-                                text = "Rs. $sum",
+                                text = stringResource(id = R.string.rs_dot_string) + " " + sum,
                                 fontFamily = descriptionFontFamily,
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Thin,
@@ -265,7 +269,7 @@ fun OrderDescriptionPage(
                                 .padding(bottom = 10.dp)
                         ) {
                             Text(
-                                text = "Redeemed Amount:",
+                                text = stringResource(id = R.string.redeemed_amount_string),
                                 fontFamily = descriptionFontFamily,
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.SemiBold,
@@ -275,7 +279,7 @@ fun OrderDescriptionPage(
                             )
 
                             Text(
-                                text = "Rs. ${sum - orderDetailsViewModel.finalAmount.value}",
+                                text = stringResource(id = R.string.rs_dot_string) + " " + (sum - orderDetailsViewModel.finalAmount.value),
                                 fontFamily = descriptionFontFamily,
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.SemiBold,
@@ -293,7 +297,7 @@ fun OrderDescriptionPage(
                                 .padding(bottom = 10.dp)
                         ) {
                             Text(
-                                text = "Amount Paid:",
+                                text = stringResource(id = R.string.amount_paid_string),
                                 fontFamily = descriptionFontFamily,
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.SemiBold,
@@ -303,7 +307,7 @@ fun OrderDescriptionPage(
                             )
 
                             Text(
-                                text = "Rs. ${orderDetailsViewModel.finalAmount.value.toInt()}",
+                                text = stringResource(id = R.string.rs_dot_string) + " " + orderDetailsViewModel.finalAmount.value.toInt(),
                                 fontFamily = descriptionFontFamily,
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.SemiBold,
@@ -339,7 +343,7 @@ fun OrderDescriptionPage(
                 ) {
                     IconButton(
                         onClick = {
-                                  orderDetailsViewModel.navigateToHomeScreenPage(navHostController = navHostControllerLambda())
+                            orderDetailsViewModel.navigateToHomeScreenPage(navHostController = navHostControllerLambda())
                         },
                         modifier = Modifier
 

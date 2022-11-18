@@ -29,6 +29,7 @@ import androidx.compose.ui.platform.ClipboardManager
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight.Companion.Medium
@@ -65,7 +66,7 @@ fun Reward(
 ) {
     ChangeBarColors(navigationBarColor = Color.White)
 
-    val text = "http://www.beerbasket.co/ryfagr"
+    val text = stringResource(id = R.string.refer_copy_string)
 
     val context = LocalContext.current
 
@@ -111,13 +112,13 @@ fun Reward(
                         .padding(end = 10.dp, top = 16.dp, bottom = 10.dp),
                 ) {
                     Text(
-                        text = "Welcome to",
+                        text = stringResource(id = R.string.welcome_to_string),
                         fontFamily = titleFontFamily,
                         fontSize = 18.sp,
                         color = Color.White
                     )
                     Text(
-                        text = "Rewards",
+                        text = stringResource(id = R.string.rewards_string),
                         fontFamily = titleFontFamily,
                         fontSize = 30.sp,
                         color = Color.White
@@ -145,7 +146,7 @@ fun Reward(
                             modifier = Modifier.size(50.dp)
                         )
                         Text(
-                            text = "Points",
+                            text = stringResource(id = R.string.points_string),
                             modifier = Modifier.padding(5.dp),
                             fontFamily = titleFontFamily,
                             fontSize = 24.sp
@@ -164,7 +165,7 @@ fun Reward(
                                 textAlign = TextAlign.End
                             )
                             Text(
-                                text = "Equals Rs" + (rewardsPageViewModel.rewardPointsState.value / 10).toString(),
+                                text = stringResource(id = R.string.equals_rs_string) + (rewardsPageViewModel.rewardPointsState.value / 10).toString(),
                                 fontFamily = descriptionFontFamily,
                                 textAlign = TextAlign.End
                             )
@@ -201,7 +202,7 @@ fun Reward(
                                 Modifier.size(40.dp)
                             )
                             Text(
-                                text = "Redeem",
+                                text = stringResource(id = R.string.redeem_string),
                                 modifier = Modifier.padding(5.dp),
                                 fontFamily = titleFontFamily,
                                 fontSize = 22.sp
@@ -213,9 +214,9 @@ fun Reward(
                                 .padding(start = 5.dp, end = 20.dp),
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.End,
-                        ){
+                        ) {
                             Text(
-                                text = "You can Redeem 10 Points for equivalent of Rs.1",
+                                text = stringResource(id = R.string.redeem_message_string),
                                 modifier = Modifier.padding(5.dp),
                                 fontFamily = titleFontFamily,
                                 fontSize = 20.sp
@@ -316,7 +317,7 @@ fun Reward(
                                 )
                                 Text(
                                     modifier = Modifier.padding(start = 5.dp, top = 3.dp),
-                                    text = "(Level " + rewardsPageViewModel.getLevel(
+                                    text = stringResource(id = R.string.bracket_level_string) + " " + rewardsPageViewModel.getLevel(
                                         rewardsPageViewModel.checkLevel().toString()
                                     ) + ")",
                                     fontFamily = descriptionFontFamily,
@@ -327,9 +328,11 @@ fun Reward(
                             }
                             Spacer(modifier = Modifier.height(10.dp))
 
-                            if (rewardsPageViewModel.checkLevel().toString() == "Gold") {
+                            if (rewardsPageViewModel.checkLevel()
+                                    .toString() == stringResource(id = R.string.gold_string)
+                            ) {
                                 Text(
-                                    text = "You are already in the Top Level",
+                                    text = stringResource(id = R.string.you_are_already_in_the_top_string),
                                     fontSize = 16.sp,
                                     textAlign = TextAlign.Center,
                                     fontWeight = Medium,
@@ -339,7 +342,7 @@ fun Reward(
                                 Text(
                                     text = rewardsPageViewModel.getDifference(
                                         rewardsPageViewModel.checkLevel().toString()
-                                    ) + " Points to Next Level",
+                                    ) + " " + stringResource(id = R.string.points_to_next_level_string),
                                     fontSize = 16.sp,
                                     textAlign = TextAlign.Center,
                                     fontWeight = Medium,
@@ -356,7 +359,9 @@ fun Reward(
                             )
 
                             val animatedProgress = animateFloatAsState(
-                                targetValue = rewardsPageViewModel.calculateProgress(rewardsPageViewModel.rewardPointsState.value),
+                                targetValue = rewardsPageViewModel.calculateProgress(
+                                    rewardsPageViewModel.rewardPointsState.value
+                                ),
                                 animationSpec = tween(1000, easing = FastOutSlowInEasing)
                             )
                             LinearProgressIndicator(
@@ -386,7 +391,7 @@ fun Reward(
                             .padding(start = 15.dp, end = 10.dp, top = 10.dp, bottom = 10.dp),
                     ) {
                         Text(
-                            text = "Refer Your Friends",
+                            text = stringResource(id = R.string.refer_your_friends_string),
                             fontFamily = titleFontFamily,
                             fontSize = 18.sp,
                             textAlign = TextAlign.Center
@@ -404,13 +409,13 @@ fun Reward(
                                 tint = Orange
                             )
                             Text(
-                                text = " You get",
+                                text = " " + stringResource(id = R.string.you_get_string),
                                 fontFamily = descriptionFontFamily,
                                 fontSize = 16.sp,
                                 textAlign = TextAlign.Center
                             )
                             Text(
-                                text = " 200 Reward Points",
+                                text = " " + stringResource(id = R.string.two_hundred_reward_points_string),
                                 fontFamily = titleFontFamily,
                                 fontSize = 16.sp,
                                 textAlign = TextAlign.Center
@@ -430,13 +435,13 @@ fun Reward(
                                 tint = Orange
                             )
                             Text(
-                                text = " They get",
+                                text = " " + stringResource(id = R.string.they_get_string),
                                 fontFamily = descriptionFontFamily,
                                 fontSize = 18.sp,
                                 textAlign = TextAlign.Center
                             )
                             Text(
-                                text = " 100 Reward Points",
+                                text = " " + stringResource(id = R.string.hundred_reward_points_string),
                                 fontFamily = titleFontFamily,
                                 fontSize = 18.sp,
                                 textAlign = TextAlign.Center
@@ -478,7 +483,7 @@ fun Reward(
                                 onClick = {
                                     Toast.makeText(
                                         context,
-                                        "Text copied to clipboard",
+                                        R.string.text_copied_to_clipboard_string,
                                         Toast.LENGTH_SHORT
                                     ).show()
                                 },
@@ -492,7 +497,7 @@ fun Reward(
                                     contentDescription = "Copy",
                                 )
                                 Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-                                Text("Copy")
+                                Text(stringResource(id = R.string.copy_string))
                             }
 
                         }
@@ -501,7 +506,7 @@ fun Reward(
 
                         Text(
                             modifier = Modifier.padding(start = 10.dp),
-                            text = "You have referred 0 friends",
+                            text = stringResource(id = R.string.you_have_referred_zero_friends_string),
                             fontFamily = titleFontFamily,
                             fontSize = 16.sp,
                             textAlign = TextAlign.Center

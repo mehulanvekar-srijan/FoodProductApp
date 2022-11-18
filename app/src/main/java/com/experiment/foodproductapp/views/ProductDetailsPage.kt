@@ -1,7 +1,6 @@
 package com.experiment.foodproductapp.views
 
 
-
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -23,6 +22,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 
 
 import androidx.compose.ui.text.TextStyle
@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 
 import com.experiment.foodproductapp.R
@@ -48,30 +49,24 @@ import com.experiment.foodproductapp.viewmodels.HomeScreenViewModel
 @Composable
 fun Preview() {
     val navHostController = rememberNavController()
-    ProductDetailsPage({navHostController },viewModel())
+    ProductDetailsPage({ navHostController }, viewModel())
 }
 
-val  productDetails =  Product(
-    id = 0,
-    url = "https://www.bigbasket.com/media/uploads/p/xxl/40213061_2-coolberg-non-alcoholic-beer-malt.jpg",
-    title = "Coolberg Non Alcoholic Beer - Malt",
-    description = "Coolberg Malt Beer is a Non-Alcoholic Beer. This NAB has toasty notes of barley malts and hops and a distinctive musky aroma. It is made from the finest natural barley malts extracts. It is carbonated and has a serious spunk. As it contains less carbonation and often develops a beer-like head when poured into a glass. It is a perfect blend of crisp, bold and smooth flavour. Enjoy it with your choice of snack in the evening or serve it at a party.",
-    price = 79,
-    count = 0,
-//alcohol = 5
-)
 
-
+@OptIn(ExperimentalCoilApi::class)
 @Composable
-fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScreenViewModel: HomeScreenViewModel) {
+fun ProductDetailsPage(
+    navHostControllerLambda: () -> NavHostController,
+    homeScreenViewModel: HomeScreenViewModel
+) {
 
     val context = LocalContext.current
     val productDetails = homeScreenViewModel.productForDetailPage
     val scrollState = rememberScrollState()
-    val quantity = remember {mutableStateOf(0)}
+    val quantity = remember { mutableStateOf(0) }
 
     LaunchedEffect(key1 = Unit) {
-        homeScreenViewModel.getProductCount(context,productDetails.value.id,quantity)
+        homeScreenViewModel.getProductCount(context, productDetails.value.id, quantity)
     }
 
     ChangeBarColors(statusColor = Color.White, navigationBarColor = DarkYellow)
@@ -179,7 +174,7 @@ fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScr
                                     .fillMaxWidth()
                                     .padding(start = 40.dp, end = 20.dp)
                             )
-                        } else  {
+                        } else {
                             Text(
                                 text = productDetails.value.description,
                                 color = LightDarkGray,
@@ -219,10 +214,10 @@ fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScr
                                 .background(Color.Transparent)
                                 .padding(end = 10.dp),
                             contentAlignment = Alignment.TopEnd
-                        ){
+                        ) {
                             Surface(
                                 color = Color.Transparent
-                            ){
+                            ) {
                                 IconButton(
                                     onClick = {
                                         homeScreenViewModel.incrementProductCount(
@@ -242,7 +237,7 @@ fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScr
                                             )
                                         )
                                         .size(width = 35.dp, height = 35.dp)
-                                ){
+                                ) {
                                     Icon(
                                         imageVector = Icons.Default.Add,
                                         contentDescription = "",
@@ -253,15 +248,15 @@ fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScr
                         }
 
                         //Count Value
-                            Text(
-                                text = "" + quantity.value,
-                                style = TextStyle(
-                                    fontSize = 25.sp,
-                                ),
-                                color = DarkYellow,
-                                modifier = Modifier
-                                    .padding(start = 5.dp, end = 5.dp)
-                            )
+                        Text(
+                            text = quantity.value.toString(),
+                            style = TextStyle(
+                                fontSize = 25.sp,
+                            ),
+                            color = DarkYellow,
+                            modifier = Modifier
+                                .padding(start = 5.dp, end = 5.dp)
+                        )
 
                         //}
 
@@ -271,10 +266,10 @@ fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScr
                                 .background(Color.Transparent)
                                 .padding(start = 10.dp),
                             contentAlignment = Alignment.TopEnd,
-                        ){
+                        ) {
                             Surface(
                                 color = Color.Transparent
-                            ){
+                            ) {
                                 IconButton(
                                     onClick = {
                                         homeScreenViewModel.decrementProductCount(
@@ -294,7 +289,7 @@ fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScr
                                             )
                                         )
                                         .size(width = 35.dp, height = 35.dp)
-                                ){
+                                ) {
                                     Icon(
                                         imageVector = Icons.Default.Remove,
                                         contentDescription = "",
@@ -330,7 +325,7 @@ fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScr
                             modifier = Modifier.fillMaxHeight(.5f)
                         )
                         Text(
-                            text = "5" + "% Alc",
+                            text = stringResource(id = R.string.five_alcohol_string),
                             color = Color.White,
                             style = TextStyle(
                                 fontWeight = FontWeight.Normal,
@@ -365,13 +360,13 @@ fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScr
                         Image(
                             painter = painterResource(id = R.drawable.ic_rupee_sv),
                             contentDescription = "",
-                            //olorFilter = ColorFilter.tint(color = Color.White),
+                            //colorFilter = ColorFilter.tint(color = Color.White),
                             modifier = Modifier.fillMaxHeight(.5f)
 
                         )
 
                         Text(
-                            text = "Rs. " + productDetails.value.price,
+                            text = stringResource(id = R.string.rs_dot_string) + " " + productDetails.value.price,
                             color = Color.White,
                             style = TextStyle(
                                 fontWeight = FontWeight.Normal,
@@ -401,7 +396,7 @@ fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScr
 @Composable
 fun AppBar(
     navHostControllerLambda: () -> NavHostController,
-    onProductCartClick: ()-> Unit = {},
+    onProductCartClick: () -> Unit = {},
 ) {
 
     TopAppBar(
@@ -410,7 +405,11 @@ fun AppBar(
         elevation = 0.dp,
         navigationIcon = {
             IconButton(onClick = { navHostControllerLambda().navigateUp() }) {
-                Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "", tint = DarkYellow)
+                Icon(
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = "",
+                    tint = DarkYellow
+                )
             }
 
         },

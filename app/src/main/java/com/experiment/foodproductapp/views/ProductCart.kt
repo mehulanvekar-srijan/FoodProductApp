@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -31,6 +32,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
+import com.experiment.foodproductapp.R
 import com.experiment.foodproductapp.database.entity.Product
 import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.viewmodels.ProductCartViewModel
@@ -74,7 +76,7 @@ fun ProductCart(
                     title = {
                         Row(horizontalArrangement = Arrangement.Center) {
                             Text(
-                                text = "Cart ",
+                                text = stringResource(id = R.string.cart_string) + " ",
                                 fontFamily = titleFontFamily,
                                 fontWeight = FontWeight.Bold,
                                 color = DarkYellow,
@@ -250,7 +252,7 @@ fun CardView(
                     textAlign = TextAlign.Center,
                     color = Color.Black,
                     overflow = TextOverflow.Ellipsis,
-                    text = "MRP:Rs ${item.price}",
+                    text = stringResource(id = R.string.mrp_rs_string) + " " + item.price,
                     fontFamily = descriptionFontFamily,
                 )
             }
@@ -404,7 +406,7 @@ fun CheckoutArea(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                text = "Price ",
+                text = stringResource(id = R.string.price_string) + " ",
                 color = Color.White,
                 modifier = Modifier
                     .padding(start = 25.dp),
@@ -413,7 +415,7 @@ fun CheckoutArea(
             )
 
             Text(
-                text = "Rs : ${productCartViewModel.sum.value}",
+                text = stringResource(id = R.string.rs_string) + " " + productCartViewModel.sum.value,
                 color = Color.White,
                 modifier = Modifier
                     .padding(end = 48.dp)
@@ -426,7 +428,7 @@ fun CheckoutArea(
         //Redeem Amount
         Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             Text(
-                text = "Redeem Amount ",
+                text = stringResource(id = R.string.redeem_amount_string) + " ",
                 color = if (productCartViewModel.checkedState.value) {
                     Color.White
                 } else {
@@ -447,9 +449,9 @@ fun CheckoutArea(
 
                 Text(
                     text = if (productCartViewModel.checkedState.value) {
-                        "Rs : ${productCartViewModel.sum.value - productCartViewModel.finalSum.value}"
+                        stringResource(id = R.string.rs_string) + " " + (productCartViewModel.sum.value - productCartViewModel.finalSum.value)
                     } else {
-                        "Rs : 0"
+                        stringResource(id = R.string.rs_0_string)
                     },
                     color = if (productCartViewModel.checkedState.value) {
                         Color.White
@@ -462,7 +464,7 @@ fun CheckoutArea(
                     fontSize = 20.sp,
                 )
                 Checkbox(
-                    enabled = productCartViewModel.sum.value >= 100 && productCartViewModel.redeemAmount.value > 10,
+                    enabled = productCartViewModel.sum.value >= 100 && productCartViewModel.totalPoints.value > 10,
                     modifier = Modifier.padding(0.dp),
                     colors = CheckboxDefaults.colors(
                         checkedColor = Color.White,
@@ -476,7 +478,7 @@ fun CheckoutArea(
                     // change to our checkbox.
                     onCheckedChange = {
                         productCartViewModel.checkedState.value = it
-                        if(productCartViewModel.sum.value>=100) {
+                        if (productCartViewModel.sum.value >= 100) {
                             productCartViewModel.updateFinalSum()
                         }
                     },
@@ -494,7 +496,7 @@ fun CheckoutArea(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                text = "Final Amount ",
+                text = stringResource(id = R.string.final_amount_string) + " ",
                 color = Color.White,
                 modifier = Modifier
                     .padding(start = 25.dp)
@@ -505,7 +507,7 @@ fun CheckoutArea(
             )
 
             Text(
-                text = "Rs : ${productCartViewModel.finalSum.value}",
+                text = stringResource(id = R.string.rs_string) + " " + productCartViewModel.finalSum.value,
                 color = Color.White,
                 modifier = Modifier
                     .padding(end = 45.dp)
@@ -532,7 +534,7 @@ fun CheckoutArea(
                 shape = RoundedCornerShape(50),
             ) {
                 Text(
-                    text = "CHECKOUT",
+                    text = stringResource(id = R.string.checkout_string),
                     color = Color.Black,
                     fontWeight = FontWeight.Bold
                 )
@@ -543,7 +545,7 @@ fun CheckoutArea(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+
 @Preview(showBackground = true, backgroundColor = 1)
 @Composable
 fun PrevPC() {

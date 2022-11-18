@@ -29,13 +29,14 @@ fun MapScreen(
 
     val context = LocalContext.current
 
-    val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)  //To get Current location
+    val fusedLocationClient =
+        LocationServices.getFusedLocationProviderClient(context)  //To get Current location
 
     val permission = rememberPermissionState(permission = Manifest.permission.ACCESS_FINE_LOCATION)
-    if(permission.hasPermission){
+    if (permission.hasPermission) {
 
-        val mapusa = LatLng(15.590692735945124,73.8107942417264)
-        val verna = LatLng(15.364327819982055,73.94552294164896)
+        val mapusa = LatLng(15.590692735945124, 73.8107942417264)
+        val verna = LatLng(15.364327819982055, 73.94552294164896)
         //val panjim = LatLng(15.491597654049222,73.82701456546783)
         var current: LatLng? = null
 
@@ -51,32 +52,36 @@ fun MapScreen(
             uiSettings = mapUiSettings,
             onMapClick = { Log.d("testMap", "MapScreen: $it") },
             cameraPositionState = cameraPositionState,
-            onMyLocationClick = {  },
+            onMyLocationClick = { },
             onMyLocationButtonClick = {
                 Log.d("testMap", "onMyLocationButtonClick")
 
-                if(ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.checkSelfPermission(
+                        context,
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                    ) == PackageManager.PERMISSION_GRANTED
+                ) {
                     fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
                         Log.d("testMap", "lastLocation: $location")
 
-                        if (location != null){
+                        if (location != null) {
                             val lat = location.latitude
                             val lng = location.longitude
-                            current = LatLng(lat,lng)
-                            cameraPositionState.position = CameraPosition.fromLatLngZoom(LatLng(lat,lng), 20f)
+                            current = LatLng(lat, lng)
+                            cameraPositionState.position =
+                                CameraPosition.fromLatLngZoom(LatLng(lat, lng), 20f)
                         }
 
                     }
                 }
                 true
             }
-        ){
+        ) {
             Marker(position = mapusa)
             Marker(position = verna)
         }
-    }
-    else {
-        LaunchedEffect(key1 = Unit){ permission.launchPermissionRequest() }
+    } else {
+        LaunchedEffect(key1 = Unit) { permission.launchPermissionRequest() }
     }
 }
 

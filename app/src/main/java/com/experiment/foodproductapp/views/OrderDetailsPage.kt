@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -34,6 +35,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.experiment.foodproductapp.R
 import com.experiment.foodproductapp.domain.event.UserDetailsFormEvent
@@ -51,7 +53,7 @@ fun Preview2() {
     OrderDetails("sahil@test.com", navHostControllerLambda = navHostControllerLambda)
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalCoilApi::class)
 @Composable
 fun OrderDetails(
     email: String?,
@@ -77,7 +79,12 @@ fun OrderDetails(
 
             //top bar
             TopAppBar(
-                title = { Text(text = "Order Details", color = Color.White) },
+                title = {
+                    Text(
+                        text = stringResource(id = R.string.order_details_string),
+                        color = Color.White
+                    )
+                },
                 backgroundColor = Color.Transparent,
                 elevation = 0.dp,
                 navigationIcon = {
@@ -130,14 +137,14 @@ fun OrderDetails(
                                     verticalArrangement = Arrangement.Center
                                 ) {
                                     Text(
-                                        text = "Order No: # " + item[0].orderId,
+                                        text = stringResource(id = R.string.order_no_string) + " " + item[0].orderId,
                                         modifier = Modifier.padding(bottom = 10.dp),
                                         overflow = TextOverflow.Ellipsis,
                                         fontFamily = titleFontFamily,
                                         fontSize = 19.sp,
                                     )
                                     Text(
-                                        text = "Total Items: " + item.size.toString(),
+                                        text = stringResource(id = R.string.total_items_string) + " " + item.size.toString(),
                                         fontFamily = titleFontFamily,
                                         fontSize = 19.sp,
                                     )
@@ -174,14 +181,16 @@ fun OrderDetails(
                                     horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
                                     Image(
-                                        painter = rememberImagePainter("https://products3.imgix.drizly.com/ci-budweiser-24269668d4e23c97.jpeg"),
+                                        painter = rememberImagePainter(item[0].url),
                                         contentDescription = "",
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .fillMaxHeight(.7f)
                                     )
                                     Text(
-                                        text = "Rs : ${orderDetailsViewModel.calculateSum(item)}",
+                                        text = stringResource(id = R.string.rs_string) + " " + orderDetailsViewModel.calculateSum(
+                                            item
+                                        ),
                                         fontFamily = titleFontFamily,
                                     )
 
@@ -197,7 +206,12 @@ fun OrderDetails(
         Box(modifier = Modifier.fillMaxSize()) {
             BackgroundImage1()
             TopAppBar(
-                title = { Text(text = "Order Details", color = Color.White) },
+                title = {
+                    Text(
+                        text = stringResource(id = R.string.order_details_string),
+                        color = Color.White
+                    )
+                },
                 backgroundColor = Color.Transparent,
                 elevation = 0.dp,
                 navigationIcon = {
@@ -218,9 +232,9 @@ fun OrderDetails(
             ) {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
-                    text = "There are no items in the cart",
+                    text = stringResource(id = R.string.there_are_no_items_in_the_cart_string),
                     fontWeight = FontWeight.Thin,
-                    fontSize = 20 .sp,
+                    fontSize = 20.sp,
                     textAlign = TextAlign.Center,
                     fontFamily = descriptionFontFamily,
                 )
@@ -228,12 +242,14 @@ fun OrderDetails(
             }
 
             Column(
-                modifier = Modifier.fillMaxSize().padding(bottom = 5.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = 5.dp),
                 verticalArrangement = Arrangement.Bottom,
             ) {
                 OutlinedButton(
                     onClick = {
-                        orderDetailsViewModel.navigateToHomeScreenPage(navHostController = navHostControllerLambda())
+                        navHostControllerLambda().navigateUp()
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -247,7 +263,7 @@ fun OrderDetails(
                     ),
                 ) {
                     Text(
-                        text = "Click Here to Order",
+                        text = stringResource(id = R.string.click_here_to_order_string),
                         fontSize = 20.sp, color = Color.Black
                     )
                 }

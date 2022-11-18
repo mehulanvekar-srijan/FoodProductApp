@@ -26,10 +26,10 @@ import com.experiment.foodproductapp.viewmodels.SplashScreenViewModel
 
 @Composable
 fun SplashScreenPage(
-    navHostControllerLambda : () -> NavHostController,
+    navHostControllerLambda: () -> NavHostController,
     splashScreenViewModel: SplashScreenViewModel = viewModel(),
     orderDetailsViewModel: OrderDetailsViewModel = viewModel(),
-    animationDuration : Int = splashScreenViewModel.splashDuration.toInt() - 1000
+    animationDuration: Int = splashScreenViewModel.splashDuration.toInt() - 1000
 ) {
     val startAnimation = remember { mutableStateOf(false) }
     val context = LocalContext.current
@@ -37,22 +37,22 @@ fun SplashScreenPage(
     ChangeBarColors(statusColor = Orange, navigationBarColor = DarkYellow)
 
     val animatedAlpha = animateFloatAsState(
-        targetValue = if(startAnimation.value) 1F else 0F,
+        targetValue = if (startAnimation.value) 1F else 0F,
         animationSpec = tween(animationDuration),
     )
 
     val animatedShape = animateFloatAsState(
-        targetValue = if(startAnimation.value) 0.9F else 0.0F,
+        targetValue = if (startAnimation.value) 0.9F else 0.0F,
         animationSpec = tween(animationDuration),
     )
 
     val animatedAngle = animateFloatAsState(
-        targetValue = if(startAnimation.value) 0F else 25F,
+        targetValue = if (startAnimation.value) 0F else 25F,
         animationSpec = tween(animationDuration),
     )
 
     val animatedPadding = animateDpAsState(
-        targetValue = if(startAnimation.value) 15.dp else 0.dp,
+        targetValue = if (startAnimation.value) 15.dp else 0.dp,
         animationSpec = tween(2000),
     )
 
@@ -77,7 +77,7 @@ fun SplashScreenPage(
 
     LaunchedEffect(key1 = Unit) {
         startAnimation.value = true
-        splashScreenViewModel.execute(context,navHostControllerLambda())
+        splashScreenViewModel.execute(context, navHostControllerLambda())
     }
 }
 
@@ -91,7 +91,7 @@ fun CollisionAnimation(
         painter = painterResource(id = R.drawable.ic_beer_left_glass),
         contentDescription = "left",
         modifier = Modifier
-            .padding(start = animatedPadding.value,),
+            .padding(start = animatedPadding.value),
         contentScale = ContentScale.Fit,
         alignment = Alignment.CenterStart,
     )
@@ -100,7 +100,7 @@ fun CollisionAnimation(
         painter = painterResource(id = R.drawable.ic_beer_right_glass),
         contentDescription = "right",
         modifier = Modifier
-            .padding(end = animatedPadding.value,),
+            .padding(end = animatedPadding.value),
         contentScale = ContentScale.Fit,
         alignment = Alignment.CenterEnd,
     )
