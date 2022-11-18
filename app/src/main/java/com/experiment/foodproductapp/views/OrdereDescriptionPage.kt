@@ -33,6 +33,7 @@ import androidx.compose.foundation.lazy.*
 import androidx.compose.material.Text
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
@@ -41,6 +42,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
@@ -68,9 +70,14 @@ fun OrderDescriptionPage(
 ) {
 
     ChangeBarColors(statusColor = Color.White, navigationBarColor = Color.White)
-    val df = DecimalFormat("#.##")
-    df.roundingMode = RoundingMode.DOWN
+//    val df = DecimalFormat("#.##")
+//    df.roundingMode = RoundingMode.DOWN
     var sum = 0
+
+    val context = LocalContext.current
+    LaunchedEffect(key1 = Unit) {
+        orderDetailsViewModel.calculateRedeemedAmount(context)
+    }
 
 
     Box(
@@ -239,7 +246,7 @@ fun OrderDescriptionPage(
                             )
 
                             Text(
-                                text = "Rs. ${df.format(sum * .82)}",
+                                text = "Rs. $sum",
                                 fontFamily = descriptionFontFamily,
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Thin,
@@ -258,7 +265,7 @@ fun OrderDescriptionPage(
                                 .padding(bottom = 10.dp)
                         ) {
                             Text(
-                                text = "Tax:",
+                                text = "Redeemed Amount:",
                                 fontFamily = descriptionFontFamily,
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.SemiBold,
@@ -268,7 +275,7 @@ fun OrderDescriptionPage(
                             )
 
                             Text(
-                                text = "Rs. ${df.format(sum * .18)}",
+                                text = "Rs. ${sum - orderDetailsViewModel.finalAmount.value}",
                                 fontFamily = descriptionFontFamily,
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.SemiBold,
@@ -296,7 +303,7 @@ fun OrderDescriptionPage(
                             )
 
                             Text(
-                                text = "Rs. ${sum}",
+                                text = "Rs. ${orderDetailsViewModel.finalAmount.value.toInt()}",
                                 fontFamily = descriptionFontFamily,
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.SemiBold,

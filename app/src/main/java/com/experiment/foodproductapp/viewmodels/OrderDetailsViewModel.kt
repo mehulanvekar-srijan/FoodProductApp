@@ -18,6 +18,9 @@ class OrderDetailsViewModel: ViewModel() {
     // to access the order on description page
     var orderDetails = mutableListOf<OrderDetails>()
 
+    val finalAmount = mutableStateOf<Double>(-1.0)
+
+
     //assign the details of the order clicked on
     fun addOrder(newOrder: MutableList<OrderDetails>) {
         orderDetails = newOrder
@@ -39,6 +42,14 @@ class OrderDetailsViewModel: ViewModel() {
             index++
         } while (index < item.size)
         return sum
+    }
+
+    fun calculateRedeemedAmount(context: Context) {
+
+        viewModelScope.launch(Dispatchers.IO) {
+            finalAmount.value =
+                DatabaseRepository(context).getFinalPrice(email.value, orderDetails[0].orderId)
+        }
     }
 
     var finalList = mutableStateListOf<MutableList<OrderDetails>>()

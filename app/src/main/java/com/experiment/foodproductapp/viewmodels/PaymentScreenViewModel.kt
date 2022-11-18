@@ -118,7 +118,7 @@ class PaymentScreenViewModel : ViewModel() {
             }
 
             else {
-                withContext(Dispatchers.Main){
+                withContext(Dispatchers.Main) {
                     Toast.makeText(context,"Internal Error Occurred",Toast.LENGTH_SHORT).show()
                 }
             }
