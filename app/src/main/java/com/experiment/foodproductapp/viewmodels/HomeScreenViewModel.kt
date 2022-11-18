@@ -1,84 +1,53 @@
 package com.experiment.foodproductapp.viewmodels
 
 import android.content.Context
-import android.util.Log
-import android.widget.Toast
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.experiment.foodproductapp.constants.Screen
-import com.experiment.foodproductapp.database.Product
+import com.experiment.foodproductapp.database.entity.HomeItems
+import com.experiment.foodproductapp.database.entity.Product
 import com.experiment.foodproductapp.repository.DatabaseRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class HomeScreenViewModel : ViewModel() {
 
-    private var userEmail = mutableStateOf("")
+    private var _userEmail = mutableStateOf("")
+
+    //Create empty state list object of homeItems
+    private val _homeItems: MutableState<List<HomeItems>> = mutableStateOf(listOf())
+    val homeItems: State<List<HomeItems>> = _homeItems
 
     //creating empty object
-    var productForDetailPage by mutableStateOf<Product>(Product())
+    val productForDetailPage = mutableStateOf(HomeItems())
 
-
-    fun addProduct(newProduct: Product) {
-        productForDetailPage = newProduct
+    fun initHomeItems(context: Context){
+        viewModelScope.launch(Dispatchers.IO){
+            _homeItems.value = DatabaseRepository(context).readAllItems()
+        }
     }
 
-    val productsList = listOf(
-        Product(
-            id = 0,
-//             url = "https://www.bigbasket.com/media/uploads/p/xxl/40213061_2-coolberg-non-alcoholic-beer-malt.jpg",
-            url = "https://products3.imgix.drizly.com/ci-budweiser-24269668d4e23c97.jpeg",
-            title = "Coolberg Non Alcoholic Beer - Malt",
-            description = "Coolberg Malt Beer is a Non-Alcoholic Beer. This NAB has toasty notes of barley malts and hops and a distinctive musky aroma. It is made from the finest natural barley malts extracts. It is carbonated and has a serious spunk. As it contains less carbonation and often develops a beer-like head when poured into a glass. It is a perfect blend of crisp, bold and smooth flavour. Enjoy it with your choice of snack in the evening or serve it at a party.",
-            price = 79,
-            //alcohol = 5
-        ),
-        Product(
-            id = 1,
-//             url = "https://www.bigbasket.com/media/uploads/p/xxl/40122150_2-coolberg-beer-mint-non-alcoholic.jpg",
-            url = "https://products3.imgix.drizly.com/ci-budweiser-24269668d4e23c97.jpeg",
-            title = "Coolberg Non Alcoholic Beer - Mint",
-            description = "Coolberg Malt Beer is a Non-Alcoholic Beer. This NAB has toasty notes of barley malts and hops and a distinctive musky aroma. It is made from the finest natural barley malts extracts. It is carbonated and has a serious spunk. As it contains less carbonation and often develops a beer-like head when poured into a glass. It is a perfect blend of crisp, bold and smooth flavour. Enjoy it with your choice of snack in the evening or serve it at a party.",
-            price = 79,
-            //alcohol = 5
-        ),
-        Product(
-            id = 2,
-//             url = "https://www.bigbasket.com/media/uploads/p/xxl/40213060_2-coolberg-non-alcoholic-beer-cranberry.jpg",
-            url = "https://products3.imgix.drizly.com/ci-budweiser-24269668d4e23c97.jpeg",
-            title = "Coolberg Non Alcoholic Beer - Cranberry",
-            description = "Coolberg Malt Beer is a Non-Alcoholic Beer. This NAB has toasty notes of barley malts and hops and a distinctive musky aroma. It is made from the finest natural barley malts extracts. It is carbonated and has a serious spunk. As it contains less carbonation and often develops a beer-like head when poured into a glass. It is a perfect blend of crisp, bold and smooth flavour. Enjoy it with your choice of snack in the evening or serve it at a party.",
-            price = 79,
-            //alcohol = 5
-        ),
-        Product(
-            id = 3,
-//             url = "https://www.bigbasket.com/media/uploads/p/xxl/40213059_2-coolberg-non-alcoholic-beer-strawberry.jpg",
-            url = "https://products3.imgix.drizly.com/ci-budweiser-24269668d4e23c97.jpeg",
-            title = "Coolberg Non Alcoholic Beer - Strawberry",
-            description = "Coolberg Malt Beer is a Non-Alcoholic Beer. This NAB has toasty notes of barley malts and hops and a distinctive musky aroma. It is made from the finest natural barley malts extracts. It is carbonated and has a serious spunk. As it contains less carbonation and often develops a beer-like head when poured into a glass. It is a perfect blend of crisp, bold and smooth flavour. Enjoy it with your choice of snack in the evening or serve it at a party.",
-            price = 79,
-            //alcohol = 5
-        ),
-    )
+    fun addProduct(newItem: HomeItems) {
+        productForDetailPage.value = newItem
+    }
 
     fun setEmail(email: String?) {
-        if (email != null) userEmail.value = email
+        if (email != null) _userEmail.value = email
     }
 
+    //Navigation
     fun navigateToUserDetails(navHostController: NavHostController) {
-        navHostController.navigate(Screen.UserDetails.routeWithData(userEmail.value))
+        navHostController.navigate(Screen.UserDetails.routeWithData(_userEmail.value))
     }
 
     fun navigateToProductCart(navHostController: NavHostController) {
-        navHostController.navigate(Screen.ProductCart.routeWithData(userEmail.value))
+        navHostController.navigate(Screen.ProductCart.routeWithData(_userEmail.value))
     }
 
     fun navigateToOrderDetailsPage(navHostController: NavHostController) {
-        navHostController.navigate(Screen.OrderDetails.routeWithData(userEmail.value))
+        navHostController.navigate(Screen.OrderDetails.routeWithData(_userEmail.value))
     }
 
     fun navigateToProductDetailsPage(navHostController: NavHostController) {
@@ -87,51 +56,59 @@ class HomeScreenViewModel : ViewModel() {
         }
     }
 
-    fun addProductToCart(item: Product, context: Context) {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                item.email = userEmail.value
-                DatabaseRepository(context).addProduct(item)
-            } catch (e: android.database.sqlite.SQLiteConstraintException) {
 
-            }
+    fun addProductToCart(homeItem: HomeItems, context: Context) {
+        viewModelScope.launch(Dispatchers.IO) {
+
+            //Convert HomeItem to Product Object
+            val product = Product(
+                email = _userEmail.value,
+                id = homeItem.id,
+                url = homeItem.url,
+                title = homeItem.title,
+                description = homeItem.description,
+                price = homeItem.price,
+                count = homeItem.count,
+            )
+
+            //Inset into Product Table
+            try { DatabaseRepository(context).addProduct(product) }
+            catch (e: android.database.sqlite.SQLiteConstraintException) { }
         }
     }
 
-    private fun removeFromDatabase(context: Context, item: Product) {
+    private fun removeProductFromDatabase(context: Context,productId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            DatabaseRepository(context).removeProduct(id = item.id, email = userEmail.value)
+            DatabaseRepository(context).removeProduct(id = productId, email = _userEmail.value)
         }
     }
-
 
     //Get count from db and set state
     fun getProductCount(context: Context, id: Int, state: MutableState<Int>) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                state.value = DatabaseRepository(context).getCount(id = id, email = userEmail.value)
-            } catch (e: android.database.sqlite.SQLiteConstraintException) {
-
-            }
+                state.value = DatabaseRepository(context).getCount(id = id, email = _userEmail.value)
+            } catch (e: android.database.sqlite.SQLiteConstraintException) { }
         }
     }
 
     //Get current count from db, increment value, set state
     fun incrementProductCount(context: Context, id: Int, state: MutableState<Int>) {
         if (state.value == 0) {
-            addProductToCart(productForDetailPage!!, context)
+            addProductToCart(productForDetailPage.value, context)
             state.value += 1
-        } else {
+        }
+        else {
             viewModelScope.launch(Dispatchers.IO) {
 
                 var currentCount =
-                    DatabaseRepository(context).getCount(id = id, email = userEmail.value)
+                    DatabaseRepository(context).getCount(id = id, email = _userEmail.value)
                 currentCount += 1
 
                 DatabaseRepository(context).setCount(
                     id = id,
                     count = currentCount,
-                    email = userEmail.value
+                    email = _userEmail.value
                 ) //set count in db
             }
             //after updating count or adding product update count state in UI
@@ -146,7 +123,7 @@ class HomeScreenViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
 
             var currentCount =
-                DatabaseRepository(context).getCount(id = id, email = userEmail.value)
+                DatabaseRepository(context).getCount(id = id, email = _userEmail.value)
             if (currentCount != 0) {
                 currentCount -= 1
             }
@@ -154,22 +131,22 @@ class HomeScreenViewModel : ViewModel() {
             DatabaseRepository(context).setCount(
                 id = id,
                 count = currentCount,
-                email = userEmail.value
+                email = _userEmail.value
             ) //set count in db
 
             if (currentCount == 0) {
                 // remove product
-                removeFromDatabase(context, productForDetailPage!!)
+                removeProductFromDatabase(context, productForDetailPage.value.id)
             }
             state.value = currentCount //set count of UI state
             DatabaseRepository(context).setCount(
                 id = id,
                 count = currentCount,
-                email = userEmail.value
+                email = _userEmail.value
             ) //set count in db
             if (currentCount == 0) {
                 // remove product
-                removeFromDatabase(context, productForDetailPage!!)
+                removeProductFromDatabase(context, productForDetailPage.value.id)
             }
             getProductCount(
                 context = context,

@@ -1,5 +1,6 @@
 package com.experiment.foodproductapp.views
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
@@ -13,10 +14,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.twotone.EditCalendar
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.*
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
@@ -28,15 +32,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import com.experiment.foodproductapp.R
 import com.experiment.foodproductapp.domain.event.SignupFormEvent
 import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.viewmodels.ForgotPasswordViewModel
 import kotlinx.coroutines.launch
 
-@Preview(showBackground = true)
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ForgotPassword(
+    navHostControllerLambda: () -> NavHostController,
     forgotPasswordViewModel: ForgotPasswordViewModel = viewModel()
 ) {
 
@@ -180,7 +186,23 @@ fun ForgotPassword(
                                     value = inputList[i],
                                     modifier = Modifier
                                         .padding(2.dp)
-                                        .size(55.dp),
+                                        .size(55.dp)
+                                        .onFocusEvent {
+                                            if(it.hasFocus) Log.d("testKeyB", "onFocusEvent: i=$i")
+                                        }
+                                        .onKeyEvent {
+                                            Log.d("testKeyB", "onKeyEvent: i=$i | key=${it.key} | type=${it.type} | nativeKeyEvent=${it.nativeKeyEvent}")
+
+                                            if (it.key == Key.Backspace) {
+                                                if(inputList[i].isEmpty() && i > 0) inputList[i-1] = ""
+                                                focusManager.moveFocus(FocusDirection.Left)
+                                            }
+                                            if(it.key == Key.Back){
+                                                navHostControllerLambda().navigateUp()
+                                            }
+
+                                            true
+                                        },
                                     onValueChange = {
                                         inputList[i] = it
                                         if(inputList[i].isNotEmpty()) focusManager.moveFocus(FocusDirection.Right)

@@ -66,11 +66,14 @@ fun HomeScreenPage(
     navHostControllerLambda: () -> NavHostController,
     homeScreenViewModel: HomeScreenViewModel = viewModel(),
 ) {
-    LaunchedEffect(key1 = Unit) { homeScreenViewModel.setEmail(email) }
+    val context = LocalContext.current
+
+    LaunchedEffect(key1 = Unit) {
+        homeScreenViewModel.setEmail(email)
+        homeScreenViewModel.initHomeItems(context = context)
+    }
 
     ChangeBarColors(navigationBarColor = Color.White)
-
-    val context = LocalContext.current
 
     val coroutineScope = rememberCoroutineScope()
 
@@ -121,7 +124,7 @@ fun HomeScreenPage(
             }
 
             //Products
-            items(items = homeScreenViewModel.productsList) { item ->
+            items(items = homeScreenViewModel.homeItems.value) { item ->
 
                 Box(
                     modifier = Modifier

@@ -2,19 +2,18 @@ package com.experiment.foodproductapp.repository
 
 import android.content.Context
 import com.experiment.foodproductapp.database.*
+import com.experiment.foodproductapp.database.entity.*
 
 class DatabaseRepository(context: Context) {
 
     private val userDao = UserDatabase.getDatabase(context).userDao()
     private val productDao = UserDatabase.getDatabase(context).productDao()
     private val orderDetailsDao = UserDatabase.getDatabase(context).orderDetailsDao()
-    private val rewardsDao = UserDatabase.getDatabase(context).rewardsDao()
-    private val rewardsUsedDao = UserDatabase.getDatabase(context).rewardsUsedDao()
+    private val homeItemsDao = UserDatabase.getDatabase(context).homeItemsDao()
+    private val finalPriceDao = UserDatabase.getDatabase(context).finalPriceDao()
 
     //User
     fun addUser(user: User) = userDao.insertUser(user)
-
-    fun readAllUsers() : List<User> = userDao.readAllUsers()
 
     fun getUserByEmail(email: String) : User = userDao.getUserByEmail(email)
 
@@ -74,16 +73,13 @@ class DatabaseRepository(context: Context) {
     }
 
 
-    //Rewards
-    fun insertReward(rewards: Rewards) = rewardsDao.insertReward(rewards)
-    fun readAllRewards() : List<Rewards> = rewardsDao.readAllRewards()
+    //Home Items
+    fun insertItems(homeItems: HomeItems) = homeItemsDao.insertItems(homeItems)
+
+    fun readAllItems() : List<HomeItems> = homeItemsDao.readAllItems()
 
 
-    //RewardsUsedDao
-    fun insertRewardUsed(rewardsUsed: RewardsUsed) = rewardsUsedDao.insertRewardUsed(rewardsUsed)
-    fun readAllRewardsUsed(email: String) : List<RewardsUsed> = rewardsUsedDao.readAllRewardsUsed(email)
-
-    //fun listOfAvailableRewards(email: String) = rewardsUsedDao.listOfAvailableRewards(email)
-
-
+    //Final Price Table
+    fun insertFinalPrice(finalPrice: FinalPrice) = finalPriceDao.insertFinalPrice(finalPrice)
+    fun getFinalPrice(email: String, orderId: Int): Double = finalPriceDao.getFinalPrice(email,orderId)
 }

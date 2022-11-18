@@ -10,7 +10,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.experiment.foodproductapp.constants.Screen
-import com.experiment.foodproductapp.database.User
+import com.experiment.foodproductapp.database.entity.User
 import com.experiment.foodproductapp.domain.event.SignInFormEvent
 import com.experiment.foodproductapp.domain.use_case.EmptyPassword
 import com.experiment.foodproductapp.domain.use_case.ValidateEmail

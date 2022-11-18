@@ -9,9 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.experiment.foodproductapp.constants.Screen
-import com.experiment.foodproductapp.database.OrderDetails
-import com.experiment.foodproductapp.database.Product
-import com.experiment.foodproductapp.database.User
+import com.experiment.foodproductapp.database.entity.User
 import com.experiment.foodproductapp.repository.DatabaseRepository
 import com.experiment.foodproductapp.domain.event.UserDetailsFormEvent
 import com.experiment.foodproductapp.domain.use_case.*

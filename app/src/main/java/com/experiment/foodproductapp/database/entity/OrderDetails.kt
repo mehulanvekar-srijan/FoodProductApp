@@ -1,17 +1,18 @@
-package com.experiment.foodproductapp.database
+package com.experiment.foodproductapp.database.entity
 
 import androidx.room.Entity
+import org.jetbrains.annotations.NotNull
 
 @Entity(primaryKeys = ["email", "id", "orderId"])
 class OrderDetails(
-    email: String,
+    @NotNull email: String,
     count: Int,
-    id: Int,
+    @NotNull id: Int,
     url: String,
     title: String,
     description: String,
     price: Int,
-    var orderId: Int,
+    @NotNull var orderId: Int,
     var canceled: Boolean,
 ) : Product(
     email = email,

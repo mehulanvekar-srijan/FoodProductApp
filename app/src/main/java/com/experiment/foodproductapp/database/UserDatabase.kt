@@ -4,14 +4,16 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.experiment.foodproductapp.database.dao.*
+import com.experiment.foodproductapp.database.entity.*
 
 @Database(
     entities = [
         User::class,
         Product::class,
         OrderDetails::class,
-        Rewards::class,
-        RewardsUsed::class,
+        HomeItems::class,
+        FinalPrice::class,
         ],
     version = 1
 )
@@ -20,8 +22,8 @@ abstract class UserDatabase : RoomDatabase() {
     abstract fun userDao() : UserDao
     abstract fun productDao() : ProductDao
     abstract fun orderDetailsDao() : OrderDetailsDao
-    abstract fun rewardsDao() : RewardsDao
-    abstract fun rewardsUsedDao() : RewardsUsedDao
+    abstract fun homeItemsDao() : HomeItemsDao
+    abstract fun finalPriceDao() : FinalPriceDao
 
     companion object Static {
         private var database : UserDatabase? = null

@@ -2,23 +2,14 @@ package com.experiment.foodproductapp.views
 
 
 
-import android.graphics.Paint
-import android.text.style.LineHeightSpan
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.outlined.Favorite
-import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.runtime.*
-
-import androidx.compose.runtime.saveable.rememberSaveable
 
 
 import androidx.compose.ui.Alignment
@@ -27,17 +18,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
 
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.HorizontalAlignmentLine
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 
 
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontStyle
 
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -51,7 +39,7 @@ import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberImagePainter
 
 import com.experiment.foodproductapp.R
-import com.experiment.foodproductapp.database.Product
+import com.experiment.foodproductapp.database.entity.Product
 import com.experiment.foodproductapp.ui.theme.*
 
 import com.experiment.foodproductapp.viewmodels.HomeScreenViewModel
@@ -62,7 +50,6 @@ fun Preview() {
     val navHostController = rememberNavController()
     ProductDetailsPage({navHostController },viewModel())
 }
-
 
 val  productDetails =  Product(
     id = 0,
@@ -78,13 +65,13 @@ val  productDetails =  Product(
 @Composable
 fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScreenViewModel: HomeScreenViewModel) {
 
-    val productDetails = homeScreenViewModel.productForDetailPage
     val context = LocalContext.current
+    val productDetails = homeScreenViewModel.productForDetailPage
     val scrollState = rememberScrollState()
     val quantity = remember {mutableStateOf(0)}
 
     LaunchedEffect(key1 = Unit) {
-        homeScreenViewModel.getProductCount(context,productDetails.id,quantity)
+        homeScreenViewModel.getProductCount(context,productDetails.value.id,quantity)
     }
 
     ChangeBarColors(statusColor = Color.White, navigationBarColor = DarkYellow)
@@ -136,7 +123,7 @@ fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScr
                             contentAlignment = Alignment.Center
                         ) {
                             Image(
-                                painter = rememberImagePainter(productDetails.url),
+                                painter = rememberImagePainter(productDetails.value.url),
                                 //painter = painterResource(id = R.drawable.beer),
                                 contentDescription = "",
                                 contentScale = ContentScale.FillWidth,
@@ -154,7 +141,7 @@ fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScr
                             .fillMaxWidth()
                     ) {
                         Text(
-                            text = productDetails.title,
+                            text = productDetails.value.title,
                             color = Color.DarkGray,
                             style = TextStyle(
                                 fontWeight = FontWeight.SemiBold,
@@ -177,7 +164,7 @@ fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScr
                         //item {
                         if (scrollState.value == 0) {
                             Text(
-                                text = productDetails.description,
+                                text = productDetails.value.description,
                                 color = LightDarkGray,
                                 style = TextStyle(
                                     fontSize = 17.sp,
@@ -194,7 +181,7 @@ fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScr
                             )
                         } else  {
                             Text(
-                                text = productDetails.description,
+                                text = productDetails.value.description,
                                 color = LightDarkGray,
                                 style = TextStyle(
                                     fontSize = 17.sp,
@@ -240,7 +227,7 @@ fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScr
                                     onClick = {
                                         homeScreenViewModel.incrementProductCount(
                                             context,
-                                            productDetails.id,
+                                            productDetails.value.id,
                                             quantity
                                         )
                                     },
@@ -266,12 +253,6 @@ fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScr
                         }
 
                         //Count Value
-//                        Box(
-//                            modifier = Modifier,
-//                                //.background(Color.Transparent)
-//                                //.clip(RoundedCornerShape(25)),
-//                            contentAlignment = Alignment.Center,
-//                        ) {
                             Text(
                                 text = "" + quantity.value,
                                 style = TextStyle(
@@ -279,7 +260,6 @@ fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScr
                                 ),
                                 color = DarkYellow,
                                 modifier = Modifier
-                                    //.background(DarkYellow)
                                     .padding(start = 5.dp, end = 5.dp)
                             )
 
@@ -299,7 +279,7 @@ fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScr
                                     onClick = {
                                         homeScreenViewModel.decrementProductCount(
                                             context,
-                                            productDetails.id,
+                                            productDetails.value.id,
                                             quantity
                                         )
                                     },
@@ -391,7 +371,7 @@ fun ProductDetailsPage(navHostControllerLambda: () -> NavHostController, homeScr
                         )
 
                         Text(
-                            text = "Rs. " + productDetails.price,
+                            text = "Rs. " + productDetails.value.price,
                             color = Color.White,
                             style = TextStyle(
                                 fontWeight = FontWeight.Normal,
