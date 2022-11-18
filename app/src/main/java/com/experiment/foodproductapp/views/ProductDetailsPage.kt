@@ -120,7 +120,7 @@ fun ProductDetailsPage(
                             Image(
                                 painter = rememberImagePainter(productDetails.value.url),
                                 //painter = painterResource(id = R.drawable.beer),
-                                contentDescription = "",
+                                contentDescription = "ic_product_image",
                                 contentScale = ContentScale.FillWidth,
 
                                 modifier = Modifier
@@ -240,7 +240,7 @@ fun ProductDetailsPage(
                                 ) {
                                     Icon(
                                         imageVector = Icons.Default.Add,
-                                        contentDescription = "",
+                                        contentDescription = "ic_add_count_bt",
                                         tint = Color.White,
                                     )
                                 }
@@ -292,7 +292,7 @@ fun ProductDetailsPage(
                                 ) {
                                     Icon(
                                         imageVector = Icons.Default.Remove,
-                                        contentDescription = "",
+                                        contentDescription = "ic_minus_count_bt",
                                         tint = Color.White,
                                     )
                                 }
@@ -321,7 +321,7 @@ fun ProductDetailsPage(
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.ic_percentage_percent),
-                            contentDescription = "",
+                            contentDescription = "ic_percentage",
                             modifier = Modifier.fillMaxHeight(.5f)
                         )
                         Text(
@@ -359,7 +359,7 @@ fun ProductDetailsPage(
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.ic_rupee_sv),
-                            contentDescription = "",
+                            contentDescription = "ic_rupees",
                             //colorFilter = ColorFilter.tint(color = Color.White),
                             modifier = Modifier.fillMaxHeight(.5f)
 
@@ -407,7 +407,7 @@ fun AppBar(
             IconButton(onClick = { navHostControllerLambda().navigateUp() }) {
                 Icon(
                     imageVector = Icons.Default.ArrowBack,
-                    contentDescription = "",
+                    contentDescription = "ic_arrow_back_bt",
                     tint = DarkYellow
                 )
             }
@@ -417,7 +417,7 @@ fun AppBar(
             IconButton(onClick = onProductCartClick) {
                 Icon(
                     imageVector = Icons.Default.ShoppingCart,
-                    contentDescription = "",
+                    contentDescription = "ic_product_cart_bt",
                     tint = DarkYellow
                 )
             }

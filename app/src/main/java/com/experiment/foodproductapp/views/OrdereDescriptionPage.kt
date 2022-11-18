@@ -105,7 +105,7 @@ fun OrderDescriptionPage(
                     IconButton(onClick = { navHostControllerLambda().navigateUp() }) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "",
+                            contentDescription = "ic_arrow_back_bt",
                             tint = DarkYellow
                         )
                     }
@@ -114,7 +114,7 @@ fun OrderDescriptionPage(
 
             Image(
                 painter = rememberImagePainter("https://img.freepik.com/free-photo/glass-bottles-beer-with-glass-ice-dark-background_1150-8899.jpg?w=1800&t=st=1668510784~exp=1668511384~hmac=42d4cfbe3cb90558df3640a8ab42e896db228c61c752648f20bb6e0ceb87b586"),
-                contentDescription = "Background Image",
+                contentDescription = "ic_description_top_background",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -351,7 +351,7 @@ fun OrderDescriptionPage(
                     ) {
                         Icon(
                             imageVector = Icons.Default.Home,
-                            contentDescription = "",
+                            contentDescription = "ic_home_bt",
                             tint = Color.White,
                             modifier = Modifier
                                 .fillMaxSize()

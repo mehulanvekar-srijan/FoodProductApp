@@ -91,7 +91,7 @@ fun OrderDetails(
                     IconButton(onClick = { navHostControllerLambda().navigateUp() }) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "",
+                            contentDescription = "ic_arrow_back_bt",
                             tint = Color.White
                         )
                     }
@@ -182,7 +182,7 @@ fun OrderDetails(
                                 ) {
                                     Image(
                                         painter = rememberImagePainter(item[0].url),
-                                        contentDescription = "",
+                                        contentDescription = "ic_product_at_0_image",
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .fillMaxHeight(.7f)
@@ -218,7 +218,7 @@ fun OrderDetails(
                     IconButton(onClick = { navHostControllerLambda().navigateUp() }) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "",
+                            contentDescription = "ic_arrow_back_bt",
                             tint = Color.White
                         )
                     }
@@ -277,7 +277,7 @@ fun OrderDetails(
 fun BackgroundImage1() {
     Image(
         painter = painterResource(id = R.drawable.background_yellow_wave),
-        contentDescription = "Background Image",
+        contentDescription = "ic_background_image",
         contentScale = ContentScale.Crop,
         modifier = Modifier.fillMaxSize()
     )

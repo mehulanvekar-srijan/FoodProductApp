@@ -128,7 +128,7 @@ fun CheckoutPage(
                     )
                     Icon(
                         painterResource(id = R.drawable.ic_shopping_cart_checkout),
-                        contentDescription = "",
+                        contentDescription = "ic_shopping_cart_checkout",
                         tint = DarkYellow,
                     )
                 }
@@ -142,7 +142,7 @@ fun CheckoutPage(
                 ) {
                     Icon(
                         imageVector = Icons.Default.ArrowBack,
-                        contentDescription = "",
+                        contentDescription = "ic_arrow_back_bt",
                         tint = DarkYellow,
                     )
                 }
@@ -496,7 +496,7 @@ fun CheckoutPage(
                             )
                         },
                         trailingIcon = {
-                            Icon(icon, "",
+                            Icon(icon, "ic_arrow_up/down",
                                 Modifier.clickable { mExpanded = !mExpanded })
                         }
                     )

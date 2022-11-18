@@ -65,7 +65,7 @@ fun PaymentScreen(
         ) {
             Image(
                 painter = painterResource(id = R.drawable.background_yellow_wave),
-                contentDescription = "Background Image",
+                contentDescription = "ic_background_image",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
             )
@@ -77,7 +77,7 @@ fun PaymentScreen(
                 Icon(
                     modifier = Modifier.size(200.dp),
                     painter = painterResource(id = R.drawable.ic_baseline_assignment_turned_in_24),
-                    contentDescription = "success"
+                    contentDescription = "ic_success"
                 )
                 Text(
                     text = stringResource(id = R.string.order_placed_string),
@@ -122,7 +122,7 @@ fun PaymentScreen(
         ) {
             Image(
                 painter = painterResource(id = R.drawable.background_yellow_wave),
-                contentDescription = "Background Image",
+                contentDescription = "ic_background_image",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
             )
@@ -134,7 +134,7 @@ fun PaymentScreen(
                 Icon(
                     modifier = Modifier.size(200.dp),
                     painter = painterResource(id = R.drawable.ic_baseline_assignment_late_24),
-                    contentDescription = "failure",
+                    contentDescription = "ic_failure",
 //                    tint = Color.Unspecified,
                 )
                 Text(

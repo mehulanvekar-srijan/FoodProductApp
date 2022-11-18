@@ -90,7 +90,7 @@ fun Reward(
                 IconButton(onClick = { navHostControllerLambda().navigateUp() }) {
                     Icon(
                         imageVector = Icons.Default.ArrowBack,
-                        contentDescription = "",
+                        contentDescription = "ic_arrow_back_bt",
                         tint = Color.White
                     )
                 }
@@ -141,7 +141,7 @@ fun Reward(
                     ) {
                         Icon(
                             imageVector = Icons.Outlined.StarRate,
-                            contentDescription = "",
+                            contentDescription = "ic_points",
                             tint = Color.Black,
                             modifier = Modifier.size(50.dp)
                         )
@@ -198,7 +198,7 @@ fun Reward(
                         ) {
                             Icon(
                                 imageVector = Icons.Outlined.Redeem,
-                                contentDescription = "",
+                                contentDescription = "ic_redeem",
                                 Modifier.size(40.dp)
                             )
                             Text(
@@ -296,7 +296,7 @@ fun Reward(
                     ) {
                         Icon(
                             imageVector = Icons.Outlined.MilitaryTech,
-                            contentDescription = "",
+                            contentDescription = "ic_league_level",
                             Modifier.size(50.dp)
                         )
                         Column(
@@ -405,7 +405,7 @@ fun Reward(
                             Icon(
                                 modifier = Modifier.size(10.dp),
                                 imageVector = Icons.Filled.Circle,
-                                contentDescription = "",
+                                contentDescription = "ic_bullets",
                                 tint = Orange
                             )
                             Text(
@@ -431,19 +431,19 @@ fun Reward(
                             Icon(
                                 modifier = Modifier.size(10.dp),
                                 imageVector = Icons.Filled.Circle,
-                                contentDescription = "",
+                                contentDescription = "ic_bullets",
                                 tint = Orange
                             )
                             Text(
                                 text = " " + stringResource(id = R.string.they_get_string),
                                 fontFamily = descriptionFontFamily,
-                                fontSize = 18.sp,
+                                fontSize = 16.sp,
                                 textAlign = TextAlign.Center
                             )
                             Text(
                                 text = " " + stringResource(id = R.string.hundred_reward_points_string),
                                 fontFamily = titleFontFamily,
-                                fontSize = 18.sp,
+                                fontSize = 16.sp,
                                 textAlign = TextAlign.Center
                             )
 
@@ -494,7 +494,7 @@ fun Reward(
                                 // Inner content including an icon and a text label
                                 Icon(
                                     Icons.Filled.ContentCopy,
-                                    contentDescription = "Copy",
+                                    contentDescription = "ic_copy_bt",
                                 )
                                 Spacer(Modifier.size(ButtonDefaults.IconSpacing))
                                 Text(stringResource(id = R.string.copy_string))
@@ -540,7 +540,7 @@ fun BottomBox() {
 fun BackgroundImage2() {
     Image(
         painter = painterResource(id = R.drawable.background_yellow_wave),
-        contentDescription = "Background Image",
+        contentDescription = "ic_background_image",
         contentScale = ContentScale.Crop,
         modifier = Modifier.fillMaxSize()
     )

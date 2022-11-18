@@ -169,7 +169,7 @@ fun UserDetails(
         ) {
             Image(
                 painter = painterResource(id = R.drawable.background_yellow_wave),
-                contentDescription = "Background Image",
+                contentDescription = "ic_background_image",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
             )
@@ -191,7 +191,7 @@ fun UserDetails(
                     if (userDetailsViewModel.hasImage.value && userDetailsViewModel.imageUri.value != null) {
                         Image(
                             painter = rememberImagePainter(userDetailsViewModel.imageUri.value),
-                            contentDescription = "Profile Pic",
+                            contentDescription = "ic_profile_pic",
                             contentScale = ContentScale.Crop,
                             modifier = Modifier
                                 .fillMaxHeight(0.25F)
@@ -205,7 +205,7 @@ fun UserDetails(
                     } else {
                         Image(
                             painter = rememberImagePainter(R.drawable.ic_user),
-                            contentDescription = "Profile Pic",
+                            contentDescription = "ic_profile_pic",
                             contentScale = ContentScale.Crop,
                             modifier = Modifier
                                 .fillMaxHeight(0.25F)
@@ -231,7 +231,7 @@ fun UserDetails(
                             }) {
                                 Icon(
                                     imageVector = Icons.Default.Camera,
-                                    contentDescription = "Click Image",
+                                    contentDescription = "ic_click_image",
                                 )
                             }
                             IconButton(onClick = {
@@ -239,7 +239,7 @@ fun UserDetails(
                             }) {
                                 Icon(
                                     imageVector = Icons.Default.Edit,
-                                    contentDescription = "Pick Image",
+                                    contentDescription = "ic_pick_image",
                                 )
                             }
                         }
@@ -532,7 +532,7 @@ fun UserDetails(
                                     }) {
                                         Icon(
                                             imageVector = Icons.TwoTone.EditCalendar,
-                                            contentDescription = "",
+                                            contentDescription = "ic_edit_dob_bt",
                                         )
                                     }
                                 },
@@ -690,7 +690,7 @@ fun UserDetails(
                 IconButton(onClick = { navHostControllerLambda().navigateUp() }) {
                     Icon(
                         imageVector = Icons.Default.ArrowBack,
-                        contentDescription = "",
+                        contentDescription = "ic_arrow_back_bt",
                         tint = Color.White
                     )
                 }
@@ -704,7 +704,7 @@ fun UserDetails(
                 }) {
                     Icon(
                         imageVector = Icons.Default.Stars,
-                        contentDescription = "",
+                        contentDescription = "ic_rewards_bt",
                         tint = Color.White
                     )
                 }
@@ -717,7 +717,7 @@ fun UserDetails(
                 }) {
                     Icon(
                         imageVector = Icons.Default.Logout,
-                        contentDescription = "",
+                        contentDescription = "ic_logout_bt",
                         tint = Color.White
                     )
                 }

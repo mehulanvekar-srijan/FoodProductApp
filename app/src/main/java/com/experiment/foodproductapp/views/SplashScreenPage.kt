@@ -64,7 +64,7 @@ fun SplashScreenPage(
         //DrawLogo1(animatedAlpha,animatedShape,animatedAngle)
         Image(
             painter = painterResource(id = R.drawable.background_yellow_wave),
-            contentDescription = "",
+            contentDescription = "ic_background_image",
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize(),
         )
@@ -89,7 +89,7 @@ fun CollisionAnimation(
 ) {
     Image(
         painter = painterResource(id = R.drawable.ic_beer_left_glass),
-        contentDescription = "left",
+        contentDescription = "ic_beer_left_glass",
         modifier = Modifier
             .padding(start = animatedPadding.value),
         contentScale = ContentScale.Fit,
@@ -98,7 +98,7 @@ fun CollisionAnimation(
 
     Image(
         painter = painterResource(id = R.drawable.ic_beer_right_glass),
-        contentDescription = "right",
+        contentDescription = "ic_beer_right_glass",
         modifier = Modifier
             .padding(end = animatedPadding.value),
         contentScale = ContentScale.Fit,
@@ -107,7 +107,7 @@ fun CollisionAnimation(
 
     Image(
         painter = painterResource(id = R.drawable.ic_beer_spark),
-        contentDescription = "spark",
+        contentDescription = "ic_beer_spark",
         modifier = Modifier.fillMaxSize(animatedShape.value),
         contentScale = ContentScale.Fit,
         alpha = animatedAlpha.value,
@@ -133,7 +133,7 @@ fun DrawLogo(
     )
     Image(
         painter = painterResource(id = R.drawable.ic_beer_glass),
-        contentDescription = "ic_burger_glass",
+        contentDescription = "ic_beer_glass",
         modifier = Modifier
             .padding(30.dp)
             .fillMaxSize(animatedShape.value)
@@ -152,7 +152,7 @@ fun DrawLogo1(
 ) {
     Image(
         painter = painterResource(id = R.drawable.ic_beer_drops),
-        contentDescription = "ic_stars",
+        contentDescription = "ic_beer_drops",
         modifier = Modifier
             .padding(5.dp)
             .fillMaxSize(animatedShape.value),
@@ -162,7 +162,7 @@ fun DrawLogo1(
     )
     Image(
         painter = painterResource(id = R.drawable.ic_beer_glass),
-        contentDescription = "ic_burger_glass",
+        contentDescription = "ic_beer_glass",
         modifier = Modifier
             .padding(30.dp)
             .fillMaxSize(animatedShape.value)

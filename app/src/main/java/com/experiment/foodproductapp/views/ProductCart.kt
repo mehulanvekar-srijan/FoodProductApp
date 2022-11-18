@@ -83,7 +83,7 @@ fun ProductCart(
                             )
                             Icon(
                                 imageVector = Icons.Default.ShoppingBag,
-                                contentDescription = "",
+                                contentDescription = "ic_cart_logo",
                                 tint = DarkYellow,
                             )
                         }
@@ -96,7 +96,7 @@ fun ProductCart(
                         ) {
                             Icon(
                                 imageVector = Icons.Default.ArrowBack,
-                                contentDescription = "",
+                                contentDescription = "ic_arrow_back_bt",
                                 tint = DarkYellow,
                             )
                         }
@@ -112,7 +112,7 @@ fun ProductCart(
                         }) {
                             Icon(
                                 imageVector = Icons.Default.Stars,
-                                contentDescription = "Rewards Page",
+                                contentDescription = "ic_rewards_page_bt",
                                 tint = DarkYellow
                             )
                         }
@@ -165,7 +165,7 @@ fun ProductCart(
                             Icon(
                                 //Dustbin Icon
                                 imageVector = Icons.Default.Delete,
-                                contentDescription = "",
+                                contentDescription = "ic_delete",
                                 tint = Color.White,
                             )
                         }
@@ -298,7 +298,7 @@ fun CardView(
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Add,
-                                contentDescription = "",
+                                contentDescription = "ic_add_count_bt",
                                 tint = Color.White,
                             )
                         }
@@ -345,7 +345,7 @@ fun CardView(
                             ) {
                                 Icon(
                                     imageVector = Icons.Filled.Remove,
-                                    contentDescription = "",
+                                    contentDescription = "ic_subtract_count_bt",
                                     tint = Color.White,
                                 )
                             }
@@ -366,7 +366,7 @@ fun CardView(
                             ) {
                                 Icon(
                                     imageVector = Icons.Filled.Remove,
-                                    contentDescription = "",
+                                    contentDescription = "ic_subtract_count_bt",
                                     tint = Color.White,
                                 )
                             }
@@ -383,7 +383,7 @@ fun CardView(
 fun LoadImage(item: Product) {
     Image(
         painter = rememberImagePainter(item.url),
-        contentDescription = "",
+        contentDescription = "ic_cart_item",
         contentScale = ContentScale.Fit,
         alignment = Alignment.CenterStart,
         modifier = Modifier.padding(8.dp),

@@ -156,7 +156,7 @@ fun HomeScreenPage(
                             Box {
                                 Image(
                                     painter = rememberImagePainter(item.url),
-                                    contentDescription = "",
+                                    contentDescription = "ic_product",
                                     contentScale = ContentScale.Fit,
                                     alignment = Alignment.CenterStart,
                                     modifier = Modifier.padding(8.dp),
@@ -223,7 +223,7 @@ fun HomeScreenPage(
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.Add,
-                                    contentDescription = "",
+                                    contentDescription = "ic_add_to_cart_bt",
                                     tint = Color.White,
                                 )
                             }
@@ -260,7 +260,7 @@ fun HomeScreenPage(
 fun BackgroundImage() {
     Image(
         painter = painterResource(id = R.drawable.background_home_view),
-        contentDescription = "Background Image",
+        contentDescription = "ic_background_image",
         contentScale = ContentScale.Crop,
         modifier = Modifier.fillMaxSize()
     )
@@ -288,7 +288,7 @@ fun AppBar(
         navigationIcon = {
             Icon(
                 painter = painterResource(id = R.drawable.ic_beer_cheers),
-                contentDescription = "",
+                contentDescription = "ic_beer_cheers",
                 tint = animatedAppBarBrandIconColor.value,
                 modifier = Modifier.padding(start = 5.dp)
             )
@@ -297,7 +297,7 @@ fun AppBar(
             IconButton(onClick = onUserProfileClick) {
                 Icon(
                     imageVector = Icons.Default.ManageAccounts,
-                    contentDescription = "",
+                    contentDescription = "ic_edit_profile_bt",
                     tint = Color.White
                 )
             }
@@ -305,7 +305,7 @@ fun AppBar(
             IconButton(onClick = onOrderDetailsClick) {
                 Icon(
                     imageVector = Icons.Default.History,
-                    contentDescription = "",
+                    contentDescription = "ic_order_history_bt",
                     tint = Color.White
                 )
             }
@@ -313,7 +313,7 @@ fun AppBar(
             IconButton(onClick = onProductCartClick) {
                 Icon(
                     imageVector = Icons.Default.ShoppingCart,
-                    contentDescription = "",
+                    contentDescription = "ic_shopping_cart",
                     tint = Color.White
                 )
             }
@@ -342,7 +342,7 @@ fun BrandLogo(
             },
         alignment = Alignment.Center,
         painter = painterResource(id = R.drawable.ic_beer_cheers),
-        contentDescription = "brand logo",
+        contentDescription = "ic_brand_logo",
     )
 }
 

@@ -64,7 +64,7 @@ fun ForgotPassword(
         //Background Image
         Image(
             painter = painterResource(id = R.drawable.background_yellow_wave),
-            contentDescription = "Background Image",
+            contentDescription = "ic_background_image",
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
         )
@@ -80,7 +80,7 @@ fun ForgotPassword(
                 modifier = Modifier
                     .fillMaxHeight(0.40F),
                 painter = painterResource(id = R.drawable.ic_beer_cheers),
-                contentDescription = "brand logo"
+                contentDescription = "ic_brand_logo"
             )
 
             LazyColumn(
