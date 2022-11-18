@@ -37,11 +37,6 @@ class OrderDetailsViewModel: ViewModel() {
         }
     }
 
-    fun navigateToHomeScreenPage(navHostController: NavHostController) {
-        navHostController.navigate(Screen.HomeScreen.route) {
-            popUpTo(Screen.HomeScreen.route) { inclusive = true }
-        }
-    }
 
     fun calculateSum(item: MutableList<OrderDetails>):Int{
         var sum=0
@@ -55,6 +50,12 @@ class OrderDetailsViewModel: ViewModel() {
 
     var finalList = mutableStateListOf<MutableList<OrderDetails>>()
     val email = mutableStateOf("")
+
+    fun navigateToHomeScreenPage(navHostController: NavHostController) {
+        navHostController.navigate(Screen.HomeScreen.routeWithData(email.value)) {
+            popUpTo(Screen.HomeScreen.route) { inclusive = true }
+        }
+    }
 
     fun fetchOrderList(context: Context) {
         var orderCount = 1
