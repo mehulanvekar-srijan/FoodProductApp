@@ -94,15 +94,5 @@ class OrderDetailsViewModel: ViewModel() {
         }
 
         Log.d("orderDetails", "count of total orders: ${finalList.count()}")
-
-
-
-        for (element in finalList) {
-            val ord = element
-            Log.d("orderDetails", "no of prod in each item: ${ord.count()}")
-            for (element in ord) {
-                Log.d("orderDetails", "title : ${element.title}   number: ${element.orderId}")
-            }
-        }
     }
 }

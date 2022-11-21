@@ -12,13 +12,15 @@ open class Product(
     description: String,
     price: Int,
     count: Int = 1,
+    alcohol: Int
 ) : HomeItems(
     id = id,
     url = url,
     title = title,
     description = description,
     price = price,
-    count = count
+    count = count,
+    alcohol = alcohol
 ) {
     constructor() : this(
         email = "",
@@ -27,6 +29,7 @@ open class Product(
         title = "",
         description = "",
         price = -1,
-        count = 1
+        count = 1,
+        alcohol = 0
     )
 }

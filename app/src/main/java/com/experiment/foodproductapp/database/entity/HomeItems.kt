@@ -11,6 +11,7 @@ open class HomeItems(
     var description: String,
     var price: Int,
     var count: Int = 1,
+    var alcohol: Int = 0
 ){
-    constructor(): this(-1,"","","",-1,1)
+    constructor(): this(-1,"","","",-1,1,0)
 }

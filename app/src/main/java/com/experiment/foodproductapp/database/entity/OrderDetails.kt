@@ -12,6 +12,7 @@ class OrderDetails(
     title: String,
     description: String,
     price: Int,
+    alcohol: Int,
     @NotNull var orderId: Int,
     var canceled: Boolean,
 ) : Product(
@@ -21,5 +22,6 @@ class OrderDetails(
     url = url,
     title = title,
     description = description,
-    price = price
+    price = price,
+    alcohol = alcohol
 )

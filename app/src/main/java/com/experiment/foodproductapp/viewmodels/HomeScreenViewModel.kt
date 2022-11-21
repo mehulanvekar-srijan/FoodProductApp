@@ -69,6 +69,7 @@ class HomeScreenViewModel : ViewModel() {
                 description = homeItem.description,
                 price = homeItem.price,
                 count = homeItem.count,
+                alcohol = homeItem.alcohol
             )
 
             //Inset into Product Table

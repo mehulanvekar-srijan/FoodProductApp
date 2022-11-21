@@ -52,6 +52,7 @@ class PaymentScreenViewModel : ViewModel() {
                         description =  item.description,
                         price = item.price,
                         orderId = orderId,
+                        alcohol = item.alcohol,
                         canceled = false,
                     )
 

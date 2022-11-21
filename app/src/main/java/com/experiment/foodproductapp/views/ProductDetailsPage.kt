@@ -325,7 +325,8 @@ fun ProductDetailsPage(
                             modifier = Modifier.fillMaxHeight(.5f)
                         )
                         Text(
-                            text = stringResource(id = R.string.five_alcohol_string),
+                            //text = stringResource(id = R.string.five_alcohol_string),
+                            text = "" + productDetails.value.alcohol + stringResource(id = R.string.five_alcohol_string),
                             color = Color.White,
                             style = TextStyle(
                                 fontWeight = FontWeight.Normal,

@@ -85,7 +85,7 @@
     <string name="checkout_string">CHECKOUT</string>
 
 <!--    ProductDetailsPage-->
-    <string name="five_alcohol_string">5% Alc</string>
+    <string name="five_alcohol_string">% Alc</string>
 
 <!--    RewardsPage-->
     <string name="refer_copy_string">http://www.beerbasket.co/ryfagr</string>

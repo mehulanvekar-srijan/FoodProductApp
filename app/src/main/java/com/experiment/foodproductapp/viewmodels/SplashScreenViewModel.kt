@@ -51,7 +51,7 @@ class SplashScreenViewModel : ViewModel() {
                     title = "Coolberg Non Alcoholic Beer - Malt",
                     description = "Coolberg Malt Beer is a Non-Alcoholic Beer. This NAB has toasty notes of barley malts and hops and a distinctive musky aroma. It is made from the finest natural barley malts extracts. It is carbonated and has a serious spunk. As it contains less carbonation and often develops a beer-like head when poured into a glass. It is a perfect blend of crisp, bold and smooth flavour. Enjoy it with your choice of snack in the evening or serve it at a party.",
                     price = 79,
-                    //alcohol = 5
+                    alcohol = 5
                 ),
                 HomeItems(
                     id = 1,
@@ -60,6 +60,7 @@ class SplashScreenViewModel : ViewModel() {
                     title = "Coolberg Non Alcoholic Beer - Mint",
                     description = "Coolberg Malt Beer is a Non-Alcoholic Beer. This NAB has toasty notes of barley malts and hops and a distinctive musky aroma. It is made from the finest natural barley malts extracts. It is carbonated and has a serious spunk. As it contains less carbonation and often develops a beer-like head when poured into a glass. It is a perfect blend of crisp, bold and smooth flavour. Enjoy it with your choice of snack in the evening or serve it at a party.",
                     price = 79,
+                    alcohol = 5
                 ),
                 HomeItems(
                     id = 2,
@@ -68,6 +69,7 @@ class SplashScreenViewModel : ViewModel() {
                     title = "Coolberg Non Alcoholic Beer - Cranberry",
                     description = "Coolberg Malt Beer is a Non-Alcoholic Beer. This NAB has toasty notes of barley malts and hops and a distinctive musky aroma. It is made from the finest natural barley malts extracts. It is carbonated and has a serious spunk. As it contains less carbonation and often develops a beer-like head when poured into a glass. It is a perfect blend of crisp, bold and smooth flavour. Enjoy it with your choice of snack in the evening or serve it at a party.",
                     price = 79,
+                    alcohol = 6
                 ),
                 HomeItems(
                     id = 3,
@@ -76,6 +78,7 @@ class SplashScreenViewModel : ViewModel() {
                     title = "Coolberg Non Alcoholic Beer - Strawberry",
                     description = "Coolberg Malt Beer is a Non-Alcoholic Beer. This NAB has toasty notes of barley malts and hops and a distinctive musky aroma. It is made from the finest natural barley malts extracts. It is carbonated and has a serious spunk. As it contains less carbonation and often develops a beer-like head when poured into a glass. It is a perfect blend of crisp, bold and smooth flavour. Enjoy it with your choice of snack in the evening or serve it at a party.",
                     price = 79,
+                    alcohol = 5
                 ),
                 HomeItems(
                     id = 4,
@@ -84,6 +87,7 @@ class SplashScreenViewModel : ViewModel() {
                     title = "Coolberg Ginger Non Alcoholic Beer",
                     description = "Coolberg Ginger is a sweet pleasure-packed brew that tingles your taste buds with a zing. It has been brewed for an impeccable taste and a flawless aftertaste. It is a favourite among those who choose to take the wilder walk",
                     price = 71,
+                    alcohol = 5
                 ),
             ).forEach {
                 try{ DatabaseRepository(context).insertItems(it) }
