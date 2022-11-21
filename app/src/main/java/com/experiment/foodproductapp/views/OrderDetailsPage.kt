@@ -201,7 +201,8 @@ fun OrderDetails(
                 }
             }
         }
-    } else {
+    }
+    else {
 
         Box(modifier = Modifier.fillMaxSize()) {
             BackgroundImage1()
@@ -230,6 +231,15 @@ fun OrderDetails(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                Image(
+//                    painter = rememberImagePainter("https://www.denmakers.in/img/no-product-found.png"),
+                    painter = rememberImagePainter(R.drawable.no_product_found),
+                    contentDescription = "Background Image",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight(.45f)
+                )
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     text = stringResource(id = R.string.there_are_no_items_in_the_cart_string),
@@ -238,7 +248,6 @@ fun OrderDetails(
                     textAlign = TextAlign.Center,
                     fontFamily = descriptionFontFamily,
                 )
-
             }
 
             Column(

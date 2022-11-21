@@ -2,6 +2,8 @@ package com.experiment.foodproductapp.views
 
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.OnBackPressedDispatcher
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -47,11 +49,13 @@ fun ForgotPassword(
     forgotPasswordViewModel: ForgotPasswordViewModel = viewModel()
 ) {
 
+    Log.d("testKeyNAV", ": ForgotPassword NAV=${navHostControllerLambda().backQueue}")
     ChangeBarColors(navigationBarColor = Color.White)
 
     val coroutineScope = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
     val context = LocalContext.current
+    val backPressedDispatcher: OnBackPressedDispatcher? = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
 
     val inputList = remember { mutableStateListOf("", "", "", "") }
 
@@ -137,6 +141,7 @@ fun ForgotPassword(
                         )
                         Spacer(modifier = Modifier.padding(10.dp))
                     }
+                    Spacer(modifier = Modifier.padding(15.dp))
                 }
                 item { //Next Button
                     AnimatedVisibility(visible = showEnterEmail.value) {
@@ -181,6 +186,7 @@ fun ForgotPassword(
                         )
                         Spacer(modifier = Modifier.padding(30.dp))
                     }
+                    Spacer(modifier = Modifier.padding(15.dp))
                 }
                 item { //Enter OTP TextField
                     AnimatedVisibility(visible = showEnterOTP.value) {
@@ -213,8 +219,8 @@ fun ForgotPassword(
                                             if (it.key == Key.Back) {
                                                 navHostControllerLambda().navigateUp()
                                             }
+                                            false
 
-                                            true
                                         },
                                     onValueChange = {
                                         inputList[i] = it
@@ -241,6 +247,7 @@ fun ForgotPassword(
                         }
                         Spacer(modifier = Modifier.padding(10.dp))
                     }
+                    Spacer(modifier = Modifier.padding(15.dp))
                 }
                 item { //submit button
                     AnimatedVisibility(visible = showEnterOTP.value) {
@@ -285,6 +292,7 @@ fun ForgotPassword(
                         )
                         Spacer(modifier = Modifier.padding(30.dp))
                     }
+                    Spacer(modifier = Modifier.padding(15.dp))
                 }
                 item { //new password TextField
                     AnimatedVisibility(visible = showEnterPasswordTextField.value) {
@@ -317,6 +325,7 @@ fun ForgotPassword(
                         )
                         Spacer(modifier = Modifier.padding(30.dp))
                     }
+                    Spacer(modifier = Modifier.padding(15.dp))
                 }
                 item { //new password TextField
                     AnimatedVisibility(visible = showEnterPasswordTextField.value) {
@@ -348,6 +357,7 @@ fun ForgotPassword(
                             ),
                         )
                     }
+                    Spacer(modifier = Modifier.padding(15.dp))
                 }
                 item { //Set Button
                     AnimatedVisibility(visible = showEnterPasswordTextField.value) {

@@ -176,6 +176,9 @@ class ProductCartViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             _totalPoints.value = DatabaseRepository(context).getRewardPoints(email)
             _redeemAmount.value = _totalPoints.value / 10
+
+            Log.d("testCB", "initPRA: _totalPoints=${_totalPoints.value} _redeemAmount=${_redeemAmount.value}")
+
         }
     }
 

@@ -168,7 +168,7 @@ fun UserDetails(
                 .fillMaxSize()
         ) {
             Image(
-                painter = painterResource(id = R.drawable.background_yellow_wave),
+                painter = painterResource(id = R.drawable.background_user_view),
                 contentDescription = "ic_background_image",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
@@ -204,7 +204,7 @@ fun UserDetails(
                         )
                     } else {
                         Image(
-                            painter = rememberImagePainter(R.drawable.ic_user),
+                            painter = rememberImagePainter(R.drawable.ic_user3),
                             contentDescription = "ic_profile_pic",
                             contentScale = ContentScale.Crop,
                             modifier = Modifier
@@ -570,7 +570,9 @@ fun UserDetails(
                             backgroundColor = DarkYellow,
                             contentColor = Color.White
                         ),
-
+                        elevation = ButtonDefaults.elevation(
+                            defaultElevation = 3.dp
+                        )
                         ) {
                         Text(
                             text = stringResource(id = R.string.save_changes_string),

@@ -31,9 +31,13 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.BaselineShift
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -316,6 +320,11 @@ fun AppBar(
                     contentDescription = "ic_shopping_cart",
                     tint = Color.White
                 )
+//                Text(
+//                    text = "20",
+//                    modifier = Modifier.offset(x = 10.dp, y = -10.dp),
+//                    fontSize = 10.sp,
+//                )
             }
         }
     )

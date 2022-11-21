@@ -1,5 +1,6 @@
 package com.experiment.foodproductapp.views
 
+import android.util.Log
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -426,7 +427,10 @@ fun CheckoutArea(
         }
 
         //Redeem Amount
-        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Text(
                 text = stringResource(id = R.string.redeem_amount_string) + " ",
                 color = if (productCartViewModel.checkedState.value) {

@@ -249,13 +249,14 @@ fun SignInPage(
                             modifier = Modifier
                                 .fillMaxWidth(0.8f)
                                 .height(50.dp),
-
                             shape = RoundedCornerShape(50),
                             colors = ButtonDefaults.buttonColors(
                                 backgroundColor = DarkYellow,
                                 contentColor = Color.White
                             ),
-
+                            elevation = ButtonDefaults.elevation(
+                                defaultElevation = 3.dp
+                            )
                             ) {
                             Text(
                                 text = stringResource(id = R.string.sign_in_string),

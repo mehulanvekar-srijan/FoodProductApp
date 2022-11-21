@@ -559,7 +559,7 @@ fun SignupPage(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(10.dp))
 
                 OutlinedButton(
                     onClick = {
@@ -575,7 +575,7 @@ fun SignupPage(
                         contentColor = Color.White
                     ),
                     elevation = ButtonDefaults.elevation(
-                        defaultElevation = 5.dp
+                        defaultElevation = 3.dp
                     )
                 ) {
                     Text(
