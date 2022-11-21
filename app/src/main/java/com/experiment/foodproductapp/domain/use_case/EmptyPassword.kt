@@ -1,14 +1,14 @@
 package com.experiment.foodproductapp.domain.use_case
 
 class EmptyPassword {
-    fun execute(password: String): SignUpValidationResult {
+    fun execute(password: String): ValidationResult {
         if (password.isEmpty()) {
-            return SignUpValidationResult(
+            return ValidationResult(
                 successful = false,
                 errorMessage = "The password cant be empty"
             )
         }
-        return SignUpValidationResult(
+        return ValidationResult(
             successful = true
         )
     }

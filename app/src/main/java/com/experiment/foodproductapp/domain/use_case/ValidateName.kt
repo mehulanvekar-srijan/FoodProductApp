@@ -1,15 +1,15 @@
 package com.experiment.foodproductapp.domain.use_case
 
 class ValidateName {
-    fun execute(name: String): SignUpValidationResult {
+    fun execute(name: String): ValidationResult {
         if (name.isEmpty()) {
-            return SignUpValidationResult(
+            return ValidationResult(
                 successful = false,
                 errorMessage = "This field can't be empty"
             )
         }
 
-        return SignUpValidationResult(
+        return ValidationResult(
             successful = true
         )
     }

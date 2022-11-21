@@ -115,60 +115,60 @@ fun CollisionAnimation(
 }
 
 
-@Composable
-fun DrawLogo(
-    animatedAlpha: State<Float>,
-    animatedShape: State<Float>,
-    animatedAngle: State<Float>,
-) {
-    Image(
-        painter = painterResource(id = R.drawable.ic_stars),
-        contentDescription = "ic_stars",
-        modifier = Modifier
-            .padding(15.dp)
-            .fillMaxSize(),
-        contentScale = ContentScale.Fit,
-        alignment = Alignment.Center,
-        alpha = animatedAlpha.value,
-    )
-    Image(
-        painter = painterResource(id = R.drawable.ic_beer_glass),
-        contentDescription = "ic_beer_glass",
-        modifier = Modifier
-            .padding(30.dp)
-            .fillMaxSize(animatedShape.value)
-            .rotate(animatedAngle.value),
-        contentScale = ContentScale.Fit,
-        alignment = Alignment.Center,
-        alpha = animatedAlpha.value,
-    )
-}
+//@Composable
+//fun DrawLogo(
+//    animatedAlpha: State<Float>,
+//    animatedShape: State<Float>,
+//    animatedAngle: State<Float>,
+//) {
+//    Image(
+//        painter = painterResource(id = R.drawable.ic_stars),
+//        contentDescription = "ic_stars",
+//        modifier = Modifier
+//            .padding(15.dp)
+//            .fillMaxSize(),
+//        contentScale = ContentScale.Fit,
+//        alignment = Alignment.Center,
+//        alpha = animatedAlpha.value,
+//    )
+//    Image(
+//        painter = painterResource(id = R.drawable.ic_beer_glass),
+//        contentDescription = "ic_beer_glass",
+//        modifier = Modifier
+//            .padding(30.dp)
+//            .fillMaxSize(animatedShape.value)
+//            .rotate(animatedAngle.value),
+//        contentScale = ContentScale.Fit,
+//        alignment = Alignment.Center,
+//        alpha = animatedAlpha.value,
+//    )
+//}
 
-@Composable
-fun DrawLogo1(
-    animatedAlpha: State<Float>,
-    animatedShape: State<Float>,
-    animatedAngle: State<Float>,
-) {
-    Image(
-        painter = painterResource(id = R.drawable.ic_beer_drops),
-        contentDescription = "ic_beer_drops",
-        modifier = Modifier
-            .padding(5.dp)
-            .fillMaxSize(animatedShape.value),
-        contentScale = ContentScale.Fit,
-        alignment = Alignment.Center,
-        alpha = animatedAlpha.value,
-    )
-    Image(
-        painter = painterResource(id = R.drawable.ic_beer_glass),
-        contentDescription = "ic_beer_glass",
-        modifier = Modifier
-            .padding(30.dp)
-            .fillMaxSize(animatedShape.value)
-            .rotate(animatedAngle.value),
-        contentScale = ContentScale.Fit,
-        alignment = Alignment.Center,
-        alpha = animatedAlpha.value,
-    )
-}
+//@Composable
+//fun DrawLogo1(
+//    animatedAlpha: State<Float>,
+//    animatedShape: State<Float>,
+//    animatedAngle: State<Float>,
+//) {
+//    Image(
+//        painter = painterResource(id = R.drawable.ic_beer_drops),
+//        contentDescription = "ic_beer_drops",
+//        modifier = Modifier
+//            .padding(5.dp)
+//            .fillMaxSize(animatedShape.value),
+//        contentScale = ContentScale.Fit,
+//        alignment = Alignment.Center,
+//        alpha = animatedAlpha.value,
+//    )
+//    Image(
+//        painter = painterResource(id = R.drawable.ic_beer_glass),
+//        contentDescription = "ic_beer_glass",
+//        modifier = Modifier
+//            .padding(30.dp)
+//            .fillMaxSize(animatedShape.value)
+//            .rotate(animatedAngle.value),
+//        contentScale = ContentScale.Fit,
+//        alignment = Alignment.Center,
+//        alpha = animatedAlpha.value,
+//    )
+//}

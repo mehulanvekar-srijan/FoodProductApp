@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.twotone.EditCalendar
@@ -30,6 +31,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -37,6 +40,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.experiment.foodproductapp.R
+import com.experiment.foodproductapp.domain.event.ForgotPasswordFormEvent
 import com.experiment.foodproductapp.domain.event.SignupFormEvent
 import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.viewmodels.ForgotPasswordViewModel
@@ -55,13 +59,10 @@ fun ForgotPassword(
     val coroutineScope = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
     val context = LocalContext.current
-    val backPressedDispatcher: OnBackPressedDispatcher? = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
+    val backPressedDispatcher: OnBackPressedDispatcher? =
+        LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
 
     val inputList = remember { mutableStateListOf("", "", "", "") }
-
-    val showEnterEmail = remember { mutableStateOf(true) }
-    val showEnterOTP = remember { mutableStateOf(false) }
-    val showEnterPasswordTextField = remember { mutableStateOf(false) }
 
     Box(modifier = Modifier.fillMaxSize()) {
 
@@ -98,7 +99,7 @@ fun ForgotPassword(
             ) {
 
                 item { //Enter email Text
-                    AnimatedVisibility(visible = showEnterEmail.value) {
+                    AnimatedVisibility(visible = forgotPasswordViewModel.showEnterEmail.value) {
                         Text(
                             text = stringResource(id = R.string.please_enter_your_registered_email_string),
                             style = MaterialTheme.typography.h4,
@@ -111,14 +112,14 @@ fun ForgotPassword(
                     }
                 }
                 item { //Enter email TextField
-                    AnimatedVisibility(visible = showEnterEmail.value) {
+                    AnimatedVisibility(visible = forgotPasswordViewModel.showEnterEmail.value) {
                         TextField(
                             modifier = Modifier
                                 .fillMaxWidth(),
-                            value = forgotPasswordViewModel.inputEmail.value,
+                            value = forgotPasswordViewModel.state.email,
                             shape = RoundedCornerShape(30.dp),
                             onValueChange = {
-                                forgotPasswordViewModel.setEmail(it)
+                                forgotPasswordViewModel.onEvent(ForgotPasswordFormEvent.EmailChanged(it),context)
                             },
                             label = {
                                 Text(
@@ -144,23 +145,10 @@ fun ForgotPassword(
                     Spacer(modifier = Modifier.padding(15.dp))
                 }
                 item { //Next Button
-                    AnimatedVisibility(visible = showEnterEmail.value) {
+                    AnimatedVisibility(visible = forgotPasswordViewModel.showEnterEmail.value) {
                         Button(
                             onClick = {
-                                coroutineScope.launch {
-                                    val status = forgotPasswordViewModel.isUserRegistered(context)
-                                    if (status) {
-                                        showEnterOTP.value = true
-                                        showEnterEmail.value = false
-                                        forgotPasswordViewModel.sendOtp()
-                                    } else {
-                                        Toast.makeText(
-                                            context,
-                                            R.string.email_not_registered_string,
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-                                }
+                                forgotPasswordViewModel.onEvent(ForgotPasswordFormEvent.Next,context)
                             },
                             colors = ButtonDefaults.buttonColors(
                                 backgroundColor = DarkYellow,
@@ -175,7 +163,7 @@ fun ForgotPassword(
 
 
                 item { //Enter OTP Text
-                    AnimatedVisibility(visible = showEnterOTP.value) {
+                    AnimatedVisibility(visible = forgotPasswordViewModel.showEnterOTP.value) {
                         Text(
                             text = stringResource(id = R.string.enter_4_digit_otp_sent_via_email_string),
                             style = MaterialTheme.typography.h4,
@@ -189,7 +177,7 @@ fun ForgotPassword(
                     Spacer(modifier = Modifier.padding(15.dp))
                 }
                 item { //Enter OTP TextField
-                    AnimatedVisibility(visible = showEnterOTP.value) {
+                    AnimatedVisibility(visible = forgotPasswordViewModel.showEnterOTP.value) {
                         Row(
                             modifier = Modifier
                                 .padding(5.dp)
@@ -202,9 +190,6 @@ fun ForgotPassword(
                                     modifier = Modifier
                                         .padding(2.dp)
                                         .size(55.dp)
-                                        .onFocusEvent {
-                                            if (it.hasFocus) Log.d("testKeyB", "onFocusEvent: i=$i")
-                                        }
                                         .onKeyEvent {
                                             Log.d(
                                                 "testKeyB",
@@ -215,9 +200,6 @@ fun ForgotPassword(
                                                 if (inputList[i].isEmpty() && i > 0) inputList[i - 1] =
                                                     ""
                                                 focusManager.moveFocus(FocusDirection.Left)
-                                            }
-                                            if (it.key == Key.Back) {
-                                                navHostControllerLambda().navigateUp()
                                             }
                                             false
 
@@ -233,6 +215,9 @@ fun ForgotPassword(
                                         textAlign = TextAlign.Center,
                                         fontWeight = FontWeight.ExtraBold,
                                         fontSize = 20.sp
+                                    ),
+                                    keyboardOptions = KeyboardOptions(
+                                        keyboardType = KeyboardType.Phone,
                                     ),
                                     colors = TextFieldDefaults.textFieldColors(
                                         backgroundColor = Color.Transparent,
@@ -250,7 +235,7 @@ fun ForgotPassword(
                     Spacer(modifier = Modifier.padding(15.dp))
                 }
                 item { //submit button
-                    AnimatedVisibility(visible = showEnterOTP.value) {
+                    AnimatedVisibility(visible = forgotPasswordViewModel.showEnterOTP.value) {
                         Button(
                             onClick = {
                                 var otp = ""
@@ -258,8 +243,8 @@ fun ForgotPassword(
 
                                 forgotPasswordViewModel.setOtp(otp)
                                 if (forgotPasswordViewModel.verifyOtp()) { //success
-                                    showEnterOTP.value = false
-                                    showEnterPasswordTextField.value = true
+                                    forgotPasswordViewModel.showEnterOTP.value = false
+                                    forgotPasswordViewModel.showEnterPasswordTextField.value = true
                                 } else { //failure
                                     Toast.makeText(
                                         context,
@@ -281,7 +266,7 @@ fun ForgotPassword(
 
 
                 item { //new password Text
-                    AnimatedVisibility(visible = showEnterPasswordTextField.value) {
+                    AnimatedVisibility(visible = forgotPasswordViewModel.showEnterPasswordTextField.value) {
                         Text(
                             text = stringResource(id = R.string.please_enter_your_new_password_string),
                             style = MaterialTheme.typography.h4,
@@ -292,17 +277,16 @@ fun ForgotPassword(
                         )
                         Spacer(modifier = Modifier.padding(30.dp))
                     }
-                    Spacer(modifier = Modifier.padding(15.dp))
                 }
                 item { //new password TextField
-                    AnimatedVisibility(visible = showEnterPasswordTextField.value) {
+                    AnimatedVisibility(visible = forgotPasswordViewModel.showEnterPasswordTextField.value) {
                         TextField(
                             modifier = Modifier
                                 .fillMaxWidth(),
-                            value = forgotPasswordViewModel.inputPassword.value,
+                            value = forgotPasswordViewModel.state.password,
                             shape = RoundedCornerShape(30.dp),
                             onValueChange = {
-                                forgotPasswordViewModel.setPassword(it)
+                                forgotPasswordViewModel.onEvent(ForgotPasswordFormEvent.PasswordChanged(it),context)
                             },
                             label = {
                                 Text(
@@ -323,19 +307,18 @@ fun ForgotPassword(
                                 unfocusedLabelColor = Orange,
                             ),
                         )
-                        Spacer(modifier = Modifier.padding(30.dp))
                     }
-                    Spacer(modifier = Modifier.padding(15.dp))
+                    Spacer(modifier = Modifier.padding(5.dp))
                 }
                 item { //new password TextField
-                    AnimatedVisibility(visible = showEnterPasswordTextField.value) {
+                    AnimatedVisibility(visible = forgotPasswordViewModel.showEnterPasswordTextField.value) {
                         TextField(
                             modifier = Modifier
                                 .fillMaxWidth(),
-                            value = forgotPasswordViewModel.confirmPassword.value,
+                            value = forgotPasswordViewModel.state.confirmPassword,
                             shape = RoundedCornerShape(30.dp),
                             onValueChange = {
-                                forgotPasswordViewModel.setConfirmPassword(it)
+                                forgotPasswordViewModel.onEvent(ForgotPasswordFormEvent.ConfirmPasswordChanged(it),context)
                             },
                             label = {
                                 Text(
@@ -357,14 +340,14 @@ fun ForgotPassword(
                             ),
                         )
                     }
-                    Spacer(modifier = Modifier.padding(15.dp))
+                    Spacer(modifier = Modifier.padding(5.dp))
                 }
                 item { //Set Button
-                    AnimatedVisibility(visible = showEnterPasswordTextField.value) {
+                    AnimatedVisibility(visible = forgotPasswordViewModel.showEnterPasswordTextField.value) {
                         Button(
                             onClick = {
                                 coroutineScope.launch {
-                                    forgotPasswordViewModel.changePassword(context)
+                                    forgotPasswordViewModel.onEvent(ForgotPasswordFormEvent.Set, context)
                                 }
                             },
                             colors = ButtonDefaults.buttonColors(
