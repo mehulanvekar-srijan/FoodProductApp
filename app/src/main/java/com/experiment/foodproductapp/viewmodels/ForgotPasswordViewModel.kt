@@ -40,6 +40,20 @@ class ForgotPasswordViewModel(
     val showEnterOTP = mutableStateOf(false)
     val showEnterPasswordTextField = mutableStateOf(false)
 
+    private val _passwordVisible = mutableStateOf(false)
+    val passwordVisible = _passwordVisible
+
+    fun passwordVisibilityChange() {
+        _passwordVisible.value = !_passwordVisible.value
+    }
+
+    private val _confirmPasswordVisible = mutableStateOf(false)
+    val confirmPasswordVisible = _confirmPasswordVisible
+
+    fun confirmPasswordVisibilityChange() {
+        _confirmPasswordVisible.value = !_confirmPasswordVisible.value
+    }
+
     val status = mutableStateOf(false)
 
     var state by mutableStateOf(ForgotPasswordState())

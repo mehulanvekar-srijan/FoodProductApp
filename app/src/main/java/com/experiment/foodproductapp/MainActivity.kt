@@ -51,7 +51,7 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
                         SignInPage(navHostControllerLambda)
                     }
                     composable(route = Screen.ForgotPassword.route) {
-                        ForgotPassword(navHostControllerLambda)
+                        ForgotPassword()
                     }
                     composable(
                         route = Screen.UserDetails.route,

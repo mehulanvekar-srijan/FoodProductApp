@@ -28,7 +28,6 @@ import com.experiment.foodproductapp.viewmodels.SplashScreenViewModel
 fun SplashScreenPage(
     navHostControllerLambda: () -> NavHostController,
     splashScreenViewModel: SplashScreenViewModel = viewModel(),
-    orderDetailsViewModel: OrderDetailsViewModel = viewModel(),
     animationDuration: Int = splashScreenViewModel.splashDuration.toInt() - 1000
 ) {
     val startAnimation = remember { mutableStateOf(false) }
@@ -61,7 +60,6 @@ fun SplashScreenPage(
             .fillMaxSize(),
         contentAlignment = Alignment.Center,
     ) {
-        //DrawLogo1(animatedAlpha,animatedShape,animatedAngle)
         Image(
             painter = painterResource(id = R.drawable.background_yellow_wave),
             contentDescription = "ic_background_image",
