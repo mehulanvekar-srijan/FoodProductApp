@@ -74,7 +74,7 @@ class HomeScreenViewModel : ViewModel() {
 
             //Inset into Product Table
             try { DatabaseRepository(context).addProduct(product) }
-            catch (e: android.database.sqlite.SQLiteConstraintException) { }
+            catch (_: android.database.sqlite.SQLiteConstraintException) { }
         }
     }
 
@@ -89,7 +89,7 @@ class HomeScreenViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 state.value = DatabaseRepository(context).getCount(id = id, email = _userEmail.value)
-            } catch (e: android.database.sqlite.SQLiteConstraintException) { }
+            } catch (_: android.database.sqlite.SQLiteConstraintException) { }
         }
     }
 

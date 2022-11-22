@@ -24,7 +24,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.DarkGray
+import androidx.compose.ui.graphics.Color.Companion.Gray
+import androidx.compose.ui.graphics.Color.Companion.Green
+import androidx.compose.ui.graphics.Color.Companion.Transparent
+import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -46,11 +51,15 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil.annotation.ExperimentalCoilApi
+import coil.compose.ImagePainter
 import coil.compose.rememberImagePainter
 import com.experiment.foodproductapp.R
 import com.experiment.foodproductapp.repository.DatabaseRepository
 import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.viewmodels.HomeScreenViewModel
+import com.google.accompanist.placeholder.PlaceholderHighlight
+import com.google.accompanist.placeholder.placeholder
+import com.google.accompanist.placeholder.shimmer
 import kotlinx.coroutines.launch
 import kotlin.math.min
 
@@ -154,21 +163,40 @@ fun HomeScreenPage(
                             homeScreenViewModel.navigateToProductDetailsPage(navHostController = navHostControllerLambda())
                         },
                     ) {
-                        Row {
+                        Row{
 
                             //Product Image
-                            Box {
+                            Box(
+                                modifier = Modifier
+                                    .weight(2F)
+                                    .fillMaxHeight(),
+                                contentAlignment = Alignment.Center,
+                            ){
+
+                                val painter = rememberImagePainter(data = item.url)
+
+                                val shimmerState = remember { mutableStateOf(false) }
+                                shimmerState.value = painter.state is ImagePainter.State.Loading || painter.state is ImagePainter.State.Error
+
                                 Image(
-                                    painter = rememberImagePainter(item.url),
+                                    painter = painter,
                                     contentDescription = "ic_product",
-                                    contentScale = ContentScale.Fit,
-                                    alignment = Alignment.CenterStart,
-                                    modifier = Modifier.padding(8.dp),
+                                    contentScale = ContentScale.Crop,
+                                    alignment = Alignment.Center,
+                                    modifier = Modifier
+                                        .padding(8.dp)
+                                        .placeholder(
+                                            visible = shimmerState.value,
+                                            color = Transparent,
+                                            highlight = PlaceholderHighlight.shimmer(LightDarkGray),
+                                        ),
                                 )
                             }
 
                             Column(
-                                modifier = Modifier.fillMaxSize(),
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .weight(3F),
                                 verticalArrangement = Arrangement.SpaceEvenly,
                             ) {
                                 Text( // Title
@@ -206,6 +234,7 @@ fun HomeScreenPage(
                     Box( //left Middle Add Icon
                         modifier = Modifier
                             .fillMaxSize()
+                            .background(Transparent)
                             .padding(start = 17.dp, top = 70.dp)
                     ) {
                         Surface(
@@ -320,11 +349,6 @@ fun AppBar(
                     contentDescription = "ic_shopping_cart",
                     tint = Color.White
                 )
-//                Text(
-//                    text = "20",
-//                    modifier = Modifier.offset(x = 10.dp, y = -10.dp),
-//                    fontSize = 10.sp,
-//                )
             }
         }
     )
