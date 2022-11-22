@@ -202,15 +202,7 @@ fun ForgotPassword(
                                     value = inputList[i],
                                     modifier = Modifier
                                         .padding(2.dp)
-                                        .size(55.dp)
-                                        .onKeyEvent {
-                                            if (it.key == Key.Backspace) {
-                                                if (inputList[i].isEmpty() && i > 0) inputList[i - 1] =
-                                                    ""
-                                                focusManager.moveFocus(FocusDirection.Left)
-                                            }
-                                            false
-                                        },
+                                        .size(55.dp),
                                     onValueChange = {
                                         inputList[i] = it
                                         if (inputList[i].isNotEmpty()) focusManager.moveFocus(

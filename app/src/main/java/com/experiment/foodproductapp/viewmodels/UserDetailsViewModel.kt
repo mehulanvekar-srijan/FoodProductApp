@@ -50,6 +50,7 @@ class UserDetailsViewModel(private val validateFirstName: ValidateName = Validat
             is UserDetailsFormEvent.Submit -> {
                 submitData(context)
             }
+            else -> {}
         }
     }
 
