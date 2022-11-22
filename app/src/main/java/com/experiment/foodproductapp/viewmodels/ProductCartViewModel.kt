@@ -24,13 +24,25 @@ class ProductCartViewModel : ViewModel() {
     private val _email = mutableStateOf("")
     val email = _email
 
+    private val _sum = mutableStateOf(computeSum())
+    val sum = _sum
+
+    private val _availablePoints = mutableStateOf(0)
+    val availablePoints = _availablePoints
+
+    private val _redeemAmount = mutableStateOf(0)
+    val redeemAmount = _redeemAmount
+
+    private val _finalSum = mutableStateOf(0)
+    val finalSum = _finalSum
+
+    private var redeemedAmount = 0
+
     fun onDismiss(context: Context, item: Product) {
-        viewModelScope.launch(Dispatchers.IO) {
-            removeFromProductList(item)
-            removeFromDatabase(context, item)
-            updateSum()
-            updateFinalSum()
-        }
+        removeFromProductList(item)
+        removeFromDatabase(context, item)
+        updateSum()
+        updateFinalSum()
     }
 
     private fun removeFromProductList(item: Product) = _cartList.remove(item)
@@ -49,10 +61,6 @@ class ProductCartViewModel : ViewModel() {
             updateFinalSum()
         }
     }
-
-    //===== count feature =====
-    private val _sum = mutableStateOf(computeSum())
-    val sum = _sum
 
     private fun computeSum(): Int = _cartList.fold(0) { result, value ->
         result + (value.price * value.count)
@@ -133,15 +141,8 @@ class ProductCartViewModel : ViewModel() {
 
     fun navigateToCheckout(navHostController: NavHostController, context: Context) {
 
-        //Compute necessary details
-        if (flag != null && checkedState.value) {
-            if (flag == true) _totalPoints.value -= remainingPoints * 10
-            else _totalPoints.value = _totalPoints.value - (_redeemAmount.value * 10)
-        }
-        Log.d(
-            "testredeemAmount",
-            "navigateToCheckout: email=${email.value} , _totalPoints=${_totalPoints.value}"
-        )
+        //Compute currently available points after applying redeemed amount
+        if (checkedState.value) updateAvailablePoints()
 
         //Clear the cart list
         _cartList.clear()
@@ -150,9 +151,13 @@ class ProductCartViewModel : ViewModel() {
             Screen.CheckoutPage.routeWithData(
                 email = email.value,
                 sum = finalSum.value,
-                points = _totalPoints.value
+                points = _availablePoints.value
             )
         )
+    }
+
+    private fun updateAvailablePoints(){
+        _availablePoints.value -= (redeemedAmount * 10)
     }
 
     fun navigateToRewards(navHostController: NavHostController, email: String?) {
@@ -164,64 +169,41 @@ class ProductCartViewModel : ViewModel() {
         if (email != null) navHostController.navigate(Screen.Rewards.routeWithData(email))
     }
 
-
-    //===== Redeem point =====
-    private val _totalPoints = mutableStateOf(0)
-    val totalPoints = _totalPoints
-
-    private val _redeemAmount = mutableStateOf(0)
-    val redeemAmount = _redeemAmount
-
-    fun initTotalPointsAndRedeemedAmount(context: Context, email: String) {
+    fun initAvailablePointsAndRedeemedAmount(context: Context, email: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            _totalPoints.value = DatabaseRepository(context).getRewardPoints(email)
-            _redeemAmount.value = _totalPoints.value / 10
-
-            Log.d("testCB", "initPRA: _totalPoints=${_totalPoints.value} _redeemAmount=${_redeemAmount.value}")
-
+            _availablePoints.value = DatabaseRepository(context).getRewardPoints(email)
+            _redeemAmount.value = _availablePoints.value / 10
         }
     }
 
-    private val _finalSum = mutableStateOf(0)
-    val finalSum = _finalSum
-
-    var flag: Boolean? = null
-    var remainingPoints = 0
-
     fun updateFinalSum() {
-        if (checkedState.value && sum.value>=100) {
-            Log.d(
-                "testredeemAmount",
-                "updateFinalSum : email=${email.value} , redeemedAmount=${_redeemAmount.value} , _totalPoints=${_totalPoints.value}"
-            )
+        //Offer is applicable only if cart sum is >= 100
+        if (checkedState.value && sum.value >= 100) {
 
+            //User can get discount up to only 10% of the cart sum
             val maxDiscount = _sum.value / 10   //10% of order value
 
+            /**
+             * NOTE: _redeemAmount is the value in your wallet and
+             *      redeemedAmount is the value you remove from wallet
+             * */
             if (_redeemAmount.value >= maxDiscount) {
 
-                remainingPoints = maxDiscount
+                redeemedAmount = maxDiscount
 
-                _finalSum.value = _sum.value - maxDiscount
+                _finalSum.value = _sum.value - redeemedAmount
 
-                flag = true
-
-                Log.d(
-                    "testredeemAmount",
-                    "updateFinalSum: if : email=${email.value} , redeemedAmount=${_redeemAmount.value} , _totalPoints=${_totalPoints.value} maxDiscount=$maxDiscount"
-                )
             } else {
-                _finalSum.value = _sum.value - _redeemAmount.value
 
-                flag = false
+                redeemedAmount = _redeemAmount.value
 
-                Log.d(
-                    "testredeemAmount",
-                    "updateFinalSum: else : email=${email.value} , redeemedAmount=${_redeemAmount.value} , _totalPoints=${_totalPoints.value}, maxDiscount=$maxDiscount"
-                )
+                _finalSum.value = _sum.value - redeemedAmount
+
             }
-        } else {
+        }
+        else {
             finalSum.value = sum.value
-            checkedState.value=false
+            checkedState.value = false
         }
     }
 }

@@ -1,6 +1,5 @@
 package com.experiment.foodproductapp.views
 
-import android.util.Log
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -53,7 +52,7 @@ fun ProductCart(
         if (email != null) {
             productCartViewModel.email.value = email
             //productCartViewModel.initRedeemAmount(context,email)
-            productCartViewModel.initTotalPointsAndRedeemedAmount(context, email)
+            productCartViewModel.initAvailablePointsAndRedeemedAmount(context, email)
         }
         productCartViewModel.fetchCartList(context)
     }
@@ -468,7 +467,7 @@ fun CheckoutArea(
                     fontSize = 20.sp,
                 )
                 Checkbox(
-                    enabled = productCartViewModel.sum.value >= 100 && productCartViewModel.totalPoints.value > 10,
+                    enabled = productCartViewModel.sum.value >= 100 && productCartViewModel.availablePoints.value > 10,
                     modifier = Modifier.padding(0.dp),
                     colors = CheckboxDefaults.colors(
                         checkedColor = Color.White,

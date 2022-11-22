@@ -15,8 +15,8 @@ import kotlinx.coroutines.launch
 
 class RewardsPageViewModel : ViewModel() {
 
-    private val _redeemedpoints = mutableStateOf("")
-    val redeemedpoints = _redeemedpoints
+    private val _redeemedPoints = mutableStateOf("")
+    val redeemedPoints = _redeemedPoints
 
     val sum = mutableStateOf(0)
 
@@ -36,7 +36,7 @@ class RewardsPageViewModel : ViewModel() {
     }
 
     fun updateUserPoints(value: String) {
-        _redeemedpoints.value = value
+        _redeemedPoints.value = value
     }
 
     fun updateRewardPoints(context: Context, email: String, rewardPoints: Int) {
@@ -110,14 +110,14 @@ class RewardsPageViewModel : ViewModel() {
 
     fun validateRewards(context: Context, email: String): Toast {
 
-        if (redeemedpoints.value == "") {
+        if (redeemedPoints.value == "") {
 
             return Toast.makeText(context, "Enter points", Toast.LENGTH_SHORT)
 
-        } else if (redeemedpoints.value.toInt() > rewardPointsState.value) {
+        } else if (redeemedPoints.value.toInt() > rewardPointsState.value) {
 
             return Toast.makeText(context, "Not enough points to redeem", Toast.LENGTH_SHORT)
-        } else if (redeemedpoints.value.toInt() in 0..9) {
+        } else if (redeemedPoints.value.toInt() in 0..9) {
 
             return Toast.makeText(
                 context,
@@ -125,7 +125,7 @@ class RewardsPageViewModel : ViewModel() {
                 Toast.LENGTH_SHORT
             )
 
-        } else if (redeemedpoints.value.toInt() % 10 != 0) {
+        } else if (redeemedPoints.value.toInt() % 10 != 0) {
 
             return Toast.makeText(
                 context,
@@ -134,10 +134,10 @@ class RewardsPageViewModel : ViewModel() {
             )
 
         } else {
-            setRedeemedAmount(context, email, redeemedpoints.value.toInt())
-            rewardPointsState.value -= redeemedpoints.value.toInt()
+            setRedeemedAmount(context, email, redeemedPoints.value.toInt())
+            rewardPointsState.value -= redeemedPoints.value.toInt()
             setRewardPoints(context, email)
-            redeemedpoints.value = ""
+            redeemedPoints.value = ""
             return Toast.makeText(context, "Points redeemed successfully", Toast.LENGTH_SHORT)
         }
     }
