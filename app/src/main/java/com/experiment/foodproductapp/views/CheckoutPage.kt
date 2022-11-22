@@ -528,24 +528,20 @@ fun CheckoutPage(
                         textAlign = TextAlign.End
                     )
                 }
+                Spacer(modifier = Modifier.padding(10.dp))
+
+                Box(
+                    modifier = Modifier
+                        .shadow(70.dp)
+                        .clip(RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp))
+                        .fillMaxSize()
+                        .background(DarkYellow),
+                ) {
+                    CheckoutArea(
+                        checkoutPageViewModel = checkoutPageViewModel,
+                    )
+                }
             }
-        }
-
-        Spacer(modifier = Modifier.padding(5.dp))
-
-        BoxWithConstraints(
-            modifier = Modifier
-                .shadow(70.dp)
-                .clip(RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp))
-                .weight(1F)
-                .fillMaxSize()
-                .background(DarkYellow)
-        ) {
-            CheckoutArea(
-                checkoutPageViewModel = checkoutPageViewModel,
-                height = maxHeight,
-                width = maxWidth,
-            )
         }
     }
 
@@ -917,27 +913,19 @@ fun CheckoutPage(
 @Composable
 fun CheckoutArea(
     checkoutPageViewModel: CheckoutPageViewModel,
-    height: Dp,
-    width: Dp,
 ) {
 
-    val textHeight: Dp = (height / 100) * 40
-    val buttonHeight: Dp = (height / 100) * 60
-    val buttonPadding: Dp = (height / 100) * 5
-    val buttonFontSize: Dp = (buttonHeight / 100) * 25
-
-    Log.d(
-        "testResp",
-        "CheckoutArea: h=$height , th=$textHeight , bh=$buttonHeight , bth=$buttonFontSize"
-    )
+//    Log.d(
+//        "testResp",
+//        "CheckoutArea: h=$height , th=$textHeight , bh=$buttonHeight , bth=$buttonFontSize"
+//    )
     //var multiplier by remember { mutableStateOf(1f) }
 
     Column {
         //Price row
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(height = textHeight),
+                .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -966,16 +954,15 @@ fun CheckoutArea(
         //Checkout button
         Box(
             modifier = Modifier
-                .fillMaxSize()
-                .height(height = buttonHeight),
+                .fillMaxSize(),
         ) {
             Button(
                 modifier = Modifier
                     .padding(
                         start = 30.dp,
                         end = 30.dp,
-                        top = buttonPadding,
-                        bottom = buttonPadding
+                        top = 10.dp,
+                        bottom = 10.dp
                     )
                     .fillMaxSize(),
                 onClick = { checkoutPageViewModel.onEvent(CheckoutFormEvent.Submit) },
@@ -988,7 +975,7 @@ fun CheckoutArea(
                     text = stringResource(id = R.string.proceed_to_payment_string),
                     color = Color.Black,
                     maxLines = 1,
-                    fontSize = buttonFontSize.value.sp
+                    fontSize = 20.sp
 //                    style = LocalTextStyle.current.copy(
 //                        fontSize = LocalTextStyle.current.fontSize * multiplier
 //                    ),
@@ -1000,8 +987,6 @@ fun CheckoutArea(
                 )
             }
         }
-
-        Spacer(modifier = Modifier.padding(10.dp))
     }
 }
 

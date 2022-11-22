@@ -21,8 +21,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.experiment.foodproductapp.MainActivity
 import com.experiment.foodproductapp.R
-import com.experiment.foodproductapp.ui.theme.descriptionFontFamily
-import com.experiment.foodproductapp.ui.theme.titleFontFamily
+import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.utility.payment
 import com.experiment.foodproductapp.viewmodels.PaymentScreenViewModel
 
@@ -59,6 +58,7 @@ fun PaymentScreen(
                 activity = mainActivity,
             )
         }
+        ChangeBarColors(statusColor = Orange, navigationBarColor = DarkYellow)
         Box(
             modifier = Modifier
                 .fillMaxSize(),
@@ -115,6 +115,7 @@ fun PaymentScreen(
                 activity = mainActivity,
             )
         }
+        ChangeBarColors(statusColor = Orange, navigationBarColor = DarkYellow)
         Box(
             modifier = Modifier
                 .fillMaxSize(),

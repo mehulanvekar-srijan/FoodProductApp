@@ -18,7 +18,7 @@ class ValidatePassword {
         if (!containsLettersAndDigits) {
             return ValidationResult(
                 successful = false,
-                errorMessage = "The password needs to contain at least 1 letter & digit"
+                errorMessage = "The password needs to contain at least 1 special  character or number"
             )
         }
         return ValidationResult(
