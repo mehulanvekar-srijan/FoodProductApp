@@ -5,22 +5,18 @@ import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.experiment.foodproductapp.BuildConfig
 import com.experiment.foodproductapp.R
 import com.experiment.foodproductapp.domain.event.ForgotPasswordFormEvent
-import com.experiment.foodproductapp.domain.event.SignupFormEvent
 import com.experiment.foodproductapp.domain.use_case.ValidateConfirmPassword
 import com.experiment.foodproductapp.domain.use_case.ValidateEmail
 import com.experiment.foodproductapp.domain.use_case.ValidatePassword
 import com.experiment.foodproductapp.repository.DatabaseRepository
 import com.experiment.foodproductapp.states.ForgotPasswordState
-import com.experiment.foodproductapp.states.SignInState
 import kotlinx.coroutines.*
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -114,7 +110,7 @@ class ForgotPasswordViewModel(
 
         if (hasNoError) {
             viewModelScope.launch {
-                val status = isUserRegistered(context)
+                val status = isUserRegistered()
                 if (status) {
                     showEnterOTP.value = true
                     showEnterEmail.value = false
@@ -142,7 +138,7 @@ class ForgotPasswordViewModel(
         _inputOtp.value = input
     }
 
-    suspend fun isUserRegistered(context: Context): Boolean {
+    private suspend fun isUserRegistered(): Boolean {
 
         Log.d("testFP", "isUserRegistered: ${state.email}")
 
@@ -155,7 +151,7 @@ class ForgotPasswordViewModel(
         return deferred.await()
     }
 
-    fun sendOtp() {
+    private fun sendOtp() {
         otp = ((Math.random() * 9000).toInt() + 1000).toString()
         val client = OkHttpClient()
         val mediaType = "application/json".toMediaTypeOrNull()
@@ -178,7 +174,7 @@ class ForgotPasswordViewModel(
 
     fun verifyOtp(): Boolean = if (_inputOtp.value == otp) true else false
 
-    fun changePassword(context: Context) {
+    private fun changePassword(context: Context) {
         viewModelScope.launch(Dispatchers.IO) {
             databaseRepository.updatePassword(state.email, state.password)
             withContext(Dispatchers.Main) {

@@ -1,7 +1,6 @@
 package com.experiment.foodproductapp.views
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -29,7 +28,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil.annotation.ExperimentalCoilApi
@@ -38,13 +36,14 @@ import com.experiment.foodproductapp.R
 import com.experiment.foodproductapp.database.entity.Product
 import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.viewmodels.ProductCartViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ProductCart(
     email: String?,
     navHostControllerLambda: () -> NavHostController,
-    productCartViewModel: ProductCartViewModel = viewModel(),
+    productCartViewModel: ProductCartViewModel = koinViewModel(),
 ) {
 
     val context = LocalContext.current
@@ -53,9 +52,9 @@ fun ProductCart(
     LaunchedEffect(key1 = Unit) {
         if (email != null) {
             productCartViewModel.email.value = email
-            productCartViewModel.initAvailablePointsAndRedeemedAmount(context, email)
+            productCartViewModel.initAvailablePointsAndRedeemedAmount(email)
         }
-        productCartViewModel.fetchCartList(context)
+        productCartViewModel.fetchCartList()
     }
 
     if(productCartViewModel.openDialog.value){
@@ -196,7 +195,7 @@ fun ProductCart(
                 productCartViewModel = productCartViewModel,
                 navigate = {
                     if (productCartViewModel.sum.value != 0) {
-                        productCartViewModel.navigateToCheckout(navHostControllerLambda(), context)
+                        productCartViewModel.navigateToCheckout(navHostControllerLambda())
                     }
 //                    navHostControllerLambda().navigate(Screen.PaymentScreen.route)
                 }
@@ -216,7 +215,7 @@ fun CardView(
     val context = LocalContext.current
 
     LaunchedEffect(key1 = Unit) {
-        productCartViewModel.getProductCount(context, item.id, quantity)
+        productCartViewModel.getProductCount(item.id, quantity)
     }
 
     Card(
@@ -287,7 +286,6 @@ fun CardView(
                         IconButton(
                             onClick = {
                                 productCartViewModel.incrementProductCount(
-                                    context,
                                     item.id,
                                     quantity
                                 )
@@ -333,7 +331,6 @@ fun CardView(
                             IconButton(
                                 onClick = {
                                     productCartViewModel.decrementProductCount(
-                                        context,
                                         item.id,
                                         quantity
                                     )
@@ -361,7 +358,6 @@ fun CardView(
                             IconButton(
                                 onClick = {
                                     productCartViewModel.decrementProductCount(
-                                        context,
                                         item.id,
                                         quantity
                                     )
@@ -569,7 +565,7 @@ fun ShowDialogBox(
         confirmButton = {
             Button(
                 onClick = {
-                    productCartViewModel.onDismiss(context, productCartViewModel.newlyDeletedItem.value)
+                    productCartViewModel.onDismiss(productCartViewModel.newlyDeletedItem.value)
                     productCartViewModel.setDialogState(false)
                 }) {
                 Text("Yes")

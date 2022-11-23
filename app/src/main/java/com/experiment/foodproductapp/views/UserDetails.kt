@@ -2,7 +2,6 @@ package com.experiment.foodproductapp.views
 
 import android.app.DatePickerDialog
 import android.net.Uri
-import android.util.Log
 import android.widget.DatePicker
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -25,7 +24,6 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.twotone.EditCalendar
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,7 +44,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil.annotation.ExperimentalCoilApi
@@ -118,8 +115,8 @@ fun UserDetails(
         )
 
         LaunchedEffect(key1 = Unit) {
-            userDetailsViewModel.execute(context, email)
-            userDetailsViewModel.initProfilePicture(context, email) //Load image from db
+            userDetailsViewModel.execute(email)
+            userDetailsViewModel.initProfilePicture(email) //Load image from db
         }
 
         val imagePicker = rememberLauncherForActivityResult(
@@ -145,7 +142,7 @@ fun UserDetails(
                 userDetailsViewModel.hasImage.value = localUri != null           //Set has image
                 userDetailsViewModel.imageUri.value = localUri                   //Set URI
                 userDetailsViewModel.updateUserProfilePictureInDatabase(        //Update database
-                    context, email, localUri
+                    email, localUri
                 )
             })
 
@@ -159,7 +156,7 @@ fun UserDetails(
                 userDetailsViewModel.hasImage.value = status                //Set has image
                 userDetailsViewModel.imageUri.value = intermediateUri       //Set URI
                 userDetailsViewModel.updateUserProfilePictureInDatabase(    //Update database
-                    context, email, intermediateUri
+                    email, intermediateUri
                 )
             }
         )
@@ -714,7 +711,6 @@ fun UserDetails(
                 IconButton(onClick = {
                     userDetailsViewModel.logOutUser(
                         email,
-                        context,
                         navHostControllerLambda()
                     )
                 }) {

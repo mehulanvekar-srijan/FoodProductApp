@@ -1,9 +1,7 @@
 package com.experiment.foodproductapp.views
 
 import android.app.DatePickerDialog
-import android.util.Log
 import android.widget.DatePicker
-import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -47,7 +45,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.experiment.foodproductapp.R
@@ -119,7 +116,7 @@ fun SignupPage(
         signUpViewModel.validationEvents.collect { event ->
             when (event) {
                 is SignUpViewModel.ValidationEvent.Success -> {
-                    signUpViewModel.navigateOnSucces(context, navHostControllerLambda())
+                    signUpViewModel.navigateOnSuccess(context, navHostControllerLambda())
                 }
             }
         }
@@ -410,7 +407,7 @@ fun SignupPage(
                                         id = R.string.show_password_string
                                     )
 
-                                IconButton(onClick = { signUpViewModel.passwordchange() }) {
+                                IconButton(onClick = { signUpViewModel.passwordChange() }) {
                                     Icon(imageVector = image, description)
                                 }
                             },
@@ -484,7 +481,7 @@ fun SignupPage(
                                     ) else stringResource(id = R.string.show_password_string)
 
                                 IconButton(onClick = {
-                                    signUpViewModel.confirmpasswordchange()
+                                    signUpViewModel.confirmPasswordChange()
                                 }) {
                                     Icon(imageVector = image, description)
                                 }

@@ -136,7 +136,7 @@ class RewardsPageViewModel(
         }
     }
 
-    suspend fun isCartEmpty(context: Context, email: String): Boolean {
+    suspend fun isCartEmpty(email: String): Boolean {
         val deferred: Deferred<Boolean> = viewModelScope.async(Dispatchers.IO) {
             val list: List<Product> = databaseRepository.readAllProducts(email)
             while (list.isNotEmpty()) {

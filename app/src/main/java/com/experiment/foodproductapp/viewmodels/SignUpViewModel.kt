@@ -116,15 +116,15 @@ class SignUpViewModel(
         }
     }
 
-    fun passwordchange() {
+    fun passwordChange() {
         _passwordVisible.value = !_passwordVisible.value
     }
 
-    fun confirmpasswordchange() {
+    fun confirmPasswordChange() {
         _confirmPasswordVisible.value = !_confirmPasswordVisible.value
     }
 
-    suspend fun navigateOnSucces(context: Context,navHostController: NavHostController) {
+    suspend fun navigateOnSuccess(context: Context, navHostController: NavHostController) {
 
         var success: Boolean? = null
 

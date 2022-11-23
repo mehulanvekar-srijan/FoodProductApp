@@ -1,6 +1,5 @@
 package com.experiment.foodproductapp.viewmodels
 
-import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
@@ -42,7 +41,7 @@ class CheckoutPageViewModel(
 
     var state by mutableStateOf(CheckoutFormState())
 
-    fun fetchUserDetails(context: Context,email:String) {
+    fun fetchUserDetails(email: String) {
         viewModelScope.launch(Dispatchers.IO) {
             _user.value = databaseRepository.getUserByEmail(email = email)
             state = state.copy(firstName = _user.value.firstName,
@@ -123,7 +122,7 @@ class CheckoutPageViewModel(
         }
     }
 
-    suspend fun navigateOnSuccess(context: Context, navHostController: NavHostController, points: Int) {
+    suspend fun navigateOnSuccess(navHostController: NavHostController, points: Int) {
         val job = viewModelScope.launch(Dispatchers.IO) {
             databaseRepository.updateAddressByEmail(
                 state.email,

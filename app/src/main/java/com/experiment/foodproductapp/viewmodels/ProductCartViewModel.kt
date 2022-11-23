@@ -1,6 +1,6 @@
 package com.experiment.foodproductapp.viewmodels
 
-import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
@@ -14,7 +14,13 @@ import com.experiment.foodproductapp.repository.DatabaseRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class ProductCartViewModel : ViewModel() {
+class ProductCartViewModel(
+    private val databaseRepository: DatabaseRepository
+) : ViewModel() {
+
+    init {
+        Log.d("testDI", "ProductCartViewModel: ${databaseRepository.hashCode()}")
+    }
 
     val checkedState = mutableStateOf(false)
 
@@ -52,24 +58,24 @@ class ProductCartViewModel : ViewModel() {
         _openDialog.value = value
     }
 
-    fun onDismiss(context: Context, item: Product) {
+    fun onDismiss(item: Product) {
         removeFromProductList(item)
-        removeFromDatabase(context, item)
+        removeFromDatabase(item)
         updateSum()
         updateFinalSum()
     }
 
     private fun removeFromProductList(item: Product) = _cartList.remove(item)
 
-    private fun removeFromDatabase(context: Context, item: Product) {
+    private fun removeFromDatabase(item: Product) {
         viewModelScope.launch(Dispatchers.IO) {
-            DatabaseRepository(context).removeProduct(id = item.id, email = email.value)
+            databaseRepository.removeProduct(id = item.id, email = email.value)
         }
     }
 
-    fun fetchCartList(context: Context) {
+    fun fetchCartList() {
         viewModelScope.launch(Dispatchers.IO) {
-            val list = DatabaseRepository(context).readAllProducts(_email.value)
+            val list = databaseRepository.readAllProducts(_email.value)
             list.forEach { _cartList.add(it) }
             updateSum()
             updateFinalSum()
@@ -85,28 +91,27 @@ class ProductCartViewModel : ViewModel() {
     }
 
     //Get count from db and set state
-    fun getProductCount(context: Context, id: Int, state: MutableState<Int>) {
+    fun getProductCount(id: Int, state: MutableState<Int>) {
         viewModelScope.launch(Dispatchers.IO) {
-            state.value = DatabaseRepository(context).getCount(id = id, email = email.value)
+            state.value = databaseRepository.getCount(id = id, email = email.value)
         }
     }
 
     //Get current count from db, increment value, set state
-    fun incrementProductCount(context: Context, id: Int, state: MutableState<Int>) {
+    fun incrementProductCount(id: Int, state: MutableState<Int>) {
 
         viewModelScope.launch(Dispatchers.IO) {
 
-            var currentCount = DatabaseRepository(context).getCount(id = id, email = email.value)
+            var currentCount = databaseRepository.getCount(id = id, email = email.value)
 
             currentCount += 1
 
-            DatabaseRepository(context).setCount(
+            databaseRepository.setCount(
                 id = id,
                 count = currentCount,
                 email = email.value
             ) //set count in db
             getProductCount(
-                context = context,
                 id = id,
                 state = state
             )          //set count of UI state
@@ -123,21 +128,20 @@ class ProductCartViewModel : ViewModel() {
     }
 
     //Get current count from db, decrement value, set state
-    fun decrementProductCount(context: Context, id: Int, state: MutableState<Int>) {
+    fun decrementProductCount(id: Int, state: MutableState<Int>) {
 
         viewModelScope.launch(Dispatchers.IO) {
 
-            var currentCount = DatabaseRepository(context).getCount(id = id, email = email.value)
+            var currentCount = databaseRepository.getCount(id = id, email = email.value)
 
             currentCount -= 1
 
-            DatabaseRepository(context).setCount(
+            databaseRepository.setCount(
                 id = id,
                 count = currentCount,
                 email = email.value
             ) //set count in db
             getProductCount(
-                context = context,
                 id = id,
                 state = state
             )          //set count of UI state
@@ -153,7 +157,7 @@ class ProductCartViewModel : ViewModel() {
 
     }
 
-    fun navigateToCheckout(navHostController: NavHostController, context: Context) {
+    fun navigateToCheckout(navHostController: NavHostController) {
 
         //Compute currently available points only after applying redeemed amount
         if (checkedState.value) updateAvailablePoints()
@@ -183,9 +187,9 @@ class ProductCartViewModel : ViewModel() {
         if (email != null) navHostController.navigate(Screen.Rewards.routeWithData(email))
     }
 
-    fun initAvailablePointsAndRedeemedAmount(context: Context, email: String) {
+    fun initAvailablePointsAndRedeemedAmount(email: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            _availablePoints.value = DatabaseRepository(context).getRewardPoints(email)
+            _availablePoints.value = databaseRepository.getRewardPoints(email)
             _redeemAmount.value = _availablePoints.value / 10
         }
     }

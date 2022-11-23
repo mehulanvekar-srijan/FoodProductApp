@@ -107,7 +107,7 @@ class UserDetailsViewModel(
         }
     }
 
-    fun execute(context: Context, email: String) {
+    fun execute(email: String) {
         viewModelScope.launch(Dispatchers.IO) {
             _user.value = databaseRepository.getUserByEmail(email = email)
             state = state.copy(
@@ -124,10 +124,7 @@ class UserDetailsViewModel(
     val hasImage = mutableStateOf(false)
     val imageUri = mutableStateOf<Uri?>(null)
 
-    fun initProfilePicture(
-        context: Context,
-        email: String,
-    ) {
+    fun initProfilePicture(email: String) {
         viewModelScope.launch(Dispatchers.IO) {
             val imagePath: String? = databaseRepository.getImagePath(email)
             if (imagePath != null) {
@@ -139,7 +136,6 @@ class UserDetailsViewModel(
     }
 
     fun updateUserProfilePictureInDatabase(
-        context: Context,
         email: String,
         uri: Uri?,
     ) {
@@ -152,8 +148,7 @@ class UserDetailsViewModel(
         navHostController.navigate(Screen.Rewards.routeWithData(email))
     }
 
-
-    fun logOutUser(email: String, context: Context, navHostController: NavHostController) {
+    fun logOutUser(email: String, navHostController: NavHostController) {
         viewModelScope.launch(Dispatchers.IO) {
             databaseRepository.updateLoginStatus(email = email, loggedIn = false)
         }
