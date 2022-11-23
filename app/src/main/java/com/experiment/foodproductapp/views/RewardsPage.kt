@@ -1,5 +1,6 @@
 package com.experiment.foodproductapp.views
 
+import android.content.Intent
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -9,6 +10,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -19,20 +21,27 @@ import androidx.compose.material.icons.outlined.Redeem
 import androidx.compose.material.icons.outlined.StarRate
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.ClipboardManager
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight.Companion.Medium
 import androidx.compose.ui.text.font.FontWeight.Companion.Thin
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.experiment.foodproductapp.R
@@ -54,6 +63,7 @@ fun Reward(
 
     LaunchedEffect(key1 = Unit) {
         rewardsPageViewModel.getRewardPoints(email.toString())
+        rewardsPageViewModel.text.value = rewardsPageViewModel.getRandomString(6)
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -433,56 +443,58 @@ fun Reward(
 
                         Spacer(modifier = Modifier.height(3.dp))
 
-                        Row(modifier = Modifier.fillMaxWidth()) {
+//                        Row(modifier = Modifier.fillMaxWidth()) {
+//
+//                            TextField(
+//                                readOnly = true,
+//                                modifier = Modifier
+//                                    .fillMaxWidth(0.76f),
+//                                value = text,
+//                                maxLines = 1,
+//                                colors = TextFieldDefaults.textFieldColors(
+//                                    textColor = Color.DarkGray,
+//                                    backgroundColor = LightGray1,
+//                                    placeholderColor = Color.White,
+//                                    cursorColor = Color.Black,
+//                                    errorIndicatorColor = Color.Transparent,
+//                                    focusedLabelColor = Color.Black,
+//                                    errorCursorColor = Color.Black,
+//                                    errorLabelColor = Color.Red,
+//                                    focusedIndicatorColor = Color.Transparent,
+//                                    unfocusedIndicatorColor = Color.Transparent,
+//                                    unfocusedLabelColor = Orange,
+//                                ),
+//                                shape = RoundedCornerShape(topStart = 15.dp, bottomStart = 15.dp),
+//                                onValueChange = {
+//                                })
 
-                            TextField(
-                                readOnly = true,
-                                modifier = Modifier
-                                    .fillMaxWidth(0.76f),
-                                value = text,
-                                maxLines = 1,
-                                colors = TextFieldDefaults.textFieldColors(
-                                    textColor = Color.DarkGray,
-                                    backgroundColor = LightGray1,
-                                    placeholderColor = Color.White,
-                                    cursorColor = Color.Black,
-                                    errorIndicatorColor = Color.Transparent,
-                                    focusedLabelColor = Color.Black,
-                                    errorCursorColor = Color.Black,
-                                    errorLabelColor = Color.Red,
-                                    focusedIndicatorColor = Color.Transparent,
-                                    unfocusedIndicatorColor = Color.Transparent,
-                                    unfocusedLabelColor = Orange,
-                                ),
-                                shape = RoundedCornerShape(topStart = 15.dp, bottomStart = 15.dp),
-                                onValueChange = {
-                                })
-
-                            Button(
-                                modifier = Modifier
-                                    .height(55.dp)
-                                    .fillMaxWidth(),
-                                onClick = {
-                                    Toast.makeText(
-                                        context,
-                                        R.string.text_copied_to_clipboard_string,
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                },
-                                shape = RoundedCornerShape(topEnd = 15.dp, bottomEnd = 15.dp),
-                                // Uses ButtonDefaults.ContentPadding by default
-                                contentPadding = PaddingValues(0.dp)
-                            ) {
-                                // Inner content including an icon and a text label
-                                Icon(
-                                    Icons.Filled.ContentCopy,
-                                    contentDescription = "ic_copy_bt",
-                                )
-                                Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-                                Text(stringResource(id = R.string.copy_string))
-                            }
-
+                        Button(
+                            modifier = Modifier
+                                .height(55.dp)
+                                .fillMaxWidth(.8f)
+                                .padding(top = 10.dp, bottom = 10.dp)
+                                .align(CenterHorizontally),
+                            onClick = {
+                                Log.d("Refer", "Reward: ${rewardsPageViewModel.text.value}")
+                                val intent = Intent(Intent.ACTION_SEND)
+                                    .putExtra(Intent.EXTRA_TEXT, rewardsPageViewModel.text.value)
+                                    .setType("text/plain")
+                                context.startActivity(Intent.createChooser(intent, "Share Using"))
+                            },
+                            shape = RoundedCornerShape(15.dp),
+                            // Uses ButtonDefaults.ContentPadding by default
+                            contentPadding = PaddingValues(0.dp)
+                        ) {
+                            // Inner content including an icon and a text label
+                            Icon(
+                                Icons.Filled.ContentCopy,
+                                contentDescription = "ic_copy_bt",
+                            )
+                            Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                            Text(stringResource(id = R.string.refer_your_friends_string))
                         }
+
+//                        }
 
                         Spacer(modifier = Modifier.height(5.dp))
 

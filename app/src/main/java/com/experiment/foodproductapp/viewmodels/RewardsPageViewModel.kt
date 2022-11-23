@@ -25,6 +25,9 @@ class RewardsPageViewModel(
     private val _redeemedPoints = mutableStateOf("")
     val redeemedPoints = _redeemedPoints
 
+    private val _text = mutableStateOf("")
+    val text = _text
+
     val sum = mutableStateOf(0)
 
     private val _rewardPointsState = mutableStateOf(0)
@@ -124,6 +127,13 @@ class RewardsPageViewModel(
             redeemedPoints.value = ""
             return Toast.makeText(context, "Points redeemed successfully", Toast.LENGTH_SHORT)
         }
+    }
+
+    fun getRandomString(length: Int): String {
+        val allowedChars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
+        return (1..length)
+            .map { allowedChars.random() }
+            .joinToString(prefix = "http://www.beerbasket.com/", separator = "")
     }
 
     fun updateUserPoints(value: String) {
