@@ -21,7 +21,8 @@ class HomeScreenViewModel : ViewModel() {
     val homeItems: State<List<HomeItems>> = _homeItems
 
     //creating empty object
-    val productForDetailPage = mutableStateOf(HomeItems())
+    private val _productForDetailPage = mutableStateOf(HomeItems())
+    val productForDetailPage = _productForDetailPage
 
     fun initHomeItems(context: Context){
         viewModelScope.launch(Dispatchers.IO){
@@ -29,8 +30,10 @@ class HomeScreenViewModel : ViewModel() {
         }
     }
 
-    fun addProduct(newItem: HomeItems) {
-        productForDetailPage.value = newItem
+    fun addProduct(context: Context, productId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+           productForDetailPage.value  = DatabaseRepository(context).readOrderId(productId)
+        }
     }
 
     fun setEmail(email: String?) {

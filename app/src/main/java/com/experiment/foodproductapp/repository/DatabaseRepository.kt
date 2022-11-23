@@ -78,6 +78,11 @@ class DatabaseRepository(context: Context) {
 
     fun readAllItems() : List<HomeItems> = homeItemsDao.readAllItems()
 
+    fun readOrderId(id: Int) : HomeItems {
+        return homeItemsDao.readOrderId(id)
+    }
+
+
 
     //Final Price Table
     fun insertFinalPrice(finalPrice: FinalPrice) = finalPriceDao.insertFinalPrice(finalPrice)

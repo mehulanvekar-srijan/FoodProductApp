@@ -122,7 +122,7 @@ fun OrderDetails(
                             elevation = 5.dp,
                             shape = RoundedCornerShape(10),
                             onClick = {
-                                orderDetailsViewModel.addOrder(item)
+                                orderDetailsViewModel.addOrderId(context,item[0].orderId)
                                 orderDetailsViewModel.navigateToProductOrderDescriptionPage(
                                     navHostController = navHostControllerLambda()
                                 )

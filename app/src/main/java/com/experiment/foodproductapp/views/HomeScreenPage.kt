@@ -159,7 +159,7 @@ fun HomeScreenPage(
                             bottomEnd = 3.dp,
                         ),
                         onClick = {
-                            homeScreenViewModel.addProduct(item)
+                            homeScreenViewModel.addProduct(context, item.id)
                             homeScreenViewModel.navigateToProductDetailsPage(navHostController = navHostControllerLambda())
                         },
                     ) {
