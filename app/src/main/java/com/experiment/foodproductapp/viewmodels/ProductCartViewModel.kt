@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.experiment.foodproductapp.constants.Screen
+import com.experiment.foodproductapp.database.entity.HomeItems
 import com.experiment.foodproductapp.database.entity.Product
 import com.experiment.foodproductapp.repository.DatabaseRepository
 import kotlinx.coroutines.Dispatchers
@@ -46,15 +47,8 @@ class ProductCartViewModel(
     private val _newlyDeletedItem: MutableState<Product> = mutableStateOf(Product())
     val newlyDeletedItem: State<Product> = _newlyDeletedItem
 
-    private val _openDialog: MutableState<Boolean> = mutableStateOf(false)
-    val openDialog: State<Boolean> = _openDialog
-
     fun setNewlyDeletedItem(item: Product) {
         _newlyDeletedItem.value = item
-    }
-
-    fun setDialogState(value: Boolean) {
-        _openDialog.value = value
     }
 
     fun onDismiss(item: Product) {
@@ -247,4 +241,21 @@ class ProductCartViewModel(
             checkedState.value = false
         }
     }
+
+    fun addProductToCart(product: Product) {
+        viewModelScope.launch(Dispatchers.IO) {
+
+            //Inset into Product Table
+            try {
+                databaseRepository.addProduct(product)
+            }
+            catch (_: android.database.sqlite.SQLiteConstraintException) { }
+
+        }
+    }
+
+    fun addProductToCartList(product: Product) {
+        _cartList.add(product)
+    }
+
 }

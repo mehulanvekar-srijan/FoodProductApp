@@ -2,6 +2,7 @@ package com.experiment.foodproductapp.views
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -19,7 +20,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -35,9 +35,10 @@ import com.experiment.foodproductapp.R
 import com.experiment.foodproductapp.database.entity.Product
 import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.viewmodels.ProductCartViewModel
+import kotlinx.coroutines.*
 import org.koin.androidx.compose.koinViewModel
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun ProductCart(
     email: String?,
@@ -47,6 +48,9 @@ fun ProductCart(
 
     ChangeBarColors(statusColor = Color.White, navigationBarColor = DarkYellow)
 
+    val scaffoldState = rememberScaffoldState()
+    val coroutineScope = rememberCoroutineScope()
+
     LaunchedEffect(key1 = Unit) {
         if (email != null) {
             productCartViewModel.email.value = email
@@ -55,149 +59,173 @@ fun ProductCart(
         productCartViewModel.fetchCartList()
     }
 
-    if(productCartViewModel.openDialog.value){
-        ShowDialogBox(productCartViewModel)
-    }
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White),
-        verticalArrangement = Arrangement.SpaceEvenly,
-    ) {
-
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .weight(7F)
-                .padding(top = 8.dp, start = 8.dp, end = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(9.dp)
-        ) {
-            item {
-                TopAppBar(
-                    title = {
-                        Row(horizontalArrangement = Arrangement.Center) {
-                            Text(
-                                text = stringResource(id = R.string.cart_string) + " ",
-                                fontFamily = titleFontFamily,
-                                fontWeight = FontWeight.Bold,
-                                color = DarkYellow,
-                            )
-                            Icon(
-                                imageVector = Icons.Default.ShoppingBag,
-                                contentDescription = "ic_cart_logo",
-                                tint = DarkYellow,
-                            )
-                        }
-                    },
-                    navigationIcon = {
-                        IconButton(
-                            onClick = {
-                                navHostControllerLambda().navigateUp()
-                            },
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.ArrowBack,
-                                contentDescription = "ic_arrow_back_bt",
-                                tint = DarkYellow,
-                            )
-                        }
-                    },
-                    backgroundColor = Color.Transparent,
-                    elevation = 0.dp,
-                    actions = {
-                        IconButton(onClick = {
-                            productCartViewModel.navigateToRewards(
-                                navHostController = navHostControllerLambda(),
-                                email = email,
-                            )
-                        }) {
-                            Icon(
-                                imageVector = Icons.Default.Stars,
-                                contentDescription = "ic_rewards_page_bt",
-                                tint = DarkYellow
-                            )
-                        }
-                    }
-                )
-            }
-
-            items(
-                items = productCartViewModel.cartList,
-                key = { it.id } // Caused n Solved multiple issues. Learn it.
-            ) { item ->
-
-                val dismissState = rememberDismissState(
-                    initialValue = DismissValue.Default,
-                    confirmStateChange = {
-                        if (it == DismissValue.DismissedToStart) {
-
-                            productCartViewModel.setDialogState(true)
-                            productCartViewModel.setNewlyDeletedItem(item)
-
-                        }
-                        false
-                    }
-                )
-
-                SwipeToDismiss(
-                    state = dismissState,
-                    directions = setOf(DismissDirection.EndToStart),
-                    dismissThresholds = { FractionalThreshold(0.2F) },
-                    dismissContent = {
-                        CardView(item, productCartViewModel)
-                    },
-                    background = {
-
-                        val color = animateColorAsState(
-                            targetValue = when (dismissState.targetValue) {
-                                DismissValue.DismissedToStart -> Color.Red
-                                DismissValue.Default -> LightDarkGray
-                                else -> Color.Transparent
-                            },
-                            animationSpec = tween(100)
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        scaffoldState = scaffoldState,
+        topBar = {
+            TopAppBar(
+                title = {
+                    Row(horizontalArrangement = Arrangement.Center) {
+                        Text(
+                            text = stringResource(id = R.string.cart_string) + " ",
+                            fontFamily = titleFontFamily,
+                            fontWeight = FontWeight.Bold,
+                            color = DarkYellow,
                         )
-
-                        Box(
-                            //Red background
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .clip(RoundedCornerShape(15.dp))
-                                .background(color.value)
-                                .padding(end = 25.dp),
-                            contentAlignment = Alignment.CenterEnd,
-                        ) {
-                            Icon(
-                                //Dustbin Icon
-                                imageVector = Icons.Default.Delete,
-                                contentDescription = "ic_delete",
-                                tint = Color.White,
-                            )
-                        }
-                    },
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.padding(5.dp))
-
-        Box(
-            modifier = Modifier
-                .shadow(70.dp)
-                .clip(RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp))
-                .weight(2F)
-                .fillMaxSize()
-                .background(DarkYellow)
-        ) {
-            CheckoutArea(
-                productCartViewModel = productCartViewModel,
-                navigate = {
-                    if (productCartViewModel.sum.value != 0) {
-                        productCartViewModel.navigateToCheckout(navHostControllerLambda())
+                        Icon(
+                            imageVector = Icons.Default.ShoppingBag,
+                            contentDescription = "ic_cart_logo",
+                            tint = DarkYellow,
+                        )
                     }
-//                    navHostControllerLambda().navigate(Screen.PaymentScreen.route)
+                },
+                navigationIcon = {
+                    IconButton(
+                        onClick = {
+                            navHostControllerLambda().navigateUp()
+                        },
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "ic_arrow_back_bt",
+                            tint = DarkYellow,
+                        )
+                    }
+                },
+                backgroundColor = Color.Transparent,
+                elevation = 0.dp,
+                actions = {
+                    IconButton(onClick = {
+                        productCartViewModel.navigateToRewards(
+                            navHostController = navHostControllerLambda(),
+                            email = email,
+                        )
+                    }) {
+                        Icon(
+                            imageVector = Icons.Default.Stars,
+                            contentDescription = "ic_rewards_page_bt",
+                            tint = DarkYellow
+                        )
+                    }
                 }
             )
+        }
+    ) {
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(it)
+                .background(Color.White),
+            verticalArrangement = Arrangement.SpaceEvenly,
+        ) {
+
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .weight(3F)
+                    .padding(start = 8.dp, end = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(9.dp)
+            ) {
+
+                items(
+                    items = productCartViewModel.cartList,
+                    key = { key -> key.id } // Caused n Solved multiple issues. Learn it.
+                ) { item ->
+
+                    val dismissState = rememberDismissState(
+                        initialValue = DismissValue.Default,
+                        confirmStateChange = {
+                            if (it == DismissValue.DismissedToStart) {
+
+                                productCartViewModel.setNewlyDeletedItem(item)
+                                productCartViewModel.onDismiss(productCartViewModel.newlyDeletedItem.value)
+
+                                coroutineScope.launch {
+
+                                    val result = scaffoldState.snackbarHostState.showSnackbar(
+                                        message = "Item ${item.id} removed",
+                                        actionLabel = "UNDO"
+                                    )
+
+                                    when(result){
+                                        SnackbarResult.ActionPerformed -> {
+                                            productCartViewModel.addProductToCart(product = item)
+                                            productCartViewModel.addProductToCartList(product = item)
+                                        }
+                                        SnackbarResult.Dismissed -> {}
+                                    }
+                                }
+
+                            }
+                            true
+                        }
+                    )
+
+                    SwipeToDismiss(
+                        state = dismissState,
+                        directions = setOf(DismissDirection.EndToStart),
+                        dismissThresholds = { FractionalThreshold(0.2F) },
+                        dismissContent = {
+                            CardView(item, productCartViewModel)
+                        },
+                        background = {
+
+                            val color = animateColorAsState(
+                                targetValue = when (dismissState.targetValue) {
+                                    DismissValue.DismissedToStart -> Color.Red
+                                    DismissValue.Default -> LightDarkGray
+                                    else -> Color.Transparent
+                                },
+                                animationSpec = tween(100)
+                            )
+
+                            Box(
+                                //Red background
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .clip(RoundedCornerShape(15.dp))
+                                    .background(color.value)
+                                    .padding(end = 25.dp),
+                                contentAlignment = Alignment.CenterEnd,
+                            ) {
+                                Icon(
+                                    //Dustbin Icon
+                                    imageVector = Icons.Default.Delete,
+                                    contentDescription = "ic_delete",
+                                    tint = Color.White,
+                                )
+                            }
+                        },
+                        modifier = Modifier.animateItemPlacement(
+                            animationSpec = tween(600)
+                        )
+                    )
+                }
+
+                item {
+                    Spacer(modifier =Modifier.height(5.dp))
+                }
+            }
+
+            Box(
+                modifier = Modifier
+                    .shadow(70.dp)
+                    .clip(RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp))
+                    .weight(1F)
+                    .fillMaxSize()
+                    .background(DarkYellow)
+            ) {
+                CheckoutArea(
+                    productCartViewModel = productCartViewModel,
+                    navigate = {
+                        if (productCartViewModel.sum.value != 0) {
+                            productCartViewModel.navigateToCheckout(navHostControllerLambda())
+                        }
+                    }
+                )
+            }
+
         }
 
     }
@@ -210,7 +238,6 @@ fun CardView(
     productCartViewModel: ProductCartViewModel
 ) {
     val quantity = remember { mutableStateOf(0) }
-    val context = LocalContext.current
 
     LaunchedEffect(key1 = Unit) {
         productCartViewModel.getProductCount(item.id, quantity)
@@ -310,7 +337,6 @@ fun CardView(
                 }
 
                 //Count Value
-                //Text(text = "1", textAlign = TextAlign.Center)
                 Text(text = quantity.value.toString(), textAlign = TextAlign.Center)
 
                 //Minus
@@ -548,36 +574,6 @@ fun CheckoutArea(
 
         Spacer(modifier = Modifier.padding(2.dp))
     }
-}
-
-
-@Composable
-fun ShowDialogBox(
-    productCartViewModel: ProductCartViewModel
-) {
-    AlertDialog(
-        onDismissRequest = { },
-        title = { Text(text = "Warning..!!") },
-        text = { Text(text = "The item will be removed from the cart") },
-        confirmButton = {
-            Button(
-                onClick = {
-                    productCartViewModel.onDismiss(productCartViewModel.newlyDeletedItem.value)
-                    productCartViewModel.setDialogState(false)
-                }) {
-                Text("Yes")
-            }
-        },
-        dismissButton = {
-            Button(
-                onClick = {
-                    productCartViewModel.setDialogState(false)
-                }) {
-                Text("No")
-            }
-        }
-    )
-
 }
 
 @Preview(showBackground = true, backgroundColor = 1)
