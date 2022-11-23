@@ -328,7 +328,7 @@ fun Reward(
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(start = 15.dp, end = 10.dp, top = 10.dp, bottom = 10.dp),
+                            .padding(start = 15.dp, end = 15.dp, top = 10.dp, bottom = 10.dp),
                     ) {
                         Text(
                             text = stringResource(id = R.string.refer_your_friends_string),
@@ -394,7 +394,7 @@ fun Reward(
                         Button(
                             modifier = Modifier
                                 .height(55.dp)
-                                .fillMaxWidth(.8f)
+                                .fillMaxWidth(0.8f)
                                 .padding(top = 10.dp, bottom = 10.dp)
                                 .align(CenterHorizontally),
                             onClick = {
