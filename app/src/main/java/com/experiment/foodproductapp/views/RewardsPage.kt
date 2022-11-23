@@ -156,7 +156,7 @@ fun Reward(
                                 textAlign = TextAlign.End
                             )
                             Text(
-                                text = stringResource(id = R.string.equals_rs_string) + rewardsPageViewModel.calculateEquals(),
+                                text = stringResource(id = R.string.equals_rs_string) + " " + rewardsPageViewModel.calculateEquals(),
                                 fontFamily = descriptionFontFamily,
                                 textAlign = TextAlign.End
                             )
