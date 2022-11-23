@@ -1,6 +1,5 @@
 package com.experiment.foodproductapp.views
 
-import android.util.Log
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -9,25 +8,24 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.experiment.foodproductapp.R
 import com.experiment.foodproductapp.ui.theme.ChangeBarColors
 import com.experiment.foodproductapp.ui.theme.DarkYellow
 import com.experiment.foodproductapp.ui.theme.Orange
-import com.experiment.foodproductapp.viewmodels.OrderDetailsViewModel
 import com.experiment.foodproductapp.viewmodels.SplashScreenViewModel
+import org.koin.androidx.compose.koinViewModel
+
 
 @Composable
 fun SplashScreenPage(
     navHostControllerLambda: () -> NavHostController,
-    splashScreenViewModel: SplashScreenViewModel = viewModel(),
+    splashScreenViewModel: SplashScreenViewModel = koinViewModel(),
     animationDuration: Int = splashScreenViewModel.splashDuration.toInt() - 1000
 ) {
     val startAnimation = remember { mutableStateOf(false) }
@@ -75,7 +73,7 @@ fun SplashScreenPage(
 
     LaunchedEffect(key1 = Unit) {
         startAnimation.value = true
-        splashScreenViewModel.execute(context, navHostControllerLambda())
+        splashScreenViewModel.execute(navHostControllerLambda())
     }
 }
 

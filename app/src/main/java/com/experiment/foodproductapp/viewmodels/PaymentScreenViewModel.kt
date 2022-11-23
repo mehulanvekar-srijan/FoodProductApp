@@ -17,7 +17,13 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class PaymentScreenViewModel : ViewModel() {
+class PaymentScreenViewModel(
+    private val databaseRepository: DatabaseRepository,
+) : ViewModel() {
+
+    init {
+        Log.d("testDI", "PaymentScreenViewModel: ${databaseRepository.hashCode()}")
+    }
 
     fun navigateOnSuccess(
         navHostController: NavHostController,
@@ -32,13 +38,13 @@ class PaymentScreenViewModel : ViewModel() {
             if(email != null) {
 
                 //Fetch products from Cart
-                val cartList: MutableList<Product> = DatabaseRepository(context).readAllProducts(email)
+                val cartList: MutableList<Product> = databaseRepository.readAllProducts(email)
 
                 //Delete fetched products from cart
-                DatabaseRepository(context).deleteAllProductByEmail(email)
+                databaseRepository.deleteAllProductByEmail(email)
 
                 //Fetch latest order Id
-                val orderId = DatabaseRepository(context).getLatestOrderId(email)
+                val orderId = databaseRepository.getLatestOrderId(email)
 
                 //Add the order details in DB
                 cartList.forEach{ item ->
@@ -56,19 +62,19 @@ class PaymentScreenViewModel : ViewModel() {
                         canceled = false,
                     )
 
-                    DatabaseRepository(context).insertOrder(order)
+                    databaseRepository.insertOrder(order)
                 }
 
                 //Update order Id
-                DatabaseRepository(context).updateLatestOrderId(email,orderId+1)
+                databaseRepository.updateLatestOrderId(email,orderId+1)
 
                 //Compute and save reward points in Users table
 //                if(sum != null){
 //                    //sum is multiplied by 100 in previous screen, Hence divide it by 100
 //                    val rewardPoints = (sum/100) / 2
-//                    var currentRewardPoints = DatabaseRepository(context).getRewardPoints(email = email)
+//                    var currentRewardPoints = databaseRepository.getRewardPoints(email = email)
 //                    currentRewardPoints += rewardPoints
-//                    DatabaseRepository(context).updateRewardPoints(email = email, rewardPoints = currentRewardPoints)
+//                    databaseRepository.updateRewardPoints(email = email, rewardPoints = currentRewardPoints)
 //                    Log.d("testPTS", "navigateOnSuccess: sum=$sum rp=$rewardPoints crp=$currentRewardPoints")
 //                }
 
@@ -78,10 +84,10 @@ class PaymentScreenViewModel : ViewModel() {
 
                     val newRewardPoints = (sum/100) / 2
 
-                    DatabaseRepository(context).updateRewardPoints(email,points + newRewardPoints)
+                    databaseRepository.updateRewardPoints(email,points + newRewardPoints)
 
                     //Store Final price in the FinalPrice Table
-                    DatabaseRepository(context).insertFinalPrice(FinalPrice(email = email,orderId = orderId, finalPrice = (sum/100.0)))
+                    databaseRepository.insertFinalPrice(FinalPrice(email = email,orderId = orderId, finalPrice = (sum/100.0)))
                 }
 
                 delay(2000)

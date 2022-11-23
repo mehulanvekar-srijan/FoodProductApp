@@ -1,6 +1,7 @@
 package com.experiment.foodproductapp.viewmodels
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -13,7 +14,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
-class RewardsPageViewModel : ViewModel() {
+class RewardsPageViewModel(
+    private val databaseRepository: DatabaseRepository
+) : ViewModel() {
+
+    init {
+        Log.d("testDI", "RewardsPageViewModel: ${databaseRepository.hashCode()}")
+    }
 
     private val _redeemedPoints = mutableStateOf("")
     val redeemedPoints = _redeemedPoints
@@ -23,45 +30,22 @@ class RewardsPageViewModel : ViewModel() {
     private val _rewardPointsState = mutableStateOf(0)
     val rewardPointsState = _rewardPointsState
 
-    fun getRewardPoints(context: Context, email: String) {
+    fun getRewardPoints(email: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            _rewardPointsState.value = DatabaseRepository(context).getRewardPoints(email)
+            _rewardPointsState.value = databaseRepository.getRewardPoints(email)
         }
     }
 
-    fun setRewardPoints(context: Context, email: String) {
+    private fun setRewardPoints(email: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            DatabaseRepository(context).updateRewardPoints(email, rewardPointsState.value)
+            databaseRepository.updateRewardPoints(email, rewardPointsState.value)
         }
     }
 
-    fun updateUserPoints(value: String) {
-        _redeemedPoints.value = value
-    }
-
-    fun updateRewardPoints(context: Context, email: String, rewardPoints: Int) {
+    private fun setRedeemedAmount(email: String, amount: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            DatabaseRepository(context).updateRewardPoints(email, rewardPoints)
-        }
-    }
-
-    suspend fun isCartEmpty(context: Context, email: String): Boolean {
-        val deferred: Deferred<Boolean> = viewModelScope.async(Dispatchers.IO) {
-            val list: List<Product> = DatabaseRepository(context).readAllProducts(email)
-            while (list.isNotEmpty()) {
-                for (item in list) {
-                    sum.value = +item.price * item.count
-                }
-            }
-            list.isEmpty()
-        }
-        return deferred.await()
-    }
-
-    private fun setRedeemedAmount(context: Context, email: String, amount: Int) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val currentRedeemedAmount = DatabaseRepository(context).getRedeemedAmount(email) * 10
-            DatabaseRepository(context).updateRedeemedAmount(
+            val currentRedeemedAmount = databaseRepository.getRedeemedAmount(email) * 10
+            databaseRepository.updateRedeemedAmount(
                 email,
                 (currentRedeemedAmount + amount) / 10
             )
@@ -134,27 +118,50 @@ class RewardsPageViewModel : ViewModel() {
             )
 
         } else {
-            setRedeemedAmount(context, email, redeemedPoints.value.toInt())
+            setRedeemedAmount(email, redeemedPoints.value.toInt())
             rewardPointsState.value -= redeemedPoints.value.toInt()
-            setRewardPoints(context, email)
+            setRewardPoints(email)
             redeemedPoints.value = ""
             return Toast.makeText(context, "Points redeemed successfully", Toast.LENGTH_SHORT)
         }
+    }
+
+    fun updateUserPoints(value: String) {
+        _redeemedPoints.value = value
+    }
+
+    fun updateRewardPoints(email: String, rewardPoints: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            databaseRepository.updateRewardPoints(email, rewardPoints)
+        }
+    }
+
+    suspend fun isCartEmpty(context: Context, email: String): Boolean {
+        val deferred: Deferred<Boolean> = viewModelScope.async(Dispatchers.IO) {
+            val list: List<Product> = databaseRepository.readAllProducts(email)
+            while (list.isNotEmpty()) {
+                for (item in list) {
+                    sum.value = +item.price * item.count
+                }
+            }
+            list.isEmpty()
+        }
+        return deferred.await()
     }
 
 //    var rewardList = listOf<Rewards>()
 
 //    fun getRewards(context: Context){
 //        viewModelScope.launch(Dispatchers.IO) {
-//            rewardList = DatabaseRepository(context).readAllRewards()
+//            rewardList = databaseRepository.readAllRewards()
 //        }
 //    }
 
 //    fun getAvailableRewards(context: Context){
 //        viewModelScope.launch(Dispatchers.IO) {
 //
-//            val allRewards: List<Rewards> = DatabaseRepository(context).readAllRewards()
-//            val allRewardsUsed : List<RewardsUsed> = DatabaseRepository(context).readAllRewardsUsed("meh@ul.com")
+//            val allRewards: List<Rewards> = databaseRepository.readAllRewards()
+//            val allRewardsUsed : List<RewardsUsed> = databaseRepository.readAllRewardsUsed("meh@ul.com")
 //            val availableRewards : MutableList<Rewards> = mutableListOf()
 //
 //            allRewards.forEach { rewards ->

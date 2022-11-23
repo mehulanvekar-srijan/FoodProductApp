@@ -1,8 +1,8 @@
 package com.experiment.foodproductapp.viewmodels
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -37,6 +37,20 @@ class ProductCartViewModel : ViewModel() {
     val finalSum = _finalSum
 
     private var redeemedAmount = 0
+
+    private val _newlyDeletedItem: MutableState<Product> = mutableStateOf(Product())
+    val newlyDeletedItem: State<Product> = _newlyDeletedItem
+
+    private val _openDialog: MutableState<Boolean> = mutableStateOf(false)
+    val openDialog: State<Boolean> = _openDialog
+
+    fun setNewlyDeletedItem(item: Product){
+        _newlyDeletedItem.value = item
+    }
+
+    fun setDialogState(value: Boolean){
+        _openDialog.value = value
+    }
 
     fun onDismiss(context: Context, item: Product) {
         removeFromProductList(item)
@@ -141,7 +155,7 @@ class ProductCartViewModel : ViewModel() {
 
     fun navigateToCheckout(navHostController: NavHostController, context: Context) {
 
-        //Compute currently available points after applying redeemed amount
+        //Compute currently available points only after applying redeemed amount
         if (checkedState.value) updateAvailablePoints()
 
         //Clear the cart list
@@ -157,7 +171,7 @@ class ProductCartViewModel : ViewModel() {
     }
 
     private fun updateAvailablePoints(){
-        _availablePoints.value -= (redeemedAmount * 10)
+        _availablePoints.value -= (redeemedAmount * 10) //Multiplied by 10 to convert rupees to points
     }
 
     fun navigateToRewards(navHostController: NavHostController, email: String?) {
@@ -177,7 +191,7 @@ class ProductCartViewModel : ViewModel() {
     }
 
     fun updateFinalSum() {
-        //Offer is applicable only if cart sum is >= 100
+        //Offer is applicable only if CheckButton is checked & cart sum is >= 100
         if (checkedState.value && sum.value >= 100) {
 
             //User can get discount up to only 10% of the cart sum

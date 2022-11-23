@@ -21,10 +21,15 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class SignInViewModel(
+    private val databaseRepository: DatabaseRepository,
     private val validateEmail: ValidateEmail = ValidateEmail(),
-    private val validatePassword: EmptyPassword = EmptyPassword()
+    private val validatePassword: EmptyPassword = EmptyPassword(),
 ) : ViewModel() {
     var state by mutableStateOf(SignInState())
+
+    init {
+        Log.d("testDI", "SignInViewModel: ${databaseRepository.hashCode()}")
+    }
 
     private val _passwordVisibility =  mutableStateOf(false)
     val passwordVisibility = _passwordVisibility
@@ -74,13 +79,12 @@ class SignInViewModel(
         viewModelScope.launch(Dispatchers.IO) {
 
             val user : User?
-            val database = DatabaseRepository(context)
-            user = database.getUserByEmail(state.email)
+            user = databaseRepository.getUserByEmail(state.email)
 
             if (user != null) {
                 if (user.email == state.email && user.password == state.password ) {
 
-                    DatabaseRepository(context).updateLoginStatus(email = state.email,loggedIn = true)
+                    databaseRepository.updateLoginStatus(email = state.email,loggedIn = true)
 
                     withContext(Dispatchers.Main) {
 
@@ -104,7 +108,4 @@ class SignInViewModel(
         }
     }
 
-//    sealed class ValidationEvent {
-//        object Succcess : ValidationEvent()
-//    }
 }

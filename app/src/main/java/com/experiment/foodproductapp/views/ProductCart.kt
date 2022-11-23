@@ -1,5 +1,7 @@
 package com.experiment.foodproductapp.views
 
+import android.content.Context
+import android.util.Log
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -51,10 +53,13 @@ fun ProductCart(
     LaunchedEffect(key1 = Unit) {
         if (email != null) {
             productCartViewModel.email.value = email
-            //productCartViewModel.initRedeemAmount(context,email)
             productCartViewModel.initAvailablePointsAndRedeemedAmount(context, email)
         }
         productCartViewModel.fetchCartList(context)
+    }
+
+    if(productCartViewModel.openDialog.value){
+        ShowDialogBox(context,productCartViewModel)
     }
 
     Column(
@@ -129,9 +134,12 @@ fun ProductCart(
                     initialValue = DismissValue.Default,
                     confirmStateChange = {
                         if (it == DismissValue.DismissedToStart) {
-                            productCartViewModel.onDismiss(context, item)
+
+                            //productCartViewModel.setDialogState(true)
+                            productCartViewModel.setNewlyDeletedItem(item)
+
                         }
-                        true
+                        false
                     }
                 )
 
@@ -548,6 +556,36 @@ fun CheckoutArea(
     }
 }
 
+
+@Composable
+fun ShowDialogBox(
+    context: Context,
+    productCartViewModel: ProductCartViewModel
+) {
+    AlertDialog(
+        onDismissRequest = { },
+        title = { Text(text = "Warning..!!") },
+        text = { Text(text = "The item will be removed from the cart") },
+        confirmButton = {
+            Button(
+                onClick = {
+                    productCartViewModel.onDismiss(context, productCartViewModel.newlyDeletedItem.value)
+                    productCartViewModel.setDialogState(false)
+                }) {
+                Text("Yes")
+            }
+        },
+        dismissButton = {
+            Button(
+                onClick = {
+                    productCartViewModel.setDialogState(false)
+                }) {
+                Text("No")
+            }
+        }
+    )
+
+}
 
 @Preview(showBackground = true, backgroundColor = 1)
 @Composable

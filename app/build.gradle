@@ -109,4 +109,16 @@ dependencies {
     implementation 'com.google.accompanist:accompanist-placeholder:0.19.0'
 
 
+    //Koin
+    def koin_version= "3.2.2"
+    implementation "io.insert-koin:koin-core:$koin_version"
+
+    // Koin main features for Android
+    def koin_android_version= "3.3.0"
+    implementation "io.insert-koin:koin-android:$koin_android_version"
+    // Navigation Graph
+    implementation "io.insert-koin:koin-androidx-navigation:$koin_android_version"
+    // Jetpack Compose
+    def koin_android_compose_version= "3.3.0"
+    implementation "io.insert-koin:koin-androidx-compose:$koin_android_compose_version"
 }

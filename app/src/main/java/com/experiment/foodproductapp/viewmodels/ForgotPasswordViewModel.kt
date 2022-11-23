@@ -28,11 +28,15 @@ import okhttp3.RequestBody
 
 
 class ForgotPasswordViewModel(
+    private val databaseRepository: DatabaseRepository,
     private val validateEmail: ValidateEmail = ValidateEmail(),
     private val validatePassword: ValidatePassword = ValidatePassword(),
     private val validateConfirmPassword: ValidateConfirmPassword = ValidateConfirmPassword(),
-) :
-    ViewModel() {
+) : ViewModel() {
+
+    init {
+        Log.d("testDI", "ForgotPasswordViewModel: ${databaseRepository.hashCode()}")
+    }
 
     private var otp = ""
 
@@ -143,7 +147,7 @@ class ForgotPasswordViewModel(
         Log.d("testFP", "isUserRegistered: ${state.email}")
 
         val deferred: Deferred<Boolean> = viewModelScope.async(Dispatchers.IO) {
-            val result = DatabaseRepository(context).getUserByEmail(state.email)
+            val result = databaseRepository.getUserByEmail(state.email)
             Log.d("testFP", "deferred: $result")
             if (result == null) false else true
         }
@@ -176,7 +180,7 @@ class ForgotPasswordViewModel(
 
     fun changePassword(context: Context) {
         viewModelScope.launch(Dispatchers.IO) {
-            DatabaseRepository(context).updatePassword(state.email, state.password)
+            databaseRepository.updatePassword(state.email, state.password)
             withContext(Dispatchers.Main) {
                 Toast.makeText(
                     context,

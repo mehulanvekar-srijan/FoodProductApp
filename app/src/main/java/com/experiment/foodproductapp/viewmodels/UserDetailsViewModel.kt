@@ -16,14 +16,18 @@ import com.experiment.foodproductapp.domain.use_case.*
 import com.experiment.foodproductapp.states.UserDetailsFormState
 import kotlinx.coroutines.*
 
-class UserDetailsViewModel(private val validateFirstName: ValidateName = ValidateName(),
-                           private val validateLastName: ValidateName = ValidateName(),
-                           private val validatePassword: ValidatePassword = ValidatePassword(),
-                           private val validatePhoneNumber: ValidatePhoneNumber = ValidatePhoneNumber(),
-                           private val validateDateChange: ValidateName = ValidateName()
+class UserDetailsViewModel(
+    private val databaseRepository: DatabaseRepository,
+    private val validateFirstName: ValidateName = ValidateName(),
+    private val validateLastName: ValidateName = ValidateName(),
+    private val validatePassword: ValidatePassword = ValidatePassword(),
+    private val validatePhoneNumber: ValidatePhoneNumber = ValidatePhoneNumber(),
+    private val validateDateChange: ValidateName = ValidateName()
 ) : ViewModel() {
 
-
+    init {
+        Log.d("testDI", "UserDetailsViewModel: ${databaseRepository.hashCode()}")
+    }
 
     private val _user: MutableState<User> = mutableStateOf(User())
     val user: State<User> = _user
@@ -89,8 +93,7 @@ class UserDetailsViewModel(private val validateFirstName: ValidateName = Validat
         )
 
         viewModelScope.launch(Dispatchers.IO) {
-            val database = DatabaseRepository(context)
-            database.updateUserByEmail(
+            databaseRepository.updateUserByEmail(
                 state.email,
                 state.firstName,
                 state.lastName,
@@ -106,9 +109,9 @@ class UserDetailsViewModel(private val validateFirstName: ValidateName = Validat
 
     fun execute(context: Context, email: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            val database = DatabaseRepository(context)
-            _user.value = database.getUserByEmail(email = email)
-            state = state.copy(firstName = _user.value.firstName,
+            _user.value = databaseRepository.getUserByEmail(email = email)
+            state = state.copy(
+                firstName = _user.value.firstName,
                 lastName = _user.value.lastName,
                 email = _user.value.email,
                 password = _user.value.password,
@@ -123,39 +126,38 @@ class UserDetailsViewModel(private val validateFirstName: ValidateName = Validat
 
     fun initProfilePicture(
         context: Context,
-        email:String,
+        email: String,
     ) {
-        viewModelScope.launch(Dispatchers.IO){
-            val imagePath: String? = DatabaseRepository(context).getImagePath(email)
-            if(imagePath != null){
+        viewModelScope.launch(Dispatchers.IO) {
+            val imagePath: String? = databaseRepository.getImagePath(email)
+            if (imagePath != null) {
                 imageUri.value = Uri.parse(imagePath)
                 hasImage.value = true
-            }
-            else hasImage.value = false
+            } else hasImage.value = false
             Log.d("testCam", "1 - initProfilePicture: imgPath =  ${imageUri.value}")
         }
     }
 
     fun updateUserProfilePictureInDatabase(
         context: Context,
-        email:String,
+        email: String,
         uri: Uri?,
-    ){
-        viewModelScope.launch(Dispatchers.IO){
-            DatabaseRepository(context).updateUserProfilePicture(email,uri.toString())
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            databaseRepository.updateUserProfilePicture(email, uri.toString())
         }
     }
 
-    fun navigateToRewards(email: String,navHostController: NavHostController){
+    fun navigateToRewards(email: String, navHostController: NavHostController) {
         navHostController.navigate(Screen.Rewards.routeWithData(email))
     }
 
 
-    fun logOutUser(email: String,context: Context,navHostController: NavHostController){
-        viewModelScope.launch(Dispatchers.IO){
-            DatabaseRepository(context).updateLoginStatus(email = email,loggedIn = false)
+    fun logOutUser(email: String, context: Context, navHostController: NavHostController) {
+        viewModelScope.launch(Dispatchers.IO) {
+            databaseRepository.updateLoginStatus(email = email, loggedIn = false)
         }
-        navHostController.navigate(Screen.SignInScreen.route){
+        navHostController.navigate(Screen.SignInScreen.route) {
             popUpTo(Screen.HomeScreen.route) { inclusive = true }
         }
     }

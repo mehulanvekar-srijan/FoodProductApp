@@ -54,23 +54,12 @@ import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.domain.event.SignInFormEvent
 import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.viewmodels.SignInViewModel
-
-//
-//@Preview
-//@Composable
-//fun preview() {
-//    val navHostController = rememberNavController()
-//    val navHostControllerLambda: () -> NavHostController = {
-//
-//        navHostController
-//    }
-//    SignInPage(navHostControllerLambda = navHostControllerLambda)
-//}
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SignInPage(
     navHostControllerLambda: () -> NavHostController,
-    signInViewModel: SignInViewModel = viewModel()
+    signInViewModel: SignInViewModel = koinViewModel()
 ) {
 
     ChangeBarColors(navigationBarColor = Color.White)

@@ -55,13 +55,14 @@ import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.viewmodels.ForgotPasswordViewModel
 import com.razorpay.OTP
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 
 var count = 1
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun ForgotPassword(
-    forgotPasswordViewModel: ForgotPasswordViewModel = viewModel()
+    forgotPasswordViewModel: ForgotPasswordViewModel = koinViewModel()
 ) {
 
     ChangeBarColors(navigationBarColor = Color.White)

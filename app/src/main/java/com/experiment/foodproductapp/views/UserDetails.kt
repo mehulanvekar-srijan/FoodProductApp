@@ -60,6 +60,7 @@ import com.experiment.foodproductapp.ui.theme.Orange
 import com.experiment.foodproductapp.utility.ComposeFileProvider
 import com.experiment.foodproductapp.viewmodels.UserDetailsViewModel
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 import java.util.*
 
 @Composable
@@ -78,7 +79,7 @@ fun Show() {
 fun UserDetails(
     navHostControllerLambda: () -> NavHostController,
     email: String?,
-    userDetailsViewModel: UserDetailsViewModel = viewModel(),
+    userDetailsViewModel: UserDetailsViewModel = koinViewModel(),
 ) {
     if (email != null) {
         val focusManager = LocalFocusManager.current

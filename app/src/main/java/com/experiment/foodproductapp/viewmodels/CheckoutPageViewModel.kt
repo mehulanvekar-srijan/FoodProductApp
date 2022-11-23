@@ -19,12 +19,18 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 class CheckoutPageViewModel(
+    private val databaseRepository: DatabaseRepository,
     private val validatePinCode: ValidatePincode = ValidatePincode(),
     private val validateAddressLine1: ValidateName = ValidateName(),
     private val validateAddressLine2: ValidateName = ValidateName(),
     private val validateCity: ValidateName = ValidateName(),
     private val validateState: ValidateName = ValidateName()
 ) : ViewModel() {
+
+    init {
+        Log.d("testDI", "CheckoutPageViewModel: ${databaseRepository.hashCode()}")
+    }
+
     private val _user: MutableState<User> = mutableStateOf(User())
     val user: State<User> = _user
 
@@ -38,8 +44,7 @@ class CheckoutPageViewModel(
 
     fun fetchUserDetails(context: Context,email:String) {
         viewModelScope.launch(Dispatchers.IO) {
-            val database = DatabaseRepository(context)
-            _user.value = database.getUserByEmail(email = email)
+            _user.value = databaseRepository.getUserByEmail(email = email)
             state = state.copy(firstName = _user.value.firstName,
                 email=_user.value.email,
                 lastName = _user.value.lastName,
@@ -120,8 +125,7 @@ class CheckoutPageViewModel(
 
     suspend fun navigateOnSuccess(context: Context, navHostController: NavHostController, points: Int) {
         val job = viewModelScope.launch(Dispatchers.IO) {
-            val database = DatabaseRepository(context)
-            database.updateAddressByEmail(
+            databaseRepository.updateAddressByEmail(
                 state.email,
                 state.pincode,
                 state.addressLine1,

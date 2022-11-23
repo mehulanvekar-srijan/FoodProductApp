@@ -24,6 +24,7 @@ import com.experiment.foodproductapp.R
 import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.utility.payment
 import com.experiment.foodproductapp.viewmodels.PaymentScreenViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun PaymentScreen(
@@ -32,7 +33,7 @@ fun PaymentScreen(
     phoneNumber: String?,
     sum: Int?,
     points: Int?,
-    paymentScreenViewModel: PaymentScreenViewModel = viewModel(),
+    paymentScreenViewModel: PaymentScreenViewModel = koinViewModel(),
     activityLambda: () -> Activity,
 ) {
     Log.d("total1", sum.toString())

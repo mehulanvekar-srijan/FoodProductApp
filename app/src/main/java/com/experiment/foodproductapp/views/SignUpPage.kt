@@ -55,6 +55,7 @@ import com.experiment.foodproductapp.domain.event.SignupFormEvent
 import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.viewmodels.SignUpViewModel
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 import java.util.*
 
 @Preview
@@ -72,7 +73,7 @@ fun preview1() {
 @Composable
 fun SignupPage(
     navHostControllerLambda: () -> NavHostController,
-    signUpViewModel: SignUpViewModel = viewModel()
+    signUpViewModel: SignUpViewModel = koinViewModel()
 ) {
     ChangeBarColors(navigationBarColor = Color.White)
     val focusManager = LocalFocusManager.current

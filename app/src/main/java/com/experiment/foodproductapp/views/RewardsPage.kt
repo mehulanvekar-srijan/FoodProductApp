@@ -9,7 +9,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -20,49 +19,32 @@ import androidx.compose.material.icons.outlined.Redeem
 import androidx.compose.material.icons.outlined.StarRate
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.ClipboardManager
-import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight.Companion.Medium
 import androidx.compose.ui.text.font.FontWeight.Companion.Thin
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.experiment.foodproductapp.R
 import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.viewmodels.RewardsPageViewModel
-import kotlinx.coroutines.launch
-
-@Composable
-@Preview
-fun show1() {
-    val string = "Sahil"
-    val navHostController = rememberNavController()
-    val navHostControllerLambda: () -> NavHostController = {
-        navHostController
-    }
-    Reward(email = string, navHostControllerLambda)
-}
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun Reward(
     email: String?,
     navHostControllerLambda: () -> NavHostController,
-    rewardsPageViewModel: RewardsPageViewModel = viewModel()
+    rewardsPageViewModel: RewardsPageViewModel = koinViewModel()
 ) {
     ChangeBarColors(navigationBarColor = Color.White)
 
@@ -71,7 +53,7 @@ fun Reward(
     val context = LocalContext.current
 
     LaunchedEffect(key1 = Unit) {
-        rewardsPageViewModel.getRewardPoints(context, email.toString())
+        rewardsPageViewModel.getRewardPoints(email.toString())
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -546,107 +528,13 @@ fun BackgroundImage2() {
     )
 }
 
-
-//@Composable
-//fun Reward(
-//    navHostControllerLambda: () -> NavHostController,
-//    rewardsPageViewModel: RewardsPageViewModel = viewModel()
-//) {
-//    ChangeBarColors(navigationBarColor = DarkYellow)
-//    val context = LocalContext.current
-//    val lazyListState = rememberLazyListState()
-//    var itemsListState = listOf<Rewards>()
-//
-////    LaunchedEffect(key1 = Unit){
-////        rewardsPageViewModel.getRewards(context)
-////    }
-//
-//    Box(modifier = Modifier.fillMaxSize()) {
-//        //Background Image
-//        BackgroundImage2()
-//
-//        //top bar
-//        TopAppBar(
-//            title = { Text(text = "Rewards", color = Color.White) },
-//            backgroundColor = Color.Transparent,
-//            elevation = 0.dp,
-//            navigationIcon = {
-//                IconButton(onClick = { navHostControllerLambda().navigateUp() }) {
-//                    Icon(
-//                        imageVector = Icons.Default.ArrowBack,
-//                        contentDescription = "",
-//                        tint = Color.White
-//                    )
-//                }
-//            },
-//        )
-//        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-//
-//            LazyRow(
-//                state = lazyListState,
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .height(300.dp)
-//            ) {
-//                items(items = rewardsPageViewModel.rewards) { item ->
-//                    Box(
-//                        modifier = Modifier
-//                            .fillMaxWidth()
-//                            .height(300.dp)
-//                    ) {
-//                        Card(
-//                            modifier = Modifier
-//                                .fillParentMaxWidth()
-//                                .height(400.dp)
-//                                .padding(start = 15.dp, end = 15.dp),
-//                            elevation = 10.dp,
-//                            shape = RoundedCornerShape(10),
-//                        ) {
-//                            Column(
-//                                modifier = Modifier
-//                                    .fillMaxWidth(),
-//                                horizontalAlignment = Alignment.CenterHorizontally
-//                            ) {
-//                                Text(
-//                                    modifier = Modifier.padding(top = 30.dp),
-//                                    text = item.code,
-//                                    fontFamily = titleFontFamily,
-//                                    fontSize = 24.sp
-//                                )
-//                                Text(
-//                                    modifier = Modifier.padding(top = 30.dp),
-//                                    text = item.description,
-//                                    fontFamily = descriptionFontFamily,
-//                                    fontSize = 24.sp
-//                                )
-//                                Text(
-//                                    modifier = Modifier.padding(top = 60.dp),
-//                                    text = item.title,
-//                                    fontFamily = descriptionFontFamily,
-//                                    fontSize = 24.sp
-//                                )
-//                            }
-//                        }
-//                    }
-////                    Spacer(modifier = Modifier.width(20.dp))
-////                    if (item == rewardsPageViewModel.rewards.last()) {
-////                        val currentList = itemsListState
-////
-////                        val secondPart = currentList.subList(0, lazyListState.firstVisibleItemIndex)
-////                        val firstPart = currentList.subList(lazyListState.firstVisibleItemIndex, currentList.size)
-////
-////                        rememberCoroutineScope().launch {
-////                            val SCROLL_DX_INT = 100
-////                            lazyListState.scrollToItem(0, maxOf(0, lazyListState.firstVisibleItemScrollOffset - SCROLL_DX_INT))
-////                        }
-////
-////                        itemsListState = firstPart + secondPart
-////                    }
-//                }
-//            }
-//        }
-//    }
-////    LaunchedEffect(Unit) {
-////        autoScroll(lazyListState)
-////    }
-//}
+@Composable
+@Preview
+fun show1() {
+    val string = "Sahil"
+    val navHostController = rememberNavController()
+    val navHostControllerLambda: () -> NavHostController = {
+        navHostController
+    }
+    Reward(email = string, navHostControllerLambda)
+}

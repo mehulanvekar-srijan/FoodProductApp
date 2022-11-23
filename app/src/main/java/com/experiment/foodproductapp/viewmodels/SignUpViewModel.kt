@@ -22,34 +22,21 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class SignUpViewModel(
+    private val databaseRepository: DatabaseRepository,
     private val validateFirstName: ValidateName = ValidateName(),
     private val validateLastName: ValidateName = ValidateName(),
     private val validateEmail: ValidateEmail = ValidateEmail(),
     private val validatePassword: ValidatePassword = ValidatePassword(),
     private val validateConfirmPassword: ValidateConfirmPassword = ValidateConfirmPassword(),
-    private val validatePhoneNumber: ValidatePhoneNumber= ValidatePhoneNumber(),
-    private val validateDateChange:ValidateName= ValidateName()
+    private val validatePhoneNumber: ValidatePhoneNumber = ValidatePhoneNumber(),
+    private val validateDateChange:ValidateName = ValidateName()
 ) : ViewModel() {
-    var state by mutableStateOf(SignUpFormState())
 
-//    val mYear: Int
-//    val mMonth: Int
-//    val mDay: Int
-//
-//    // Initializing a Calendar
-//    val mCalendar = Calendar.getInstance()
-//
-//    // Fetching current year, month and day
-//    mYear = mCalendar.get(Calendar.YEAR)
-//    mMonth = mCalendar.get(Calendar.MONTH)
-//    mDay = mCalendar.get(Calendar.DAY_OF_MONTH)
-//
-//    val mDatePickerDialog = DatePickerDialog(
-//        context,
-//        { _: DatePicker, mYear: Int, mMonth: Int, mDayOfMonth: Int ->
-//            mDate.value = "$mDayOfMonth/${mMonth+1}/$mYear"
-//        }, mYear, mMonth, mDay
-//    )
+    init {
+        Log.d("testDI", "SignUpViewModel: ${databaseRepository.hashCode()}")
+    }
+
+    var state by mutableStateOf(SignUpFormState())
 
     private val _passwordVisible = mutableStateOf(false)
     val passwordVisible = _passwordVisible
@@ -140,7 +127,6 @@ class SignUpViewModel(
     suspend fun navigateOnSucces(context: Context,navHostController: NavHostController) {
 
         var success: Boolean? = null
-        val database = DatabaseRepository(context)
 
         val job = viewModelScope.launch(Dispatchers.IO){
             val user = User(
@@ -153,7 +139,7 @@ class SignUpViewModel(
             )
 
             success = try {
-                database.addUser(user)
+                databaseRepository.addUser(user)
                 withContext(Dispatchers.Main) {
                     Toast.makeText(context,"Registration Successful", Toast.LENGTH_SHORT).show()
                 }
@@ -172,7 +158,7 @@ class SignUpViewModel(
         if(success != null && success == true){
             //Update login status
             viewModelScope.launch(Dispatchers.IO){
-                database.updateLoginStatus(email = state.email,loggedIn = true)
+                databaseRepository.updateLoginStatus(email = state.email,loggedIn = true)
             }
 
             //Navigate
