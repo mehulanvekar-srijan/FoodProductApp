@@ -26,6 +26,9 @@ class HomeScreenViewModel(
     private val _homeItems: MutableState<List<HomeItems>> = mutableStateOf(listOf())
     val homeItems: State<List<HomeItems>> = _homeItems
 
+    private val _cartItemCount: MutableState<Int> = mutableStateOf(0)
+    val cartItemCount: State<Int> = _cartItemCount
+
     //creating empty object
     private val _productForDetailPage = mutableStateOf(HomeItems())
     val productForDetailPage = _productForDetailPage
@@ -83,6 +86,7 @@ class HomeScreenViewModel(
             //Inset into Product Table
             try {
                 databaseRepository.addProduct(product)
+                initCartItemsCount()
             } catch (_: android.database.sqlite.SQLiteConstraintException) {
             }
         }
@@ -163,6 +167,15 @@ class HomeScreenViewModel(
                 id = id,
                 state = state
             )          //set count of UI state
+        }
+    }
+
+    fun initCartItemsCount(){
+        viewModelScope.launch(Dispatchers.IO){
+            val cartList = databaseRepository.readAllProducts(_userEmail.value)
+            _cartItemCount.value = cartList.size
+
+            Log.d("testBadge", "initCartItemsCount: ${cartItemCount.value}")
         }
     }
 }

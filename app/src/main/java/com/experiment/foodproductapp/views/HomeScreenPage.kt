@@ -19,7 +19,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Blue
 import androidx.compose.ui.graphics.Color.Companion.DarkGray
+import androidx.compose.ui.graphics.Color.Companion.Green
+import androidx.compose.ui.graphics.Color.Companion.Red
 import androidx.compose.ui.graphics.Color.Companion.Transparent
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
@@ -66,11 +69,11 @@ fun HomeScreenPage(
     navHostControllerLambda: () -> NavHostController,
     homeScreenViewModel: HomeScreenViewModel = viewModel(),
 ) {
-    val context = LocalContext.current
 
     LaunchedEffect(key1 = Unit) {
         homeScreenViewModel.setEmail(email)
         homeScreenViewModel.initHomeItems()
+        homeScreenViewModel.initCartItemsCount()
     }
 
     ChangeBarColors(navigationBarColor = Color.White)
@@ -257,6 +260,7 @@ fun HomeScreenPage(
 
         //Top App Bar
         AppBar(
+            homeScreenViewModel = homeScreenViewModel,
             animatedAppBarBackgroundColor = animatedAppBarBackgroundColor,
             animatedAppBarContentColor = animatedAppBarContentColor,
             animatedAppBarBrandIconColor = animatedAppBarBrandIconColor,
@@ -286,6 +290,7 @@ fun BackgroundImage() {
 
 @Composable
 fun AppBar(
+    homeScreenViewModel: HomeScreenViewModel,
     animatedAppBarBackgroundColor: State<Color>,
     animatedAppBarContentColor: State<Color>,
     animatedAppBarBrandIconColor: State<Color>,
@@ -328,18 +333,38 @@ fun AppBar(
                 )
             }
 
-            IconButton(onClick = onProductCartClick) {
-                Icon(
-                    imageVector = Icons.Default.ShoppingCart,
-                    contentDescription = "ic_shopping_cart",
-                    tint = Color.White
-                )
+            val offset = 12
+            if(homeScreenViewModel.cartItemCount.value > 0){
+                BadgedBox(
+                    badge = {
+                        Badge(
+                            modifier = Modifier
+                                .offset(x = -offset.dp, y = offset.dp)
+                        ){
+                            Text(text = "${homeScreenViewModel.cartItemCount.value}")
+                        }
+                    },
+                ){
+                    IconButton(onClick = onProductCartClick) {
+                        Icon(
+                            imageVector = Icons.Default.ShoppingCart,
+                            contentDescription = "ic_shopping_cart",
+                            tint = Color.White
+                        )
+                    }
+                }
+            }
+            else{
+                IconButton(onClick = onProductCartClick) {
+                    Icon(
+                        imageVector = Icons.Default.ShoppingCart,
+                        contentDescription = "ic_shopping_cart",
+                        tint = Color.White
+                    )
+                }
             }
         }
     )
-
-//    val count = remember{ mutableStateOf(0) }
-//    SideEffect { Log.d("testRecomp", "AppBar: ${count.value++}") }
 }
 
 @Composable

@@ -45,7 +45,6 @@ fun ProductCart(
     productCartViewModel: ProductCartViewModel = koinViewModel(),
 ) {
 
-    val context = LocalContext.current
     ChangeBarColors(statusColor = Color.White, navigationBarColor = DarkYellow)
 
     LaunchedEffect(key1 = Unit) {
@@ -133,7 +132,7 @@ fun ProductCart(
                     confirmStateChange = {
                         if (it == DismissValue.DismissedToStart) {
 
-                            //productCartViewModel.setDialogState(true)
+                            productCartViewModel.setDialogState(true)
                             productCartViewModel.setNewlyDeletedItem(item)
 
                         }
