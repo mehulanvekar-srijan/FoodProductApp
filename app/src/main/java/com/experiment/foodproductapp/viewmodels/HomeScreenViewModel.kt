@@ -38,7 +38,7 @@ class HomeScreenViewModel(
 
     fun addProduct(productId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-           productForDetailPage.value  = databaseRepository.readOrderId(productId)
+           _productForDetailPage.value  = databaseRepository.readOrderId(productId)
         }
     }
 

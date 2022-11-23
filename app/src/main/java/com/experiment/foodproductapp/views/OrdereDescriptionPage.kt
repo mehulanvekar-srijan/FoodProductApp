@@ -268,7 +268,11 @@ fun OrderDescriptionPage(
                             )
 
                             Text(
-                                text = stringResource(id = R.string.rs_dot_string) + " " + (orderDetailsViewModel.calculateSum(orderDetailsViewModel.orderDetails) - orderDetailsViewModel.finalAmount.value),
+                                text = stringResource(id = R.string.rs_dot_string) + " " + (
+                                            orderDetailsViewModel.calculateSum(
+                                                orderDetailsViewModel.orderDetails
+                                            ) - orderDetailsViewModel.finalAmount.value
+                                        ).toInt(),
 
                                 fontFamily = descriptionFontFamily,
                                 fontSize = 18.sp,

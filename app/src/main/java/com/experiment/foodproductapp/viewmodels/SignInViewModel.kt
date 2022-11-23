@@ -55,7 +55,7 @@ class SignInViewModel(
         }
     }
 
-    private fun loginUser(context: Context,navHostController: NavHostController) {
+    private fun loginUser(context: Context, navHostController: NavHostController) {
         val emailResult = validateEmail.execute(state.email)
         val passwordResult = validatePassword.execute(state.password)
 

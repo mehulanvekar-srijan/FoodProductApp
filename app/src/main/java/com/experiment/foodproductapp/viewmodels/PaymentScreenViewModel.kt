@@ -20,6 +20,7 @@ import kotlinx.coroutines.withContext
 class PaymentScreenViewModel(
     private val databaseRepository: DatabaseRepository,
 ) : ViewModel() {
+    val splashDuration: Long = 3000
 
     init {
         Log.d("testDI", "PaymentScreenViewModel: ${databaseRepository.hashCode()}")
@@ -92,7 +93,7 @@ class PaymentScreenViewModel(
                     databaseRepository.insertFinalPrice(FinalPrice(email = email,orderId = orderId, finalPrice = (sum/100.0)))
                 }
 
-                delay(2000)
+                delay(splashDuration)
 
                 withContext(Dispatchers.Main){
                     navHostController.navigate(Screen.HomeScreen.routeWithData(email)){

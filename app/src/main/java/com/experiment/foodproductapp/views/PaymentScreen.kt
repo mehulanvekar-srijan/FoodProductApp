@@ -2,12 +2,14 @@ package com.experiment.foodproductapp.views
 
 import android.app.Activity
 import android.util.Log
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -17,7 +19,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.experiment.foodproductapp.MainActivity
 import com.experiment.foodproductapp.R
@@ -41,14 +42,19 @@ fun PaymentScreen(
     val mainActivity = activityLambda() as MainActivity
     val context = LocalContext.current
 
+    ChangeBarColors(statusColor = Orange, navigationBarColor = DarkYellow)
+
     LaunchedEffect(key1 = Unit) {
         if (sum != null) {
             payment(mainActivity, email.toString(), phoneNumber.toString(), total)
         }
     }
 
+    if (mainActivity.status.value == true) {  //Payment success
 
-    if (mainActivity.status.value == true) { //Payment success
+        val startAnimation = remember { mutableStateOf(false) }
+        val animationDuration: Int = paymentScreenViewModel.splashDuration.toInt() - 1000
+
         LaunchedEffect(key1 = Unit) {
             paymentScreenViewModel.navigateOnSuccess(
                 navHostController = navHostControllerLambda(),
@@ -58,55 +64,80 @@ fun PaymentScreen(
                 points = points,
                 activity = mainActivity,
             )
+            startAnimation.value = true
         }
-        ChangeBarColors(statusColor = Orange, navigationBarColor = DarkYellow)
+
+        val animatedAlpha = animateFloatAsState(
+            targetValue = if (startAnimation.value) 1F else 0F,
+            animationSpec = tween(animationDuration),
+        )
+
+        val animatedShape = animateFloatAsState(
+            targetValue = if (startAnimation.value) 0.9F else 0.0F,
+            animationSpec = tween(animationDuration),
+        )
+
+        val animatedPadding = animateDpAsState(
+            targetValue = if (startAnimation.value) 15.dp else 0.dp,
+            animationSpec = tween(2000),
+        )
+
         Box(
             modifier = Modifier
                 .fillMaxSize(),
+            contentAlignment = Alignment.Center,
         ) {
             Image(
                 painter = painterResource(id = R.drawable.background_yellow_wave),
                 contentDescription = "ic_background_image",
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
             )
-            Column(
-                Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Icon(
-                    modifier = Modifier.size(200.dp),
-                    painter = painterResource(id = R.drawable.ic_baseline_assignment_turned_in_24),
-                    contentDescription = "ic_success"
-                )
-                Text(
-                    text = stringResource(id = R.string.order_placed_string),
-                    fontFamily = titleFontFamily,
-                    fontSize = 24.sp,
-                    color = Color.DarkGray
-                )
-                Text(
-                    text = stringResource(id = R.string.your_order_was_placed_successfully_string),
-                    fontFamily = descriptionFontFamily,
-                    color = Color.DarkGray
-                )
-            }
+
+            CollisionAnimation(
+                animatedAlpha = animatedAlpha,
+                animatedShape = animatedShape,
+                animatedPadding = animatedPadding,
+            )
+
+
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(bottom = 20.dp),
-                verticalArrangement = Arrangement.Bottom,
-                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = stringResource(id = R.string.redirecting_you_to_home_page_string),
-                    fontFamily = descriptionFontFamily,
-                    color = Color.DarkGray
-                )
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight(.75f),
+                    verticalArrangement = Arrangement.Bottom,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "Order Placed !",
+                        fontFamily = titleFontFamily,
+                        fontSize = 24.sp,
+                        color = Color.DarkGray
+                    )
+                    Text(
+                        text = "Your Order was Placed Successfully",
+                        fontFamily = descriptionFontFamily,
+                        color = Color.DarkGray
+                    )
+                }
+
             }
+            Text(
+                text = "redirecting you to Home Page",
+                fontFamily = descriptionFontFamily,
+                color = Color.DarkGray,
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+            )
         }
+
     }
+
     if (mainActivity.status.value == false) { //Payment failure
         LaunchedEffect(key1 = Unit) {
             paymentScreenViewModel.navigateOnFailure(
@@ -116,7 +147,6 @@ fun PaymentScreen(
                 activity = mainActivity,
             )
         }
-        ChangeBarColors(statusColor = Orange, navigationBarColor = DarkYellow)
         Box(
             modifier = Modifier
                 .fillMaxSize(),

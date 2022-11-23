@@ -301,7 +301,7 @@ fun ProductDetailsPage(
                 }
             }
 
-            Spacer(modifier = Modifier.padding(top = 10.dp))
+            Spacer(modifier = Modifier.padding(top = 20.dp))
             Column(
                 modifier = Modifier
                     .fillMaxWidth()

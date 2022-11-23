@@ -50,12 +50,12 @@ fun OrderDetails(
     navHostControllerLambda: () -> NavHostController,
     orderDetailsViewModel: OrderDetailsViewModel = viewModel(),
 ) {
-    val context = LocalContext.current
 
     ChangeBarColors(navigationBarColor = DarkYellow)
 
     LaunchedEffect(key1 = Unit) {
-        orderDetailsViewModel.email.value = email.toString()
+        orderDetailsViewModel.setEmail(email)
+        //orderDetailsViewModel.email.value = email.toString()
         orderDetailsViewModel.finalList.clear()
         orderDetailsViewModel.fetchOrderList()
     }

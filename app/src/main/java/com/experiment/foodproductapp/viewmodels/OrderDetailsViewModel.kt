@@ -19,25 +19,34 @@ class OrderDetailsViewModel(
     init {
         Log.d("testDI", "OrderDetailsViewModel: ${databaseRepository.hashCode()}")
     }
-    var finalList = mutableStateListOf<MutableList<OrderDetails>>()
-    var priceList = mutableStateListOf<Int>()
-    val email = mutableStateOf("")
+
+    val _finalList = mutableStateListOf<MutableList<OrderDetails>>()
+    val finalList = _finalList
+
+    val _priceList = mutableStateListOf<Int>()
+    val priceList = _priceList
+
+    private val email = mutableStateOf("")
 
     // to access the order on description page
-    var orderDetails = mutableListOf<OrderDetails>()
-    //var orderDetailsId = mutableStateOf<Int>(0)
+    private val _orderDetails = mutableListOf<OrderDetails>()
+    val orderDetails = _orderDetails
 
-    val finalAmount = mutableStateOf(-1.0)
+    private val _finalAmount = mutableStateOf(-1.0)
+    val finalAmount = _finalAmount
 
+    fun setEmail(mail: String?) {
+        email.value = mail.toString()
+    }
 
     //assign the details of the order clicked on
     fun addOrderId(newOrderId: Int) {
-        orderDetails.clear()
+        _orderDetails.clear()
         // fetch the order from db
         viewModelScope.launch(Dispatchers.IO) {
             val list = databaseRepository.readAllOrderDetails(email.value, newOrderId)
             list.forEach {
-                orderDetails.add(it)
+                _orderDetails.add(it)
             }
         }
     }
@@ -96,10 +105,10 @@ class OrderDetailsViewModel(
                     )
                 }
                 if (list.isNotEmpty()) {
-                    finalList.add(order)
+                    _finalList.add(order)
                     var sum = 0.0
                     sum = databaseRepository.getFinalPrice(email.value, order[0].orderId)
-                    priceList.add(sum.toInt())
+                    _priceList.add(sum.toInt())
                     Log.d("orderDetails", "fetchOrderList: ")
                 }
 
@@ -108,11 +117,11 @@ class OrderDetailsViewModel(
 
             } while (list.isNotEmpty())
 
-            for (element in priceList) {
+            for (element in _priceList) {
                 Log.d("checkSum", "fetchOrderList: $element")
             }
         }
 
-        Log.d("orderDetails", "count of total orders: ${finalList.count()}")
+        Log.d("orderDetails", "count of total orders: ${_finalList.count()}")
     }
 }
