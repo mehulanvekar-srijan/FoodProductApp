@@ -30,7 +30,6 @@ class UserDetailsViewModel(
     }
 
     private val _user: MutableState<User> = mutableStateOf(User())
-    val user: State<User> = _user
 
     var state by mutableStateOf(UserDetailsFormState())
 

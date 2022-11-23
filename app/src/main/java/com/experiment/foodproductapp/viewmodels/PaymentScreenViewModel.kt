@@ -83,6 +83,8 @@ class PaymentScreenViewModel(
                     //sum is multiplied by 100 in previous screen, Hence divide it my 100
 
                     val newRewardPoints = (sum/100) / 2
+                    Log.d("Redeem", "New Points: $newRewardPoints")
+                    Log.d("Redeem", "Final Points: $newRewardPoints + $points")
 
                     databaseRepository.updateRewardPoints(email,points + newRewardPoints)
 

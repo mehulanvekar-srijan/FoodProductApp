@@ -94,7 +94,9 @@
     <string name="points_string">Points</string>
     <string name="equals_rs_string">Equals Rs</string>
     <string name="redeem_string">Redeem</string>
-    <string name="redeem_message_string">You can Redeem 10 Points for equivalent of Rs.1</string>
+    <string name="redeem_message_20_string">You can Redeem 20 Points for equivalent of Rs.1</string>
+    <string name="redeem_message_10_string">You can Redeem 10 Points for equivalent of Rs.1</string>
+    <string name="redeem_message_5_string">You can Redeem 5 Points for equivalent of Rs.1</string>
     <string name="bracket_level_string">(Level</string>
     <string name="gold_string">Gold</string>
     <string name="you_are_already_in_the_top_string">You are already in the Top Level</string>

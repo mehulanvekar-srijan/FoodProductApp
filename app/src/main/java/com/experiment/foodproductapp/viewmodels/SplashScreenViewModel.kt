@@ -17,7 +17,7 @@ class SplashScreenViewModel(
         Log.d("testDI", "SplashScreenViewModel: ${databaseRepository.hashCode()}")
     }
 
-    val splashDuration: Long = 3000  // Milliseconds
+    private val splashDuration: Long = 3000  // Milliseconds
 
     fun execute(navHostController: NavHostController) {
 

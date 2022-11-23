@@ -31,7 +31,6 @@ class CheckoutPageViewModel(
     }
 
     private val _user: MutableState<User> = mutableStateOf(User())
-    val user: State<User> = _user
 
     private val validationEventChannel= Channel<ValidationEvent>()
     val validationEvents = validationEventChannel.receiveAsFlow()
@@ -141,7 +140,7 @@ class CheckoutPageViewModel(
             Screen.PaymentScreen.routeWithData(
                 email = state.email,
                 phoneNumber = state.phoneNumber,
-                sum = sum.value*100,
+                sum = _sum.value*100,
                 points = points
             )
         )

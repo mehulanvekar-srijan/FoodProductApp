@@ -471,7 +471,7 @@ fun CheckoutArea(
                     fontSize = 20.sp,
                 )
                 Checkbox(
-                    enabled = productCartViewModel.sum.value >= 100 && productCartViewModel.availablePoints.value > 10,
+                    enabled = productCartViewModel.sum.value >= 100 && productCartViewModel.availablePoints.value > 20,
                     modifier = Modifier.padding(0.dp),
                     colors = CheckboxDefaults.colors(
                         checkedColor = Color.White,

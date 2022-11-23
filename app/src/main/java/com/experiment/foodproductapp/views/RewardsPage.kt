@@ -16,6 +16,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Circle
 import androidx.compose.material.icons.filled.ContentCopy
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.outlined.MilitaryTech
 import androidx.compose.material.icons.outlined.Redeem
 import androidx.compose.material.icons.outlined.StarRate
@@ -56,8 +57,6 @@ fun Reward(
     rewardsPageViewModel: RewardsPageViewModel = koinViewModel()
 ) {
     ChangeBarColors(navigationBarColor = Color.White)
-
-    val text = stringResource(id = R.string.refer_copy_string)
 
     val context = LocalContext.current
 
@@ -157,7 +156,7 @@ fun Reward(
                                 textAlign = TextAlign.End
                             )
                             Text(
-                                text = stringResource(id = R.string.equals_rs_string) + (rewardsPageViewModel.rewardPointsState.value / 10).toString(),
+                                text = stringResource(id = R.string.equals_rs_string) + rewardsPageViewModel.calculateEquals(),
                                 fontFamily = descriptionFontFamily,
                                 textAlign = TextAlign.End
                             )
@@ -208,64 +207,13 @@ fun Reward(
                             horizontalAlignment = Alignment.End,
                         ) {
                             Text(
-                                text = stringResource(id = R.string.redeem_message_string),
+                                text = stringResource(id = rewardsPageViewModel.getRedeemStringId()),
                                 modifier = Modifier.padding(5.dp),
                                 fontFamily = titleFontFamily,
                                 fontSize = 20.sp
                             )
 
                         }
-//                        ) {
-//                            TextField(
-//                                value = rewardsPageViewModel.redeemedpoints.value,
-//                                colors = TextFieldDefaults.textFieldColors(
-//                                    textColor = Color.Black,
-//                                    backgroundColor = LightGray1,
-//                                    placeholderColor = Color.White,
-//                                    cursorColor = Color.Black,
-//                                    errorIndicatorColor = Color.Transparent,
-//                                    focusedLabelColor = Color.Black,
-//                                    errorCursorColor = Color.Black,
-//                                    errorLabelColor = Color.Red,
-//                                    focusedIndicatorColor = Color.Transparent,
-//                                    unfocusedIndicatorColor = Color.Transparent,
-//                                    unfocusedLabelColor = Orange,
-//                                ),
-//                                shape = RoundedCornerShape(20.dp),
-//                                keyboardOptions = KeyboardOptions(
-//                                    keyboardType = KeyboardType.Phone
-//                                ),
-//                                onValueChange = {
-//                                    rewardsPageViewModel.updateUserPoints(it)
-//                                })
-//
-//                            Spacer(modifier = Modifier.height(5.dp))
-//
-//                            Button(
-//                                onClick = { rewardsPageViewModel.validateRewards(context,email.toString()).show()
-//                                },
-//                                modifier = Modifier
-//                                    .fillMaxWidth(.4f)
-//                                    .height(22.dp),
-//                                contentPadding = PaddingValues(0.dp),
-//                                shape = RoundedCornerShape(50),
-//                                colors = ButtonDefaults.buttonColors(
-//                                    backgroundColor = DarkYellow,
-//                                    contentColor = Color.White
-//                                ),
-//                                elevation = ButtonDefaults.elevation(
-//                                    defaultElevation = 5.dp
-//                                )
-//                            ) {
-//                                Text(
-//                                    modifier = Modifier.fillMaxSize(),
-//                                    text = "Redeem",
-//                                    color = Color.White,
-//                                    fontSize = 14.sp,
-//                                    textAlign = TextAlign.Center
-//                                )
-//                            }
-//                        }
                     }
 
                 }
@@ -443,31 +391,6 @@ fun Reward(
 
                         Spacer(modifier = Modifier.height(3.dp))
 
-//                        Row(modifier = Modifier.fillMaxWidth()) {
-//
-//                            TextField(
-//                                readOnly = true,
-//                                modifier = Modifier
-//                                    .fillMaxWidth(0.76f),
-//                                value = text,
-//                                maxLines = 1,
-//                                colors = TextFieldDefaults.textFieldColors(
-//                                    textColor = Color.DarkGray,
-//                                    backgroundColor = LightGray1,
-//                                    placeholderColor = Color.White,
-//                                    cursorColor = Color.Black,
-//                                    errorIndicatorColor = Color.Transparent,
-//                                    focusedLabelColor = Color.Black,
-//                                    errorCursorColor = Color.Black,
-//                                    errorLabelColor = Color.Red,
-//                                    focusedIndicatorColor = Color.Transparent,
-//                                    unfocusedIndicatorColor = Color.Transparent,
-//                                    unfocusedLabelColor = Orange,
-//                                ),
-//                                shape = RoundedCornerShape(topStart = 15.dp, bottomStart = 15.dp),
-//                                onValueChange = {
-//                                })
-
                         Button(
                             modifier = Modifier
                                 .height(55.dp)
@@ -487,14 +410,12 @@ fun Reward(
                         ) {
                             // Inner content including an icon and a text label
                             Icon(
-                                Icons.Filled.ContentCopy,
-                                contentDescription = "ic_copy_bt",
+                                Icons.Filled.Share,
+                                contentDescription = "ic_share_bt",
                             )
                             Spacer(Modifier.size(ButtonDefaults.IconSpacing))
                             Text(stringResource(id = R.string.refer_your_friends_string))
                         }
-
-//                        }
 
                         Spacer(modifier = Modifier.height(5.dp))
 
