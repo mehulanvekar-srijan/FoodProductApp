@@ -1,6 +1,5 @@
 package com.experiment.foodproductapp.viewmodels
 
-import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -32,11 +31,11 @@ class OrderDetailsViewModel(
 
 
     //assign the details of the order clicked on
-    fun addOrderId(context: Context,newOrderId: Int) {
+    fun addOrderId(newOrderId: Int) {
         orderDetails.clear()
         // fetch the order from db
         viewModelScope.launch(Dispatchers.IO) {
-            val list = DatabaseRepository(context).readAllOrderDetails(email.value, newOrderId)
+            val list = databaseRepository.readAllOrderDetails(email.value, newOrderId)
             list.forEach {
                 orderDetails.add(it)
             }

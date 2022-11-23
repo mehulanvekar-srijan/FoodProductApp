@@ -1,6 +1,5 @@
 package com.experiment.foodproductapp.views
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -32,13 +31,6 @@ import coil.compose.rememberImagePainter
 import com.experiment.foodproductapp.R
 import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.viewmodels.OrderDetailsViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import okhttp3.Dispatcher
-import kotlin.coroutines.coroutineContext
-import kotlin.properties.Delegates
 
 @Preview
 @Composable
@@ -119,7 +111,7 @@ fun OrderDetails(
                             elevation = 5.dp,
                             shape = RoundedCornerShape(10),
                             onClick = {
-                                orderDetailsViewModel.addOrderId(context, item[0].orderId)
+                                orderDetailsViewModel.addOrderId(item[0].orderId)
                                 orderDetailsViewModel.navigateToProductOrderDescriptionPage(
                                     navHostController = navHostControllerLambda()
                                 )
