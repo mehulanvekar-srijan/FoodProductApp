@@ -1,6 +1,5 @@
 package com.experiment.foodproductapp.views
 
-import android.content.Context
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -58,7 +57,7 @@ fun ProductCart(
     }
 
     if(productCartViewModel.openDialog.value){
-        ShowDialogBox(context,productCartViewModel)
+        ShowDialogBox(productCartViewModel)
     }
 
     Column(
@@ -555,7 +554,6 @@ fun CheckoutArea(
 
 @Composable
 fun ShowDialogBox(
-    context: Context,
     productCartViewModel: ProductCartViewModel
 ) {
     AlertDialog(

@@ -40,7 +40,6 @@ import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 
 import com.experiment.foodproductapp.R
-import com.experiment.foodproductapp.database.entity.Product
 import com.experiment.foodproductapp.ui.theme.*
 
 import com.experiment.foodproductapp.viewmodels.HomeScreenViewModel
@@ -66,7 +65,7 @@ fun ProductDetailsPage(
     val quantity = remember { mutableStateOf(0) }
 
     LaunchedEffect(key1 = Unit) {
-        homeScreenViewModel.getProductCount(context, productDetails.value.id, quantity)
+        homeScreenViewModel.getProductCount(productDetails.value.id, quantity)
     }
 
     ChangeBarColors(statusColor = Color.White, navigationBarColor = DarkYellow)
@@ -221,7 +220,6 @@ fun ProductDetailsPage(
                                 IconButton(
                                     onClick = {
                                         homeScreenViewModel.incrementProductCount(
-                                            context,
                                             productDetails.value.id,
                                             quantity
                                         )
@@ -273,7 +271,6 @@ fun ProductDetailsPage(
                                 IconButton(
                                     onClick = {
                                         homeScreenViewModel.decrementProductCount(
-                                            context,
                                             productDetails.value.id,
                                             quantity
                                         )

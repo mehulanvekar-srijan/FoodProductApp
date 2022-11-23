@@ -1,6 +1,5 @@
 package com.experiment.foodproductapp.views
 
-import android.util.Log
 import androidx.compose.animation.*
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -15,34 +14,21 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.ManageAccounts
 import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material.icons.outlined.Favorite
-import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.DarkGray
-import androidx.compose.ui.graphics.Color.Companion.Gray
-import androidx.compose.ui.graphics.Color.Companion.Green
 import androidx.compose.ui.graphics.Color.Companion.Transparent
-import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.BaselineShift
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -54,7 +40,6 @@ import coil.annotation.ExperimentalCoilApi
 import coil.compose.ImagePainter
 import coil.compose.rememberImagePainter
 import com.experiment.foodproductapp.R
-import com.experiment.foodproductapp.repository.DatabaseRepository
 import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.viewmodels.HomeScreenViewModel
 import com.google.accompanist.placeholder.PlaceholderHighlight
@@ -85,7 +70,7 @@ fun HomeScreenPage(
 
     LaunchedEffect(key1 = Unit) {
         homeScreenViewModel.setEmail(email)
-        homeScreenViewModel.initHomeItems(context = context)
+        homeScreenViewModel.initHomeItems()
     }
 
     ChangeBarColors(navigationBarColor = Color.White)
@@ -159,7 +144,7 @@ fun HomeScreenPage(
                             bottomEnd = 3.dp,
                         ),
                         onClick = {
-                            homeScreenViewModel.addProduct(context, item.id)
+                            homeScreenViewModel.addProduct(item.id)
                             homeScreenViewModel.navigateToProductDetailsPage(navHostController = navHostControllerLambda())
                         },
                     ) {
@@ -243,7 +228,7 @@ fun HomeScreenPage(
                         ) {
                             IconButton(
                                 onClick = {
-                                    homeScreenViewModel.addProductToCart(item, context)
+                                    homeScreenViewModel.addProductToCart(item)
                                     coroutineScope.launch {
                                         iconColor.animateTo(Orange, tween(50))
                                         iconColor.animateTo(DarkPink, tween(200))

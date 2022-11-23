@@ -2,22 +2,13 @@ package com.experiment.foodproductapp.views
 
 import android.util.Log
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.Indication
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.outlined.Help
-import androidx.compose.material.icons.outlined.HelpCenter
-import androidx.compose.material.icons.outlined.HelpOutline
-import androidx.compose.material.icons.outlined.LiveHelp
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -39,7 +30,6 @@ import androidx.navigation.compose.rememberNavController
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.experiment.foodproductapp.R
-import com.experiment.foodproductapp.domain.event.UserDetailsFormEvent
 import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.viewmodels.OrderDetailsViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -75,7 +65,7 @@ fun OrderDetails(
     LaunchedEffect(key1 = Unit) {
         orderDetailsViewModel.email.value = email.toString()
         orderDetailsViewModel.finalList.clear()
-        orderDetailsViewModel.fetchOrderList(context)
+        orderDetailsViewModel.fetchOrderList()
     }
 
     if (orderDetailsViewModel.finalList.isNotEmpty()) {

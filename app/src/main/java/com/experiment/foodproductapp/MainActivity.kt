@@ -19,6 +19,7 @@ import com.experiment.foodproductapp.viewmodels.OrderDetailsViewModel
 import com.experiment.foodproductapp.views.*
 import com.razorpay.PaymentData
 import com.razorpay.PaymentResultWithDataListener
+import org.koin.androidx.compose.koinViewModel
 
 class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
 
@@ -28,13 +29,13 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
         super.onCreate(savedInstanceState)
         setContent {
 
-
             navHostController = rememberNavController()
 
             val navHostControllerLambda: () -> NavHostController =
                 { navHostController as NavHostController }
-            val homeScreenViewModel: HomeScreenViewModel = viewModel()
-            val orderScreenViewModel: OrderDetailsViewModel = viewModel()
+
+            val homeScreenViewModel: HomeScreenViewModel = koinViewModel()
+            val orderScreenViewModel: OrderDetailsViewModel = koinViewModel()
 
             FoodProductAppTheme {
                 NavHost(
@@ -65,7 +66,8 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
                     ) {
                         HomeScreenPage(
                             it.arguments?.getString("email"),
-                            navHostControllerLambda, homeScreenViewModel = homeScreenViewModel
+                            navHostControllerLambda,
+                            homeScreenViewModel = homeScreenViewModel
                         )
                     }
 
@@ -95,7 +97,8 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
                     }
                     composable(route = Screen.ProductDetailsScreen.route) {
                         ProductDetailsPage(
-                            navHostControllerLambda, homeScreenViewModel = homeScreenViewModel
+                            navHostControllerLambda,
+                            homeScreenViewModel = homeScreenViewModel
                         )
                     }
                     composable(
@@ -128,7 +131,8 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
 
                     composable(route = Screen.OrderDescriptionPage.route) {
                         OrderDescriptionPage(
-                            navHostControllerLambda, orderDetailsViewModel = orderScreenViewModel
+                            navHostControllerLambda,
+                            orderDetailsViewModel = orderScreenViewModel
                         )
                     }
 

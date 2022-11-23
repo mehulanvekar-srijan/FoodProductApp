@@ -13,16 +13,22 @@ import com.experiment.foodproductapp.repository.DatabaseRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class OrderDetailsViewModel: ViewModel() {
+class OrderDetailsViewModel(
+    private val databaseRepository: DatabaseRepository,
+): ViewModel() {
 
+    init {
+        Log.d("testDI", "OrderDetailsViewModel: ${databaseRepository.hashCode()}")
+    }
     var finalList = mutableStateListOf<MutableList<OrderDetails>>()
     var priceList = mutableStateListOf<Int>()
     val email = mutableStateOf("")
 
     // to access the order on description page
     var orderDetails = mutableListOf<OrderDetails>()
+    //var orderDetailsId = mutableStateOf<Int>(0)
 
-    val finalAmount = mutableStateOf<Double>(-1.0)
+    val finalAmount = mutableStateOf(-1.0)
 
 
     //assign the details of the order clicked on
@@ -55,10 +61,10 @@ class OrderDetailsViewModel: ViewModel() {
         return sum
     }
 
-    fun calculateRedeemedAmount(context: Context) {
+    fun calculateRedeemedAmount() {
         viewModelScope.launch(Dispatchers.IO) {
             finalAmount.value =
-                DatabaseRepository(context).getFinalPrice(email.value, orderDetails[0].orderId)
+                databaseRepository.getFinalPrice(email.value, orderDetails[0].orderId)
         }
     }
 
@@ -69,12 +75,12 @@ class OrderDetailsViewModel: ViewModel() {
         }
     }
 
-    fun fetchOrderList(context: Context) {
+    fun fetchOrderList() {
         var orderCount = 1
         viewModelScope.launch(Dispatchers.IO) {
             do {
                 val order = mutableListOf<OrderDetails>()
-                val list = DatabaseRepository(context).readAllOrderDetails(email.value, orderCount)
+                val list = databaseRepository.readAllOrderDetails(email.value, orderCount)
 
                 Log.d("orderDetails", " list value fetchOrderList: $list")
 
@@ -93,7 +99,7 @@ class OrderDetailsViewModel: ViewModel() {
                 if (list.isNotEmpty()) {
                     finalList.add(order)
                     var sum = 0.0
-                    sum = DatabaseRepository(context).getFinalPrice(email.value, order[0].orderId)
+                    sum = databaseRepository.getFinalPrice(email.value, order[0].orderId)
                     priceList.add(sum.toInt())
                     Log.d("orderDetails", "fetchOrderList: ")
                 }

@@ -31,7 +31,14 @@ class UserDetailsViewModel(
 
     private val _user: MutableState<User> = mutableStateOf(User())
 
+    private val _dialogBox: MutableState<Boolean> = mutableStateOf(false)
+    val dialogBox: State<Boolean> = _dialogBox
+
     var state by mutableStateOf(UserDetailsFormState())
+
+    fun changeDialogBoxStatus(input: Boolean){
+        _dialogBox.value = input
+    }
 
     fun onEvent(context: Context, event: UserDetailsFormEvent) {
         when (event) {

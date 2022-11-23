@@ -55,21 +55,11 @@ import com.experiment.foodproductapp.ui.theme.DarkYellow
 import com.experiment.foodproductapp.ui.theme.LightGray1
 import com.experiment.foodproductapp.ui.theme.Orange
 import com.experiment.foodproductapp.utility.ComposeFileProvider
+import com.experiment.foodproductapp.viewmodels.ProductCartViewModel
 import com.experiment.foodproductapp.viewmodels.UserDetailsViewModel
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import java.util.*
-
-@Composable
-@Preview
-fun Show() {
-    val string = "Sahil"
-    val navHostController = rememberNavController()
-    val navHostControllerLambda: () -> NavHostController = {
-        navHostController
-    }
-    UserDetails(navHostControllerLambda, email = string)
-}
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalCoilApi::class)
 @Composable
@@ -160,6 +150,21 @@ fun UserDetails(
                 )
             }
         )
+
+        if(userDetailsViewModel.dialogBox.value) {
+            ShowDialogBox(
+                confirmButtonLogic = {
+                    userDetailsViewModel.logOutUser(
+                        email,
+                        navHostControllerLambda()
+                    )
+                    userDetailsViewModel.changeDialogBoxStatus(false)
+                },
+                dismissButtonLogic = {
+                    userDetailsViewModel.changeDialogBoxStatus(false)
+                },
+            )
+        }
 
         Box(
             modifier = Modifier
@@ -709,10 +714,7 @@ fun UserDetails(
                     )
                 }
                 IconButton(onClick = {
-                    userDetailsViewModel.logOutUser(
-                        email,
-                        navHostControllerLambda()
-                    )
+                    userDetailsViewModel.changeDialogBoxStatus(true)
                 }) {
                     Icon(
                         imageVector = Icons.Default.Logout,
@@ -723,4 +725,30 @@ fun UserDetails(
             }
         )
     }
+}
+
+@Composable
+fun ShowDialogBox(
+    confirmButtonLogic: () -> Unit = {},
+    dismissButtonLogic: () -> Unit = {},
+) {
+    AlertDialog(
+        onDismissRequest = { },
+        title = { Text(text = "Warning..!!") },
+        text = { Text(text = "Are you sure you want to log out?") },
+        confirmButton = { Button(onClick = confirmButtonLogic) { Text("Yes") } },
+        dismissButton = { Button(onClick = dismissButtonLogic) { Text("No") } }
+    )
+
+}
+
+@Composable
+@Preview
+fun Show() {
+    val string = "Sahil"
+    val navHostController = rememberNavController()
+    val navHostControllerLambda: () -> NavHostController = {
+        navHostController
+    }
+    UserDetails(navHostControllerLambda, email = string)
 }
