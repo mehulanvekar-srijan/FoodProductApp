@@ -16,26 +16,24 @@ import kotlinx.coroutines.launch
 class OrderDetailsViewModel: ViewModel() {
 
     var finalList = mutableStateListOf<MutableList<OrderDetails>>()
+    var priceList = mutableStateListOf<Int>()
     val email = mutableStateOf("")
 
     // to access the order on description page
     var orderDetails = mutableListOf<OrderDetails>()
-    //var orderDetailsId = mutableStateOf<Int>(0)
 
     val finalAmount = mutableStateOf<Double>(-1.0)
 
 
     //assign the details of the order clicked on
     fun addOrderId(context: Context,newOrderId: Int) {
+        orderDetails.clear()
         // fetch the order from db
         viewModelScope.launch(Dispatchers.IO) {
-
             val list = DatabaseRepository(context).readAllOrderDetails(email.value, newOrderId)
-
             list.forEach {
                 orderDetails.add(it)
             }
-
         }
     }
 
@@ -47,8 +45,8 @@ class OrderDetailsViewModel: ViewModel() {
     }
 
 
-    fun calculateSum(item: MutableList<OrderDetails>):Int {
-        var sum=0
+    fun calculateSum(item: List<OrderDetails>): Int {
+        var sum = 0
         var index=0
         do {
             sum += item[index].price * item[index].count
@@ -58,7 +56,6 @@ class OrderDetailsViewModel: ViewModel() {
     }
 
     fun calculateRedeemedAmount(context: Context) {
-
         viewModelScope.launch(Dispatchers.IO) {
             finalAmount.value =
                 DatabaseRepository(context).getFinalPrice(email.value, orderDetails[0].orderId)
@@ -84,6 +81,7 @@ class OrderDetailsViewModel: ViewModel() {
 
                 list.forEach {
                     order.add(it)
+
                 }
 
                 for (element in order) {
@@ -91,17 +89,23 @@ class OrderDetailsViewModel: ViewModel() {
                         "orderDetails",
                         " list value fetchOrderList: ${element.title} and count of orderis ${order.count()}"
                     )
-
                 }
                 if (list.isNotEmpty()) {
-                    //finalList.add(order.subList(0,order.count()))
                     finalList.add(order)
+                    var sum = 0.0
+                    sum = DatabaseRepository(context).getFinalPrice(email.value, order[0].orderId)
+                    priceList.add(sum.toInt())
                     Log.d("orderDetails", "fetchOrderList: ")
                 }
+
 
                 orderCount++
 
             } while (list.isNotEmpty())
+
+            for (element in priceList) {
+                Log.d("checkSum", "fetchOrderList: $element")
+            }
         }
 
         Log.d("orderDetails", "count of total orders: ${finalList.count()}")

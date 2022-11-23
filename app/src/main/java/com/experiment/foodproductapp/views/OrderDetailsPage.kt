@@ -1,5 +1,6 @@
 package com.experiment.foodproductapp.views
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.Indication
 import androidx.compose.foundation.background
@@ -41,6 +42,13 @@ import com.experiment.foodproductapp.R
 import com.experiment.foodproductapp.domain.event.UserDetailsFormEvent
 import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.viewmodels.OrderDetailsViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okhttp3.Dispatcher
+import kotlin.coroutines.coroutineContext
+import kotlin.properties.Delegates
 
 @Preview
 @Composable
@@ -106,9 +114,8 @@ fun OrderDetails(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(20.dp),
             ) {
-                items(items = orderDetailsViewModel.finalList.reversed()) { item ->
-
-
+                items(items = orderDetailsViewModel.finalList) { item ->
+                //items(items = orderDetailsViewModel.finalList.reversed()) { item ->
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -122,7 +129,7 @@ fun OrderDetails(
                             elevation = 5.dp,
                             shape = RoundedCornerShape(10),
                             onClick = {
-                                orderDetailsViewModel.addOrderId(context,item[0].orderId)
+                                orderDetailsViewModel.addOrderId(context, item[0].orderId)
                                 orderDetailsViewModel.navigateToProductOrderDescriptionPage(
                                     navHostController = navHostControllerLambda()
                                 )
@@ -187,13 +194,11 @@ fun OrderDetails(
                                             .fillMaxWidth()
                                             .fillMaxHeight(.7f)
                                     )
+
                                     Text(
-                                        text = stringResource(id = R.string.rs_string) + " " + orderDetailsViewModel.calculateSum(
-                                            item
-                                        ),
+                                        text = stringResource(id = R.string.rs_string) + " " + orderDetailsViewModel.priceList[item[0].orderId - 1],
                                         fontFamily = titleFontFamily,
                                     )
-
                                 }
                             }
                         }

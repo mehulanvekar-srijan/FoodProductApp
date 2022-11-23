@@ -71,7 +71,7 @@ fun OrderDescriptionPage(
     ChangeBarColors(statusColor = Color.White, navigationBarColor = Color.White)
 //    val df = DecimalFormat("#.##")
 //    df.roundingMode = RoundingMode.DOWN
-    var sum = 0
+
 
     val context = LocalContext.current
     LaunchedEffect(key1 = Unit) {
@@ -212,8 +212,6 @@ fun OrderDescriptionPage(
                                     .padding(start = 15.dp)
                                     .fillMaxWidth()
                             )
-                            sum += item.price * item.count
-
                         }
 
                     }
@@ -250,7 +248,7 @@ fun OrderDescriptionPage(
                             )
 
                             Text(
-                                text = stringResource(id = R.string.rs_dot_string) + " " + sum,
+                                text = stringResource(id = R.string.rs_dot_string) + " " + orderDetailsViewModel.calculateSum(orderDetailsViewModel.orderDetails),
                                 fontFamily = descriptionFontFamily,
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Thin,
@@ -279,7 +277,8 @@ fun OrderDescriptionPage(
                             )
 
                             Text(
-                                text = stringResource(id = R.string.rs_dot_string) + " " + (sum - orderDetailsViewModel.finalAmount.value),
+                                text = stringResource(id = R.string.rs_dot_string) + " " + (orderDetailsViewModel.calculateSum(orderDetailsViewModel.orderDetails) - orderDetailsViewModel.finalAmount.value),
+
                                 fontFamily = descriptionFontFamily,
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.SemiBold,
@@ -323,7 +322,7 @@ fun OrderDescriptionPage(
                     //Log.d("CheckSum", "OrderDescriptionPage end of lazy: Sum is: $sum")
 
                 }
-                Log.d("CheckSum", "OrderDescriptionPage outside lazy: Sum is: $sum")
+                //Log.d("CheckSum", "OrderDescriptionPage outside lazy: Sum is: $sum")
             }
 
             Row(
