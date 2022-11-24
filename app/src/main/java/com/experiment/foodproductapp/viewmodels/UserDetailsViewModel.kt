@@ -150,9 +150,10 @@ class UserDetailsViewModel(
         }
     }
 
-    fun navigateToRewards(email: String, navHostController: NavHostController) {
-        navHostController.navigate(Screen.Rewards.routeWithData(email))
-    }
+    //navigation moved to view
+//    fun navigateToRewards(email: String, navHostController: NavHostController) {
+//        navHostController.navigate(Screen.Rewards.routeWithData(email))
+//    }
 
     fun logOutUser(email: String, navHostController: NavHostController) {
         viewModelScope.launch(Dispatchers.IO) {

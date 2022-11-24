@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.experiment.foodproductapp.R
+import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.viewmodels.RewardsPageViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -117,11 +118,15 @@ fun Reward(
                             .padding(10.dp),
                         contentAlignment = CenterEnd
                     ) {
-                        IconButton(modifier = Modifier.size(50.dp), onClick = {
-                            rewardsPageViewModel.navigateToRewardsDetails(
-                                navHostControllerLambda()
-                            )
-                        }) {
+                        IconButton(modifier = Modifier.size(50.dp),
+                            onClick = {
+                                navHostControllerLambda().navigate(
+                                    Screen.RewardsDetailsPage.routeWithData(
+                                        rewardsPageViewModel.rewardPointsState.value
+                                    )
+                                )
+                            }
+                        ) {
                             Icon(
                                 modifier = Modifier.size(40.dp),
                                 imageVector = Icons.Outlined.WorkspacePremium,
@@ -237,9 +242,7 @@ fun Reward(
                         .fillMaxWidth()
                         .height(height * 15)
                         .clickable(onClick = {
-                            rewardsPageViewModel.navigateToRewardsDetails(
-                                navHostControllerLambda()
-                            )
+                            navHostControllerLambda().navigate(Screen.RewardsDetailsPage.routeWithData(rewardsPageViewModel.rewardPointsState.value))
                         }), elevation = 30.dp, shape = RoundedCornerShape(20.dp)
                 ) {
                     Row(

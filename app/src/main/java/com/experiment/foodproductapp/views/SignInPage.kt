@@ -259,10 +259,7 @@ fun SignInPage(
                             text = stringResource(id = R.string.create_an_account_string),
                             color = DarkYellow,
                             modifier = Modifier.clickable(onClick = {
-                                signInViewModel.navigate(
-                                    navHostController = navHostControllerLambda(),
-                                    route = Screen.SignUpScreen.route
-                                )
+                                navHostControllerLambda().navigate(Screen.SignUpScreen.route)
                             }),
                             style = TextStyle(fontSize = 20.sp),
                         )
@@ -271,10 +268,7 @@ fun SignInPage(
                             text = stringResource(id = R.string.forgot_password_string),
                             color = DarkYellow,
                             modifier = Modifier.clickable(onClick = {
-                                signInViewModel.navigate(
-                                    navHostController = navHostControllerLambda(),
-                                    route = Screen.ForgotPassword.route
-                                )
+                                navHostControllerLambda().navigate(Screen.ForgotPassword.route)
                             }),
                             style = TextStyle(fontSize = 20.sp),
                         )

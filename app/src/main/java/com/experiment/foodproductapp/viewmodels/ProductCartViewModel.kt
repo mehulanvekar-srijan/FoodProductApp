@@ -182,14 +182,15 @@ class ProductCartViewModel(
         }
     }
 
-    fun navigateToRewards(navHostController: NavHostController, email: String?) {
-
-        //Clear the cart list
-        _cartList.clear()
-
-        //Then navigate
-        if (email != null) navHostController.navigate(Screen.Rewards.routeWithData(email))
-    }
+    //moved navigation to view
+//    fun navigateToRewards(navHostController: NavHostController, email: String?) {
+//
+//        //Clear the cart list
+//        _cartList.clear()
+//
+//        //Then navigate
+//        if (email != null) navHostController.navigate(Screen.Rewards.routeWithData(email))
+//    }
 
     fun initAvailablePointsAndRedeemedAmount(email: String) {
         viewModelScope.launch(Dispatchers.IO) {

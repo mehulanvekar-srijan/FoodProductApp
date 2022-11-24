@@ -32,6 +32,7 @@ import androidx.navigation.compose.rememberNavController
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.experiment.foodproductapp.R
+import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.database.entity.Product
 import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.viewmodels.ProductCartViewModel
@@ -96,10 +97,7 @@ fun ProductCart(
                 elevation = 0.dp,
                 actions = {
                     IconButton(onClick = {
-                        productCartViewModel.navigateToRewards(
-                            navHostController = navHostControllerLambda(),
-                            email = email,
-                        )
+                        navHostControllerLambda().navigate(Screen.Rewards.routeWithData(productCartViewModel.email.value))
                     }) {
                         Icon(
                             imageVector = Icons.Default.Stars,

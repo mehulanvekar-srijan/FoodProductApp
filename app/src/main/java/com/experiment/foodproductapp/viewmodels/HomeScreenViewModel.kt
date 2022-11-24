@@ -64,7 +64,7 @@ class HomeScreenViewModel(
 
     fun navigateToProductDetailsPage(navHostController: NavHostController) {
         navHostController.navigate(Screen.ProductDetailsScreen.route) {
-            popUpTo(Screen.HomeScreen.route) { inclusive = false }
+            //popUpTo(Screen.HomeScreen.route) { inclusive = false }
         }
     }
 

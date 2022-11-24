@@ -38,6 +38,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
+import com.experiment.foodproductapp.constants.Screen
 
 
 @Preview
@@ -337,10 +338,11 @@ fun OrderDescriptionPage(
                 ) {
                     IconButton(
                         onClick = {
-                            orderDetailsViewModel.navigateToHomeScreenPage(navHostController = navHostControllerLambda())
+                            navHostControllerLambda().navigate(Screen.HomeScreen.routeWithData(orderDetailsViewModel.userEmail.value)) {
+                                popUpTo(Screen.HomeScreen.route) { inclusive = true }
+                            }
                         },
                         modifier = Modifier
-
                             .size(width = 40.dp, height = 35.dp)
                     ) {
                         Icon(

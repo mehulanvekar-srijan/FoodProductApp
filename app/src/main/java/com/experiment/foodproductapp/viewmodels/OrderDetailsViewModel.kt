@@ -20,13 +20,14 @@ class OrderDetailsViewModel(
         Log.d("testDI", "OrderDetailsViewModel: ${databaseRepository.hashCode()}")
     }
 
-    val _finalList = mutableStateListOf<MutableList<OrderDetails>>()
+    private val _finalList = mutableStateListOf<MutableList<OrderDetails>>()
     val finalList = _finalList
 
-    val _priceList = mutableStateListOf<Int>()
+    private val _priceList = mutableStateListOf<Int>()
     val priceList = _priceList
 
     private val email = mutableStateOf("")
+    val userEmail = email
 
     // to access the order on description page
     private val _orderDetails = mutableListOf<OrderDetails>()
@@ -51,12 +52,12 @@ class OrderDetailsViewModel(
         }
     }
 
-
-    fun navigateToProductOrderDescriptionPage(navHostController: NavHostController) {
-        navHostController.navigate(Screen.OrderDescriptionPage.route) {
-            popUpTo(Screen.OrderDetails.route) { inclusive = false }
-        }
-    }
+    //moved navigation to view
+//    fun navigateToProductOrderDescriptionPage(navHostController: NavHostController) {
+//        navHostController.navigate(Screen.OrderDescriptionPage.route) {
+//            popUpTo(Screen.OrderDetails.route) { inclusive = false }
+//        }
+//    }
 
 
     fun calculateSum(item: List<OrderDetails>): Int {
@@ -76,12 +77,12 @@ class OrderDetailsViewModel(
         }
     }
 
-
-    fun navigateToHomeScreenPage(navHostController: NavHostController) {
-        navHostController.navigate(Screen.HomeScreen.routeWithData(email.value)) {
-            popUpTo(Screen.HomeScreen.route) { inclusive = true }
-        }
-    }
+        //moved navigation to view
+//    fun navigateToHomeScreenPage(navHostController: NavHostController) {
+//        navHostController.navigate(Screen.HomeScreen.routeWithData(email.value)) {
+//            popUpTo(Screen.HomeScreen.route) { inclusive = true }
+//        }
+//    }
 
     fun fetchOrderList() {
         var orderCount = 1
@@ -101,13 +102,12 @@ class OrderDetailsViewModel(
                 for (element in order) {
                     Log.d(
                         "orderDetails",
-                        " list value fetchOrderList: ${element.title} and count of orderis ${order.count()}"
+                        " list value fetchOrderList: ${element.title} and count of order is ${order.count()}"
                     )
                 }
                 if (list.isNotEmpty()) {
                     _finalList.add(order)
-                    var sum = 0.0
-                    sum = databaseRepository.getFinalPrice(email.value, order[0].orderId)
+                    val sum: Double = databaseRepository.getFinalPrice(email.value, order[0].orderId)
                     _priceList.add(sum.toInt())
                     Log.d("orderDetails", "fetchOrderList: ")
                 }

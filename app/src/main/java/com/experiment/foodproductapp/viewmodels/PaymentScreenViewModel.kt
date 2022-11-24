@@ -95,8 +95,8 @@ class PaymentScreenViewModel(
 
                 delay(splashDuration)
 
-                withContext(Dispatchers.Main){
-                    navHostController.navigate(Screen.HomeScreen.routeWithData(email)){
+                withContext(Dispatchers.Main) {
+                    navHostController.navigate(Screen.HomeScreen.routeWithData(email)) {
                         popUpTo(Screen.HomeScreen.route) { inclusive = true }
                     }
                     activity.status.value = null

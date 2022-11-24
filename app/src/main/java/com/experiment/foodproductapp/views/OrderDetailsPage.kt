@@ -29,6 +29,7 @@ import androidx.navigation.compose.rememberNavController
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.experiment.foodproductapp.R
+import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.viewmodels.OrderDetailsViewModel
 
@@ -112,9 +113,9 @@ fun OrderDetails(
                             shape = RoundedCornerShape(10),
                             onClick = {
                                 orderDetailsViewModel.addOrderId(item[0].orderId)
-                                orderDetailsViewModel.navigateToProductOrderDescriptionPage(
-                                    navHostController = navHostControllerLambda()
-                                )
+                                navHostControllerLambda().navigate(Screen.OrderDescriptionPage.route) {
+                                    popUpTo(Screen.OrderDetails.route) { inclusive = false }
+                                }
                             },
                         ) {
                             Row {

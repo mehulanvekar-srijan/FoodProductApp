@@ -49,6 +49,7 @@ import androidx.navigation.compose.rememberNavController
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.experiment.foodproductapp.R
+import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.domain.event.UserDetailsFormEvent
 import com.experiment.foodproductapp.ui.theme.DarkGray1
 import com.experiment.foodproductapp.ui.theme.DarkYellow
@@ -702,10 +703,7 @@ fun UserDetails(
             },
             actions = {
                 IconButton(onClick = {
-                    userDetailsViewModel.navigateToRewards(
-                        email,
-                        navHostControllerLambda()
-                    )
+                    navHostControllerLambda().navigate(Screen.Rewards.routeWithData(email))
                 }) {
                     Icon(
                         imageVector = Icons.Default.Stars,
