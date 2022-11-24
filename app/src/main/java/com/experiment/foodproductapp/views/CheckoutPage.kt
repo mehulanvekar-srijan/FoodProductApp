@@ -113,6 +113,7 @@ fun CheckoutPage(
                         fontWeight = FontWeight.Bold,
                         color = DarkYellow,
                     )
+
                     Icon(
                         painterResource(id = R.drawable.ic_shopping_cart_checkout),
                         contentDescription = "ic_shopping_cart_checkout",
