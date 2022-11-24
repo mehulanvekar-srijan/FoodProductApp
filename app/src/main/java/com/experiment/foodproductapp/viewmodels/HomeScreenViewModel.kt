@@ -96,6 +96,7 @@ class HomeScreenViewModel(
     private fun removeProductFromDatabase(productId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             databaseRepository.removeProduct(id = productId, email = _userEmail.value)
+            initCartItemsCount()
         }
     }
 
@@ -171,6 +172,12 @@ class HomeScreenViewModel(
         }
     }
 
+    /**
+     * NOTE: This method is called
+     *          - In the beginning, in LaunchedEffect
+     *          - When an item is added to the cart
+     *          - When an item is removed from the cart
+     * */
     fun initCartItemsCount(){
         viewModelScope.launch(Dispatchers.IO){
             val cartList = databaseRepository.readAllProducts(_userEmail.value)

@@ -24,7 +24,10 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.twotone.EditCalendar
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.BottomEnd
+import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
+import androidx.compose.ui.Alignment.Companion.End
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
@@ -42,6 +45,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -51,10 +55,7 @@ import coil.compose.rememberImagePainter
 import com.experiment.foodproductapp.R
 import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.domain.event.UserDetailsFormEvent
-import com.experiment.foodproductapp.ui.theme.DarkGray1
-import com.experiment.foodproductapp.ui.theme.DarkYellow
-import com.experiment.foodproductapp.ui.theme.LightGray1
-import com.experiment.foodproductapp.ui.theme.Orange
+import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.utility.ComposeFileProvider
 import com.experiment.foodproductapp.viewmodels.ProductCartViewModel
 import com.experiment.foodproductapp.viewmodels.UserDetailsViewModel
@@ -152,6 +153,7 @@ fun UserDetails(
             }
         )
 
+        //Alert Dialog
         if(userDetailsViewModel.dialogBox.value) {
             ShowDialogBox(
                 confirmButtonLogic = {
@@ -186,78 +188,76 @@ fun UserDetails(
                 horizontalAlignment = CenterHorizontally,
             ) {
 
-                Row(
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    val imageClickedState = remember { mutableStateOf(false) }
-                    //Profile Pic
-                    if (userDetailsViewModel.hasImage.value && userDetailsViewModel.imageUri.value != null) {
-                        Image(
-                            painter = rememberImagePainter(userDetailsViewModel.imageUri.value),
-                            contentDescription = "ic_profile_pic",
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier
-                                .fillMaxHeight(0.25F)
-                                .padding(25.dp)
-                                .aspectRatio(1F)
-                                .clickable {
-                                    imageClickedState.value = !imageClickedState.value
-                                }
-                                .clip(CircleShape)
-                        )
-                    } else {
-                        Image(
-                            painter = rememberImagePainter(R.drawable.ic_user3),
-                            contentDescription = "ic_profile_pic",
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier
-                                .fillMaxHeight(0.25F)
-                                .padding(25.dp)
-                                .clickable {
-                                    imageClickedState.value = !imageClickedState.value
-                                }
-                                .aspectRatio(1F)
-                                .clip(CircleShape)
-                        )
-                    }
+                val showOptions = remember { mutableStateOf(false) }
+                val profileImageModifier = Modifier
+                    .fillMaxHeight(0.25F)
+                    .padding(top = 30.dp, start = 25.dp, end = 25.dp, bottom = 15.dp)
+                    .aspectRatio(1F)
+                    .clip(CircleShape)
+                    .clickable { showOptions.value = !showOptions.value }
 
-                    //Pick / Click Button
-                    AnimatedVisibility(visible = imageClickedState.value) {
-                        Column(
-                            horizontalAlignment = CenterHorizontally,
-                            verticalArrangement = Arrangement.Center,
-                        ) {
+                //Profile Image
+                if (userDetailsViewModel.hasImage.value && userDetailsViewModel.imageUri.value != null) {
+                    Image(
+                        painter = rememberImagePainter(userDetailsViewModel.imageUri.value),
+                        contentDescription = "ic_profile_pic",
+                        contentScale = ContentScale.Crop,
+                        modifier = profileImageModifier
+                    )
+                }
+                else {
+                    Image(
+                        painter = rememberImagePainter(R.drawable.ic_user3),
+                        contentDescription = "ic_profile_pic",
+                        contentScale = ContentScale.Crop,
+                        modifier = profileImageModifier
+                    )
+                }
+
+                AnimatedVisibility(
+                    visible = showOptions.value
+                ) {
+                    Column(
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = CenterHorizontally,
+                    ) {
+//                        Icon(
+//                            painter = painterResource(id = R.drawable.ic_triangle),
+//                            contentDescription = "",
+//                            modifier = Modifier.height(15.dp),
+//                            tint = Color.Unspecified
+//                        )
+                        Row(
+                            modifier = Modifier
+                                .padding(start = 8.dp, end = 8.dp, bottom = 8.dp, top = 0.dp)
+                                .clip(RoundedCornerShape(20))
+                                .background(Color.White),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically,
+                        ){
                             IconButton(onClick = {
                                 val uri = ComposeFileProvider.getImageUri(context)
                                 cameraLauncher.launch(uri)
                                 intermediateUri = uri
                             }) {
-                                Icon(
-                                    imageVector = Icons.Default.Camera,
-                                    contentDescription = "ic_click_image",
-                                )
+                                Icon(imageVector = Icons.Default.Camera, contentDescription = "ic_click_image")
                             }
-                            IconButton(onClick = {
-                                imagePicker.launch("image/*")
-                            }) {
-                                Icon(
-                                    imageVector = Icons.Default.Edit,
-                                    contentDescription = "ic_pick_image",
-                                )
+                            IconButton(onClick = { imagePicker.launch("image/*")}) {
+                                Icon(imageVector = Icons.Default.Edit, contentDescription = "ic_pick_image")
                             }
                         }
                     }
 
                 }
 
+                //Text Fields
                 Column(
                     modifier = Modifier
                         .shadow(30.dp)
                         .fillMaxSize()
                         .clip(RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp))
                         .background(Color.White)
-                        .padding(top = 10.dp, start = 28.dp, end = 28.dp, bottom = 10.dp),
+                        .padding(top = 10.dp, start = 28.dp, end = 28.dp),
                 ) {
                     Text(
                         modifier = Modifier.fillMaxWidth(),
@@ -270,14 +270,12 @@ fun UserDetails(
                         ),
                         textAlign = TextAlign.Center
                     )
-                    Spacer(modifier = Modifier.padding(5.dp))
 
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxWidth()
                             .fillMaxHeight(0.80F)
-                    )
-                    {
+                    ) {
                         item {
                             Spacer(modifier = Modifier.padding(10.dp))
                             TextField(
@@ -366,34 +364,6 @@ fun UserDetails(
                                     textAlign = TextAlign.End
                                 )
                             }
-
-//                            Spacer(modifier = Modifier.padding(10.dp))
-//                            TextField(
-//                                readOnly=true,
-//                                modifier = Modifier.fillMaxWidth(),
-//                                value = userDetailsViewModel.user.value.email,
-//                                colors = TextFieldDefaults.textFieldColors(
-//                                    textColor = Color.Black,
-//                                    backgroundColor = LightGray1,
-//                                    placeholderColor = Color.White,
-//                                    cursorColor = Color.Black,
-//                                    focusedLabelColor = Color.Black,
-//                                    errorCursorColor = Color.Black,
-//                                    errorLabelColor = Color.Red,
-//                                    focusedIndicatorColor = Color.Transparent,
-//                                    unfocusedIndicatorColor = Color.Transparent,
-//                                    unfocusedLabelColor = Orange,
-//                                ),
-//                                onValueChange = {
-//                                    userDetailsViewModel.onEvent(
-//                                        context,
-//                                        ProfileFormEvent.EmailChanged(it)
-//                                    )
-//                                },
-//                                shape = RoundedCornerShape(30.dp),
-//                                label = { Text(text = "Email", color = DarkGray1) }
-//                            )
-
 
                             Spacer(modifier = Modifier.padding(10.dp))
                             TextField(
@@ -559,7 +529,9 @@ fun UserDetails(
                             }
                         }
                     }
+
                     Spacer(modifier = Modifier.padding(10.dp))
+
                     OutlinedButton(
                         onClick = {
                             userDetailsViewModel.onEvent(context, UserDetailsFormEvent.Submit)
@@ -568,7 +540,6 @@ fun UserDetails(
                             .fillMaxWidth()
                             .height(50.dp)
                             .padding(start = 20.dp, end = 20.dp),
-
                         shape = RoundedCornerShape(50),
                         colors = ButtonDefaults.buttonColors(
                             backgroundColor = DarkYellow,
@@ -577,113 +548,13 @@ fun UserDetails(
                         elevation = ButtonDefaults.elevation(
                             defaultElevation = 3.dp
                         )
-                        ) {
+                    ) {
                         Text(
                             text = stringResource(id = R.string.save_changes_string),
                             fontSize = 20.sp,
                             color = Color.Black
                         )
                     }
-//                    {
-//                        Spacer(modifier = Modifier.padding(5.dp))
-//                        Row(verticalAlignment = Alignment.CenterVertically) {
-//                            Text(modifier = Modifier.fillMaxWidth(0.31F),text = "First Name", color = Color.Black,style = TextStyle(
-//                                fontSize = 16.sp,
-//                                textAlign = TextAlign.Center,
-//                                letterSpacing = 2.sp
-//                            ))
-//                            Spacer(modifier = Modifier.padding(5.dp))
-//                            OutlinedTextField(
-//                                enabled = false,
-//                                readOnly = true,
-//                                modifier = Modifier.fillMaxWidth(),
-//                                value = userDetailsViewModel.user.value.firstName,
-//                                colors = TextFieldDefaults.textFieldColors(
-//                                    disabledTextColor = Color.Black,
-//                                    disabledIndicatorColor= Orange,
-//                                    backgroundColor= Color.Transparent
-//                                ),
-//                                onValueChange = {},)
-//                        }
-//
-//                        Spacer(modifier = Modifier.padding(5.dp))
-//                        Row(verticalAlignment = Alignment.CenterVertically) {
-//                            Text(modifier = Modifier.fillMaxWidth(0.34F),text = "Last Name", color = Color.Black,style = TextStyle(
-//                                fontSize = 16.sp,
-//                                textAlign = TextAlign.Center,
-//                                letterSpacing = 2.sp
-//                            ),)
-//                            OutlinedTextField(
-//                                readOnly = true,
-//                                enabled = false,
-//                                modifier = Modifier.fillMaxWidth(),
-//                                value = userDetailsViewModel.user.value.lastName,
-//                                colors = TextFieldDefaults.textFieldColors(
-//                                    disabledTextColor = Color.Black,
-//                                    disabledIndicatorColor= Orange,
-//                                    backgroundColor= Color.Transparent
-//                                ),
-//                                onValueChange = {},)
-//                        }
-//
-//                        Spacer(modifier = Modifier.padding(5.dp))
-//                        Row(verticalAlignment = Alignment.CenterVertically) {
-//                            Text(modifier = Modifier.fillMaxWidth(0.34F),text = "Date Of Birth", color = Color.Black,style = TextStyle(
-//                                fontSize = 16.sp,
-//                                textAlign = TextAlign.Center,
-//                                letterSpacing = 2.sp
-//                            ),)
-//                            OutlinedTextField(
-//                                readOnly = true,
-//                                enabled = false,
-//                                modifier = Modifier.fillMaxWidth(),
-//                                value = userDetailsViewModel.user.value.dob,
-//                                colors = TextFieldDefaults.textFieldColors(
-//                                    disabledTextColor = Color.Black,
-//                                    disabledIndicatorColor= Orange,
-//                                    backgroundColor= Color.Transparent
-//                                ),
-//                                onValueChange = {},)
-//                        }
-//
-//                        Spacer(modifier = Modifier.padding(5.dp))
-//                        Row(verticalAlignment = Alignment.CenterVertically) {
-//                            Text(modifier = Modifier.fillMaxWidth(0.34F), text = "Email", color = Color.Black,style = TextStyle(
-//                                fontSize = 16.sp,
-//                                textAlign = TextAlign.Center,
-//                                letterSpacing = 2.sp
-//                            ),)
-//                            OutlinedTextField(
-//                                readOnly = true,
-//                                enabled = false,
-//                                modifier = Modifier.fillMaxWidth(),
-//                                value = userDetailsViewModel.user.value.email,
-//                                colors = TextFieldDefaults.textFieldColors(
-//                                    disabledTextColor = Color.Black,
-//                                    disabledIndicatorColor= Orange,
-//                                    backgroundColor= Color.Transparent
-//                                ),
-//                                onValueChange = {},)
-//                        }
-//                        Spacer(modifier = Modifier.padding(10.dp))
-//
-//                        OutlinedButton(
-//                            onClick = {
-//                            },
-//                            modifier = Modifier
-//                                .fillMaxWidth(0.6f)
-//                                .height(40.dp),
-//
-//                            shape = RoundedCornerShape(50),
-//                            colors = ButtonDefaults.buttonColors(
-//                                backgroundColor = DarkYellow,
-//                                contentColor = Color.White
-//                            ),
-//
-//                            ) {
-//                            Text(text = "Edit Profile", fontSize = 20.sp, color = Color.Black)
-//                        }
-//                    }
                 }
             }
         }
@@ -732,7 +603,7 @@ fun ShowDialogBox(
 ) {
     AlertDialog(
         onDismissRequest = { },
-        title = { Text(text = "Warning..!!") },
+        title = { Text(text = "Logout?", fontFamily = titleFontFamily,) },
         text = { Text(text = "Are you sure you want to log out?") },
         confirmButton = { Button(onClick = confirmButtonLogic) { Text("Yes") } },
         dismissButton = { Button(onClick = dismissButtonLogic) { Text("No") } }
@@ -741,12 +612,118 @@ fun ShowDialogBox(
 }
 
 @Composable
-@Preview
-fun Show() {
-    val string = "Sahil"
-    val navHostController = rememberNavController()
-    val navHostControllerLambda: () -> NavHostController = {
-        navHostController
+@Preview(showBackground = true)
+fun Show1() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = 20.dp),
+        horizontalAlignment = CenterHorizontally,
+    ){
+        BoxWithConstraints(
+            modifier = Modifier.background(Color.Green),
+            contentAlignment = Center
+        ){
+
+            val height: Dp = maxHeight
+            val width: Dp  = maxWidth
+
+            val offset = 55
+            BadgedBox(
+                badge = {
+                    Badge(
+                        modifier = Modifier.offset(x = -offset.dp, y = offset.dp),
+                    ) { Icon(imageVector = Icons.Default.Edit, contentDescription = "") }
+                }
+            ){
+                Image(
+                    painter = painterResource(R.drawable.ic_user3),
+                    contentDescription = "ic_profile_pic",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxHeight(0.25F)
+                        .padding(25.dp)
+                        .clickable {
+
+                        }
+                        .aspectRatio(1F)
+                        .clip(CircleShape)
+                )
+            }
+
+
+        }
     }
-    UserDetails(navHostControllerLambda, email = string)
+
+}@Composable
+
+@Preview(showBackground = true)
+fun Show2() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = 20.dp),
+        horizontalAlignment = CenterHorizontally,
+    ){
+
+        Box(
+            modifier = Modifier.background(Color.Transparent),
+            contentAlignment = Center
+        ){
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight(0.25F)
+                    .padding(20.dp)
+                    .clickable {
+
+                    }
+                    .aspectRatio(1F)
+                    .clip(CircleShape)
+                    .background(Color.Blue)
+            ){
+
+                Image(
+                    painter = painterResource(R.drawable.ic_user3),
+                    contentDescription = "ic_profile_pic",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .padding(15.dp)
+                        .clickable {
+
+                        }
+                        .aspectRatio(1F)
+                        .clip(CircleShape)
+                        .background(Color.Red)
+                )
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(15.dp),
+                    contentAlignment = BottomEnd,
+                ){
+                    IconButton(onClick = { /*TODO*/ }) {
+                        Icon(
+                            imageVector = Icons.Default.Image,
+                            contentDescription = "",
+                            tint = Color.Black,
+                            modifier = Modifier
+                                .background(Color.Yellow)
+                        )
+                    }
+                }
+
+            }
+        }
+
+    }
+
+}
+
+@Composable
+@Preview(showBackground = true)
+fun Show3() {
+
+
+
 }

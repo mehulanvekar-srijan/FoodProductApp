@@ -60,13 +60,13 @@ fun ProductDetailsPage(
     homeScreenViewModel: HomeScreenViewModel
 ) {
 
-    val context = LocalContext.current
     val productDetails = homeScreenViewModel.productForDetailPage
     val scrollState = rememberScrollState()
     val quantity = remember { mutableStateOf(0) }
 
     LaunchedEffect(key1 = Unit) {
         homeScreenViewModel.getProductCount(productDetails.value.id, quantity)
+        homeScreenViewModel.initCartItemsCount()
     }
 
     ChangeBarColors(statusColor = Color.White, navigationBarColor = DarkYellow)
@@ -385,6 +385,7 @@ fun ProductDetailsPage(
     }
 
     AppBar(
+        homeScreenViewModel = homeScreenViewModel,
         navHostControllerLambda = navHostControllerLambda,
         onProductCartClick = {
             navHostControllerLambda().navigate(Screen.ProductCart.routeWithData(homeScreenViewModel.userEmail.value))
@@ -394,10 +395,10 @@ fun ProductDetailsPage(
 
 @Composable
 fun AppBar(
+    homeScreenViewModel: HomeScreenViewModel,
     navHostControllerLambda: () -> NavHostController,
     onProductCartClick: () -> Unit = {},
 ) {
-
     TopAppBar(
         title = { },
         backgroundColor = Color.Transparent,
@@ -413,12 +414,35 @@ fun AppBar(
 
         },
         actions = {
-            IconButton(onClick = onProductCartClick) {
-                Icon(
-                    imageVector = Icons.Default.ShoppingCart,
-                    contentDescription = "ic_product_cart_bt",
-                    tint = DarkYellow
-                )
+            val offset = 12
+            if(homeScreenViewModel.cartItemCount.value > 0){
+                BadgedBox(
+                    badge = {
+                        Badge(
+                            modifier = Modifier
+                                .offset(x = -offset.dp, y = offset.dp)
+                        ){
+                            Text(text = "${homeScreenViewModel.cartItemCount.value}")
+                        }
+                    },
+                ){
+                    IconButton(onClick = onProductCartClick) {
+                        Icon(
+                            imageVector = Icons.Default.ShoppingCart,
+                            contentDescription = "ic_product_cart_bt",
+                            tint = DarkYellow
+                        )
+                    }
+                }
+            }
+            else{
+                IconButton(onClick = onProductCartClick) {
+                    Icon(
+                        imageVector = Icons.Default.ShoppingCart,
+                        contentDescription = "ic_shopping_cart",
+                        tint = DarkYellow
+                    )
+                }
             }
         }
     )
