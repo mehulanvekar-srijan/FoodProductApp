@@ -114,4 +114,19 @@
     <string name="profile_string">Profile</string>
     <string name="save_changes_string">Save Changes</string>
 
+<!--    RewardsDetailsPage-->
+    <string name="reward_category_string">Reward Category</string>
+    <string name="tap_on_card_to_know_more_string">Tap on Card to know more</string>
+    <string name="level_one_string">Level 1</string>
+    <string name="level_two_string">Level 2</string>
+    <string name="level_three_string">Level 3</string>
+    <string name="bronze_string">Bronze</string>
+    <string name="silver_string">Silver</string>
+    <string name="you_get_one_rupee_for_20_points_string">You get 1 Rs for every 20 points that you redeem</string>
+    <string name="you_get_one_rupee_for_10_points_string">You get 1 Rs for every 10 points that you redeem</string>
+    <string name="you_get_one_rupee_for_5_points_string">You get 1 Rs for every 5 points that you redeem</string>
+    <string name="you_can_redeem_points_in_cart_string">You can redeem your points in the cart</string>
+    <string name="you_can_redeem_max_10_string">You can redeem maximum of 10% cart value</string>
+    <string name="you_can_redeem_points_on_order_above_100_string">You can redeem points on orders above Rs100</string>
+
 </resources>

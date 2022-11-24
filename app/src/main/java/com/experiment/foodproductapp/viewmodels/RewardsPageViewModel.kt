@@ -7,8 +7,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavHostController
 import com.experiment.foodproductapp.R
 import com.experiment.foodproductapp.constants.Level
+import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.database.entity.Product
 import com.experiment.foodproductapp.repository.DatabaseRepository
 import kotlinx.coroutines.Deferred
@@ -109,5 +111,9 @@ class RewardsPageViewModel(
                 R.string.redeem_message_5_string
             }
         }
+    }
+
+    fun navigateToRewardsDetails(navHostController: NavHostController) {
+        navHostController.navigate(Screen.RewardsDetailsPage.routeWithData(_rewardPointsState.value))
     }
 }

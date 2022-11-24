@@ -8,28 +8,24 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Circle
-import androidx.compose.material.icons.filled.ContentCopy
-import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.MilitaryTech
 import androidx.compose.material.icons.outlined.Redeem
 import androidx.compose.material.icons.outlined.StarRate
+import androidx.compose.material.icons.outlined.WorkspacePremium
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterEnd
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.ClipboardManager
-import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -42,7 +38,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.experiment.foodproductapp.R
@@ -96,33 +91,51 @@ fun Reward(
                     .padding(start = 25.dp, end = 25.dp),
                 verticalArrangement = Arrangement.Bottom
             ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(height * 14)
-                        .padding(end = 10.dp, top = 16.dp, bottom = 10.dp),
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.welcome_to_string),
-                        fontFamily = titleFontFamily,
-                        fontSize = 18.sp,
-                        color = Color.White
-                    )
-                    Text(
-                        text = stringResource(id = R.string.rewards_string),
-                        fontFamily = titleFontFamily,
-                        fontSize = 30.sp,
-                        color = Color.White
-                    )
-
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    Column(
+                        modifier = Modifier
+                            .height(height * 14)
+                            .padding(end = 10.dp, top = 16.dp, bottom = 10.dp),
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.welcome_to_string),
+                            fontFamily = titleFontFamily,
+                            fontSize = 18.sp,
+                            color = Color.White
+                        )
+                        Text(
+                            text = stringResource(id = R.string.rewards_string),
+                            fontFamily = titleFontFamily,
+                            fontSize = 30.sp,
+                            color = Color.White
+                        )
+                    }
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(height * 14)
+                            .padding(10.dp),
+                        contentAlignment = CenterEnd
+                    ) {
+                        IconButton(modifier = Modifier.size(50.dp), onClick = {
+                            rewardsPageViewModel.navigateToRewardsDetails(
+                                navHostControllerLambda()
+                            )
+                        }) {
+                            Icon(
+                                modifier = Modifier.size(40.dp),
+                                imageVector = Icons.Outlined.WorkspacePremium,
+                                contentDescription = "ic_help_bt",
+                                tint = Color.White
+                            )
+                        }
+                    }
                 }
                 Card(
                     modifier = Modifier
                         .background(Color.Transparent)
                         .fillMaxWidth()
-                        .height(height * 15),
-                    elevation = 30.dp,
-                    shape = RoundedCornerShape(20.dp)
+                        .height(height * 15), elevation = 30.dp, shape = RoundedCornerShape(20.dp)
                 ) {
                     Row(
                         modifier = Modifier
@@ -170,9 +183,7 @@ fun Reward(
                     modifier = Modifier
                         .background(Color.Transparent)
                         .fillMaxWidth()
-                        .height(height * 18),
-                    elevation = 30.dp,
-                    shape = RoundedCornerShape(20.dp)
+                        .height(height * 18), elevation = 30.dp, shape = RoundedCornerShape(20.dp)
                 ) {
                     Row(
                         modifier = Modifier
@@ -224,9 +235,12 @@ fun Reward(
                     modifier = Modifier
                         .background(Color.Transparent)
                         .fillMaxWidth()
-                        .height(height * 15),
-                    elevation = 30.dp,
-                    shape = RoundedCornerShape(20.dp)
+                        .height(height * 15)
+                        .clickable(onClick = {
+                            rewardsPageViewModel.navigateToRewardsDetails(
+                                navHostControllerLambda()
+                            )
+                        }), elevation = 30.dp, shape = RoundedCornerShape(20.dp)
                 ) {
                     Row(
                         modifier = Modifier
@@ -301,8 +315,7 @@ fun Reward(
                             val animatedProgress = animateFloatAsState(
                                 targetValue = rewardsPageViewModel.calculateProgress(
                                     rewardsPageViewModel.rewardPointsState.value
-                                ),
-                                animationSpec = tween(1000, easing = FastOutSlowInEasing)
+                                ), animationSpec = tween(1000, easing = FastOutSlowInEasing)
                             )
                             LinearProgressIndicator(
                                 modifier = Modifier.fillMaxWidth(0.70f),
@@ -399,9 +412,9 @@ fun Reward(
                                 .align(CenterHorizontally),
                             onClick = {
                                 Log.d("Refer", "Reward: ${rewardsPageViewModel.text.value}")
-                                val intent = Intent(Intent.ACTION_SEND)
-                                    .putExtra(Intent.EXTRA_TEXT, rewardsPageViewModel.text.value)
-                                    .setType("text/plain")
+                                val intent = Intent(Intent.ACTION_SEND).putExtra(
+                                    Intent.EXTRA_TEXT, rewardsPageViewModel.text.value
+                                ).setType("text/plain")
                                 context.startActivity(Intent.createChooser(intent, "Share Using"))
                             },
                             shape = RoundedCornerShape(15.dp),
@@ -437,8 +450,7 @@ fun Reward(
 @Composable
 fun BottomBox() {
     Column(
-        modifier = Modifier
-            .fillMaxSize(),
+        modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Bottom
     ) {
