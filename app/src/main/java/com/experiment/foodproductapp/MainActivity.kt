@@ -149,6 +149,15 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
                             navHostControllerLambda
                         )
                     }
+                    composable(
+                        route = Screen.RewardsDetailsPage.route,
+                        arguments = listOf(navArgument("points") { type = NavType.IntType})
+                    ) {
+                        RewardDetails(
+                            it.arguments?.getInt("points"),
+                            navHostControllerLambda
+                        )
+                    }
                 }
             }
         }
