@@ -150,8 +150,7 @@ fun ProductCart(
 
                                     when(result){
                                         SnackbarResult.ActionPerformed -> {
-                                            productCartViewModel.addProductToCart(product = item)
-                                            productCartViewModel.addProductToCartList(product = item)
+                                            productCartViewModel.onRestore(product = item)
                                         }
                                         SnackbarResult.Dismissed -> {}
                                     }

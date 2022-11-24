@@ -242,6 +242,12 @@ class ProductCartViewModel(
         }
     }
 
+    fun onRestore(product: Product){
+        addProductToCart(product)
+        addProductToCartList(product)
+        updateSum()
+        updateFinalSum()
+    }
     fun addProductToCart(product: Product) {
         viewModelScope.launch(Dispatchers.IO) {
 
