@@ -97,6 +97,7 @@ fun ProductCart(
                 elevation = 0.dp,
                 actions = {
                     IconButton(onClick = {
+                        productCartViewModel.cartList.clear()
                         navHostControllerLambda().navigate(Screen.Rewards.routeWithData(productCartViewModel.email.value))
                     }) {
                         Icon(

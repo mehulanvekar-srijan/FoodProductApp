@@ -25,7 +25,9 @@ class SignInViewModel(
     private val validateEmail: ValidateEmail = ValidateEmail(),
     private val validatePassword: EmptyPassword = EmptyPassword(),
 ) : ViewModel() {
-    var state by mutableStateOf(SignInState())
+
+    private val _state = mutableStateOf(SignInState())
+    val state = _state
 
     init {
         Log.d("testDI", "SignInViewModel: ${databaseRepository.hashCode()}")
@@ -45,10 +47,10 @@ class SignInViewModel(
     fun onEvent(context: Context, event: SignInFormEvent, navHostController: NavHostController) {
         when (event) {
             is SignInFormEvent.EmailChanged -> {
-                state = state.copy(email = event.email)
+                _state.value = _state.value.copy(email = event.email)
             }
             is SignInFormEvent.PasswordChanged -> {
-                state = state.copy(password = event.password)
+                _state.value = _state.value.copy(password = event.password)
             }
             is SignInFormEvent.Login -> {
                 loginUser(context,navHostController)
@@ -57,8 +59,8 @@ class SignInViewModel(
     }
 
     private fun loginUser(context: Context, navHostController: NavHostController) {
-        val emailResult = validateEmail.execute(state.email)
-        val passwordResult = validatePassword.execute(state.password)
+        val emailResult = validateEmail.execute(_state.value.email)
+        val passwordResult = validatePassword.execute(_state.value.password)
 
         val hasError = listOf(
             emailResult,
@@ -66,26 +68,26 @@ class SignInViewModel(
         ).any { !it.successful }
 
         if (hasError) {
-            state = state.copy(
+            _state.value = _state.value.copy(
                 emailError = emailResult.errorMessage,
                 passwordError = passwordResult.errorMessage
             )
             Log.d("passwordEroor", "loginUser: ${passwordResult.errorMessage}")
             return
         } else {
-            state = state.copy(emailError = null)
-            state = state.copy(passwordError = null)
+            _state.value = _state.value.copy(emailError = null)
+            _state.value = _state.value.copy(passwordError = null)
         }
 
         viewModelScope.launch(Dispatchers.IO) {
 
             val user : User?
-            user = databaseRepository.getUserByEmail(state.email)
+            user = databaseRepository.getUserByEmail(_state.value.email)
 
             if (user != null) {
-                if (user.email == state.email && user.password == state.password ) {
+                if (user.email == _state.value.email && user.password == _state.value.password ) {
 
-                    databaseRepository.updateLoginStatus(email = state.email,loggedIn = true)
+                    databaseRepository.updateLoginStatus(email = _state.value.email,loggedIn = true)
 
                     withContext(Dispatchers.Main) {
 

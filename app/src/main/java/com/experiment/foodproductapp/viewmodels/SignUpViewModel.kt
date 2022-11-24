@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.experiment.foodproductapp.constants.Screen
+import com.experiment.foodproductapp.constants.ValidationEvent
 import com.experiment.foodproductapp.database.entity.User
 import com.experiment.foodproductapp.domain.event.SignupFormEvent
 import com.experiment.foodproductapp.domain.use_case.*
@@ -36,7 +37,8 @@ class SignUpViewModel(
         Log.d("testDI", "SignUpViewModel: ${databaseRepository.hashCode()}")
     }
 
-    var state by mutableStateOf(SignUpFormState())
+    private val _state = mutableStateOf(SignUpFormState())
+    val state = _state
 
     private val _passwordVisible = mutableStateOf(false)
     val passwordVisible = _passwordVisible
@@ -50,25 +52,25 @@ class SignUpViewModel(
     fun onEvent(event: SignupFormEvent) {
         when (event) {
             is SignupFormEvent.FirstNameChanged -> {
-                state = state.copy(firstName = event.firstName)
+                _state.value = _state.value.copy(firstName = event.firstName)
             }
             is SignupFormEvent.LastNameChanged -> {
-                state = state.copy(lastName = event.lastName)
+                _state.value = _state.value.copy(lastName = event.lastName)
             }
             is SignupFormEvent.CalenderChanged -> {
-                state = state.copy(date = event.date)
+                _state.value = _state.value.copy(date = event.date)
             }
             is SignupFormEvent.PhoneNumberChanged -> {
-                state = state.copy(phoneNumber = event.number)
+                _state.value = _state.value.copy(phoneNumber = event.number)
             }
             is SignupFormEvent.EmailChanged -> {
-                state = state.copy(email = event.email)
+                _state.value = _state.value.copy(email = event.email)
             }
             is SignupFormEvent.PasswordChanged -> {
-                state = state.copy(password = event.password)
+                _state.value = _state.value.copy(password = event.password)
             }
             is SignupFormEvent.ConfirmPasswordChanged -> {
-                state = state.copy(repeatedPassword = event.confirmPassword)
+                _state.value = _state.value.copy(repeatedPassword = event.confirmPassword)
             }
             is SignupFormEvent.Submit -> {
                 submitData()
@@ -78,14 +80,14 @@ class SignUpViewModel(
 
     private fun submitData() {
 
-        val firstNameResult = validateFirstName.execute(state.firstName)
-        val lastNameResult = validateLastName.execute(state.lastName)
-        val dateResult = validateDateChange.execute(state.date)
-        val phoneNumberResult = validatePhoneNumber.execute(state.phoneNumber)
-        val emailResult = validateEmail.execute(state.email)
-        val passwordResult = validatePassword.execute(state.password)
+        val firstNameResult = validateFirstName.execute(_state.value.firstName)
+        val lastNameResult = validateLastName.execute(_state.value.lastName)
+        val dateResult = validateDateChange.execute(_state.value.date)
+        val phoneNumberResult = validatePhoneNumber.execute(_state.value.phoneNumber)
+        val emailResult = validateEmail.execute(_state.value.email)
+        val passwordResult = validatePassword.execute(_state.value.password)
         val repeatedPasswordResult =
-            validateConfirmPassword.execute(state.password, state.repeatedPassword)
+            validateConfirmPassword.execute(_state.value.password, _state.value.repeatedPassword)
 
         val hasError = listOf(
             firstNameResult,
@@ -98,7 +100,7 @@ class SignUpViewModel(
         ).any { !it.successful }
 
         if (hasError) {
-            state = state.copy(
+            _state.value = _state.value.copy(
                 firstNameError = firstNameResult.errorMessage,
                 lastNameError = lastNameResult.errorMessage,
                 phoneNumberError = phoneNumberResult.errorMessage,
@@ -111,8 +113,8 @@ class SignUpViewModel(
         }
         viewModelScope.launch{
             validationEventChannel.send(ValidationEvent.Success)
-            Log.d("date",state.date)
-            Log.d("phone",state.phoneNumber)
+            Log.d("date",_state.value.date)
+            Log.d("phone",_state.value.phoneNumber)
         }
     }
 
@@ -130,12 +132,12 @@ class SignUpViewModel(
 
         val job = viewModelScope.launch(Dispatchers.IO){
             val user = User(
-                firstName = state.firstName,
-                lastName = state.lastName,
-                password = state.password,
-                email = state.email,
-                phoneNumber = state.phoneNumber,
-                dob = state.date,
+                firstName = _state.value.firstName,
+                lastName = _state.value.lastName,
+                password = _state.value.password,
+                email = _state.value.email,
+                phoneNumber = _state.value.phoneNumber,
+                dob = _state.value.date,
             )
 
             success = try {
@@ -158,18 +160,13 @@ class SignUpViewModel(
         if(success != null && success == true){
             //Update login status
             viewModelScope.launch(Dispatchers.IO){
-                databaseRepository.updateLoginStatus(email = state.email,loggedIn = true)
+                databaseRepository.updateLoginStatus(email = _state.value.email,loggedIn = true)
             }
 
             //Navigate
-            navHostController.navigate(Screen.HomeScreen.routeWithData(state.email)){
+            navHostController.navigate(Screen.HomeScreen.routeWithData(_state.value.email)){
                 popUpTo(Screen.SignInScreen.route){inclusive=true}
             }
         }
     }
-
-    sealed class ValidationEvent{
-        object Success:ValidationEvent()
-    }
-
 }

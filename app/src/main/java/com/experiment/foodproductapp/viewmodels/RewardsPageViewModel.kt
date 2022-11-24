@@ -55,12 +55,16 @@ class RewardsPageViewModel(
     }
 
     fun getLevel(level: String): String {
-        return if (level == "Bronze") {
-            "1"
-        } else if (level == "Silver") {
-            "2"
-        } else {
-            "3"
+        return when (level) {
+            "Bronze" -> {
+                "1"
+            }
+            "Silver" -> {
+                "2"
+            }
+            else -> {
+                "3"
+            }
         }
     }
 

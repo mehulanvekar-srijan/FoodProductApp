@@ -40,6 +40,7 @@ import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 
 import com.experiment.foodproductapp.R
+import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.ui.theme.*
 
 import com.experiment.foodproductapp.viewmodels.HomeScreenViewModel
@@ -386,7 +387,7 @@ fun ProductDetailsPage(
     AppBar(
         navHostControllerLambda = navHostControllerLambda,
         onProductCartClick = {
-            homeScreenViewModel.navigateToProductCart(navHostControllerLambda())
+            navHostControllerLambda().navigate(Screen.ProductCart.routeWithData(homeScreenViewModel.userEmail.value))
         },
     )
 }

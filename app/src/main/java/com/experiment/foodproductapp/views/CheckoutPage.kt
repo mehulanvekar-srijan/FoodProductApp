@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.experiment.foodproductapp.R
+import com.experiment.foodproductapp.constants.ValidationEvent
 import com.experiment.foodproductapp.domain.event.CheckoutFormEvent
 import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.viewmodels.CheckoutPageViewModel
@@ -84,7 +85,7 @@ fun CheckoutPage(
         }
         checkoutPageViewModel.validationEvents.collect { event ->
             when (event) {
-                is CheckoutPageViewModel.ValidationEvent.Success -> {
+                is ValidationEvent.Success -> {
                     if (points != null) {
                         checkoutPageViewModel.navigateOnSuccess(
                             navHostControllerLambda(),
@@ -155,7 +156,7 @@ fun CheckoutPage(
                     TextField(
                         readOnly = true,
                         modifier = Modifier.fillMaxWidth(),
-                        value = checkoutPageViewModel.state.firstName,
+                        value = checkoutPageViewModel.state.value.firstName,
                         colors = TextFieldDefaults.textFieldColors(
                             textColor = Color.Black,
                             backgroundColor = LightGray1,
@@ -187,7 +188,7 @@ fun CheckoutPage(
                     TextField(
                         readOnly = true,
                         modifier = Modifier.fillMaxWidth(),
-                        value = checkoutPageViewModel.state.lastName,
+                        value = checkoutPageViewModel.state.value.lastName,
                         colors = TextFieldDefaults.textFieldColors(
                             textColor = Color.Black,
                             backgroundColor = LightGray1,
@@ -219,7 +220,7 @@ fun CheckoutPage(
                     TextField(
                         readOnly = true,
                         modifier = Modifier.fillMaxWidth(),
-                        value = checkoutPageViewModel.state.phoneNumber,
+                        value = checkoutPageViewModel.state.value.phoneNumber,
                         colors = TextFieldDefaults.textFieldColors(
                             textColor = Color.Black,
                             backgroundColor = LightGray1,
@@ -251,7 +252,7 @@ fun CheckoutPage(
                     TextField(
                         modifier = Modifier
                             .fillMaxWidth(),
-                        value = checkoutPageViewModel.state.pincode,
+                        value = checkoutPageViewModel.state.value.pincode,
                         colors = TextFieldDefaults.textFieldColors(
                             textColor = Color.Black,
                             backgroundColor = LightGray1,
@@ -284,9 +285,9 @@ fun CheckoutPage(
                             onNext = { focusManager.moveFocus(FocusDirection.Down) },
                         )
                     )
-                    if (checkoutPageViewModel.state.pincodeError != null) {
+                    if (checkoutPageViewModel.state.value.pincodeError != null) {
                         Text(
-                            text = checkoutPageViewModel.state.pincodeError!!,
+                            text = checkoutPageViewModel.state.value.pincodeError!!,
                             color = MaterialTheme.colors.error,
                             fontSize = 14.sp,
                             modifier = Modifier.fillMaxWidth(),
@@ -306,7 +307,7 @@ fun CheckoutPage(
                                     }
                                 }
                             },
-                        value = checkoutPageViewModel.state.addressLine1,
+                        value = checkoutPageViewModel.state.value.addressLine1,
                         colors = TextFieldDefaults.textFieldColors(
                             textColor = Color.Black,
                             backgroundColor = LightGray1,
@@ -336,9 +337,9 @@ fun CheckoutPage(
                             onNext = { focusManager.moveFocus(FocusDirection.Down) },
                         )
                     )
-                    if (checkoutPageViewModel.state.addressLine1Error != null) {
+                    if (checkoutPageViewModel.state.value.addressLine1Error != null) {
                         Text(
-                            text = checkoutPageViewModel.state.addressLine1Error!!,
+                            text = checkoutPageViewModel.state.value.addressLine1Error!!,
                             color = MaterialTheme.colors.error,
                             fontSize = 14.sp,
                             modifier = Modifier.fillMaxWidth(),
@@ -357,7 +358,7 @@ fun CheckoutPage(
                                     }
                                 }
                             },
-                        value = checkoutPageViewModel.state.addressLine2,
+                        value = checkoutPageViewModel.state.value.addressLine2,
                         colors = TextFieldDefaults.textFieldColors(
                             textColor = Color.Black,
                             backgroundColor = LightGray1,
@@ -387,9 +388,9 @@ fun CheckoutPage(
                             onNext = { focusManager.moveFocus(FocusDirection.Down) },
                         )
                     )
-                    if (checkoutPageViewModel.state.addressLine2Error != null) {
+                    if (checkoutPageViewModel.state.value.addressLine2Error != null) {
                         Text(
-                            text = checkoutPageViewModel.state.addressLine2Error!!,
+                            text = checkoutPageViewModel.state.value.addressLine2Error!!,
                             color = MaterialTheme.colors.error,
                             fontSize = 14.sp,
                             modifier = Modifier.fillMaxWidth(),
@@ -402,7 +403,7 @@ fun CheckoutPage(
                         modifier = Modifier
                             .fillMaxWidth()
                             .bringIntoViewRequester(viewRequesterForCity),
-                        value = checkoutPageViewModel.state.city,
+                        value = checkoutPageViewModel.state.value.city,
                         colors = TextFieldDefaults.textFieldColors(
                             textColor = Color.Black,
                             backgroundColor = LightGray1,
@@ -432,9 +433,9 @@ fun CheckoutPage(
                             onNext = { mExpanded = !mExpanded },
                         )
                     )
-                    if (checkoutPageViewModel.state.cityError != null) {
+                    if (checkoutPageViewModel.state.value.cityError != null) {
                         Text(
-                            text = checkoutPageViewModel.state.cityError!!,
+                            text = checkoutPageViewModel.state.value.cityError!!,
                             color = MaterialTheme.colors.error,
                             fontSize = 14.sp,
                             modifier = Modifier.fillMaxWidth(),
@@ -460,7 +461,7 @@ fun CheckoutPage(
 
                         TextField(
                             readOnly = true,
-                            value = checkoutPageViewModel.state.state,
+                            value = checkoutPageViewModel.state.value.state,
                             shape = RoundedCornerShape(30.dp),
                             colors = TextFieldDefaults.textFieldColors(
                                 textColor = Color.Black,
@@ -514,9 +515,9 @@ fun CheckoutPage(
                             }
                         }
                     }
-                    if (checkoutPageViewModel.state.stateError != null) {
+                    if (checkoutPageViewModel.state.value.stateError != null) {
                         Text(
-                            text = checkoutPageViewModel.state.stateError!!,
+                            text = checkoutPageViewModel.state.value.stateError!!,
                             color = MaterialTheme.colors.error,
                             fontSize = 14.sp,
                             modifier = Modifier.fillMaxWidth(),

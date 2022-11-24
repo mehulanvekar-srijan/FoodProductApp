@@ -65,7 +65,6 @@ fun SignInPage(
     ChangeBarColors(navigationBarColor = Color.White)
     val focusManager = LocalFocusManager.current
     val context = LocalContext.current
-    val state = signInViewModel.state
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -116,7 +115,7 @@ fun SignInPage(
                     item {
                         TextField(
 
-                            value = state.email,
+                            value = signInViewModel.state.value.email,
                             shape = RoundedCornerShape(30.dp),
                             colors = TextFieldDefaults.textFieldColors(
                                 textColor = Color.Black,
@@ -151,9 +150,9 @@ fun SignInPage(
                             modifier = Modifier
                                 .fillMaxWidth(0.8f)
                         )
-                        if (state.emailError != null) {
+                        if (signInViewModel.state.value.emailError != null) {
                             Text(
-                                text = state.emailError,
+                                text = signInViewModel.state.value.emailError!!,
                                 color = Color.Red,
                                 fontSize = 14.sp,
                                 modifier = Modifier.fillMaxWidth(0.8f),
@@ -162,7 +161,7 @@ fun SignInPage(
                         }
                         Spacer(modifier = Modifier.padding(top = 8.dp))
                         TextField(
-                            value = state.password,
+                            value = signInViewModel.state.value.password,
                             shape = RoundedCornerShape(30.dp),
                             colors = TextFieldDefaults.textFieldColors(
                                 textColor = Color.Black,
@@ -216,9 +215,9 @@ fun SignInPage(
                             modifier = Modifier
                                 .fillMaxWidth(0.8f)
                         )
-                        if (state.passwordError != null) {
+                        if (signInViewModel.state.value.passwordError != null) {
                             Text(
-                                text = state.passwordError,
+                                text = signInViewModel.state.value.passwordError!!,
                                 color = Color.Red,
                                 fontSize = 14.sp,
                                 modifier = Modifier.fillMaxWidth(0.8f),

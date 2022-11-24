@@ -282,7 +282,7 @@ fun UserDetails(
                             Spacer(modifier = Modifier.padding(10.dp))
                             TextField(
                                 modifier = Modifier.fillMaxWidth(),
-                                value = userDetailsViewModel.state.firstName,
+                                value = userDetailsViewModel.state.value.firstName,
                                 colors = TextFieldDefaults.textFieldColors(
                                     textColor = Color.Black,
                                     backgroundColor = LightGray1,
@@ -313,9 +313,9 @@ fun UserDetails(
                                     onNext = { focusManager.moveFocus(FocusDirection.Down) },
                                 )
                             )
-                            if (userDetailsViewModel.state.firstNameError != null) {
+                            if (userDetailsViewModel.state.value.firstNameError != null) {
                                 Text(
-                                    text = userDetailsViewModel.state.firstNameError!!,
+                                    text = userDetailsViewModel.state.value.firstNameError!!,
                                     color = MaterialTheme.colors.error,
                                     fontSize = 14.sp,
                                     modifier = Modifier.fillMaxWidth(),
@@ -326,7 +326,7 @@ fun UserDetails(
                             Spacer(modifier = Modifier.padding(10.dp))
                             TextField(
                                 modifier = Modifier.fillMaxWidth(),
-                                value = userDetailsViewModel.state.lastName,
+                                value = userDetailsViewModel.state.value.lastName,
                                 colors = TextFieldDefaults.textFieldColors(
                                     textColor = Color.Black,
                                     backgroundColor = LightGray1,
@@ -357,9 +357,9 @@ fun UserDetails(
                                     onNext = { focusManager.moveFocus(FocusDirection.Down) },
                                 )
                             )
-                            if (userDetailsViewModel.state.lastNameError != null) {
+                            if (userDetailsViewModel.state.value.lastNameError != null) {
                                 Text(
-                                    text = userDetailsViewModel.state.lastNameError!!,
+                                    text = userDetailsViewModel.state.value.lastNameError!!,
                                     color = MaterialTheme.colors.error,
                                     fontSize = 14.sp,
                                     modifier = Modifier.fillMaxWidth(),
@@ -406,7 +406,7 @@ fun UserDetails(
                                             }
                                         }
                                     },
-                                value = userDetailsViewModel.state.phoneNumber,
+                                value = userDetailsViewModel.state.value.phoneNumber,
                                 colors = TextFieldDefaults.textFieldColors(
                                     textColor = Color.Black,
                                     backgroundColor = LightGray1,
@@ -440,9 +440,9 @@ fun UserDetails(
                                     onNext = { focusManager.moveFocus(FocusDirection.Down) },
                                 )
                             )
-                            if (userDetailsViewModel.state.phoneNumberError != null) {
+                            if (userDetailsViewModel.state.value.phoneNumberError != null) {
                                 Text(
-                                    text = userDetailsViewModel.state.phoneNumberError!!,
+                                    text = userDetailsViewModel.state.value.phoneNumberError!!,
                                     color = MaterialTheme.colors.error,
                                     fontSize = 14.sp,
                                     modifier = Modifier.fillMaxWidth(),
@@ -461,7 +461,7 @@ fun UserDetails(
                                             }
                                         }
                                     },
-                                value = userDetailsViewModel.state.password,
+                                value = userDetailsViewModel.state.value.password,
                                 colors = TextFieldDefaults.textFieldColors(
                                     textColor = Color.Black,
                                     backgroundColor = LightGray1,
@@ -494,9 +494,9 @@ fun UserDetails(
                                     onNext = { mDatePickerDialog.show() },
                                 )
                             )
-                            if (userDetailsViewModel.state.passwordError != null) {
+                            if (userDetailsViewModel.state.value.passwordError != null) {
                                 Text(
-                                    text = userDetailsViewModel.state.passwordError!!,
+                                    text = userDetailsViewModel.state.value.passwordError!!,
                                     color = MaterialTheme.colors.error,
                                     fontSize = 14.sp,
                                     modifier = Modifier.fillMaxWidth(),
@@ -511,7 +511,7 @@ fun UserDetails(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .bringIntoViewRequester(viewRequesterForDatePicker),
-                                value = userDetailsViewModel.state.date,
+                                value = userDetailsViewModel.state.value.date,
                                 colors = TextFieldDefaults.textFieldColors(
                                     textColor = Color.Black,
                                     backgroundColor = LightGray1,
@@ -548,9 +548,9 @@ fun UserDetails(
                                     )
                                 }
                             )
-                            if (userDetailsViewModel.state.dateError != null) {
+                            if (userDetailsViewModel.state.value.dateError != null) {
                                 Text(
-                                    text = userDetailsViewModel.state.dateError!!,
+                                    text = userDetailsViewModel.state.value.dateError!!,
                                     color = MaterialTheme.colors.error,
                                     fontSize = 14.sp,
                                     modifier = Modifier.fillMaxWidth(),

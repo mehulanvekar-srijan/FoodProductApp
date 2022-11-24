@@ -34,40 +34,44 @@ class ForgotPasswordViewModel(
         Log.d("testDI", "ForgotPasswordViewModel: ${databaseRepository.hashCode()}")
     }
 
-    private var otp = ""
+    private val otp = mutableStateOf("")
 
-    val showEnterEmail = mutableStateOf(true)
-    val showEnterOTP = mutableStateOf(false)
-    val showEnterPasswordTextField = mutableStateOf(false)
+    private val _state = mutableStateOf(ForgotPasswordState())
+    val state = _state
+
+    private val _showEnterEmail = mutableStateOf(true)
+    val showEnterEmail = _showEnterEmail
+
+    private val _showEnterOTP = mutableStateOf(false)
+    val showEnterOTP = _showEnterOTP
+
+    private val _showEnterPasswordTextField = mutableStateOf(false)
+    val showEnterPasswordTextField = _showEnterPasswordTextField
 
     private val _passwordVisible = mutableStateOf(false)
     val passwordVisible = _passwordVisible
+
+    private val _confirmPasswordVisible = mutableStateOf(false)
+    val confirmPasswordVisible = _confirmPasswordVisible
 
     fun passwordVisibilityChange() {
         _passwordVisible.value = !_passwordVisible.value
     }
 
-    private val _confirmPasswordVisible = mutableStateOf(false)
-    val confirmPasswordVisible = _confirmPasswordVisible
-
     fun confirmPasswordVisibilityChange() {
         _confirmPasswordVisible.value = !_confirmPasswordVisible.value
     }
 
-    val status = mutableStateOf(false)
-
-    var state by mutableStateOf(ForgotPasswordState())
-
     fun onEvent(event: ForgotPasswordFormEvent, context: Context) {
         when (event) {
             is ForgotPasswordFormEvent.EmailChanged -> {
-                state = state.copy(email = event.email)
+                _state.value = _state.value.copy(email = event.email)
             }
             is ForgotPasswordFormEvent.PasswordChanged -> {
-                state = state.copy(password = event.password)
+                _state.value = _state.value.copy(password = event.password)
             }
             is ForgotPasswordFormEvent.ConfirmPasswordChanged -> {
-                state = state.copy(confirmPassword = event.confirmPassword)
+                _state.value = _state.value.copy(confirmPassword = event.confirmPassword)
             }
             is ForgotPasswordFormEvent.Next -> {
                 validateUser(context = context)
@@ -79,9 +83,9 @@ class ForgotPasswordViewModel(
     }
 
     private fun validatePassword(context: Context) {
-        val passwordResult = validatePassword.execute(state.password)
+        val passwordResult = validatePassword.execute(_state.value.password)
         val confirmPasswordResult =
-            validateConfirmPassword.execute(state.password, state.confirmPassword)
+            validateConfirmPassword.execute(_state.value.password, _state.value.confirmPassword)
 
         val passwordHasNoError = passwordResult.successful
         if (passwordHasNoError) {
@@ -104,7 +108,7 @@ class ForgotPasswordViewModel(
     }
 
     private fun validateUser(context: Context) {
-        val emailResult = validateEmail.execute(state.email)
+        val emailResult = validateEmail.execute(_state.value.email)
 
         val hasNoError = emailResult.successful
 
@@ -112,8 +116,8 @@ class ForgotPasswordViewModel(
             viewModelScope.launch {
                 val status = isUserRegistered()
                 if (status) {
-                    showEnterOTP.value = true
-                    showEnterEmail.value = false
+                    _showEnterOTP.value = true
+                    _showEnterEmail.value = false
                     sendOtp()
                 } else {
                     Toast.makeText(
@@ -140,10 +144,10 @@ class ForgotPasswordViewModel(
 
     private suspend fun isUserRegistered(): Boolean {
 
-        Log.d("testFP", "isUserRegistered: ${state.email}")
+        Log.d("testFP", "isUserRegistered: ${_state.value.email}")
 
         val deferred: Deferred<Boolean> = viewModelScope.async(Dispatchers.IO) {
-            val result = databaseRepository.getUserByEmail(state.email)
+            val result = databaseRepository.getUserByEmail(_state.value.email)
             Log.d("testFP", "deferred: $result")
             if (result == null) false else true
         }
@@ -152,11 +156,11 @@ class ForgotPasswordViewModel(
     }
 
     private fun sendOtp() {
-        otp = ((Math.random() * 9000).toInt() + 1000).toString()
+        otp.value = ((Math.random() * 9000).toInt() + 1000).toString()
         val client = OkHttpClient()
         val mediaType = "application/json".toMediaTypeOrNull()
         val content =
-            """{"personalizations": [ { "to": [ { "email": "${state.email}" } ], "subject": "OTP" } ], "from": {"email": "mehul.anvekar@srijan.net" },"content": [{ "type": "text/plain","value": "Your otp is $otp" }] }"""
+            """{"personalizations": [ { "to": [ { "email": "${_state.value.email}" } ], "subject": "OTP" } ], "from": {"email": "mehul.anvekar@srijan.net" },"content": [{ "type": "text/plain","value": "Your otp is ${otp.value}" }] }"""
         val body = RequestBody.create(mediaType, content)
         val request = Request.Builder()
             .url("https://rapidprod-sendgrid-v1.p.rapidapi.com/mail/send")
@@ -168,15 +172,15 @@ class ForgotPasswordViewModel(
 
         viewModelScope.launch(Dispatchers.IO) {
 //            val response = client.newCall(request).execute()
-            Log.d("testFP", "sendOtp: $otp content=$content")
+            Log.d("testFP", "sendOtp: ${otp.value} content=$content")
         }
     }
 
-    fun verifyOtp(): Boolean = if (_inputOtp.value == otp) true else false
+    fun verifyOtp(): Boolean = if (_inputOtp.value == otp.value) true else false
 
     private fun changePassword(context: Context) {
         viewModelScope.launch(Dispatchers.IO) {
-            databaseRepository.updatePassword(state.email, state.password)
+            databaseRepository.updatePassword(_state.value.email, _state.value.password)
             withContext(Dispatchers.Main) {
                 Toast.makeText(
                     context,

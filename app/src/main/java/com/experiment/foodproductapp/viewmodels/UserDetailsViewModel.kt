@@ -34,7 +34,8 @@ class UserDetailsViewModel(
     private val _dialogBox: MutableState<Boolean> = mutableStateOf(false)
     val dialogBox: State<Boolean> = _dialogBox
 
-    var state by mutableStateOf(UserDetailsFormState())
+    private val _state = mutableStateOf(UserDetailsFormState())
+    val state = _state
 
     fun changeDialogBoxStatus(input: Boolean){
         _dialogBox.value = input
@@ -43,19 +44,19 @@ class UserDetailsViewModel(
     fun onEvent(context: Context, event: UserDetailsFormEvent) {
         when (event) {
             is UserDetailsFormEvent.FirstNameChanged -> {
-                state = state.copy(firstName = event.firstName)
+                _state.value = _state.value.copy(firstName = event.firstName)
             }
             is UserDetailsFormEvent.LastNameChanged -> {
-                state = state.copy(lastName = event.lastName)
+                _state.value = _state.value.copy(lastName = event.lastName)
             }
             is UserDetailsFormEvent.CalenderChanged -> {
-                state = state.copy(date = event.date)
+                _state.value = _state.value.copy(date = event.date)
             }
             is UserDetailsFormEvent.PhoneNumberChanged -> {
-                state = state.copy(phoneNumber = event.number)
+                _state.value = _state.value.copy(phoneNumber = event.number)
             }
             is UserDetailsFormEvent.PasswordChanged -> {
-                state = state.copy(password = event.password)
+                _state.value = _state.value.copy(password = event.password)
             }
             is UserDetailsFormEvent.Submit -> {
                 submitData(context)
@@ -65,11 +66,11 @@ class UserDetailsViewModel(
     }
 
     private fun submitData(context: Context) {
-        val firstNameResult = validateFirstName.execute(state.firstName)
-        val lastNameResult = validateLastName.execute(state.lastName)
-        val dateResult = validateDateChange.execute(state.date)
-        val phoneNumberResult = validatePhoneNumber.execute(state.phoneNumber)
-        val passwordResult = validatePassword.execute(state.password)
+        val firstNameResult = validateFirstName.execute(_state.value.firstName)
+        val lastNameResult = validateLastName.execute(_state.value.lastName)
+        val dateResult = validateDateChange.execute(_state.value.date)
+        val phoneNumberResult = validatePhoneNumber.execute(_state.value.phoneNumber)
+        val passwordResult = validatePassword.execute(_state.value.password)
 
         val hasError = listOf(
             firstNameResult,
@@ -80,7 +81,7 @@ class UserDetailsViewModel(
         ).any { !it.successful }
 
         if (hasError) {
-            state = state.copy(
+            _state.value = _state.value.copy(
                 firstNameError = firstNameResult.errorMessage,
                 lastNameError = lastNameResult.errorMessage,
                 phoneNumberError = phoneNumberResult.errorMessage,
@@ -90,7 +91,7 @@ class UserDetailsViewModel(
             return
         }
 
-        state = state.copy(
+        _state.value = _state.value.copy(
             firstNameError = null,
             lastNameError = null,
             phoneNumberError = null,
@@ -100,12 +101,12 @@ class UserDetailsViewModel(
 
         viewModelScope.launch(Dispatchers.IO) {
             databaseRepository.updateUserByEmail(
-                state.email,
-                state.firstName,
-                state.lastName,
-                state.date,
-                state.password,
-                state.phoneNumber
+                _state.value.email,
+                _state.value.firstName,
+                _state.value.lastName,
+                _state.value.date,
+                _state.value.password,
+                _state.value.phoneNumber
             )
             withContext(Dispatchers.Main) {
                 Toast.makeText(context, "Updation Successful", Toast.LENGTH_LONG).show()
@@ -116,7 +117,7 @@ class UserDetailsViewModel(
     fun execute(email: String) {
         viewModelScope.launch(Dispatchers.IO) {
             _user.value = databaseRepository.getUserByEmail(email = email)
-            state = state.copy(
+            _state.value = _state.value.copy(
                 firstName = _user.value.firstName,
                 lastName = _user.value.lastName,
                 email = _user.value.email,

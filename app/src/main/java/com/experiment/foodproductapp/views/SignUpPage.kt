@@ -48,6 +48,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.experiment.foodproductapp.R
+import com.experiment.foodproductapp.constants.ValidationEvent
 import com.experiment.foodproductapp.domain.event.SignupFormEvent
 import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.viewmodels.SignUpViewModel
@@ -81,8 +82,6 @@ fun SignupPage(
 
     val coroutineScope = rememberCoroutineScope()
 
-    val state = signUpViewModel.state
-
     val context = LocalContext.current
 
     val mYear: Int
@@ -115,7 +114,7 @@ fun SignupPage(
     LaunchedEffect(key1 = Unit) {
         signUpViewModel.validationEvents.collect { event ->
             when (event) {
-                is SignUpViewModel.ValidationEvent.Success -> {
+                is ValidationEvent.Success -> {
                     signUpViewModel.navigateOnSuccess(context, navHostControllerLambda())
                 }
             }
@@ -177,7 +176,7 @@ fun SignupPage(
                         TextField(
                             modifier = Modifier
                                 .fillMaxWidth(),
-                            value = state.firstName,
+                            value = signUpViewModel.state.value.firstName,
                             colors = TextFieldDefaults.textFieldColors(
                                 textColor = Color.Black,
                                 backgroundColor = LightGray1,
@@ -195,7 +194,7 @@ fun SignupPage(
                                 signUpViewModel.onEvent(SignupFormEvent.FirstNameChanged(it))
                             },
                             shape = RoundedCornerShape(30.dp),
-                            isError = state.firstNameError != null,
+                            isError = signUpViewModel.state.value.firstNameError != null,
                             label = {
                                 Text(
                                     text = stringResource(id = R.string.first_name_string),
@@ -207,9 +206,9 @@ fun SignupPage(
                                 onNext = { focusManager.moveFocus(FocusDirection.Down) },
                             )
                         )
-                        if (state.firstNameError != null) {
+                        if (signUpViewModel.state.value.firstNameError != null) {
                             Text(
-                                text = state.firstNameError,
+                                text = signUpViewModel.state.value.firstNameError!!,
                                 color = MaterialTheme.colors.error,
                                 fontSize = 14.sp, modifier = Modifier.fillMaxWidth(),
                                 textAlign = TextAlign.End
@@ -221,7 +220,7 @@ fun SignupPage(
                         TextField(
                             modifier = Modifier
                                 .fillMaxWidth(),
-                            value = state.lastName,
+                            value = signUpViewModel.state.value.lastName,
                             colors = TextFieldDefaults.textFieldColors(
                                 textColor = Color.Black,
                                 backgroundColor = LightGray1,
@@ -239,7 +238,7 @@ fun SignupPage(
                                 signUpViewModel.onEvent(SignupFormEvent.LastNameChanged(it))
                             },
                             shape = RoundedCornerShape(30.dp),
-                            isError = state.lastNameError != null,
+                            isError = signUpViewModel.state.value.lastNameError != null,
                             label = {
                                 Text(
                                     text = stringResource(id = R.string.last_name_string),
@@ -251,9 +250,9 @@ fun SignupPage(
                                 onNext = { focusManager.moveFocus(FocusDirection.Down) },
                             )
                         )
-                        if (state.lastNameError != null) {
+                        if (signUpViewModel.state.value.lastNameError != null) {
                             Text(
-                                text = state.lastNameError,
+                                text = signUpViewModel.state.value.lastNameError!!,
                                 color = MaterialTheme.colors.error,
                                 fontSize = 14.sp,
                                 modifier = Modifier.fillMaxWidth(),
@@ -266,7 +265,7 @@ fun SignupPage(
                         TextField(
                             modifier = Modifier
                                 .fillMaxWidth(),
-                            value = state.phoneNumber,
+                            value = signUpViewModel.state.value.phoneNumber,
                             shape = RoundedCornerShape(30.dp),
                             colors = TextFieldDefaults.textFieldColors(
                                 textColor = Color.Black,
@@ -281,7 +280,7 @@ fun SignupPage(
                                 unfocusedIndicatorColor = Color.Transparent,
                                 unfocusedLabelColor = Orange,
                             ),
-                            isError = state.phoneNumberError != null,
+                            isError = signUpViewModel.state.value.phoneNumberError != null,
                             keyboardOptions = KeyboardOptions(
                                 keyboardType = KeyboardType.Phone,
                                 imeAction = ImeAction.Next
@@ -299,9 +298,9 @@ fun SignupPage(
                                 onNext = { focusManager.moveFocus(FocusDirection.Down) },
                             )
                         )
-                        if (state.phoneNumberError != null) {
+                        if (signUpViewModel.state.value.phoneNumberError != null) {
                             Text(
-                                text = state.phoneNumberError,
+                                text = signUpViewModel.state.value.phoneNumberError!!,
                                 color = MaterialTheme.colors.error,
                                 fontSize = 14.sp,
                                 modifier = Modifier.fillMaxWidth(),
@@ -321,7 +320,7 @@ fun SignupPage(
                                         }
                                     }
                                 },
-                            value = state.email,
+                            value = signUpViewModel.state.value.email,
                             shape = RoundedCornerShape(30.dp),
                             colors = TextFieldDefaults.textFieldColors(
                                 textColor = Color.Black,
@@ -336,7 +335,7 @@ fun SignupPage(
                                 unfocusedIndicatorColor = Color.Transparent,
                                 unfocusedLabelColor = Orange,
                             ),
-                            isError = state.emailError != null,
+                            isError = signUpViewModel.state.value.emailError != null,
                             keyboardOptions = KeyboardOptions(
                                 //keyboardType = KeyboardType.Email,
                                 imeAction = ImeAction.Next,
@@ -354,9 +353,9 @@ fun SignupPage(
                                 onNext = { focusManager.moveFocus(FocusDirection.Down) },
                             )
                         )
-                        if (state.emailError != null) {
+                        if (signUpViewModel.state.value.emailError != null) {
                             Text(
-                                text = state.emailError,
+                                text = signUpViewModel.state.value.emailError!!,
                                 color = MaterialTheme.colors.error,
                                 fontSize = 14.sp,
                                 modifier = Modifier.fillMaxWidth(),
@@ -369,7 +368,7 @@ fun SignupPage(
                         TextField(
                             modifier = Modifier
                                 .fillMaxWidth(),
-                            value = state.password,
+                            value = signUpViewModel.state.value.password,
                             shape = RoundedCornerShape(30.dp),
                             onValueChange = {
                                 signUpViewModel.onEvent(SignupFormEvent.PasswordChanged(it))
@@ -415,9 +414,9 @@ fun SignupPage(
                                 onNext = { focusManager.moveFocus(FocusDirection.Down) },
                             )
                         )
-                        if (state.passwordError != null) {
+                        if (signUpViewModel.state.value.passwordError != null) {
                             Text(
-                                text = state.passwordError,
+                                text = signUpViewModel.state.value.passwordError!!,
                                 color = MaterialTheme.colors.error,
                                 fontSize = 14.sp,
                                 modifier = Modifier.fillMaxWidth(),
@@ -438,7 +437,7 @@ fun SignupPage(
                                         }
                                     }
                                 },
-                            value = state.repeatedPassword,
+                            value = signUpViewModel.state.value.repeatedPassword,
                             shape = RoundedCornerShape(30.dp),
                             onValueChange = {
                                 signUpViewModel.onEvent(
@@ -490,9 +489,9 @@ fun SignupPage(
                                 onNext = { mDatePickerDialog.show() },
                             )
                         )
-                        if (state.repeatedPasswordError != null) {
+                        if (signUpViewModel.state.value.repeatedPasswordError != null) {
                             Text(
-                                text = state.repeatedPasswordError,
+                                text = signUpViewModel.state.value.repeatedPasswordError!!,
                                 color = MaterialTheme.colors.error,
                                 fontSize = 14.sp,
                                 modifier = Modifier.fillMaxWidth(),
@@ -507,9 +506,9 @@ fun SignupPage(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .bringIntoViewRequester(viewRequesterForConfirmDatePicker),
-                            value = state.date,
+                            value = signUpViewModel.state.value.date,
                             shape = RoundedCornerShape(30.dp),
-                            isError = state.dateError != null,
+                            isError = signUpViewModel.state.value.dateError != null,
                             onValueChange = {
                                 signUpViewModel.onEvent(
                                     SignupFormEvent.CalenderChanged(it)
@@ -545,9 +544,9 @@ fun SignupPage(
                                 }
                             },
                         )
-                        if (state.dateError != null) {
+                        if (signUpViewModel.state.value.dateError != null) {
                             Text(
-                                text = state.dateError,
+                                text = signUpViewModel.state.value.dateError!!,
                                 color = MaterialTheme.colors.error,
                                 fontSize = 14.sp,
                                 modifier = Modifier.fillMaxWidth(),

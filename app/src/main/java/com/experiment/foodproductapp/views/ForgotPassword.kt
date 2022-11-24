@@ -127,7 +127,7 @@ fun ForgotPassword(
                         TextField(
                             modifier = Modifier
                                 .fillMaxWidth(),
-                            value = forgotPasswordViewModel.state.email,
+                            value = forgotPasswordViewModel.state.value.email,
                             shape = RoundedCornerShape(30.dp),
                             onValueChange = {
                                 forgotPasswordViewModel.onEvent(ForgotPasswordFormEvent.EmailChanged(it),context)
@@ -287,7 +287,7 @@ fun ForgotPassword(
                                         }
                                     }
                                 },
-                            value = forgotPasswordViewModel.state.password,
+                            value = forgotPasswordViewModel.state.value.password,
                             shape = RoundedCornerShape(30.dp),
                             onValueChange = {
                                 forgotPasswordViewModel.onEvent(ForgotPasswordFormEvent.PasswordChanged(it),context)
@@ -333,7 +333,7 @@ fun ForgotPassword(
                         TextField(
                             modifier = Modifier
                                 .fillMaxWidth(),
-                            value = forgotPasswordViewModel.state.confirmPassword,
+                            value = forgotPasswordViewModel.state.value.confirmPassword,
                             shape = RoundedCornerShape(30.dp),
                             onValueChange = {
                                 forgotPasswordViewModel.onEvent(ForgotPasswordFormEvent.ConfirmPasswordChanged(it),context)

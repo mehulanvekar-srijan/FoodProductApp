@@ -21,6 +21,7 @@ class HomeScreenViewModel(
     }
 
     private var _userEmail = mutableStateOf("")
+    val userEmail = _userEmail
 
     //Create empty state list object of homeItems
     private val _homeItems: MutableState<List<HomeItems>> = mutableStateOf(listOf())
@@ -49,24 +50,24 @@ class HomeScreenViewModel(
         if (email != null) _userEmail.value = email
     }
 
-    //Navigation
-    fun navigateToUserDetails(navHostController: NavHostController) {
-        navHostController.navigate(Screen.UserDetails.routeWithData(_userEmail.value))
-    }
-
-    fun navigateToProductCart(navHostController: NavHostController) {
-        navHostController.navigate(Screen.ProductCart.routeWithData(_userEmail.value))
-    }
-
-    fun navigateToOrderDetailsPage(navHostController: NavHostController) {
-        navHostController.navigate(Screen.OrderDetails.routeWithData(_userEmail.value))
-    }
-
-    fun navigateToProductDetailsPage(navHostController: NavHostController) {
-        navHostController.navigate(Screen.ProductDetailsScreen.route) {
-            //popUpTo(Screen.HomeScreen.route) { inclusive = false }
-        }
-    }
+    //Navigation logic moved to composable views
+//    fun navigateToUserDetails(navHostController: NavHostController) {
+//        navHostController.navigate(Screen.UserDetails.routeWithData(_userEmail.value))
+//    }
+//
+//    fun navigateToProductCart(navHostController: NavHostController) {
+//        navHostController.navigate(Screen.ProductCart.routeWithData(_userEmail.value))
+//    }
+//
+//    fun navigateToOrderDetailsPage(navHostController: NavHostController) {
+//        navHostController.navigate(Screen.OrderDetails.routeWithData(_userEmail.value))
+//    }
+//
+//    fun navigateToProductDetailsPage(navHostController: NavHostController) {
+//        navHostController.navigate(Screen.ProductDetailsScreen.route) {
+//            popUpTo(Screen.HomeScreen.route) { inclusive = false }
+//        }
+//    }
 
     fun addProductToCart(homeItem: HomeItems) {
         viewModelScope.launch(Dispatchers.IO) {

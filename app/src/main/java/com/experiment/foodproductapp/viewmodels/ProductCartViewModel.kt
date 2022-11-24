@@ -168,17 +168,19 @@ class ProductCartViewModel(
     }
 
     private fun updateAvailablePoints() {
-        if (_availablePoints.value in 1..500) {
-            _availablePoints.value -= (redeemedAmount * 20) //Multiplied by 20 to convert rupees to points
-            Log.d("Redeem", "Updated Points: ${_availablePoints.value}")
-        }
-        else if (_availablePoints.value in 501..1000) {
-            _availablePoints.value -= (redeemedAmount * 10) //Multiplied by 10 to convert rupees to points
-            Log.d("Redeem", "Updated Points: ${_availablePoints.value}")
-        }
-        else {
-            _availablePoints.value -= (redeemedAmount * 5) //Multiplied by 5 to convert rupees to points
-            Log.d("Redeem", "Updated Points: ${_availablePoints.value}")
+        when (_availablePoints.value) {
+            in 1..500 -> {
+                _availablePoints.value -= (redeemedAmount * 20) //Multiplied by 20 to convert rupees to points
+                Log.d("Redeem", "Updated Points: ${_availablePoints.value}")
+            }
+            in 501..1000 -> {
+                _availablePoints.value -= (redeemedAmount * 10) //Multiplied by 10 to convert rupees to points
+                Log.d("Redeem", "Updated Points: ${_availablePoints.value}")
+            }
+            else -> {
+                _availablePoints.value -= (redeemedAmount * 5) //Multiplied by 5 to convert rupees to points
+                Log.d("Redeem", "Updated Points: ${_availablePoints.value}")
+            }
         }
     }
 
@@ -249,7 +251,7 @@ class ProductCartViewModel(
         updateSum()
         updateFinalSum()
     }
-    fun addProductToCart(product: Product) {
+    private fun addProductToCart(product: Product) {
         viewModelScope.launch(Dispatchers.IO) {
 
             //Inset into Product Table
@@ -261,7 +263,7 @@ class ProductCartViewModel(
         }
     }
 
-    fun addProductToCartList(product: Product) {
+    private fun addProductToCartList(product: Product) {
         _cartList.add(product)
     }
 
