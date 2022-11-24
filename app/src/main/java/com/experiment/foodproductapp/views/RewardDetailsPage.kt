@@ -82,12 +82,11 @@ fun RewardDetails(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(start = 25.dp, end = 25.dp),
+                .padding(start = 20.dp, end = 20.dp),
             verticalArrangement = Arrangement.Bottom,
         ) {
             Text(
                 modifier = Modifier
-                    .padding(end = 10.dp)
                     .fillMaxWidth(),
                 text = stringResource(id = R.string.tap_on_card_to_know_more_string),
                 color = Color.White,
