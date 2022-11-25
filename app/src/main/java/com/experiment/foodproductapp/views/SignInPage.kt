@@ -2,6 +2,7 @@ package com.experiment.foodproductapp.views
 
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -16,6 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -51,6 +53,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.experiment.foodproductapp.R
 import com.experiment.foodproductapp.constants.Screen
+import com.experiment.foodproductapp.constants.ValidationEvent
 import com.experiment.foodproductapp.domain.event.SignInFormEvent
 import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.viewmodels.SignInViewModel
@@ -61,10 +64,25 @@ fun SignInPage(
     navHostControllerLambda: () -> NavHostController,
     signInViewModel: SignInViewModel = koinViewModel()
 ) {
+    val context = LocalContext.current
+
+    LaunchedEffect(key1 = Unit) {
+        signInViewModel.validationEvents.collect { event ->
+            when (event) {
+                is ValidationEvent.Success -> {
+                    navHostControllerLambda().navigate(Screen.HomeScreen.routeWithData(signInViewModel.state.value.email)) {
+                                popUpTo(Screen.SignInScreen.route) { inclusive = true }
+                            }
+                }
+                is ValidationEvent.Failure -> {
+                    Toast.makeText(context, "Email already registered", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
 
     ChangeBarColors(navigationBarColor = Color.White)
     val focusManager = LocalFocusManager.current
-    val context = LocalContext.current
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -130,11 +148,7 @@ fun SignInPage(
                                 unfocusedLabelColor = Orange,
                             ),
                             onValueChange = {
-                                signInViewModel.onEvent(
-                                    context,
-                                    SignInFormEvent.EmailChanged(it),
-                                    navHostControllerLambda()
-                                )
+                                signInViewModel.onEvent(SignInFormEvent.EmailChanged(it))
                             },
                             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                             keyboardActions = KeyboardActions(
@@ -180,11 +194,7 @@ fun SignInPage(
                                 onNext = { focusManager.moveFocus(FocusDirection.Down) },
                             ),
                             onValueChange = {
-                                signInViewModel.onEvent(
-                                    context,
-                                    SignInFormEvent.PasswordChanged(it),
-                                    navHostControllerLambda()
-                                )
+                                signInViewModel.onEvent(SignInFormEvent.PasswordChanged(it))
                             },
                             trailingIcon = {
                                 val image = if (signInViewModel.passwordVisibility.value) {
@@ -228,11 +238,7 @@ fun SignInPage(
                         Spacer(modifier = Modifier.padding(10.dp))
                         OutlinedButton(
                             onClick = {
-                                signInViewModel.onEvent(
-                                    context,
-                                    SignInFormEvent.Login,
-                                    navHostControllerLambda()
-                                )
+                                signInViewModel.onEvent(SignInFormEvent.Login)
                             },
                             modifier = Modifier
                                 .fillMaxWidth(0.8f)

@@ -3,6 +3,7 @@ package com.experiment.foodproductapp.viewmodels
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
+
 class RewardsDetailsPageViewModel : ViewModel() {
 
     private val _bronzeCardFace = mutableStateOf(CardFace.Front)

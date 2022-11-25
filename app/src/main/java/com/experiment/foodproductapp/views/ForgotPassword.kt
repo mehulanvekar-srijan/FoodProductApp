@@ -49,6 +49,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.experiment.foodproductapp.R
+import com.experiment.foodproductapp.constants.Screen
+import com.experiment.foodproductapp.constants.ValidationEvent
 import com.experiment.foodproductapp.domain.event.ForgotPasswordFormEvent
 import com.experiment.foodproductapp.domain.event.SignupFormEvent
 import com.experiment.foodproductapp.ui.theme.*
@@ -72,6 +74,38 @@ fun ForgotPassword(
     val context = LocalContext.current
     val viewRequesterForSetButton = remember { BringIntoViewRequester() }
 
+    LaunchedEffect(key1 = Unit) {
+        forgotPasswordViewModel.validationEvents.collect { event ->
+            when (event) {
+                is ValidationEvent.Success -> {
+                    if (forgotPasswordViewModel.showEnterEmail.value) {
+                        Toast.makeText(
+                            context,
+                            R.string.email_not_registered_string,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                    else if(forgotPasswordViewModel.showEnterPasswordTextField.value){
+                        Toast.makeText(
+                            context,
+                            "Password updated",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+                is ValidationEvent.Failure -> {
+                    if (forgotPasswordViewModel.showEnterEmail.value) {
+                        Toast.makeText(context, forgotPasswordViewModel.state.value.emailError, Toast.LENGTH_SHORT).show()
+                    }
+                    else if(forgotPasswordViewModel.showEnterPasswordTextField.value){
+                        Toast.makeText(
+                            context, forgotPasswordViewModel.state.value.passwordError, Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
+        }
+    }
 
     val inputList = remember { mutableStateListOf("", "", "", "") }
 
@@ -130,7 +164,11 @@ fun ForgotPassword(
                             value = forgotPasswordViewModel.state.value.email,
                             shape = RoundedCornerShape(30.dp),
                             onValueChange = {
-                                forgotPasswordViewModel.onEvent(ForgotPasswordFormEvent.EmailChanged(it),context)
+                                forgotPasswordViewModel.onEvent(
+                                    ForgotPasswordFormEvent.EmailChanged(
+                                        it
+                                    ), context
+                                )
                             },
                             label = {
                                 Text(
@@ -159,7 +197,10 @@ fun ForgotPassword(
                     AnimatedVisibility(visible = forgotPasswordViewModel.showEnterEmail.value) {
                         Button(
                             onClick = {
-                                forgotPasswordViewModel.onEvent(ForgotPasswordFormEvent.Next,context)
+                                forgotPasswordViewModel.onEvent(
+                                    ForgotPasswordFormEvent.Next,
+                                    context
+                                )
                             },
                             colors = ButtonDefaults.buttonColors(
                                 backgroundColor = DarkYellow,
@@ -290,7 +331,11 @@ fun ForgotPassword(
                             value = forgotPasswordViewModel.state.value.password,
                             shape = RoundedCornerShape(30.dp),
                             onValueChange = {
-                                forgotPasswordViewModel.onEvent(ForgotPasswordFormEvent.PasswordChanged(it),context)
+                                forgotPasswordViewModel.onEvent(
+                                    ForgotPasswordFormEvent.PasswordChanged(
+                                        it
+                                    ), context
+                                )
                             },
                             label = {
                                 Text(
@@ -316,7 +361,9 @@ fun ForgotPassword(
                                     Icons.Filled.Visibility
                                 else Icons.Filled.VisibilityOff
                                 val description =
-                                    if (forgotPasswordViewModel.passwordVisible.value) stringResource(id = R.string.hide_password_string) else stringResource(
+                                    if (forgotPasswordViewModel.passwordVisible.value) stringResource(
+                                        id = R.string.hide_password_string
+                                    ) else stringResource(
                                         id = R.string.show_password_string
                                     )
 
@@ -336,7 +383,11 @@ fun ForgotPassword(
                             value = forgotPasswordViewModel.state.value.confirmPassword,
                             shape = RoundedCornerShape(30.dp),
                             onValueChange = {
-                                forgotPasswordViewModel.onEvent(ForgotPasswordFormEvent.ConfirmPasswordChanged(it),context)
+                                forgotPasswordViewModel.onEvent(
+                                    ForgotPasswordFormEvent.ConfirmPasswordChanged(
+                                        it
+                                    ), context
+                                )
                             },
                             label = {
                                 Text(
@@ -358,11 +409,14 @@ fun ForgotPassword(
                             ),
                             visualTransformation = if (forgotPasswordViewModel.confirmPasswordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
                             trailingIcon = {
-                                val image = if (forgotPasswordViewModel.confirmPasswordVisible.value)
-                                    Icons.Filled.Visibility
-                                else Icons.Filled.VisibilityOff
+                                val image =
+                                    if (forgotPasswordViewModel.confirmPasswordVisible.value)
+                                        Icons.Filled.Visibility
+                                    else Icons.Filled.VisibilityOff
                                 val description =
-                                    if (forgotPasswordViewModel.confirmPasswordVisible.value) stringResource(id = R.string.hide_password_string) else stringResource(
+                                    if (forgotPasswordViewModel.confirmPasswordVisible.value) stringResource(
+                                        id = R.string.hide_password_string
+                                    ) else stringResource(
                                         id = R.string.show_password_string
                                     )
 
@@ -379,7 +433,10 @@ fun ForgotPassword(
                         Button(
                             onClick = {
                                 coroutineScope.launch {
-                                    forgotPasswordViewModel.onEvent(ForgotPasswordFormEvent.Set, context)
+                                    forgotPasswordViewModel.onEvent(
+                                        ForgotPasswordFormEvent.Set,
+                                        context
+                                    )
                                 }
                             },
                             colors = ButtonDefaults.buttonColors(

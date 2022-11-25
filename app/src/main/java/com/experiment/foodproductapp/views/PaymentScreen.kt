@@ -22,6 +22,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.experiment.foodproductapp.MainActivity
 import com.experiment.foodproductapp.R
+import com.experiment.foodproductapp.constants.Screen
+import com.experiment.foodproductapp.constants.ValidationEvent
 import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.utility.payment
 import com.experiment.foodproductapp.viewmodels.PaymentScreenViewModel
@@ -48,6 +50,20 @@ fun PaymentScreen(
         if (sum != null) {
             payment(mainActivity, email.toString(), phoneNumber.toString(), total)
         }
+        paymentScreenViewModel.validationEvents.collect { event ->
+            when (event) {
+                is ValidationEvent.Success -> {
+                    navHostControllerLambda().navigate(Screen.HomeScreen.routeWithData(email.toString())) {
+                        popUpTo(Screen.HomeScreen.route) { inclusive = true }
+                    }
+                }
+                is ValidationEvent.Failure -> {
+                    navHostControllerLambda().navigate(Screen.ProductCart.routeWithData(email.toString())) {
+                        popUpTo(Screen.ProductCart.route) { inclusive = true }
+                    }
+                }
+            }
+        }
     }
 
     if (mainActivity.status.value == true) {  //Payment success
@@ -57,8 +73,6 @@ fun PaymentScreen(
 
         LaunchedEffect(key1 = Unit) {
             paymentScreenViewModel.navigateOnSuccess(
-                navHostController = navHostControllerLambda(),
-                context = context,
                 email = email,
                 sum = sum,
                 points = points,
@@ -141,8 +155,6 @@ fun PaymentScreen(
     if (mainActivity.status.value == false) { //Payment failure
         LaunchedEffect(key1 = Unit) {
             paymentScreenViewModel.navigateOnFailure(
-                navHostController = navHostControllerLambda(),
-                context = context,
                 email = email,
                 activity = mainActivity,
             )

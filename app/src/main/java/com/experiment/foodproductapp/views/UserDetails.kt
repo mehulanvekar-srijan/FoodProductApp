@@ -3,6 +3,7 @@ package com.experiment.foodproductapp.views
 import android.app.DatePickerDialog
 import android.net.Uri
 import android.widget.DatePicker
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
@@ -54,6 +55,7 @@ import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.experiment.foodproductapp.R
 import com.experiment.foodproductapp.constants.Screen
+import com.experiment.foodproductapp.constants.ValidationEvent
 import com.experiment.foodproductapp.domain.event.UserDetailsFormEvent
 import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.utility.ComposeFileProvider
@@ -97,10 +99,9 @@ fun UserDetails(
         // Declaring DatePickerDialog and setting
         // initial values as current values (present year, month and day)
         val mDatePickerDialog = DatePickerDialog(
-            context,
+            LocalContext.current,
             { _: DatePicker, mYear: Int, mMonth: Int, mDayOfMonth: Int ->
                 userDetailsViewModel.onEvent(
-                    context,
                     UserDetailsFormEvent.CalenderChanged("$mDayOfMonth/${mMonth + 1}/$mYear")
                 )
             }, mYear, mMonth, mDay
@@ -109,6 +110,18 @@ fun UserDetails(
         LaunchedEffect(key1 = Unit) {
             userDetailsViewModel.execute(email)
             userDetailsViewModel.initProfilePicture(email) //Load image from db
+            userDetailsViewModel.validationEvents.collect { event ->
+                when (event) {
+                    is ValidationEvent.Success -> {
+                        Toast.makeText(context, "Updation Successful", Toast.LENGTH_LONG).show()
+                    }
+                    is ValidationEvent.Failure -> {
+                        navHostControllerLambda().navigate(Screen.SignInScreen.route) {
+                            popUpTo(Screen.HomeScreen.route) { inclusive = true }
+                        }
+                    }
+                }
+            }
         }
 
         val imagePicker = rememberLauncherForActivityResult(
@@ -154,13 +167,10 @@ fun UserDetails(
         )
 
         //Alert Dialog
-        if(userDetailsViewModel.dialogBox.value) {
+        if (userDetailsViewModel.dialogBox.value) {
             ShowDialogBox(
                 confirmButtonLogic = {
-                    userDetailsViewModel.logOutUser(
-                        email,
-                        navHostControllerLambda()
-                    )
+                    userDetailsViewModel.logOutUser(email)
                     userDetailsViewModel.changeDialogBoxStatus(false)
                 },
                 dismissButtonLogic = {
@@ -204,8 +214,7 @@ fun UserDetails(
                         contentScale = ContentScale.Crop,
                         modifier = profileImageModifier
                     )
-                }
-                else {
+                } else {
                     Image(
                         painter = rememberImagePainter(R.drawable.ic_user3),
                         contentDescription = "ic_profile_pic",
@@ -234,16 +243,22 @@ fun UserDetails(
                                 .background(Color.White),
                             horizontalArrangement = Arrangement.Center,
                             verticalAlignment = Alignment.CenterVertically,
-                        ){
+                        ) {
                             IconButton(onClick = {
                                 val uri = ComposeFileProvider.getImageUri(context)
                                 cameraLauncher.launch(uri)
                                 intermediateUri = uri
                             }) {
-                                Icon(imageVector = Icons.Default.Camera, contentDescription = "ic_click_image")
+                                Icon(
+                                    imageVector = Icons.Default.Camera,
+                                    contentDescription = "ic_click_image"
+                                )
                             }
-                            IconButton(onClick = { imagePicker.launch("image/*")}) {
-                                Icon(imageVector = Icons.Default.Edit, contentDescription = "ic_pick_image")
+                            IconButton(onClick = { imagePicker.launch("image/*") }) {
+                                Icon(
+                                    imageVector = Icons.Default.Edit,
+                                    contentDescription = "ic_pick_image"
+                                )
                             }
                         }
                     }
@@ -295,7 +310,6 @@ fun UserDetails(
                                 ),
                                 onValueChange = {
                                     userDetailsViewModel.onEvent(
-                                        context,
                                         UserDetailsFormEvent.FirstNameChanged(it)
                                     )
                                 },
@@ -339,7 +353,6 @@ fun UserDetails(
                                 ),
                                 onValueChange = {
                                     userDetailsViewModel.onEvent(
-                                        context,
                                         UserDetailsFormEvent.LastNameChanged(it)
                                     )
                                 },
@@ -391,7 +404,6 @@ fun UserDetails(
                                 ),
                                 onValueChange = {
                                     userDetailsViewModel.onEvent(
-                                        context,
                                         UserDetailsFormEvent.PhoneNumberChanged(it)
                                     )
                                 },
@@ -446,7 +458,6 @@ fun UserDetails(
                                 ),
                                 onValueChange = {
                                     userDetailsViewModel.onEvent(
-                                        context,
                                         UserDetailsFormEvent.PasswordChanged(it)
                                     )
                                 },
@@ -496,7 +507,6 @@ fun UserDetails(
                                 ),
                                 onValueChange = {
                                     userDetailsViewModel.onEvent(
-                                        context,
                                         UserDetailsFormEvent.CalenderChanged(it)
                                     )
                                 },
@@ -534,7 +544,7 @@ fun UserDetails(
 
                     OutlinedButton(
                         onClick = {
-                            userDetailsViewModel.onEvent(context, UserDetailsFormEvent.Submit)
+                            userDetailsViewModel.onEvent(UserDetailsFormEvent.Submit)
                         },
                         modifier = Modifier
                             .fillMaxWidth()
@@ -603,7 +613,7 @@ fun ShowDialogBox(
 ) {
     AlertDialog(
         onDismissRequest = { },
-        title = { Text(text = "Logout?", fontFamily = titleFontFamily,) },
+        title = { Text(text = "Logout?", fontFamily = titleFontFamily) },
         text = { Text(text = "Are you sure you want to log out?") },
         confirmButton = { Button(onClick = confirmButtonLogic) { Text("Yes") } },
         dismissButton = { Button(onClick = dismissButtonLogic) { Text("No") } }
@@ -619,14 +629,14 @@ fun Show1() {
             .fillMaxSize()
             .padding(top = 20.dp),
         horizontalAlignment = CenterHorizontally,
-    ){
+    ) {
         BoxWithConstraints(
             modifier = Modifier.background(Color.Green),
             contentAlignment = Center
-        ){
+        ) {
 
             val height: Dp = maxHeight
-            val width: Dp  = maxWidth
+            val width: Dp = maxWidth
 
             val offset = 55
             BadgedBox(
@@ -635,7 +645,7 @@ fun Show1() {
                         modifier = Modifier.offset(x = -offset.dp, y = offset.dp),
                     ) { Icon(imageVector = Icons.Default.Edit, contentDescription = "") }
                 }
-            ){
+            ) {
                 Image(
                     painter = painterResource(R.drawable.ic_user3),
                     contentDescription = "ic_profile_pic",
@@ -655,7 +665,9 @@ fun Show1() {
         }
     }
 
-}@Composable
+}
+
+@Composable
 
 @Preview(showBackground = true)
 fun Show2() {
@@ -664,12 +676,12 @@ fun Show2() {
             .fillMaxSize()
             .padding(top = 20.dp),
         horizontalAlignment = CenterHorizontally,
-    ){
+    ) {
 
         Box(
             modifier = Modifier.background(Color.Transparent),
             contentAlignment = Center
-        ){
+        ) {
             Box(
                 modifier = Modifier
                     .fillMaxHeight(0.25F)
@@ -680,7 +692,7 @@ fun Show2() {
                     .aspectRatio(1F)
                     .clip(CircleShape)
                     .background(Color.Blue)
-            ){
+            ) {
 
                 Image(
                     painter = painterResource(R.drawable.ic_user3),
@@ -701,7 +713,7 @@ fun Show2() {
                         .fillMaxSize()
                         .padding(15.dp),
                     contentAlignment = BottomEnd,
-                ){
+                ) {
                     IconButton(onClick = { /*TODO*/ }) {
                         Icon(
                             imageVector = Icons.Default.Image,
@@ -723,7 +735,6 @@ fun Show2() {
 @Composable
 @Preview(showBackground = true)
 fun Show3() {
-
 
 
 }

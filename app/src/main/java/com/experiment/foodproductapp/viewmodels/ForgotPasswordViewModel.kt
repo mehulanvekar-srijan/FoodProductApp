@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.experiment.foodproductapp.BuildConfig
 import com.experiment.foodproductapp.R
+import com.experiment.foodproductapp.constants.ValidationEvent
 import com.experiment.foodproductapp.domain.event.ForgotPasswordFormEvent
 import com.experiment.foodproductapp.domain.use_case.ValidateConfirmPassword
 import com.experiment.foodproductapp.domain.use_case.ValidateEmail
@@ -17,6 +18,8 @@ import com.experiment.foodproductapp.domain.use_case.ValidatePassword
 import com.experiment.foodproductapp.repository.DatabaseRepository
 import com.experiment.foodproductapp.states.ForgotPasswordState
 import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -33,6 +36,9 @@ class ForgotPasswordViewModel(
     init {
         Log.d("testDI", "ForgotPasswordViewModel: ${databaseRepository.hashCode()}")
     }
+
+    private val validationEventChannel = Channel<ValidationEvent>()
+    val validationEvents = validationEventChannel.receiveAsFlow()
 
     private val otp = mutableStateOf("")
 
@@ -93,17 +99,19 @@ class ForgotPasswordViewModel(
             val confirmPasswordHasNoError = confirmPasswordResult.successful
 
             if (confirmPasswordHasNoError) {
-                changePassword(context)
+                changePassword()
             } else {
-                Toast.makeText(
-                    context, confirmPasswordResult.errorMessage, Toast.LENGTH_SHORT
-                ).show()
+                _state.value = _state.value.copy(passwordError = confirmPasswordResult.errorMessage)
+                viewModelScope.launch {
+                    validationEventChannel.send(ValidationEvent.Failure)
+                }
             }
 
         } else {
-            Toast.makeText(
-                context, passwordResult.errorMessage, Toast.LENGTH_SHORT
-            ).show()
+            _state.value = _state.value.copy(passwordError = passwordResult.errorMessage)
+            viewModelScope.launch {
+                validationEventChannel.send(ValidationEvent.Failure)
+            }
         }
     }
 
@@ -120,18 +128,14 @@ class ForgotPasswordViewModel(
                     _showEnterEmail.value = false
                     sendOtp()
                 } else {
-                    Toast.makeText(
-                        context,
-                        R.string.email_not_registered_string,
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    validationEventChannel.send(ValidationEvent.Success)
                 }
             }
         } else {
-
-            Toast.makeText(
-                context, emailResult.errorMessage, Toast.LENGTH_SHORT
-            ).show()
+            _state.value = _state.value.copy(emailError = emailResult.errorMessage)
+            viewModelScope.launch {
+                validationEventChannel.send(ValidationEvent.Failure)
+            }
         }
     }
 
@@ -178,16 +182,17 @@ class ForgotPasswordViewModel(
 
     fun verifyOtp(): Boolean = if (_inputOtp.value == otp.value) true else false
 
-    private fun changePassword(context: Context) {
+    private fun changePassword() {
         viewModelScope.launch(Dispatchers.IO) {
             databaseRepository.updatePassword(_state.value.email, _state.value.password)
-            withContext(Dispatchers.Main) {
-                Toast.makeText(
-                    context,
-                    "Password updated",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
+            validationEventChannel.send(ValidationEvent.Success)
+//            withContext(Dispatchers.Main) {
+//                Toast.makeText(
+//                    context,
+//                    "Password updated",
+//                    Toast.LENGTH_SHORT
+//                ).show()
+//            }
         }
     }
 }

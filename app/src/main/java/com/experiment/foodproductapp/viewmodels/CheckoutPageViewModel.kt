@@ -119,13 +119,8 @@ class CheckoutPageViewModel(
             cityError = null,
             stateError = null
         )
-        viewModelScope.launch {
-            validationEventChannel.send(ValidationEvent.Success)
-        }
-    }
-
-    suspend fun navigateOnSuccess(navHostController: NavHostController, points: Int) {
-        val job = viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val success = try {
             databaseRepository.updateAddressByEmail(
                 _state.value.email,
                 _state.value.pincode,
@@ -134,22 +129,44 @@ class CheckoutPageViewModel(
                 _state.value.city,
                 _state.value.state
             )
+                true
+            }catch (e: android.database.sqlite.SQLiteConstraintException) {
+                false
+            }
+            if(success) {
+                validationEventChannel.send(ValidationEvent.Success)
+            }
         }
-        job.join()
-
-        Log.d(
-            "testredeemAmount",
-            "CheckoutPageViewModel: email=${_state.value.email} , finalSum=${sum.value * 100} , points=${points}"
-        )
-
-        navHostController.navigate(
-            Screen.PaymentScreen.routeWithData(
-                email = _state.value.email,
-                phoneNumber = _state.value.phoneNumber,
-                sum = _sum.value * 100,
-                points = points
-            )
-        )
-        Log.d("TAG", (sum.value * 100).toString())
     }
+
+//    suspend fun onSuccess():Boolean {
+//        val job = viewModelScope.launch(Dispatchers.IO) {
+//            databaseRepository.updateAddressByEmail(
+//                _state.value.email,
+//                _state.value.pincode,
+//                _state.value.addressLine1,
+//                _state.value.addressLine2,
+//                _state.value.city,
+//                _state.value.state
+//            )
+//        }
+//        job.join()
+//
+//        return true
+
+//        Log.d(
+//            "testredeemAmount",
+//            "CheckoutPageViewModel: email=${_state.value.email} , finalSum=${sum.value * 100} , points=${points}"
+//        )
+
+//        navHostController.navigate(
+//            Screen.PaymentScreen.routeWithData(
+//                email = _state.value.email,
+//                phoneNumber = _state.value.phoneNumber,
+//                sum = _sum.value * 100,
+//                points = points
+//            )
+//        )
+//        Log.d("TAG", (sum.value * 100).toString())
+//    }
 }

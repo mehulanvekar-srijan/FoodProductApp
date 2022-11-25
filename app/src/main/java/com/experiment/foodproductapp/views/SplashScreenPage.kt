@@ -15,10 +15,14 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.experiment.foodproductapp.R
+import com.experiment.foodproductapp.constants.Screen
+import com.experiment.foodproductapp.constants.ValidationEvent
 import com.experiment.foodproductapp.ui.theme.ChangeBarColors
 import com.experiment.foodproductapp.ui.theme.DarkYellow
 import com.experiment.foodproductapp.ui.theme.Orange
 import com.experiment.foodproductapp.viewmodels.SplashScreenViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.koin.androidx.compose.koinViewModel
 
 
@@ -73,7 +77,39 @@ fun SplashScreenPage(
 
     LaunchedEffect(key1 = Unit) {
         startAnimation.value = true
-        splashScreenViewModel.execute(navHostControllerLambda())
+        splashScreenViewModel.execute()
+        splashScreenViewModel.validationEvents.collect { event ->
+            when (event) {
+                is ValidationEvent.Success -> {
+                    navHostControllerLambda().navigate(
+                        Screen.HomeScreen.routeWithData(
+                            splashScreenViewModel.email.value
+                        )
+                    )
+                    {
+                        popUpTo(Screen.SplashScreen.route) { inclusive = true }
+                    }
+                }
+                is ValidationEvent.Failure -> {
+                    navHostControllerLambda().navigate(Screen.SignInScreen.route) {
+                        popUpTo(Screen.SplashScreen.route) { inclusive = true }
+                    }
+                }
+//        if (loggedInEmail == null) {
+//            withContext(Dispatchers.Main) {
+//                navHostControllerLambda().navigate(Screen.SignInScreen.route) {
+//                    popUpTo(Screen.SplashScreen.route) { inclusive = true }
+//                }
+//            }
+//        } else {
+//            withContext(Dispatchers.Main) {
+//                navHostControllerLambda().navigate(Screen.HomeScreen.routeWithData(loggedInEmail))
+//                {
+//                    popUpTo(Screen.SplashScreen.route) { inclusive = true }
+//                }
+//            }
+            }
+        }
     }
 }
 

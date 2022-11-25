@@ -220,7 +220,16 @@ fun ProductCart(
                     productCartViewModel = productCartViewModel,
                     navigate = {
                         if (productCartViewModel.sum.value != 0) {
-                            productCartViewModel.navigateToCheckout(navHostControllerLambda())
+                            val success = productCartViewModel.toCheckout()
+                            if (success){
+                                navHostControllerLambda().navigate(
+                                    Screen.CheckoutPage.routeWithData(
+                                        email =productCartViewModel.email.value,
+                                        sum = productCartViewModel.finalSum.value,
+                                        points = productCartViewModel.availablePoints.value
+                                    )
+                                )
+                            }
                         }
                     }
                 )

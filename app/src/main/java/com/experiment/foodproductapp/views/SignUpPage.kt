@@ -2,6 +2,7 @@ package com.experiment.foodproductapp.views
 
 import android.app.DatePickerDialog
 import android.widget.DatePicker
+import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -48,6 +49,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.experiment.foodproductapp.R
+import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.constants.ValidationEvent
 import com.experiment.foodproductapp.domain.event.SignupFormEvent
 import com.experiment.foodproductapp.ui.theme.*
@@ -115,7 +117,14 @@ fun SignupPage(
         signUpViewModel.validationEvents.collect { event ->
             when (event) {
                 is ValidationEvent.Success -> {
-                    signUpViewModel.navigateOnSuccess(context, navHostControllerLambda())
+                    navHostControllerLambda().navigate(Screen.HomeScreen.routeWithData(signUpViewModel.state.value.email)
+                    ){
+                        popUpTo(Screen.SignInScreen.route) { inclusive = true }
+                    }
+                    Toast.makeText(context, "Registration Successful", Toast.LENGTH_SHORT).show()
+                }
+                is ValidationEvent.Failure -> {
+                    Toast.makeText(context, "Email already registered", Toast.LENGTH_SHORT).show()
                 }
             }
         }

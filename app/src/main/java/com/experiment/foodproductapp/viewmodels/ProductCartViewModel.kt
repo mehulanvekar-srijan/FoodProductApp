@@ -150,21 +150,23 @@ class ProductCartViewModel(
 
     }
 
-    fun navigateToCheckout(navHostController: NavHostController) {
+    fun toCheckout():Boolean {
+
 
         //Compute currently available points only after applying redeemed amount
         if (checkedState.value) updateAvailablePoints()
 
         //Clear the cart list
         _cartList.clear()
+        return true
 
-        navHostController.navigate(
-            Screen.CheckoutPage.routeWithData(
-                email = _email.value,
-                sum = _finalSum.value,
-                points = _availablePoints.value
-            )
-        )
+//        navHostController.navigate(
+//            Screen.CheckoutPage.routeWithData(
+//                email = _email.value,
+//                sum = _finalSum.value,
+//                points = _availablePoints.value
+//            )
+//        )
     }
 
     private fun updateAvailablePoints() {

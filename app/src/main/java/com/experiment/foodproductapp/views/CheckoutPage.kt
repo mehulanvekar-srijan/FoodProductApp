@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.experiment.foodproductapp.R
+import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.constants.ValidationEvent
 import com.experiment.foodproductapp.domain.event.CheckoutFormEvent
 import com.experiment.foodproductapp.ui.theme.*
@@ -87,12 +88,17 @@ fun CheckoutPage(
             when (event) {
                 is ValidationEvent.Success -> {
                     if (points != null) {
-                        checkoutPageViewModel.navigateOnSuccess(
-                            navHostControllerLambda(),
-                            points
+                        navHostControllerLambda().navigate(
+                            Screen.PaymentScreen.routeWithData(
+                                email = checkoutPageViewModel.state.value.email,
+                                phoneNumber = checkoutPageViewModel.state.value.phoneNumber,
+                                sum = checkoutPageViewModel.sum.value * 100,
+                                points = points
+                            )
                         )
                     }
                 }
+                else -> {}
             }
         }
     }

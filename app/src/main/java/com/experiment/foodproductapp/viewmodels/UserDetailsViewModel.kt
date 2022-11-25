@@ -9,12 +9,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.experiment.foodproductapp.constants.Screen
+import com.experiment.foodproductapp.constants.ValidationEvent
 import com.experiment.foodproductapp.database.entity.User
 import com.experiment.foodproductapp.repository.DatabaseRepository
 import com.experiment.foodproductapp.domain.event.UserDetailsFormEvent
 import com.experiment.foodproductapp.domain.use_case.*
 import com.experiment.foodproductapp.states.UserDetailsFormState
 import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
 
 class UserDetailsViewModel(
     private val databaseRepository: DatabaseRepository,
@@ -34,6 +37,9 @@ class UserDetailsViewModel(
     private val _dialogBox: MutableState<Boolean> = mutableStateOf(false)
     val dialogBox: State<Boolean> = _dialogBox
 
+    private val validationEventChannel = Channel<ValidationEvent>()
+    val validationEvents = validationEventChannel.receiveAsFlow()
+
     private val _state = mutableStateOf(UserDetailsFormState())
     val state = _state
 
@@ -41,7 +47,7 @@ class UserDetailsViewModel(
         _dialogBox.value = input
     }
 
-    fun onEvent(context: Context, event: UserDetailsFormEvent) {
+    fun onEvent(event: UserDetailsFormEvent) {
         when (event) {
             is UserDetailsFormEvent.FirstNameChanged -> {
                 _state.value = _state.value.copy(firstName = event.firstName)
@@ -59,13 +65,13 @@ class UserDetailsViewModel(
                 _state.value = _state.value.copy(password = event.password)
             }
             is UserDetailsFormEvent.Submit -> {
-                submitData(context)
+                submitData()
             }
             else -> {}
         }
     }
 
-    private fun submitData(context: Context) {
+    private fun submitData() {
         val firstNameResult = validateFirstName.execute(_state.value.firstName)
         val lastNameResult = validateLastName.execute(_state.value.lastName)
         val dateResult = validateDateChange.execute(_state.value.date)
@@ -98,7 +104,6 @@ class UserDetailsViewModel(
             dateError = null,
             passwordError = null
         )
-
         viewModelScope.launch(Dispatchers.IO) {
             databaseRepository.updateUserByEmail(
                 _state.value.email,
@@ -108,11 +113,29 @@ class UserDetailsViewModel(
                 _state.value.password,
                 _state.value.phoneNumber
             )
-            withContext(Dispatchers.Main) {
-                Toast.makeText(context, "Updation Successful", Toast.LENGTH_LONG).show()
-            }
+
+            validationEventChannel.send(ValidationEvent.Success)
         }
     }
+
+//    suspend fun onSuccess():Boolean {
+//        val job =viewModelScope.launch(Dispatchers.IO) {
+//            databaseRepository.updateUserByEmail(
+//                _state.value.email,
+//                _state.value.firstName,
+//                _state.value.lastName,
+//                _state.value.date,
+//                _state.value.password,
+//                _state.value.phoneNumber
+//            )
+//            withContext(Dispatchers.Main) {
+//                Toast.makeText(context, "Updation Successful", Toast.LENGTH_LONG).show()
+//            }
+//        }
+//        job.join()
+//
+//        return true
+//    }
 
     fun execute(email: String) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -156,12 +179,13 @@ class UserDetailsViewModel(
 //        navHostController.navigate(Screen.Rewards.routeWithData(email))
 //    }
 
-    fun logOutUser(email: String, navHostController: NavHostController) {
+    fun logOutUser(email: String) {
         viewModelScope.launch(Dispatchers.IO) {
             databaseRepository.updateLoginStatus(email = email, loggedIn = false)
+            validationEventChannel.send(ValidationEvent.Failure)
         }
-        navHostController.navigate(Screen.SignInScreen.route) {
-            popUpTo(Screen.HomeScreen.route) { inclusive = true }
-        }
+//        navHostController.navigate(Screen.SignInScreen.route) {
+//            popUpTo(Screen.HomeScreen.route) { inclusive = true }
+//        }
     }
 }

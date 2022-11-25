@@ -8,12 +8,15 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.experiment.foodproductapp.MainActivity
 import com.experiment.foodproductapp.constants.Screen
+import com.experiment.foodproductapp.constants.ValidationEvent
 import com.experiment.foodproductapp.database.entity.FinalPrice
 import com.experiment.foodproductapp.database.entity.OrderDetails
 import com.experiment.foodproductapp.database.entity.Product
 import com.experiment.foodproductapp.repository.DatabaseRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -22,13 +25,14 @@ class PaymentScreenViewModel(
 ) : ViewModel() {
     val splashDuration: Long = 3000
 
+    private val validationEventChannel = Channel<ValidationEvent>()
+    val validationEvents = validationEventChannel.receiveAsFlow()
+
     init {
         Log.d("testDI", "PaymentScreenViewModel: ${databaseRepository.hashCode()}")
     }
 
     fun navigateOnSuccess(
-        navHostController: NavHostController,
-        context: Context,
         email: String?,
         sum: Int?,
         points: Int?,
@@ -95,42 +99,34 @@ class PaymentScreenViewModel(
 
                 delay(splashDuration)
 
-                withContext(Dispatchers.Main) {
-                    navHostController.navigate(Screen.HomeScreen.routeWithData(email)) {
-                        popUpTo(Screen.HomeScreen.route) { inclusive = true }
-                    }
-                    activity.status.value = null
-                }
+                activity.status.value = null
 
-            }
+                validationEventChannel.send(ValidationEvent.Success)
 
-            else {
-                withContext(Dispatchers.Main){
-                    Toast.makeText(context,"Internal Error Occurred",Toast.LENGTH_SHORT).show()
-                }
+//                withContext(Dispatchers.Main) {
+//                    navHostController.navigate(Screen.HomeScreen.routeWithData(email)) {
+//                        popUpTo(Screen.HomeScreen.route) { inclusive = true }
+//                    }
+//                    activity.status.value = null
+//                }
+
             }
         }
     }
 
     fun navigateOnFailure(
-        navHostController: NavHostController,
-        context: Context,
         email: String?,
         activity: MainActivity,
     ){
         viewModelScope.launch(Dispatchers.Main){
             if(email != null) {
                 delay(2000)
-                navHostController.navigate(Screen.ProductCart.routeWithData(email)){
-                    popUpTo(Screen.ProductCart.route)  { inclusive = true }
-                }
+//                navHostController.navigate(Screen.ProductCart.routeWithData(email)){
+//                    popUpTo(Screen.ProductCart.route)  { inclusive = true }
+//                }
                 activity.status.value = null
-            }
 
-            else {
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(context,"Internal Error Occurred",Toast.LENGTH_SHORT).show()
-                }
+                validationEventChannel.send(ValidationEvent.Failure)
             }
         }
     }

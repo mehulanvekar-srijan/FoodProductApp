@@ -30,7 +30,7 @@ class SignUpViewModel(
     private val validatePassword: ValidatePassword = ValidatePassword(),
     private val validateConfirmPassword: ValidateConfirmPassword = ValidateConfirmPassword(),
     private val validatePhoneNumber: ValidatePhoneNumber = ValidatePhoneNumber(),
-    private val validateDateChange:ValidateName = ValidateName()
+    private val validateDateChange: ValidateName = ValidateName()
 ) : ViewModel() {
 
     init {
@@ -46,7 +46,7 @@ class SignUpViewModel(
     private val _confirmPasswordVisible = mutableStateOf(false)
     val confirmPasswordVisible = _confirmPasswordVisible
 
-    private val validationEventChannel= Channel<ValidationEvent>()
+    private val validationEventChannel = Channel<ValidationEvent>()
     val validationEvents = validationEventChannel.receiveAsFlow()
 
     fun onEvent(event: SignupFormEvent) {
@@ -111,10 +111,35 @@ class SignUpViewModel(
             )
             return
         }
-        viewModelScope.launch{
-            validationEventChannel.send(ValidationEvent.Success)
-            Log.d("date",_state.value.date)
-            Log.d("phone",_state.value.phoneNumber)
+        viewModelScope.launch(Dispatchers.IO) {
+            val user = User(
+                firstName = _state.value.firstName,
+                lastName = _state.value.lastName,
+                password = _state.value.password,
+                email = _state.value.email,
+                phoneNumber = _state.value.phoneNumber,
+                dob = _state.value.date,
+            )
+            val success = try {
+                databaseRepository.addUser(user)
+//                withContext(Dispatchers.Main) {
+//                    Toast.makeText(context,"Registration Successful", Toast.LENGTH_SHORT).show()
+//                }
+                true
+            } catch (e: android.database.sqlite.SQLiteConstraintException) {
+//                withContext(Dispatchers.Main) {
+//                    Toast.makeText(context,"Email already registered", Toast.LENGTH_SHORT).show()
+//                }
+                false
+            }
+            if(success) {
+                validationEventChannel.send(ValidationEvent.Success)
+                Log.d("date", _state.value.date)
+                Log.d("phone", _state.value.phoneNumber)
+            }
+            else{
+                validationEventChannel.send((ValidationEvent.Failure))
+            }
         }
     }
 
@@ -126,47 +151,45 @@ class SignUpViewModel(
         _confirmPasswordVisible.value = !_confirmPasswordVisible.value
     }
 
-    suspend fun navigateOnSuccess(context: Context, navHostController: NavHostController) {
-
-        var success: Boolean? = null
-
-        val job = viewModelScope.launch(Dispatchers.IO){
-            val user = User(
-                firstName = _state.value.firstName,
-                lastName = _state.value.lastName,
-                password = _state.value.password,
-                email = _state.value.email,
-                phoneNumber = _state.value.phoneNumber,
-                dob = _state.value.date,
-            )
-
-            success = try {
-                databaseRepository.addUser(user)
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(context,"Registration Successful", Toast.LENGTH_SHORT).show()
-                }
-                true
-            }
-            catch (e: android.database.sqlite.SQLiteConstraintException){
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(context,"Email already registered", Toast.LENGTH_SHORT).show()
-                }
-                false
-            }
-        }
-
-        job.join()
-
-        if(success != null && success == true){
-            //Update login status
-            viewModelScope.launch(Dispatchers.IO){
-                databaseRepository.updateLoginStatus(email = _state.value.email,loggedIn = true)
-            }
-
-            //Navigate
-            navHostController.navigate(Screen.HomeScreen.routeWithData(_state.value.email)){
-                popUpTo(Screen.SignInScreen.route){inclusive=true}
-            }
-        }
-    }
+//    suspend fun onSuccess(): Boolean {
+//
+//        var success: Boolean? = null
+//
+//        val job = viewModelScope.launch(Dispatchers.IO) {
+//            val user = User(
+//                firstName = _state.value.firstName,
+//                lastName = _state.value.lastName,
+//                password = _state.value.password,
+//                email = _state.value.email,
+//                phoneNumber = _state.value.phoneNumber,
+//                dob = _state.value.date,
+//            )
+//
+//            success = try {
+//                databaseRepository.addUser(user)
+////                withContext(Dispatchers.Main) {
+////                    Toast.makeText(context,"Registration Successful", Toast.LENGTH_SHORT).show()
+////                }
+//                true
+//            } catch (e: android.database.sqlite.SQLiteConstraintException) {
+////                withContext(Dispatchers.Main) {
+////                    Toast.makeText(context,"Email already registered", Toast.LENGTH_SHORT).show()
+////                }
+//                false
+//            }
+//        }
+//
+//        job.join()
+//
+//        if (success != null && success == true) {
+//            //Update login status
+//            viewModelScope.launch(Dispatchers.IO) {
+//                databaseRepository.updateLoginStatus(email = _state.value.email, loggedIn = true)
+//            }
+//            //Navigate
+////            navHostController.navigate(Screen.HomeScreen.routeWithData(_state.value.email)){
+////                popUpTo(Screen.SignInScreen.route){inclusive=true}
+//        }
+//        return success as Boolean
+//    }
 }

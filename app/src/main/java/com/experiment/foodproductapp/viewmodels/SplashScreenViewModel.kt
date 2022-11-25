@@ -1,17 +1,25 @@
 package com.experiment.foodproductapp.viewmodels
 
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.experiment.foodproductapp.constants.Screen
+import com.experiment.foodproductapp.constants.ValidationEvent
 import com.experiment.foodproductapp.database.entity.HomeItems
 import com.experiment.foodproductapp.repository.DatabaseRepository
 import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
 
 class SplashScreenViewModel(
     private val databaseRepository: DatabaseRepository
 ) : ViewModel() {
+
+    val email = mutableStateOf("")
+    private val validationEventChannel = Channel<ValidationEvent>()
+    val validationEvents = validationEventChannel.receiveAsFlow()
 
     init {
         Log.d("testDI", "SplashScreenViewModel: ${databaseRepository.hashCode()}")
@@ -19,7 +27,7 @@ class SplashScreenViewModel(
 
     val splashDuration: Long = 3000  // Milliseconds
 
-    fun execute(navHostController: NavHostController) {
+    fun execute(){
 
         viewModelScope.launch(Dispatchers.IO) {
 
@@ -27,23 +35,30 @@ class SplashScreenViewModel(
 
             delay(splashDuration)
 
-            val loggedInEmail: String? = databaseRepository.getLoggedInUser()
+            val loggedInEmail = databaseRepository.getLoggedInUser()
 
-            if (loggedInEmail == null) {
-                withContext(Dispatchers.Main) {
-                    navHostController.navigate(Screen.SignInScreen.route) {
-                        popUpTo(Screen.SplashScreen.route) { inclusive = true }
-                    }
-                }
+            if(loggedInEmail == null){
+                validationEventChannel.send(ValidationEvent.Failure)
             }
-            else {
-                withContext(Dispatchers.Main) {
-                    navHostController.navigate(Screen.HomeScreen.routeWithData(loggedInEmail))
-                    {
-                        popUpTo(Screen.SplashScreen.route) { inclusive = true }
-                    }
-                }
+            else{
+                email.value=loggedInEmail
+                validationEventChannel.send(ValidationEvent.Success)
             }
+
+//            if (loggedInEmail == null) {
+//                withContext(Dispatchers.Main) {
+//                    navHostController.navigate(Screen.SignInScreen.route) {
+//                        popUpTo(Screen.SplashScreen.route) { inclusive = true }
+//                    }
+//                }
+//            } else {
+//                withContext(Dispatchers.Main) {
+//                    navHostController.navigate(Screen.HomeScreen.routeWithData(loggedInEmail))
+//                    {
+//                        popUpTo(Screen.SplashScreen.route) { inclusive = true }
+//                    }
+//                }
+//            }
         }
     }
 
