@@ -1,6 +1,7 @@
 package com.experiment.foodproductapp.viewmodels
 
 import android.util.Log
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -33,6 +34,11 @@ class HomeScreenViewModel(
     //creating empty object
     private val _productForDetailPage = mutableStateOf(HomeItems())
     val productForDetailPage = _productForDetailPage
+
+
+
+    private val _quantity =  mutableStateOf(0)
+    val quantity = _quantity
 
     fun initHomeItems() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -101,74 +107,60 @@ class HomeScreenViewModel(
     }
 
     //Get count from db and set state
-    fun getProductCount(id: Int, state: MutableState<Int>) {
+    fun getProductCount() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                state.value = databaseRepository.getCount(id = id, email = _userEmail.value)
-            } catch (_: android.database.sqlite.SQLiteConstraintException) {
-            }
+                _quantity.value = databaseRepository.getCount(id = _productForDetailPage.value.id, email = _userEmail.value)
+            } catch (_: android.database.sqlite.SQLiteConstraintException) { }
         }
     }
 
     //Get current count from db, increment value, set state
-    fun incrementProductCount(id: Int, state: MutableState<Int>) {
-        if (state.value == 0) {
+    fun incrementProductCount() {
+        if (_quantity.value == 0) {
             addProductToCart(productForDetailPage.value)
-            state.value += 1
+            _quantity.value += 1
         } else {
             viewModelScope.launch(Dispatchers.IO) {
 
                 var currentCount =
-                    databaseRepository.getCount(id = id, email = _userEmail.value)
+                    databaseRepository.getCount(id = _productForDetailPage.value.id, email = _userEmail.value)
                 currentCount += 1
 
                 databaseRepository.setCount(
-                    id = id,
+                    id = _productForDetailPage.value.id,
                     count = currentCount,
                     email = _userEmail.value
                 ) //set count in db
             }
             //after updating count or adding product update count state in UI
-            state.value += 1
+            _quantity.value += 1
         }
-
     }
 
     //Get current count from db, decrement value, set state
-    fun decrementProductCount(id: Int, state: MutableState<Int>) {
+    fun decrementProductCount() {
 
         viewModelScope.launch(Dispatchers.IO) {
 
             var currentCount =
-                databaseRepository.getCount(id = id, email = _userEmail.value)
+                databaseRepository.getCount(id = _productForDetailPage.value.id, email = _userEmail.value)
             if (currentCount != 0) {
                 currentCount -= 1
             }
 
+            if (currentCount == 0) {
+                // remove product
+                removeProductFromDatabase(productForDetailPage.value.id)
+            }
+
             databaseRepository.setCount(
-                id = id,
+                id = _productForDetailPage.value.id,
                 count = currentCount,
                 email = _userEmail.value
             ) //set count in db
 
-            if (currentCount == 0) {
-                // remove product
-                removeProductFromDatabase(productForDetailPage.value.id)
-            }
-            state.value = currentCount //set count of UI state
-            databaseRepository.setCount(
-                id = id,
-                count = currentCount,
-                email = _userEmail.value
-            ) //set count in db
-            if (currentCount == 0) {
-                // remove product
-                removeProductFromDatabase(productForDetailPage.value.id)
-            }
-            getProductCount(
-                id = id,
-                state = state
-            )          //set count of UI state
+            getProductCount()          //set count of UI state
         }
     }
 

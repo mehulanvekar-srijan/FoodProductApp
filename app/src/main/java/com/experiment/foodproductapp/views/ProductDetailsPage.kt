@@ -56,16 +56,12 @@ fun Preview() {
 @OptIn(ExperimentalCoilApi::class)
 @Composable
 fun ProductDetailsPage(
-    navHostControllerLambda: () -> NavHostController,
-    homeScreenViewModel: HomeScreenViewModel
+    navHostControllerLambda: () -> NavHostController, homeScreenViewModel: HomeScreenViewModel
 ) {
 
-    val productDetails = homeScreenViewModel.productForDetailPage
     val scrollState = rememberScrollState()
-    val quantity = remember { mutableStateOf(0) }
-
     LaunchedEffect(key1 = Unit) {
-        homeScreenViewModel.getProductCount(productDetails.value.id, quantity)
+        homeScreenViewModel.getProductCount()
         homeScreenViewModel.initCartItemsCount()
     }
 
@@ -77,12 +73,8 @@ fun ProductDetailsPage(
             .background(DarkYellow),
     ) {
 
-
         Column(
-            modifier = Modifier
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally
-
+            modifier = Modifier.fillMaxSize(),
         ) {
             Column(
                 modifier = Modifier
@@ -98,300 +90,172 @@ fun ProductDetailsPage(
                         .fillMaxHeight(.88f)
                         .verticalScroll(scrollState),
                 ) {
-
-
-                    Column(
+                    Image(
+                        painter = rememberImagePainter(homeScreenViewModel.productForDetailPage.value.url),
+                        contentDescription = "ic_product_image",
+                        contentScale = ContentScale.Fit,
                         modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .fillMaxHeight()
-                                .background(Color.White)
-                                .graphicsLayer {
-                                    alpha =
-                                        1.05f - ((scrollState.value.toFloat() / scrollState.maxValue) * 1.0f)
-                                    translationY = 0.3f * scrollState.value
-                                },
+                            .padding(top = 60.dp)
+                            .height(350.dp)
+                            .align(alignment = Alignment.CenterHorizontally)
+                            .graphicsLayer {
+                                alpha =
+                                    1.05f - ((scrollState.value.toFloat() / scrollState.maxValue) * 1.0f)
+                                translationY = 0.3f * scrollState.value
+                            },
+                    )
+                    Text(
+                        text = homeScreenViewModel.productForDetailPage.value.title,
+                        color = Color.DarkGray,
+                        style = TextStyle(
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 26.sp,
+                            letterSpacing = 1.sp,
+                            fontFamily = titleFontFamily
+                        ),
 
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Image(
-                                painter = rememberImagePainter(productDetails.value.url),
-                                //painter = painterResource(id = R.drawable.beer),
-                                contentDescription = "ic_product_image",
-                                contentScale = ContentScale.FillWidth,
-
-                                modifier = Modifier
-                                    .padding(top = 60.dp)
-                                    .height(350.dp)
-                                //.padding(10.dp, top = 60.dp)
-                            )
-                        }
-                    }
-
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
-                        Text(
-                            text = productDetails.value.title,
-                            color = Color.DarkGray,
-                            style = TextStyle(
-                                fontWeight = FontWeight.SemiBold,
-                                fontSize = 26.sp,
-                                letterSpacing = 1.sp,
-                                fontFamily = titleFontFamily
-                            ),
-                            textAlign = TextAlign.Start,
-                            modifier = Modifier
-                                .padding(start = 40.dp, top = 20.dp)
-
-                        )
-                    }
+                        textAlign = TextAlign.Start,
+                        modifier = Modifier.padding(start = 40.dp, top = 20.dp)
+                    )
                     Spacer(modifier = Modifier.padding(top = 20.dp))
 
-                    Column(
+                    Text(
+                        text = homeScreenViewModel.productForDetailPage.value.description,
+                        color = LightDarkGray,
+                        style = TextStyle(
+                            fontSize = 17.sp, fontFamily = descriptionFontFamily
+                        ),
+                        textAlign = TextAlign.Justify,
                         modifier = Modifier
                             .fillMaxWidth()
-                    ) {
-                        //item {
-                        if (scrollState.value == 0) {
-                            Text(
-                                text = productDetails.value.description,
-                                color = LightDarkGray,
-                                style = TextStyle(
-                                    fontSize = 17.sp,
-                                    //letterSpacing = 1.sp,
-                                    fontFamily = descriptionFontFamily
-                                ),
-                                maxLines = 4,
-
-                                overflow = TextOverflow.Ellipsis,
-                                textAlign = TextAlign.Justify,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(start = 40.dp, end = 20.dp)
-                            )
-                        } else {
-                            Text(
-                                text = productDetails.value.description,
-                                color = LightDarkGray,
-                                style = TextStyle(
-                                    fontSize = 17.sp,
-                                    //letterSpacing = 1.sp,
-                                    fontFamily = descriptionFontFamily
-                                ),
-                                overflow = TextOverflow.Ellipsis,
-                                //overflow = TextOverflow.Clip,
-                                textAlign = TextAlign.Justify,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(start = 40.dp, end = 20.dp)
-                            )
-                        }
-                    }
+                            .padding(start = 40.dp, end = 20.dp)
+                    )
                 }
 
                 Spacer(modifier = Modifier.padding(top = 20.dp))
-                Column(
+
+                Row(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight()
-                        .padding(end = 20.dp, start = 40.dp),
-                    verticalArrangement = Arrangement.Center
-
+                        .fillMaxSize()
+                        .padding(end = 20.dp),
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.End
+                    //Add
+                    IconButton(
+                        onClick = {
+                            homeScreenViewModel.incrementProductCount()
+                        }, modifier = Modifier
+                            .clip(RoundedCornerShape(50))
+                            .background(
+                                Brush.verticalGradient(
+                                    listOf(
+                                        Orange, DarkYellow
+                                    )
+                                )
+                            )
+                            .size(width = 35.dp, height = 35.dp)
                     ) {
-                        //Add
-                        Box(
-                            modifier = Modifier
-                                .background(Color.Transparent)
-                                .padding(end = 10.dp),
-                            contentAlignment = Alignment.TopEnd
-                        ) {
-                            Surface(
-                                color = Color.Transparent
-                            ) {
-                                IconButton(
-                                    onClick = {
-                                        homeScreenViewModel.incrementProductCount(
-                                            productDetails.value.id,
-                                            quantity
-                                        )
-                                    },
-                                    modifier = Modifier
-                                        .clip(RoundedCornerShape(50))
-                                        .background(
-                                            Brush.verticalGradient(
-                                                listOf(
-                                                    Orange,
-                                                    DarkYellow
-                                                )
-                                            )
-                                        )
-                                        .size(width = 35.dp, height = 35.dp)
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Default.Add,
-                                        contentDescription = "ic_add_count_bt",
-                                        tint = Color.White,
-                                    )
-                                }
-                            }
-                        }
-
-                        //Count Value
-                        Text(
-                            text = quantity.value.toString(),
-                            style = TextStyle(
-                                fontSize = 25.sp,
-                            ),
-                            color = DarkYellow,
-                            modifier = Modifier
-                                .padding(start = 5.dp, end = 5.dp)
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = "ic_add_count_bt",
+                            tint = Color.White,
                         )
-
-                        //}
-
-                        //Minus
-                        Box(
-                            modifier = Modifier
-                                .background(Color.Transparent)
-                                .padding(start = 10.dp),
-                            contentAlignment = Alignment.TopEnd,
-                        ) {
-                            Surface(
-                                color = Color.Transparent
-                            ) {
-                                IconButton(
-                                    onClick = {
-                                        homeScreenViewModel.decrementProductCount(
-                                            productDetails.value.id,
-                                            quantity
-                                        )
-                                    },
-                                    modifier = Modifier
-                                        .clip(RoundedCornerShape(50))
-                                        .background(
-                                            Brush.verticalGradient(
-                                                listOf(
-                                                    Orange,
-                                                    DarkYellow
-                                                )
-                                            )
-                                        )
-                                        .size(width = 35.dp, height = 35.dp)
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Default.Remove,
-                                        contentDescription = "ic_minus_count_bt",
-                                        tint = Color.White,
-                                    )
-                                }
-                            }
-                        }
                     }
 
+                    Text(
+                        text = homeScreenViewModel.quantity.value.toString(),
+                        style = TextStyle(
+                            fontSize = 25.sp,
+                        ),
+                        color = DarkYellow,
+                        modifier = Modifier.padding(start = 15.dp, end = 15.dp)
+                    )
 
+                    //Minus
+                    IconButton(
+                        onClick = {
+                            homeScreenViewModel.decrementProductCount()
+                        }, modifier = Modifier
+                            .clip(RoundedCornerShape(50))
+                            .background(
+                                Brush.verticalGradient(
+                                    listOf(
+                                        Orange, DarkYellow
+                                    )
+                                )
+                            )
+                            .size(width = 35.dp, height = 35.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Remove,
+                            contentDescription = "ic_minus_count_bt",
+                            tint = Color.White,
+                        )
+                    }
                 }
             }
 
             Spacer(modifier = Modifier.padding(top = 20.dp))
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceAround,
             ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceAround,
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxHeight(),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_percentage_percent),
-                            contentDescription = "ic_percentage",
-                            modifier = Modifier.fillMaxHeight(.5f)
-                        )
-                        Text(
-                            //text = stringResource(id = R.string.five_alcohol_string),
-                            text = "" + productDetails.value.alcohol + stringResource(id = R.string.five_alcohol_string),
-                            color = Color.White,
-                            style = TextStyle(
-                                fontWeight = FontWeight.Normal,
-                                fontSize = 20.sp,
-                                letterSpacing = 1.sp
-                            ),
-                            fontFamily = descriptionFontFamily,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier
-                                .align(Alignment.CenterHorizontally)
-                        )
-//                        Text(
-//                            text = "Alcohol",
-//                            color = Color.White,
-//                            style = TextStyle(
-//                                fontWeight = FontWeight.Bold,
-//                                fontSize = 20.sp,
-//                                letterSpacing = 1.sp
-//                            ),
-//                            modifier = Modifier
-//                                .padding(start = 10.dp, end = 10.dp, bottom = 10.dp)
-//                            //textAlign = TextAlign.Center,
-//                        )
-                    }
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_percentage_percent),
+                        contentDescription = "ic_percentage",
+                        modifier = Modifier.fillMaxHeight(.5f)
+                    )
+                    Text(
+                        text = "" + homeScreenViewModel.productForDetailPage.value.alcohol + stringResource(
+                            id = R.string.five_alcohol_string
+                        ),
+                        color = Color.White,
+                        style = TextStyle(
+                            fontWeight = FontWeight.Normal, fontSize = 20.sp, letterSpacing = 1.sp
+                        ),
+                        fontFamily = descriptionFontFamily,
+                    )
+                }
 
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_rupee_sv),
+                        contentDescription = "ic_rupees",
+                        modifier = Modifier.fillMaxHeight(.5f)
+                    )
 
-                    Column(
-                        modifier = Modifier
-                            .fillMaxHeight(),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_rupee_sv),
-                            contentDescription = "ic_rupees",
-                            //colorFilter = ColorFilter.tint(color = Color.White),
-                            modifier = Modifier.fillMaxHeight(.5f)
-
-                        )
-
-                        Text(
-                            text = stringResource(id = R.string.rs_dot_string) + " " + productDetails.value.price,
-                            color = Color.White,
-                            style = TextStyle(
-                                fontWeight = FontWeight.Normal,
-                                fontSize = 20.sp,
-                                letterSpacing = 1.sp
-                            ),
-                            fontFamily = descriptionFontFamily,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier
-                                .align(Alignment.CenterHorizontally)
-                        )
-                    }
-
+                    Text(
+                        text = stringResource(id = R.string.rs_dot_string) + " " + homeScreenViewModel.productForDetailPage.value.price,
+                        color = Color.White,
+                        style = TextStyle(
+                            fontWeight = FontWeight.Normal, fontSize = 20.sp, letterSpacing = 1.sp
+                        ),
+                        fontFamily = descriptionFontFamily,
+                    )
                 }
             }
         }
+        AppBar(
+            homeScreenViewModel = homeScreenViewModel,
+            navHostControllerLambda = navHostControllerLambda,
+            onProductCartClick = {
+                navHostControllerLambda().navigate(
+                    Screen.ProductCart.routeWithData(
+                        homeScreenViewModel.userEmail.value
+                    )
+                )
+            },
+        )
     }
-
-    AppBar(
-        homeScreenViewModel = homeScreenViewModel,
-        navHostControllerLambda = navHostControllerLambda,
-        onProductCartClick = {
-            navHostControllerLambda().navigate(Screen.ProductCart.routeWithData(homeScreenViewModel.userEmail.value))
-        },
-    )
 }
+
 
 @Composable
 fun AppBar(
@@ -399,51 +263,43 @@ fun AppBar(
     navHostControllerLambda: () -> NavHostController,
     onProductCartClick: () -> Unit = {},
 ) {
-    TopAppBar(
-        title = { },
-        backgroundColor = Color.Transparent,
-        elevation = 0.dp,
-        navigationIcon = {
-            IconButton(onClick = { navHostControllerLambda().navigateUp() }) {
-                Icon(
-                    imageVector = Icons.Default.ArrowBack,
-                    contentDescription = "ic_arrow_back_bt",
-                    tint = DarkYellow
-                )
-            }
+    TopAppBar(title = { }, backgroundColor = Color.Transparent, elevation = 0.dp, navigationIcon = {
+        IconButton(onClick = { navHostControllerLambda().navigateUp() }) {
+            Icon(
+                imageVector = Icons.Default.ArrowBack,
+                contentDescription = "ic_arrow_back_bt",
+                tint = DarkYellow
+            )
+        }
 
-        },
-        actions = {
-            val offset = 12
-            if(homeScreenViewModel.cartItemCount.value > 0){
-                BadgedBox(
-                    badge = {
-                        Badge(
-                            modifier = Modifier
-                                .offset(x = -offset.dp, y = offset.dp)
-                        ){
-                            Text(text = "${homeScreenViewModel.cartItemCount.value}")
-                        }
-                    },
-                ){
-                    IconButton(onClick = onProductCartClick) {
-                        Icon(
-                            imageVector = Icons.Default.ShoppingCart,
-                            contentDescription = "ic_product_cart_bt",
-                            tint = DarkYellow
-                        )
+    }, actions = {
+        val offset = 12
+        if (homeScreenViewModel.cartItemCount.value > 0) {
+            BadgedBox(
+                badge = {
+                    Badge(
+                        modifier = Modifier.offset(x = -offset.dp, y = offset.dp)
+                    ) {
+                        Text(text = "${homeScreenViewModel.cartItemCount.value}")
                     }
-                }
-            }
-            else{
+                },
+            ) {
                 IconButton(onClick = onProductCartClick) {
                     Icon(
                         imageVector = Icons.Default.ShoppingCart,
-                        contentDescription = "ic_shopping_cart",
+                        contentDescription = "ic_product_cart_bt",
                         tint = DarkYellow
                     )
                 }
             }
+        } else {
+            IconButton(onClick = onProductCartClick) {
+                Icon(
+                    imageVector = Icons.Default.ShoppingCart,
+                    contentDescription = "ic_shopping_cart",
+                    tint = DarkYellow
+                )
+            }
         }
-    )
+    })
 }
