@@ -2,11 +2,10 @@ package com.experiment.foodproductapp.viewmodels
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavHostController
-import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.database.entity.OrderDetails
 import com.experiment.foodproductapp.repository.DatabaseRepository
 import kotlinx.coroutines.Dispatchers
@@ -23,15 +22,11 @@ class OrderDetailsViewModel(
     private val _finalList = mutableStateListOf<MutableList<OrderDetails>>()
     val finalList = _finalList
 
-    private val _priceList = mutableStateListOf<Int>()
-    val priceList = _priceList
+    private val _priceMap = mutableStateMapOf<Int,Int>()
+    val priceMap = _priceMap
 
     private val email = mutableStateOf("")
     val userEmail = email
-
-    // to access the order on description page
-    private val _orderDetails = mutableListOf<OrderDetails>()
-    val orderDetails = _orderDetails
 
     private val _finalAmount = mutableStateOf(-1.0)
     val finalAmount = _finalAmount
@@ -40,16 +35,21 @@ class OrderDetailsViewModel(
         email.value = mail.toString()
     }
 
+    // to access the order on description page
+    private val _orderDetails = mutableStateListOf<OrderDetails>()
+    val orderDetails = _orderDetails
+
     //assign the details of the order clicked on
     fun addOrderId(newOrderId: Int) {
+
         _orderDetails.clear()
+
         // fetch the order from db
         viewModelScope.launch(Dispatchers.IO) {
             val list = databaseRepository.readAllOrderDetails(email.value, newOrderId)
-            list.forEach {
-                _orderDetails.add(it)
-            }
+            list.forEach { _orderDetails.add(it) }
         }
+
     }
 
     //moved navigation to view
@@ -60,13 +60,13 @@ class OrderDetailsViewModel(
 //    }
 
 
-    fun calculateSum(item: List<OrderDetails>): Int {
+    fun calculateSum(list: List<OrderDetails>): Int {
         var sum = 0
-        var index=0
+        var index = 0
         do {
-            sum += item[index].price * item[index].count
+            sum += list[index].price * list[index].count
             index++
-        } while (index < item.size)
+        } while (index < list.size)
         return sum
     }
 
@@ -85,43 +85,28 @@ class OrderDetailsViewModel(
 //    }
 
     fun fetchOrderList() {
-        var orderCount = 1
+
+        var orderId = 1
+
         viewModelScope.launch(Dispatchers.IO) {
+
             do {
-                val order = mutableListOf<OrderDetails>()
-                val list = databaseRepository.readAllOrderDetails(email.value, orderCount)
+                val list: MutableList<OrderDetails> = databaseRepository.readAllOrderDetails(email.value, orderId)
 
-                Log.d("orderDetails", " list value fetchOrderList: $list")
-
-
-                list.forEach {
-                    order.add(it)
-
-                }
-
-                for (element in order) {
-                    Log.d(
-                        "orderDetails",
-                        " list value fetchOrderList: ${element.title} and count of order is ${order.count()}"
-                    )
-                }
                 if (list.isNotEmpty()) {
-                    _finalList.add(order)
-                    val sum: Double = databaseRepository.getFinalPrice(email.value, order[0].orderId)
-                    _priceList.add(sum.toInt())
-                    Log.d("orderDetails", "fetchOrderList: ")
+
+                    _finalList.add(list)
+
+                    val finalSum: Double = databaseRepository.getFinalPrice(email.value, orderId)
+
+                    _priceMap[orderId] = finalSum.toInt()
                 }
 
-
-                orderCount++
+                orderId++
 
             } while (list.isNotEmpty())
 
-            for (element in _priceList) {
-                Log.d("checkSum", "fetchOrderList: $element")
-            }
         }
 
-        Log.d("orderDetails", "count of total orders: ${_finalList.count()}")
     }
 }

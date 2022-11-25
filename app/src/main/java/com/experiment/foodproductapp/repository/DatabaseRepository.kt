@@ -68,8 +68,8 @@ class DatabaseRepository(context: Context) {
     //Order details
     fun insertOrder(order: OrderDetails) = orderDetailsDao.insertOrder(order)
 
-    fun readAllOrderDetails(email: String,count: Int): MutableList<OrderDetails> {
-        return orderDetailsDao.readAllOrderDetails(email,count)
+    fun readAllOrderDetails(email: String, orderId: Int): MutableList<OrderDetails> {
+        return orderDetailsDao.readAllOrderDetails(email, orderId)
     }
 
 

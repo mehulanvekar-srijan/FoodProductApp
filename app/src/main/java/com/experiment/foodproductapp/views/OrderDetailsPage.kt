@@ -97,8 +97,8 @@ fun OrderDetails(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(20.dp),
             ) {
-                items(items = orderDetailsViewModel.finalList) { item ->
-                //items(items = orderDetailsViewModel.finalList.reversed()) { item ->
+                items(items = orderDetailsViewModel.finalList) { listOfOrders ->
+
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -112,7 +112,7 @@ fun OrderDetails(
                             elevation = 5.dp,
                             shape = RoundedCornerShape(10),
                             onClick = {
-                                orderDetailsViewModel.addOrderId(item[0].orderId)
+                                orderDetailsViewModel.addOrderId(listOfOrders[0].orderId)
                                 navHostControllerLambda().navigate(Screen.OrderDescriptionPage.route) {
                                     popUpTo(Screen.OrderDetails.route) { inclusive = false }
                                 }
@@ -127,51 +127,26 @@ fun OrderDetails(
                                     verticalArrangement = Arrangement.Center
                                 ) {
                                     Text(
-                                        text = stringResource(id = R.string.order_no_string) + " " + item[0].orderId,
+                                        text = stringResource(id = R.string.order_no_string) + " " + listOfOrders[0].orderId,
                                         modifier = Modifier.padding(bottom = 10.dp),
                                         overflow = TextOverflow.Ellipsis,
                                         fontFamily = titleFontFamily,
                                         fontSize = 19.sp,
                                     )
                                     Text(
-                                        text = stringResource(id = R.string.total_items_string) + " " + item.size.toString(),
+                                        text = stringResource(id = R.string.total_items_string) + " " + listOfOrders.size.toString(),
                                         fontFamily = titleFontFamily,
                                         fontSize = 19.sp,
                                     )
-//                                Box(
-//                                    modifier = Modifier
-//                                        .clickable(
-//                                            interactionSource = interactionSource,
-//                                            onClick = {},
-//                                            indication = null
-//                                        )
-//                                        .padding(top = 5.dp),
-//                                ) {
-//                                    Row(verticalAlignment = Alignment.CenterVertically) {
-//                                        Icon(
-//                                            imageVector = Icons.Outlined.HelpOutline,
-//                                            modifier = Modifier.size(19.dp),
-//                                            tint = DarkRed,
-//                                            contentDescription = "Help",
-//                                        )
-//
-//                                        Text(
-//                                            color = DarkRed,
-//                                            text = "Support",
-//                                            fontFamily = titleFontFamily,
-//                                            fontSize = 15.sp,
-//                                        )
-//                                    }
-//                                }
-
                                 }
                                 Column(
                                     modifier = Modifier.fillMaxSize(),
                                     verticalArrangement = Arrangement.Center,
                                     horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
+
                                     Image(
-                                        painter = rememberImagePainter(item[0].url),
+                                        painter = rememberImagePainter(listOfOrders[0].url),
                                         contentDescription = "ic_product_at_0_image",
                                         modifier = Modifier
                                             .fillMaxWidth()
@@ -179,7 +154,8 @@ fun OrderDetails(
                                     )
 
                                     Text(
-                                        text = stringResource(id = R.string.rs_string) + " " + orderDetailsViewModel.priceList[item[0].orderId - 1],
+                                        //text = stringResource(id = R.string.rs_string) + " " + orderDetailsViewModel.priceList[listOfOrders[0].orderId - 1],
+                                        text = stringResource(id = R.string.rs_string) + " " + orderDetailsViewModel.priceMap[listOfOrders[0].orderId],
                                         fontFamily = titleFontFamily,
                                     )
                                 }
