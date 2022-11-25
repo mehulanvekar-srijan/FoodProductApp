@@ -84,8 +84,7 @@ fun ForgotPassword(
                             R.string.email_not_registered_string,
                             Toast.LENGTH_SHORT
                         ).show()
-                    }
-                    else if(forgotPasswordViewModel.showEnterPasswordTextField.value){
+                    } else if (forgotPasswordViewModel.showEnterPasswordTextField.value) {
                         Toast.makeText(
                             context,
                             "Password updated",
@@ -95,11 +94,16 @@ fun ForgotPassword(
                 }
                 is ValidationEvent.Failure -> {
                     if (forgotPasswordViewModel.showEnterEmail.value) {
-                        Toast.makeText(context, forgotPasswordViewModel.state.value.emailError, Toast.LENGTH_SHORT).show()
-                    }
-                    else if(forgotPasswordViewModel.showEnterPasswordTextField.value){
                         Toast.makeText(
-                            context, forgotPasswordViewModel.state.value.passwordError, Toast.LENGTH_SHORT
+                            context,
+                            forgotPasswordViewModel.state.value.emailError,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } else if (forgotPasswordViewModel.showEnterPasswordTextField.value) {
+                        Toast.makeText(
+                            context,
+                            forgotPasswordViewModel.state.value.passwordError,
+                            Toast.LENGTH_SHORT
                         ).show()
                     }
                 }
@@ -165,9 +169,7 @@ fun ForgotPassword(
                             shape = RoundedCornerShape(30.dp),
                             onValueChange = {
                                 forgotPasswordViewModel.onEvent(
-                                    ForgotPasswordFormEvent.EmailChanged(
-                                        it
-                                    ), context
+                                    ForgotPasswordFormEvent.EmailChanged(it)
                                 )
                             },
                             label = {
@@ -198,8 +200,7 @@ fun ForgotPassword(
                         Button(
                             onClick = {
                                 forgotPasswordViewModel.onEvent(
-                                    ForgotPasswordFormEvent.Next,
-                                    context
+                                    ForgotPasswordFormEvent.Next
                                 )
                             },
                             colors = ButtonDefaults.buttonColors(
@@ -332,9 +333,7 @@ fun ForgotPassword(
                             shape = RoundedCornerShape(30.dp),
                             onValueChange = {
                                 forgotPasswordViewModel.onEvent(
-                                    ForgotPasswordFormEvent.PasswordChanged(
-                                        it
-                                    ), context
+                                    ForgotPasswordFormEvent.PasswordChanged(it)
                                 )
                             },
                             label = {
@@ -384,9 +383,7 @@ fun ForgotPassword(
                             shape = RoundedCornerShape(30.dp),
                             onValueChange = {
                                 forgotPasswordViewModel.onEvent(
-                                    ForgotPasswordFormEvent.ConfirmPasswordChanged(
-                                        it
-                                    ), context
+                                    ForgotPasswordFormEvent.ConfirmPasswordChanged(it)
                                 )
                             },
                             label = {
@@ -434,8 +431,7 @@ fun ForgotPassword(
                             onClick = {
                                 coroutineScope.launch {
                                     forgotPasswordViewModel.onEvent(
-                                        ForgotPasswordFormEvent.Set,
-                                        context
+                                        ForgotPasswordFormEvent.Set
                                     )
                                 }
                             },

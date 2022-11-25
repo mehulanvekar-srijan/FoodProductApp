@@ -170,6 +170,7 @@ class HomeScreenViewModel(
      *          - When an item is added to the cart
      *          - When an item is removed from the cart
      * */
+
     fun initCartItemsCount(){
         viewModelScope.launch(Dispatchers.IO){
             val cartList = databaseRepository.readAllProducts(_userEmail.value)

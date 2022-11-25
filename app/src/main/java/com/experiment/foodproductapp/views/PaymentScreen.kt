@@ -53,11 +53,13 @@ fun PaymentScreen(
         paymentScreenViewModel.validationEvents.collect { event ->
             when (event) {
                 is ValidationEvent.Success -> {
+                    mainActivity.status.value = null
                     navHostControllerLambda().navigate(Screen.HomeScreen.routeWithData(email.toString())) {
                         popUpTo(Screen.HomeScreen.route) { inclusive = true }
                     }
                 }
                 is ValidationEvent.Failure -> {
+                    mainActivity.status.value = null
                     navHostControllerLambda().navigate(Screen.ProductCart.routeWithData(email.toString())) {
                         popUpTo(Screen.ProductCart.route) { inclusive = true }
                     }
@@ -76,7 +78,6 @@ fun PaymentScreen(
                 email = email,
                 sum = sum,
                 points = points,
-                activity = mainActivity,
             )
             startAnimation.value = true
         }
@@ -156,7 +157,6 @@ fun PaymentScreen(
         LaunchedEffect(key1 = Unit) {
             paymentScreenViewModel.navigateOnFailure(
                 email = email,
-                activity = mainActivity,
             )
         }
         Box(

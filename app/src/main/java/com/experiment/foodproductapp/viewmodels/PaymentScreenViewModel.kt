@@ -35,8 +35,7 @@ class PaymentScreenViewModel(
     fun navigateOnSuccess(
         email: String?,
         sum: Int?,
-        points: Int?,
-        activity: MainActivity,
+        points: Int?
     ){
 
         viewModelScope.launch(Dispatchers.IO){
@@ -99,8 +98,6 @@ class PaymentScreenViewModel(
 
                 delay(splashDuration)
 
-                activity.status.value = null
-
                 validationEventChannel.send(ValidationEvent.Success)
 
 //                withContext(Dispatchers.Main) {
@@ -115,8 +112,7 @@ class PaymentScreenViewModel(
     }
 
     fun navigateOnFailure(
-        email: String?,
-        activity: MainActivity,
+        email: String?
     ){
         viewModelScope.launch(Dispatchers.Main){
             if(email != null) {
@@ -124,7 +120,6 @@ class PaymentScreenViewModel(
 //                navHostController.navigate(Screen.ProductCart.routeWithData(email)){
 //                    popUpTo(Screen.ProductCart.route)  { inclusive = true }
 //                }
-                activity.status.value = null
 
                 validationEventChannel.send(ValidationEvent.Failure)
             }

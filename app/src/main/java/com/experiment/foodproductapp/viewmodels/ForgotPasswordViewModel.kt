@@ -68,7 +68,7 @@ class ForgotPasswordViewModel(
         _confirmPasswordVisible.value = !_confirmPasswordVisible.value
     }
 
-    fun onEvent(event: ForgotPasswordFormEvent, context: Context) {
+    fun onEvent(event: ForgotPasswordFormEvent) {
         when (event) {
             is ForgotPasswordFormEvent.EmailChanged -> {
                 _state.value = _state.value.copy(email = event.email)
@@ -80,15 +80,15 @@ class ForgotPasswordViewModel(
                 _state.value = _state.value.copy(confirmPassword = event.confirmPassword)
             }
             is ForgotPasswordFormEvent.Next -> {
-                validateUser(context = context)
+                validateUser()
             }
             is ForgotPasswordFormEvent.Set -> {
-                validatePassword(context)
+                validatePassword()
             }
         }
     }
 
-    private fun validatePassword(context: Context) {
+    private fun validatePassword() {
         val passwordResult = validatePassword.execute(_state.value.password)
         val confirmPasswordResult =
             validateConfirmPassword.execute(_state.value.password, _state.value.confirmPassword)
@@ -115,7 +115,7 @@ class ForgotPasswordViewModel(
         }
     }
 
-    private fun validateUser(context: Context) {
+    private fun validateUser() {
         val emailResult = validateEmail.execute(_state.value.email)
 
         val hasNoError = emailResult.successful
