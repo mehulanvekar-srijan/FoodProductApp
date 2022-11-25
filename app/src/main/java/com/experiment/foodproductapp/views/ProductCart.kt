@@ -137,13 +137,14 @@ fun ProductCart(
                         confirmStateChange = {
                             if (it == DismissValue.DismissedToStart) {
 
-                                productCartViewModel.setNewlyDeletedItem(item)
-                                productCartViewModel.onDismiss(productCartViewModel.newlyDeletedItem.value)
+                                //productCartViewModel.setNewlyDeletedItem(item)
+                                productCartViewModel.onDismiss(item)
 
                                 coroutineScope.launch {
 
                                     val result = scaffoldState.snackbarHostState.showSnackbar(
-                                        message = "Item ${item.id} removed",
+                                        message = if(item.title.length >= 15) "Item '${item.title.substring(0..15)}...' was removed"
+                                                  else "Item '${item.title}' was removed",
                                         actionLabel = "UNDO"
                                     )
 
@@ -153,6 +154,7 @@ fun ProductCart(
                                         }
                                         SnackbarResult.Dismissed -> {}
                                     }
+
                                 }
 
                             }

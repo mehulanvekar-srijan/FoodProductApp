@@ -44,12 +44,12 @@ class ProductCartViewModel(
 
     private var redeemedAmount = 0
 
-    private val _newlyDeletedItem: MutableState<Product> = mutableStateOf(Product())
-    val newlyDeletedItem: State<Product> = _newlyDeletedItem
+//    private val _newlyDeletedItem: MutableState<Product> = mutableStateOf(Product())
+//    val newlyDeletedItem: State<Product> = _newlyDeletedItem
 
-    fun setNewlyDeletedItem(item: Product) {
-        _newlyDeletedItem.value = item
-    }
+//    fun setNewlyDeletedItem(item: Product) {
+//        _newlyDeletedItem.value = item
+//    }
 
     fun onDismiss(item: Product) {
         removeFromProductList(item)
