@@ -23,9 +23,10 @@ class ProductCartViewModel(
         Log.d("testDI", "ProductCartViewModel: ${databaseRepository.hashCode()}")
     }
 
-    val checkedState = mutableStateOf(false)
+    private val _checkedState = mutableStateOf(false)
+    val checkedState = _checkedState
 
-    private var _cartList = mutableStateListOf<Product>()
+    private val _cartList = mutableStateListOf<Product>()
     val cartList = _cartList
 
     private val _email = mutableStateOf("")
@@ -42,7 +43,7 @@ class ProductCartViewModel(
     private val _finalSum = mutableStateOf(0)
     val finalSum = _finalSum
 
-    private var redeemedAmount = 0
+    private val redeemedAmount = mutableStateOf(0)
 
 //    private val _newlyDeletedItem: MutableState<Product> = mutableStateOf(Product())
 //    val newlyDeletedItem: State<Product> = _newlyDeletedItem
@@ -154,7 +155,7 @@ class ProductCartViewModel(
 
 
         //Compute currently available points only after applying redeemed amount
-        if (checkedState.value) updateAvailablePoints()
+        if (_checkedState.value) updateAvailablePoints()
 
         //Clear the cart list
         _cartList.clear()
@@ -172,15 +173,15 @@ class ProductCartViewModel(
     private fun updateAvailablePoints() {
         when (_availablePoints.value) {
             in 1..500 -> {
-                _availablePoints.value -= (redeemedAmount * 20) //Multiplied by 20 to convert rupees to points
+                _availablePoints.value -= (redeemedAmount.value * 20) //Multiplied by 20 to convert rupees to points
                 Log.d("Redeem", "Updated Points: ${_availablePoints.value}")
             }
             in 501..1000 -> {
-                _availablePoints.value -= (redeemedAmount * 10) //Multiplied by 10 to convert rupees to points
+                _availablePoints.value -= (redeemedAmount.value * 10) //Multiplied by 10 to convert rupees to points
                 Log.d("Redeem", "Updated Points: ${_availablePoints.value}")
             }
             else -> {
-                _availablePoints.value -= (redeemedAmount * 5) //Multiplied by 5 to convert rupees to points
+                _availablePoints.value -= (redeemedAmount.value * 5) //Multiplied by 5 to convert rupees to points
                 Log.d("Redeem", "Updated Points: ${_availablePoints.value}")
             }
         }
@@ -217,7 +218,7 @@ class ProductCartViewModel(
 
     fun updateFinalSum() {
         //Offer is applicable only if CheckButton is checked & cart sum is >= 100
-        if (checkedState.value && _sum.value >= 100) {
+        if (_checkedState.value && _sum.value >= 100) {
 
             //User can get discount up to only 10% of the cart sum
             val maxDiscount = _sum.value / 10   //10% of order value
@@ -228,22 +229,22 @@ class ProductCartViewModel(
              * */
             if (_redeemAmount.value >= maxDiscount) {
 
-                redeemedAmount = maxDiscount
+                redeemedAmount.value = maxDiscount
                 Log.d("Redeem", "Redeemeedvalue: $redeemedAmount")
 
-                _finalSum.value = _sum.value - redeemedAmount
+                _finalSum.value = _sum.value - redeemedAmount.value
 
             } else {
 
-                redeemedAmount = _redeemAmount.value
+                redeemedAmount.value = _redeemAmount.value
                 Log.d("Redeem", "Redeemeedvalue: $redeemedAmount")
 
-                _finalSum.value = _sum.value - redeemedAmount
+                _finalSum.value = _sum.value - redeemedAmount.value
 
             }
         } else {
             _finalSum.value = _sum.value
-            checkedState.value = false
+            _checkedState.value = false
         }
     }
 

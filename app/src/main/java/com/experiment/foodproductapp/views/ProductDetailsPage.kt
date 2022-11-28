@@ -8,6 +8,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.runtime.*
 
 
@@ -273,6 +275,22 @@ fun AppBar(
         }
 
     }, actions = {
+        IconButton(onClick = { homeScreenViewModel.changeState()}) {
+            if (homeScreenViewModel.favoriteState.value) {
+                Icon(
+                    imageVector = Icons.Outlined.FavoriteBorder,
+                    contentDescription = "ic_Favorite_bt",
+                    tint = Orange
+                )
+            }
+            else{
+                Icon(
+                    imageVector = Icons.Filled.Favorite,
+                    contentDescription = "ic_Favorite_bt",
+                    tint = Color.Red
+                )
+            }
+        }
         val offset = 12
         if (homeScreenViewModel.cartItemCount.value > 0) {
             BadgedBox(

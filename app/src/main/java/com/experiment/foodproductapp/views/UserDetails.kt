@@ -79,17 +79,13 @@ fun UserDetails(
 
         val context = LocalContext.current
 
-        val mYear: Int
-        val mMonth: Int
-        val mDay: Int
-
         // Initializing a Calendar
         val mCalendar = Calendar.getInstance()
 
         // Fetching current year, month and day
-        mYear = mCalendar.get(Calendar.YEAR)
-        mMonth = mCalendar.get(Calendar.MONTH)
-        mDay = mCalendar.get(Calendar.DAY_OF_MONTH)
+        val mYear: Int = mCalendar.get(Calendar.YEAR)
+        val mMonth: Int = mCalendar.get(Calendar.MONTH)
+        val mDay: Int = mCalendar.get(Calendar.DAY_OF_MONTH)
 
         mCalendar.time = Date()
 
@@ -583,6 +579,19 @@ fun UserDetails(
                 }
             },
             actions = {
+                IconButton(
+                    onClick = {
+                        navHostControllerLambda().navigate(
+                            Screen.OrderDetails.routeWithData(email)
+                        )
+                    })
+                {
+                    Icon(
+                        imageVector = Icons.Default.History,
+                        contentDescription = "ic_order_history_bt",
+                        tint = Color.White
+                    )
+                }
                 IconButton(onClick = {
                     navHostControllerLambda().navigate(Screen.Rewards.routeWithData(email))
                 }) {
@@ -668,7 +677,6 @@ fun Show1() {
 }
 
 @Composable
-
 @Preview(showBackground = true)
 fun Show2() {
     Column(
@@ -724,17 +732,7 @@ fun Show2() {
                         )
                     }
                 }
-
             }
         }
-
     }
-
-}
-
-@Composable
-@Preview(showBackground = true)
-fun Show3() {
-
-
 }

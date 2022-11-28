@@ -1,8 +1,11 @@
 package com.experiment.foodproductapp.viewmodels
 
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
+import com.experiment.foodproductapp.constants.CardFace
 
 class RewardsDetailsPageViewModel : ViewModel() {
 
@@ -19,13 +22,13 @@ class RewardsDetailsPageViewModel : ViewModel() {
     val rewardPoints = _rewardPoints
 
     private val _bronzeBorder = mutableStateOf(0.dp)
-    val bronzeBorder = _bronzeBorder
+    val bronzeBorder: State<Dp> = _bronzeBorder
 
     private val _silverBorder = mutableStateOf(0.dp)
-    val silverBorder = _silverBorder
+    val silverBorder: State<Dp> = _silverBorder
 
     private val _goldBorder = mutableStateOf(0.dp)
-    val goldBorder = _goldBorder
+    val goldBorder: State<Dp> = _goldBorder
 
     private val _bronzePadding = mutableStateOf(5.dp)
     val bronzePadding = _bronzePadding
@@ -54,7 +57,7 @@ class RewardsDetailsPageViewModel : ViewModel() {
         if (cardFace== CardFace.Back)
         {
             _silverCardFace.value = CardFace.Front
-            _bronzeCardFace.value=CardFace.Front
+            _bronzeCardFace.value= CardFace.Front
         }
     }
 
@@ -73,19 +76,5 @@ class RewardsDetailsPageViewModel : ViewModel() {
                 _goldPadding.value=0.dp
             }
         }
-    }
-
-
-    enum class CardFace(val angle: Float) {
-        Front(0f) {
-            override val next: CardFace
-                get() = Back
-        },
-        Back(180f) {
-            override val next: CardFace
-                get() = Front
-        };
-
-        abstract val next: CardFace
     }
 }

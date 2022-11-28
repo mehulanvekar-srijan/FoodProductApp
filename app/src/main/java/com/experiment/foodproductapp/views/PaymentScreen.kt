@@ -42,7 +42,6 @@ fun PaymentScreen(
     Log.d("total1", sum.toString())
     val total = sum.toString()
     val mainActivity = activityLambda() as MainActivity
-    val context = LocalContext.current
 
     ChangeBarColors(statusColor = Orange, navigationBarColor = DarkYellow)
 

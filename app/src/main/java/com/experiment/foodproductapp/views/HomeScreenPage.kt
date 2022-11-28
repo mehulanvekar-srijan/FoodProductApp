@@ -10,10 +10,7 @@ import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.History
-import androidx.compose.material.icons.filled.ManageAccounts
-import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -328,10 +325,10 @@ fun AppBar(
                 )
             }
 
-            IconButton(onClick = onOrderDetailsClick) {
+            IconButton(onClick = { }) {
                 Icon(
-                    imageVector = Icons.Default.History,
-                    contentDescription = "ic_order_history_bt",
+                    imageVector = Icons.Default.Favorite,
+                    contentDescription = "ic_Favorite_bt",
                     tint = Color.White
                 )
             }

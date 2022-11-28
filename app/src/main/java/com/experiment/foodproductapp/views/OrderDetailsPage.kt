@@ -97,7 +97,7 @@ fun OrderDetails(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(20.dp),
             ) {
-                items(items = orderDetailsViewModel.finalList) { listOfOrders ->
+                items(items = orderDetailsViewModel.finalList.reversed()) { listOfOrders ->
 
                     Box(
                         modifier = Modifier

@@ -77,7 +77,6 @@ fun SignupPage(
 ) {
     ChangeBarColors(navigationBarColor = Color.White)
     val focusManager = LocalFocusManager.current
-    val softwareKeyboard = LocalSoftwareKeyboardController.current
 
     val viewRequesterForConfirmPassword = remember { BringIntoViewRequester() }
     val viewRequesterForConfirmDatePicker = remember { BringIntoViewRequester() }
@@ -85,18 +84,13 @@ fun SignupPage(
     val coroutineScope = rememberCoroutineScope()
 
     val context = LocalContext.current
-
-    val mYear: Int
-    val mMonth: Int
-    val mDay: Int
-
     // Initializing a Calendar
     val mCalendar = Calendar.getInstance()
 
     // Fetching current year, month and day
-    mYear = mCalendar.get(Calendar.YEAR)
-    mMonth = mCalendar.get(Calendar.MONTH)
-    mDay = mCalendar.get(Calendar.DAY_OF_MONTH)
+    val mYear: Int = mCalendar.get(Calendar.YEAR)
+    val mMonth: Int = mCalendar.get(Calendar.MONTH)
+    val mDay: Int = mCalendar.get(Calendar.DAY_OF_MONTH)
 
     mCalendar.time = Date()
 

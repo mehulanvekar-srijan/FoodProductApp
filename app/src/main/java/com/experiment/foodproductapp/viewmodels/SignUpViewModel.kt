@@ -138,6 +138,15 @@ class SignUpViewModel(
                 Log.d("phone", _state.value.phoneNumber)
             }
             else{
+                _state.value = _state.value.copy(
+                    firstNameError = null,
+                    lastNameError = null,
+                    phoneNumberError = null,
+                    dateError = null,
+                    emailError = null,
+                    passwordError = null,
+                    repeatedPasswordError = null
+                )
                 validationEventChannel.send((ValidationEvent.Failure))
             }
         }

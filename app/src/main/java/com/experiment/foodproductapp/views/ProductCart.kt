@@ -53,6 +53,8 @@ fun ProductCart(
     val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(key1 = Unit) {
+        //clearing list during recomposition
+        productCartViewModel.cartList.clear()
         if (email != null) {
             productCartViewModel.email.value = email
             productCartViewModel.initAvailablePointsAndRedeemedAmount(email)

@@ -42,6 +42,11 @@ class CheckoutPageViewModel(
     private val _state = mutableStateOf(CheckoutFormState())
     val state = _state
 
+    // Declaring a boolean value to store
+    // the expanded state of the Text Field
+    private val _mExpanded = mutableStateOf(false)
+    val mExpanded = _mExpanded
+
     fun fetchUserDetails(email: String) {
         viewModelScope.launch(Dispatchers.IO) {
             _user.value = databaseRepository.getUserByEmail(email = email)

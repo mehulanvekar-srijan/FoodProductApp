@@ -60,6 +60,8 @@ class ForgotPasswordViewModel(
     private val _confirmPasswordVisible = mutableStateOf(false)
     val confirmPasswordVisible = _confirmPasswordVisible
 
+    private val _inputOtp = mutableStateOf("")
+
     fun passwordVisibilityChange() {
         _passwordVisible.value = !_passwordVisible.value
     }
@@ -139,9 +141,6 @@ class ForgotPasswordViewModel(
         }
     }
 
-
-    private val _inputOtp = mutableStateOf("")
-
     fun setOtp(input: String) {
         _inputOtp.value = input
     }
@@ -180,7 +179,7 @@ class ForgotPasswordViewModel(
         }
     }
 
-    fun verifyOtp(): Boolean = if (_inputOtp.value == otp.value) true else false
+    fun verifyOtp(): Boolean = (_inputOtp.value == otp.value)
 
     private fun changePassword() {
         viewModelScope.launch(Dispatchers.IO) {

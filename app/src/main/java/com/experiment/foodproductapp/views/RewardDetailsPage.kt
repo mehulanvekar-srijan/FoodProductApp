@@ -28,6 +28,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.experiment.foodproductapp.R
+import com.experiment.foodproductapp.constants.CardFace
 import com.experiment.foodproductapp.ui.theme.ChangeBarColors
 import com.experiment.foodproductapp.ui.theme.DarkYellow
 import com.experiment.foodproductapp.ui.theme.Orange
@@ -529,8 +530,8 @@ fun Background() {
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun FlipCard(
-    cardFace: RewardsDetailsPageViewModel.CardFace,
-    onClick: (RewardsDetailsPageViewModel.CardFace) -> Unit,
+    cardFace: CardFace,
+    onClick: (CardFace) -> Unit,
     modifier: Modifier = Modifier,
     back: @Composable () -> Unit = {},
     front: @Composable () -> Unit = {},

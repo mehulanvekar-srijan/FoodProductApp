@@ -63,8 +63,6 @@ fun OrderDescriptionPage(
 //    val df = DecimalFormat("#.##")
 //    df.roundingMode = RoundingMode.DOWN
 
-
-    val context = LocalContext.current
     LaunchedEffect(key1 = Unit) {
         orderDetailsViewModel.calculateRedeemedAmount()
     }

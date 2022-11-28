@@ -33,7 +33,6 @@ fun SplashScreenPage(
     animationDuration: Int = splashScreenViewModel.splashDuration.toInt() - 1000
 ) {
     val startAnimation = remember { mutableStateOf(false) }
-    val context = LocalContext.current
 
     ChangeBarColors(statusColor = Orange, navigationBarColor = DarkYellow)
 
@@ -44,11 +43,6 @@ fun SplashScreenPage(
 
     val animatedShape = animateFloatAsState(
         targetValue = if (startAnimation.value) 0.9F else 0.0F,
-        animationSpec = tween(animationDuration),
-    )
-
-    val animatedAngle = animateFloatAsState(
-        targetValue = if (startAnimation.value) 0F else 25F,
         animationSpec = tween(animationDuration),
     )
 

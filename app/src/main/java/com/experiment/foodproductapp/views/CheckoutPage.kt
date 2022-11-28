@@ -53,13 +53,9 @@ fun CheckoutPage(
     navHostControllerLambda: () -> NavHostController,
     checkoutPageViewModel: CheckoutPageViewModel = koinViewModel(),
 ) {
-    // Declaring a boolean value to store
-    // the expanded state of the Text Field
-    var mExpanded by remember { mutableStateOf(false) }
-
 
     // Up Icon when expanded and down icon when collapsed
-    val icon = if (mExpanded)
+    val icon = if (checkoutPageViewModel.mExpanded.value)
         Icons.Filled.KeyboardArrowUp
     else
         Icons.Filled.KeyboardArrowDown
@@ -70,12 +66,6 @@ fun CheckoutPage(
     val focusManager = LocalFocusManager.current
 
     val coroutineScope = rememberCoroutineScope()
-
-    if (sum != null) {
-        checkoutPageViewModel.sum.value = sum
-    }
-
-    val context = LocalContext.current
 
     ChangeBarColors(statusColor = Color.White, navigationBarColor = DarkYellow)
 
@@ -437,7 +427,7 @@ fun CheckoutPage(
                         },
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                         keyboardActions = KeyboardActions(
-                            onNext = { mExpanded = !mExpanded },
+                            onNext = { checkoutPageViewModel.mExpanded.value = !checkoutPageViewModel.mExpanded.value },
                         )
                     )
                     if (checkoutPageViewModel.state.value.cityError != null) {
@@ -459,9 +449,9 @@ fun CheckoutPage(
 //                    border = BorderStroke(width = 0.dp,color = Color.Transparent)
 //                )
                     ExposedDropdownMenuBox(
-                        expanded = mExpanded,
+                        expanded = checkoutPageViewModel.mExpanded.value,
                         onExpandedChange = {
-                            mExpanded = !mExpanded
+                            checkoutPageViewModel.mExpanded.value = !checkoutPageViewModel.mExpanded.value
                         }
                     )
                     {
@@ -496,15 +486,15 @@ fun CheckoutPage(
                             },
                             trailingIcon = {
                                 Icon(icon, "ic_arrow_up/down",
-                                    Modifier.clickable { mExpanded = !mExpanded })
+                                    Modifier.clickable { checkoutPageViewModel.mExpanded.value = !checkoutPageViewModel.mExpanded.value })
                             }
                         )
 
                         // Create a drop-down menu with list of cities,
                         // when clicked, set the Text Field text as the city selected
                         DropdownMenu(
-                            expanded = mExpanded,
-                            onDismissRequest = { mExpanded = false },
+                            expanded = checkoutPageViewModel.mExpanded.value,
+                            onDismissRequest = { checkoutPageViewModel.mExpanded.value = false },
                             modifier = Modifier
                                 .fillMaxWidth()
                         ) {
@@ -515,7 +505,7 @@ fun CheckoutPage(
                                             label
                                         )
                                     )
-                                    mExpanded = false
+                                    checkoutPageViewModel.mExpanded.value = false
                                 }) {
                                     Text(text = label)
                                 }
