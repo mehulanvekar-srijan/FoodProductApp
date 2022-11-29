@@ -121,6 +121,7 @@ class SignUpViewModel(
                 dob = _state.value.date,
                 loggedIn = true,
             )
+
             val success = try {
                 databaseRepository.addUser(user)
 //                withContext(Dispatchers.Main) {

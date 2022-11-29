@@ -272,22 +272,22 @@ fun ProductDetailsPage(
             }
         }
 
-        AnimatedVisibility(
-            visible = likedState.value,
-            enter= fadeIn() + scaleIn(),
-            exit = fadeOut() + scaleOut(),
-            modifier = Modifier.fillMaxHeight(0.6F)
-        ){
-
-            Icon(
-                imageVector = Icons.Filled.Favorite,
-                contentDescription = "",
-                modifier = Modifier
-                    .fillMaxSize().padding(80.dp),
-                tint = Color.Red,
-            )
-
-        }
+//        AnimatedVisibility(
+//            visible = likedState.value,
+//            enter= fadeIn() + scaleIn(),
+//            exit = fadeOut() + scaleOut(),
+//            modifier = Modifier.fillMaxHeight(0.6F)
+//        ){
+//
+//            Icon(
+//                imageVector = Icons.Filled.Favorite,
+//                contentDescription = "",
+//                modifier = Modifier
+//                    .fillMaxSize().padding(80.dp),
+//                tint = Color.Red,
+//            )
+//
+//        }
 
         AppBar(
             homeScreenViewModel = homeScreenViewModel,

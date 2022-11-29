@@ -2,6 +2,7 @@ package com.experiment.foodproductapp.repository
 
 import android.content.Context
 import com.experiment.foodproductapp.database.*
+import com.experiment.foodproductapp.database.dao.UserDao
 import com.experiment.foodproductapp.database.entity.*
 
 class DatabaseRepository(context: Context) {
@@ -92,4 +93,7 @@ class DatabaseRepository(context: Context) {
     //Liked Item
     fun insertLikedItem(item: LikedItems) = likedItemsDao.insertLikedItem(item)
     fun readAllLikedItems(): List<LikedItems> = likedItemsDao.readAllLikedItems()
+
+    //Test
+    fun getUser(dao: UserDao) = dao.getLoggedInUser()
 }
