@@ -2,6 +2,7 @@ package com.experiment.foodproductapp.repository
 
 import android.content.Context
 import com.experiment.foodproductapp.database.*
+import com.experiment.foodproductapp.database.dao.LikedItemsDao
 import com.experiment.foodproductapp.database.dao.UserDao
 import com.experiment.foodproductapp.database.entity.*
 
@@ -13,6 +14,14 @@ class DatabaseRepository(context: Context) {
     private val homeItemsDao = UserDatabase.getDatabase(context).homeItemsDao()
     private val finalPriceDao = UserDatabase.getDatabase(context).finalPriceDao()
     private val likedItemsDao = UserDatabase.getDatabase(context).likedItemsDao()
+
+    //Getter of Dao
+    fun getUserDao() = userDao
+    fun getProductDao() = productDao
+    fun getOrderDetailsDao() = orderDetailsDao
+    fun getHomeItemsDao() = homeItemsDao
+    fun getFinalPriceDao() = finalPriceDao
+    fun getLikedItemsDao() = likedItemsDao
 
     //User
     fun addUser(user: User) = userDao.insertUser(user)
@@ -36,6 +45,7 @@ class DatabaseRepository(context: Context) {
     }
 
     fun getLoggedInUser(): String? = userDao.getLoggedInUser()
+    fun getLoggedInUser(userDao: UserDao): String? = userDao.getLoggedInUser()
 
     fun updatePassword(email: String,password: String) = userDao.updatePassword(email,password)
 
@@ -92,8 +102,9 @@ class DatabaseRepository(context: Context) {
 
     //Liked Item
     fun insertLikedItem(item: LikedItems) = likedItemsDao.insertLikedItem(item)
-    fun readAllLikedItems(): List<LikedItems> = likedItemsDao.readAllLikedItems()
+    fun insertLikedItem(likedItemsDao: LikedItemsDao, item: LikedItems) = likedItemsDao.insertLikedItem(item)
 
-    //Test
-    fun getUser(dao: UserDao) = dao.getLoggedInUser()
+    fun readAllLikedItems(): List<LikedItems> = likedItemsDao.readAllLikedItems()
+    fun readAllLikedItems(likedItemsDao: LikedItemsDao): List<LikedItems> = likedItemsDao.readAllLikedItems()
+
 }
