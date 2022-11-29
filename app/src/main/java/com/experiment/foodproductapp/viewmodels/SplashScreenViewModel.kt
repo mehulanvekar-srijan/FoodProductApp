@@ -1,6 +1,7 @@
 package com.experiment.foodproductapp.viewmodels
 
 import android.util.Log
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -18,7 +19,9 @@ class SplashScreenViewModel(
     private val databaseRepository: DatabaseRepository
 ) : ViewModel() {
 
-    val email = mutableStateOf("")
+    private val _email = mutableStateOf("")
+    val email: State<String> = _email
+
     private val validationEventChannel = Channel<ValidationEvent>()
     val validationEvents = validationEventChannel.receiveAsFlow()
 
@@ -42,7 +45,7 @@ class SplashScreenViewModel(
                 validationEventChannel.send(ValidationEvent.Failure)
             }
             else{
-                email.value=loggedInEmail
+                _email.value=loggedInEmail
                 validationEventChannel.send(ValidationEvent.Success)
             }
 
