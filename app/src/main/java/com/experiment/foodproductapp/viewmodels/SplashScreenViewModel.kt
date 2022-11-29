@@ -8,6 +8,7 @@ import androidx.navigation.NavHostController
 import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.constants.ValidationEvent
 import com.experiment.foodproductapp.database.entity.HomeItems
+import com.experiment.foodproductapp.database.entity.LikedItems
 import com.experiment.foodproductapp.repository.DatabaseRepository
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
@@ -239,11 +240,160 @@ class SplashScreenViewModel(
                     price = 90,
                     alcohol = 2
                 ),
+                HomeItems(
+                    id = 21,
+                    url = "https://mishry.com/wp-content/uploads/2019/08/Carlsberg.png",
+                    title = "Carlsberg Smooth Lager Beer",
+                    description = "The Carlsberg smooth lager has been made with the finest European barley. It has a smooth and rich taste specially crafted for the Indian palate",
+                    price = 88,
+                    alcohol = 5
+                ),
+                HomeItems(
+                    id = 22,
+                    url = "https://mishry.com/wp-content/uploads/2019/08/simba-wit.jpg",
+                    title = "Simba Wit",
+                    description = "Simba beers have been crafted by beer lovers for beer lovers. The company gives priority to quality and choose the best possible raw ingredients. This refreshing and crisp wheat beer has the subtle flavors of orange peel, lemongrass, and coriander in it",
+                    price = 80,
+                    alcohol = 3
+                ),
+                HomeItems(
+                    id = 23,
+                    url = "https://i.pinimg.com/736x/b6/6f/5b/b66f5b13e0677222938aa2f08b296327.jpg",
+                    title = "Clausthaler Grapefruit Non-Alcoholic Beer",
+                    description = "Clausthaler, the 40-year-old German brewery known for its non-alcoholic beers, has announced that its non-alcoholic grapefruit beer is available in the U.S. More details from the brewery are below. NORWALK, Connecticut -- Clausthaler, the pioneer in non-alcoholic malt beverages which has been producing award-winning non-alcoholic beer for 40 years, today announced an exciting and refreshing addition to its lineup - Clausthaler Grapefruit. Brewed in Germany and imported into the United",
+                    price = 100,
+                    alcohol = 0
+                ),
+                HomeItems(
+                    id = 24,
+                    url = "https://cdn.shopify.com/s/files/1/0509/0210/6271/products/winclewibblywallaby_1024x1024@2x.png?v=1612111189",
+                    title = "Wincle Wibbly Wallaby",
+                    description = "Legendary and award winning. Wallabies on the roaches. Unconfirmed reports that Wallaby makes you Wibbly.",
+                    price = 90,
+                    alcohol = 4
+                ),
+                HomeItems(
+                    id = 25,
+                    url = "https://www.liquorland.co.in/public/assets/images/products/kloudbeer.png",
+                    title = "Kloud Beer",
+                    description = "Kloud is a Korean Lager beer from lotte. It is a water free original gravity recipe made from 100% Malt. Kloud has only 5% alcoholic content by volume",
+                    price = 70,
+                    alcohol = 6
+                ),
+                HomeItems(
+                    id = 26,
+                    url = "https://dydza6t6xitx6.cloudfront.net/ci-pilsner-urquell-68942c4af233c846.jpeg",
+                    title = "Pilsner Urquell Beer",
+                    description = "Plzen in the Czech Republic was literally born to make beer. When King Wenceslas II of Bohemia founded the city in 1295, he granted its 260 households the right to make beer. For hundreds of years, this worked great. Yet as might be expect with this many home brewers, quality varied over time. It was easy to get beer but not so easy to get good beer",
+                    price = 110,
+                    alcohol = 4
+                ),
+                HomeItems(
+                    id = 27,
+                    url = "https://cdn.shopify.com/s/files/1/0056/9019/6077/products/HellesBelles_1512x.png?v=1637056992",
+                    title = "HELLES BELLES PILSNER LAGER",
+                    description = "Ultimate in refreshment, this Helles lager was a pet project of the brewery team in 2020 and it proved so popular that we have made it a core line.",
+                    price = 100,
+                    alcohol = 4
+                ),
+                HomeItems(
+                    id = 28,
+                    url = "https://cdn.shopify.com/s/files/1/0056/9019/6077/products/OldHag_1080x.png?v=1637057483",
+                    title = "OLD HAG STOUT",
+                    description = "A traditional style stout porter. Discretion prevents us from revealing the inspiration for this one!",
+                    price = 120,
+                    alcohol = 5
+                ),
+                HomeItems(
+                    id = 29,
+                    url = "https://cdn.shopify.com/s/files/1/0056/9019/6077/products/BurkesSpecial_1080x.png?v=1637057220",
+                    title = "BURKES SPECIAL ESB",
+                    description = "A exceptional bitter in more ways than one. One of our absolute favourites, and a winner with lovers of darker beers. Enjoy ideally with a faithful companion.",
+                    price = 110,
+                    alcohol = 5
+                ),
+                HomeItems(
+                    id = 30,
+                    url = "https://cdn.shopify.com/s/files/1/0056/9019/6077/products/HellesBelles.png?v=1637056992",
+                    title = "HELLES BELLES PILSNER LAGER",
+                    description = "Ultimate in refreshment, this Helles lager was a pet project of the brewery team in 2020 and it proved so popular that we have made it a core line.",
+                    price = 90,
+                    alcohol = 4
+                ),
+                HomeItems(
+                    id = 31,
+                    url = "https://www.seekpng.com/png/detail/878-8780069_craft-beer-beer-bottle.png",
+                    title = "Night Swim",
+                    description = "Dark and luxurious like a midnight dip in the warm gulf waters off St. Pete Beach. Rich and Roasty with a hint of chocolate. Both this porter, and a night swim, are best enjoyed with a friend",
+                    price = 150,
+                    alcohol = 2
+                ),
+                HomeItems(
+                    id = 32,
+                    url = "https://blackdonkeybeer.com/wp-content/uploads/2021/06/UW-Savage-500B-1-1.png",
+                    title = "Underworld Savage",
+                    description = "Aromas of candied citrus, blackberries, yeast and malt. Dry with flavours of lemon zest, forest fruits and funky wild yeast spice. Clean lingering bitterness",
+                    price = 120,
+                    alcohol = 3
+                ),
+                HomeItems(
+                    id = 33,
+                    url = "https://images.squarespace-cdn.com/content/v1/553bfa4be4b0786b41dbc163/1649329453619-FPHCE0ZP2W020W6EXJ94/Tartarus+Beers+Pishacha+-+Export+India+Porter+6.8%25.JPG?format=1000w",
+                    title = "Tartarus Beers Pishacha",
+                    description = "Built on a rich roasty porter base, Simcoe, Cascade & Chinook hops are used in the boil and dry hop",
+                    price = 120,
+                    alcohol = 7
+                ),
+                HomeItems(
+                    id = 34,
+                    url = "https://images.squarespace-cdn.com/content/v1/553bfa4be4b0786b41dbc163/1585678305114-DCTNSSKY68NQHNZG7YWK/Yorkshire+Heart+Brewery+Ghost+Porter.JPG?format=1000w",
+                    title = "Yorkshire Heart Brewery Ghost Porter",
+                    description = "Ingredients and Allergen advice: Contains water, malted barley, wheat, hops, yeast",
+                    price = 100,
+                    alcohol = 5
+                ),
+                HomeItems(
+                    id = 35,
+                    url = "https://www.beerparadise.co.uk/images/ww/product/181833-mi.jpg",
+                    title = "SAMUEL SMITH BREWERY",
+                    description = "Brewed with well water (the original well at the Old Brewery, sunk in 1758, is still in use, with the hard well water being drawn from 85 feet underground); best malted barley and a generous amount of choicest aroma hops",
+                    price = 100,
+                    alcohol = 5
+                ),
+                HomeItems(
+                    id = 36,
+                    url = "https://www.beerparadise.co.uk/images/ww/product/187304-mi.jpg",
+                    title = "ERDINGER Dunkel Weisse",
+                    description = "Carefully selected dark malts with delicate roasting aromas give ERDINGER Dunkel its full-bodied flavor and strong character. This elegant wheat beer has a lustrous, deep dark-brown appearance in the glass",
+                    price = 80,
+                    alcohol = 6
+                ),
+                HomeItems(
+                    id = 37,
+                    url = "https://www.beerparadise.co.uk/images/ww/product/187807-zi.jpg",
+                    title = "SCHNEIDER UND SOHN Aventinus",
+                    description = "For golden moments by the fireplace: Mein Aventinus - the wholehearted, dark ruby coloured wheat beer, intensive and fiery, warming, well-balanced and tender. Bavaria's oldest wheat Doppelbock - brewed since 1907! Its sturdy body in combination with its sweet malty aroma is an invitation to profound indulgence - an ingenious blend with a strong body. Perfectly matches rustic dishes, dark roasts and sweet desserts.",
+                    price = 140,
+                    alcohol = 8
+                ),
             ).forEach {
                 try { databaseRepository.insertItems(it) }
                 catch (_: android.database.sqlite.SQLiteConstraintException) { }
             }
 
+        }
+
+        viewModelScope.launch(Dispatchers.IO){
+
+            try {
+                databaseRepository.insertLikedItem(LikedItems(id = 0, email = "meh@ul.com"))
+                databaseRepository.insertLikedItem(LikedItems(id = 1, email = "meh@ul.com"))
+                databaseRepository.insertLikedItem(LikedItems(id = 3, email = "meh@ul.com"))
+            }
+            catch (_: android.database.sqlite.SQLiteConstraintException) { }
+
+            val list = databaseRepository.readAllLikedItems()
+            Log.d("testLikedItem", "dummyData: $list")
         }
     }
 

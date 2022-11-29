@@ -14,6 +14,7 @@ import com.experiment.foodproductapp.database.entity.*
         OrderDetails::class,
         HomeItems::class,
         FinalPrice::class,
+        LikedItems::class,
         ],
     version = 1
 )
@@ -24,6 +25,7 @@ abstract class UserDatabase : RoomDatabase() {
     abstract fun orderDetailsDao() : OrderDetailsDao
     abstract fun homeItemsDao() : HomeItemsDao
     abstract fun finalPriceDao() : FinalPriceDao
+    abstract fun likedItemsDao() : LikedItemsDao
 
     companion object Static {
         private var database : UserDatabase? = null

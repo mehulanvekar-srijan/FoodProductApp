@@ -158,6 +158,15 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
                             navHostControllerLambda
                         )
                     }
+                    composable(
+                        route = Screen.FavouriteProductsScreen.route,
+                        arguments = listOf(navArgument("email") { type = NavType.StringType})
+                    ) {
+                        FavouriteProductsPage(
+                            it.arguments?.getString("email"),
+                            navHostControllerLambda
+                        )
+                    }
                 }
             }
         }

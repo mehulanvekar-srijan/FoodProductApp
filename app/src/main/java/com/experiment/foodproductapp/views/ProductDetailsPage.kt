@@ -1,7 +1,10 @@
 package com.experiment.foodproductapp.views
 
 
+import android.util.Log
+import androidx.compose.animation.*
 import androidx.compose.foundation.*
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 
@@ -20,6 +23,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
 
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -46,6 +50,8 @@ import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.ui.theme.*
 
 import com.experiment.foodproductapp.viewmodels.HomeScreenViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Preview
 @Composable
@@ -55,13 +61,16 @@ fun Preview() {
 }
 
 
-@OptIn(ExperimentalCoilApi::class)
+@OptIn(ExperimentalCoilApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun ProductDetailsPage(
     navHostControllerLambda: () -> NavHostController, homeScreenViewModel: HomeScreenViewModel
 ) {
 
     val scrollState = rememberScrollState()
+    val likedState = remember { mutableStateOf(false) }
+    val coroutineScope = rememberCoroutineScope()
+
     LaunchedEffect(key1 = Unit) {
         homeScreenViewModel.getProductCount()
         homeScreenViewModel.initCartItemsCount()
@@ -92,12 +101,28 @@ fun ProductDetailsPage(
                         .fillMaxHeight(.88f)
                         .verticalScroll(scrollState),
                 ) {
+
                     Image(
                         painter = rememberImagePainter(homeScreenViewModel.productForDetailPage.value.url),
                         contentDescription = "ic_product_image",
                         contentScale = ContentScale.Fit,
                         modifier = Modifier
                             .padding(top = 60.dp)
+                            .pointerInput(Unit) {
+                                detectTapGestures(
+                                    onDoubleTap = {
+                                        Log.d(
+                                            "testTaps",
+                                            "ProductDetailsPage: onDoubleTap"
+                                        )
+                                        coroutineScope.launch {
+                                            likedState.value = !likedState.value
+                                            delay(1000)
+                                            likedState.value = !likedState.value
+                                        }
+                                    },
+                                )
+                            }
                             .height(350.dp)
                             .align(alignment = Alignment.CenterHorizontally)
                             .graphicsLayer {
@@ -106,6 +131,7 @@ fun ProductDetailsPage(
                                 translationY = 0.3f * scrollState.value
                             },
                     )
+
                     Text(
                         text = homeScreenViewModel.productForDetailPage.value.title,
                         color = Color.DarkGray,
@@ -119,6 +145,7 @@ fun ProductDetailsPage(
                         textAlign = TextAlign.Start,
                         modifier = Modifier.padding(start = 40.dp, top = 20.dp)
                     )
+
                     Spacer(modifier = Modifier.padding(top = 20.dp))
 
                     Text(
@@ -244,6 +271,24 @@ fun ProductDetailsPage(
                 }
             }
         }
+
+        AnimatedVisibility(
+            visible = likedState.value,
+            enter= fadeIn() + scaleIn(),
+            exit = fadeOut() + scaleOut(),
+            modifier = Modifier.fillMaxHeight(0.6F)
+        ){
+
+            Icon(
+                imageVector = Icons.Filled.Favorite,
+                contentDescription = "",
+                modifier = Modifier
+                    .fillMaxSize().padding(80.dp),
+                tint = Color.Red,
+            )
+
+        }
+
         AppBar(
             homeScreenViewModel = homeScreenViewModel,
             navHostControllerLambda = navHostControllerLambda,

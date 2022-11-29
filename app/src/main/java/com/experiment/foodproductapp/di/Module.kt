@@ -45,4 +45,7 @@ val viewModelModule = module {
     viewModel{
         OrderDetailsViewModel(get())
     }
+    viewModel{
+        FavouriteProductsViewModel(get())
+    }
 }

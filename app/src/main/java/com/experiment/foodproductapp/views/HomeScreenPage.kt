@@ -1,5 +1,6 @@
 package com.experiment.foodproductapp.views
 
+import android.util.Log
 import androidx.compose.animation.*
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -81,26 +82,31 @@ fun HomeScreenPage(
     val listState = rememberLazyListState()
     val brandLogoSize = remember { mutableStateOf(Int.MAX_VALUE) }
 
+    //When using derivedStateOf{} the screen we recompose only when the condition changes
+    val visibleOffsetCondition by remember {
+        derivedStateOf { listState.firstVisibleItemScrollOffset >= (brandLogoSize.value / 2) }
+    }
+    val visibleItemCondition by remember { derivedStateOf { listState.firstVisibleItemIndex > 0 } }
+
     val animatedAppBarBackgroundColor = animateColorAsState(
-        targetValue = if ((listState.firstVisibleItemScrollOffset >= (brandLogoSize.value / 2)) || (listState.firstVisibleItemIndex > 0)) Orange
-        else Color.Transparent,
+        targetValue = if ( visibleOffsetCondition || visibleItemCondition ) Orange
+        else Transparent,
         animationSpec = tween(1),
     )
     val animatedAppBarContentColor = animateColorAsState(
-        targetValue = if ((listState.firstVisibleItemScrollOffset >= (brandLogoSize.value / 2)) || (listState.firstVisibleItemIndex > 0)) Color.White
-        else Color.Transparent,
+        targetValue = if ( visibleOffsetCondition || visibleItemCondition ) Color.White
+        else Transparent,
         animationSpec = tween(1),
     )
 
     val animatedAppBarBrandIconColor = animateColorAsState(
-        targetValue = if ((listState.firstVisibleItemScrollOffset >= (brandLogoSize.value / 2)) || (listState.firstVisibleItemIndex > 0)) Color.Unspecified
-        else Color.Transparent,
+        targetValue = if ( visibleOffsetCondition || visibleItemCondition ) Color.Unspecified
+        else Transparent,
         animationSpec = tween(1),
     )
 
     val animatedAppBarElevation = animateDpAsState(
-        targetValue = if ((listState.firstVisibleItemScrollOffset >= (brandLogoSize.value / 2)) || (listState.firstVisibleItemIndex > 0)) 3.dp
-        else 0.dp,
+        targetValue = if ( visibleOffsetCondition || visibleItemCondition ) 3.dp else 0.dp,
         animationSpec = tween(1),
     )
 
@@ -227,7 +233,7 @@ fun HomeScreenPage(
                     ) {
                         Surface(
                             elevation = 3.dp,
-                            color = Color.Transparent
+                            color = Transparent
                         ) {
                             IconButton(
                                 onClick = {
@@ -271,8 +277,8 @@ fun HomeScreenPage(
             onProductCartClick = {
                 navHostControllerLambda().navigate(Screen.ProductCart.routeWithData(homeScreenViewModel.userEmail.value))
             },
-            onOrderDetailsClick = {
-                navHostControllerLambda().navigate(Screen.OrderDetails.routeWithData(homeScreenViewModel.userEmail.value))
+            onLikedProductsClick = {
+                navHostControllerLambda().navigate(Screen.FavouriteProductsScreen.routeWithData(homeScreenViewModel.userEmail.value))
             }
         )
     }
@@ -297,8 +303,13 @@ fun AppBar(
     animatedAppBarElevation: State<Dp>,
     onUserProfileClick: () -> Unit = {},
     onProductCartClick: () -> Unit = {},
-    onOrderDetailsClick: () -> Unit = {},
+    onLikedProductsClick: () -> Unit = {},
 ) {
+    val count by remember {
+        derivedStateOf{
+            homeScreenViewModel.cartItemCount.value
+        }
+    }
     TopAppBar(
         title = {
             Text(
@@ -325,7 +336,7 @@ fun AppBar(
                 )
             }
 
-            IconButton(onClick = { }) {
+            IconButton(onClick = onLikedProductsClick) {
                 Icon(
                     imageVector = Icons.Default.Favorite,
                     contentDescription = "ic_Favorite_bt",
@@ -334,7 +345,7 @@ fun AppBar(
             }
 
             val offset = 12
-            if(homeScreenViewModel.cartItemCount.value > 0){
+            if(count > 0){
                 BadgedBox(
                     badge = {
                         Badge(

@@ -59,8 +59,6 @@ import com.razorpay.OTP
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
-var count = 1
-
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun ForgotPassword(
@@ -247,7 +245,12 @@ fun ForgotPassword(
                                         .padding(2.dp)
                                         .size(55.dp),
                                     onValueChange = {
-                                        inputList[i] = it
+
+                                        if(it.length > 1) {
+                                            Toast.makeText(context,R.string.invalid_digit,Toast.LENGTH_SHORT).show()
+                                        }
+                                        else { inputList[i] = it }
+
                                         if (inputList[i].isNotEmpty()) focusManager.moveFocus(
                                             FocusDirection.Right
                                         )

@@ -11,6 +11,7 @@ class DatabaseRepository(context: Context) {
     private val orderDetailsDao = UserDatabase.getDatabase(context).orderDetailsDao()
     private val homeItemsDao = UserDatabase.getDatabase(context).homeItemsDao()
     private val finalPriceDao = UserDatabase.getDatabase(context).finalPriceDao()
+    private val likedItemsDao = UserDatabase.getDatabase(context).likedItemsDao()
 
     //User
     fun addUser(user: User) = userDao.insertUser(user)
@@ -83,8 +84,12 @@ class DatabaseRepository(context: Context) {
     }
 
 
-
     //Final Price Table
     fun insertFinalPrice(finalPrice: FinalPrice) = finalPriceDao.insertFinalPrice(finalPrice)
     fun getFinalPrice(email: String, orderId: Int): Double = finalPriceDao.getFinalPrice(email,orderId)
+
+
+    //Liked Item
+    fun insertLikedItem(item: LikedItems) = likedItemsDao.insertLikedItem(item)
+    fun readAllLikedItems(): List<LikedItems> = likedItemsDao.readAllLikedItems()
 }
