@@ -119,6 +119,7 @@ class SignUpViewModel(
                 email = _state.value.email,
                 phoneNumber = _state.value.phoneNumber,
                 dob = _state.value.date,
+                loggedIn = true,
             )
             val success = try {
                 databaseRepository.addUser(user)
