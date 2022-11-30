@@ -41,10 +41,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
-import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.animateLottieCompositionAsState
-import com.airbnb.lottie.compose.rememberLottieComposition
+import com.airbnb.lottie.compose.*
 
 import com.experiment.foodproductapp.R
 import com.experiment.foodproductapp.constants.Screen
@@ -115,11 +112,12 @@ fun ProductDetailsPage(
                                             "testTaps",
                                             "ProductDetailsPage: onDoubleTap"
                                         )
-                                        coroutineScope.launch {
-                                            likedState.value = !likedState.value
-                                            //delay(5000)
-                                            //likedState.value = !likedState.value
-                                        }
+                                        homeScreenViewModel.changeState()
+//                                        coroutineScope.launch {
+//                                            likedState.value = !likedState.value
+//                                            //delay(5000)
+//                                            //likedState.value = !likedState.value
+//                                        }
                                     },
                                 )
                             }
@@ -283,7 +281,7 @@ fun ProductDetailsPage(
             )
         }
 
-        //LikedAnimation(likedState = likedState)
+        LikedAnimation(likedState = homeScreenViewModel.favoriteState)
     }
 }
 
@@ -312,7 +310,7 @@ fun AppBar(
                 onClick = { homeScreenViewModel.changeState() }
             ) {
                 Box{
-                    if (homeScreenViewModel.favoriteState.value) {
+                    if (!homeScreenViewModel.favoriteState.value) {
                         Icon(
                             imageVector = Icons.Outlined.FavoriteBorder,
                             contentDescription = "ic_Favorite_bt",
@@ -372,7 +370,8 @@ fun LikedAnimation(likedState: State<Boolean>) {
         composition = compositionResult.value,
         isPlaying = likedState.value,
         iterations = 1,
-        speed = 1.0F
+        speed = 1.0F,
+        cancellationBehavior = LottieCancellationBehavior.OnIterationFinish
     )
 
     LottieAnimation(composition = compositionResult.value, progress = { progress.value } )
