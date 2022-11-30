@@ -280,7 +280,7 @@ fun FavouriteLoadImage(item: HomeItems) {
     Image(
         painter = rememberImagePainter(item.url),
         contentDescription = "ic_cart_item",
-        contentScale = ContentScale.Crop,
+        contentScale = ContentScale.Fit,
         alignment = Alignment.Center,
         modifier = Modifier.padding(8.dp),
     )

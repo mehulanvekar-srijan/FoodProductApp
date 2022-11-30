@@ -386,18 +386,18 @@ class SplashScreenViewModel(
 
         }
 
-        viewModelScope.launch(Dispatchers.IO){
-
-            try {
-                databaseRepository.insertLikedItem(LikedItems(id = 1, email = "meh@ul.com"))
-                databaseRepository.insertLikedItem(LikedItems(id = 2, email = "meh@ul.com"))
-                databaseRepository.insertLikedItem(LikedItems(id = 10, email = "meh@ul.com"))
-            }
-            catch (_: android.database.sqlite.SQLiteConstraintException) { }
-
-            val list = databaseRepository.readAllLikedItems()
-            Log.d("testLikedItem", "dummyData: $list")
-        }
+//        viewModelScope.launch(Dispatchers.IO){
+//
+//            try {
+//                databaseRepository.insertLikedItem(LikedItems(id = 1, email = "meh@ul.com"))
+//                databaseRepository.insertLikedItem(LikedItems(id = 2, email = "meh@ul.com"))
+//                databaseRepository.insertLikedItem(LikedItems(id = 10, email = "meh@ul.com"))
+//            }
+//            catch (_: android.database.sqlite.SQLiteConstraintException) { }
+//
+//            val list = databaseRepository.readAllLikedItems()
+//            Log.d("testLikedItem", "dummyData: $list")
+//        }
     }
 
 }
