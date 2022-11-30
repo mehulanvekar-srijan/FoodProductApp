@@ -1,6 +1,8 @@
 package com.experiment.foodproductapp.viewmodels
 
 import android.util.Log
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.experiment.foodproductapp.database.dao.HomeItemsDao
@@ -21,6 +23,41 @@ class FavouriteProductsViewModel(
         Log.d("testDI", "FavouriteProductsViewModel: ${databaseRepository.hashCode()}")
     }
 
+    var email: String = ""
+    val likedItemsList = mutableStateListOf<HomeItems>()
+
+    suspend fun initEmail(){
+        email = fetchEmail()
+    }
+
+    suspend fun initLikedItemsList(){
+
+        val list: List<LikedItems> = fetchFavouriteProductsByEmail(email = email)
+
+        likedItemsList.clear() // Clear Before Loading
+
+        list.forEach {
+
+            val homeItem = fetchHomeItemById(id = it.id)
+            likedItemsList.add(homeItem)
+
+        }
+
+    }
+
+    //Called on swap to remove gesture
+    fun onDismiss(item: HomeItems){
+        removeItemFromList(item)
+        removeFromFavourites(email = email,id = item.id)
+    }
+
+    private fun removeItemFromList(item: HomeItems) = likedItemsList.remove(item)
+
+    //Called when undo is clicked
+    fun onRestore(item: HomeItems){
+        likedItemsList.add(item)
+        insertFavouriteProduct(likedItems = LikedItems(id = item.id, email = email))
+    }
 
     suspend fun fetchEmail(
         userDao: UserDao = databaseRepository.getUserDao()

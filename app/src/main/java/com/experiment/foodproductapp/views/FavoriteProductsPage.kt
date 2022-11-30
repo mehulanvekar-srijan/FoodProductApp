@@ -1,5 +1,6 @@
 package com.experiment.foodproductapp.views
 
+import android.util.Log
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -30,6 +31,7 @@ import androidx.navigation.NavHostController
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.experiment.foodproductapp.R
+import com.experiment.foodproductapp.database.entity.HomeItems
 import com.experiment.foodproductapp.database.entity.LikedItems
 import com.experiment.foodproductapp.database.entity.Product
 import com.experiment.foodproductapp.ui.theme.*
@@ -38,7 +40,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun FavouriteProductsPage(
     email: String?,
@@ -51,24 +53,22 @@ fun FavouriteProductsPage(
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
 
-    val stateList = remember { mutableStateOf(listOf<LikedItems>()) }
+
     LaunchedEffect(key1 = Unit, block = {
-        launch(Dispatchers.IO) {
-            stateList.value =
-                favouriteProductsViewModel.fetchFavouriteProductsByEmail(email = email.toString())
-        }
+        favouriteProductsViewModel.initEmail()
+        favouriteProductsViewModel.initLikedItemsList()
     })
 
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Text(text = email.toString())
-        stateList.value.forEach {
-            Text(text = "$it")
-        }
-    }
+//    Column(
+//        modifier = Modifier.fillMaxSize(),
+//        verticalArrangement = Arrangement.Center,
+//        horizontalAlignment = Alignment.CenterHorizontally,
+//    ) {
+//        Text(text = email.toString())
+//        favouriteProductsViewModel.likedItemsList.forEach {
+//            Text(text = it.title)
+//        }
+//    }
 
 
 
@@ -84,146 +84,148 @@ fun FavouriteProductsPage(
 //
 //        //productCartViewModel.fetchCartList()
 //    }
-//
-//    Scaffold(
-//        modifier = Modifier.fillMaxSize(),
-//        scaffoldState = scaffoldState,
-//        topBar = {
-//            TopAppBar(
-//                title = {
-//                    Text(
-//                        text = "Favourite",
-//                        fontFamily = titleFontFamily,
-//                        fontWeight = FontWeight.Bold,
-//                        color = DarkYellow,
-//                    )
-//                },
-//                navigationIcon = {
-//                    IconButton(
-//                        onClick = {
-//                            navHostControllerLambda().navigateUp()
-//                        },
-//                    ) {
-//                        Icon(
-//                            imageVector = Icons.Default.ArrowBack,
-//                            contentDescription = "ic_arrow_back_bt",
-//                            tint = DarkYellow,
-//                        )
-//                    }
-//                },
-//                backgroundColor = Color.Transparent,
-//                elevation = 0.dp,
-//            )
-//        }
-//    ) {
-//
-//        //Main Column
-//        Column(
-//            modifier = Modifier
-//                .fillMaxSize()
-//                .padding(it)
-//                .background(Color.White),
-//            verticalArrangement = Arrangement.SpaceEvenly,
-//        ) {
-//
-//            //Item List
-//            LazyColumn(
-//                modifier = Modifier
-//                    .fillMaxSize()
-//                    .weight(3F)
-//                    .padding(start = 8.dp, end = 8.dp),
-//                verticalArrangement = Arrangement.spacedBy(9.dp)
-//            ) {
-//
-//                items(
-//                    items = productCartViewModel.cartList,
-//                    key = { key -> key.id } // Caused n Solved multiple issues. Learn it.
-//                ) { item ->
-//
-//                    val dismissState = rememberDismissState(
-//                        initialValue = DismissValue.Default,
-//                        confirmStateChange = {
-//                            if (it == DismissValue.DismissedToStart) {
-//
-//                                //productCartViewModel.setNewlyDeletedItem(item)
-//                                //productCartViewModel.onDismiss(item)
-//
-//                                coroutineScope.launch {
-//
-////                                    val result = scaffoldState.snackbarHostState.showSnackbar(
-////                                        message = if(item.title.length >= 15) "Item '${item.title.substring(0..15)}...' was removed"
-////                                        else "Item '${item.title}' was removed",
-////                                        actionLabel = "UNDO"
-////                                    )
-////
-////                                    when(result){
-////                                        SnackbarResult.ActionPerformed -> {
-////                                            //productCartViewModel.onRestore(product = item)
-////                                        }
-////                                        SnackbarResult.Dismissed -> {}
-////                                    }
-//
-//                                }
-//
-//                            }
-//                            true
-//                        }
-//                    )
-//
-//                    SwipeToDismiss(
-//                        state = dismissState,
-//                        directions = setOf(DismissDirection.EndToStart),
-//                        dismissThresholds = { FractionalThreshold(0.2F) },
-//                        dismissContent = {
-//                            FavouriteCardView(item)
-//                        },
-//                        background = {
-//
-//                            val color = animateColorAsState(
-//                                targetValue = when (dismissState.targetValue) {
-//                                    DismissValue.DismissedToStart -> Color.Red
-//                                    DismissValue.Default -> LightDarkGray
-//                                    else -> Color.Transparent
-//                                },
-//                                animationSpec = tween(100)
-//                            )
-//
-//                            Box(
-//                                //Red background
-//                                modifier = Modifier
-//                                    .fillMaxSize()
-//                                    .clip(RoundedCornerShape(15.dp))
-//                                    .background(color.value)
-//                                    .padding(end = 25.dp),
-//                                contentAlignment = Alignment.CenterEnd,
-//                            ) {
-//                                Icon(
-//                                    //Dustbin Icon
-//                                    imageVector = Icons.Default.Delete,
-//                                    contentDescription = "ic_delete",
-//                                    tint = Color.White,
-//                                )
-//                            }
-//                        },
-//                        modifier = Modifier.animateItemPlacement(
-//                            animationSpec = tween(600)
-//                        )
-//                    )
-//                }
-//
-//                item {
-//                    Spacer(modifier = Modifier.height(5.dp))
-//                }
-//            }
-//
-//        }
-//
-//    }
+
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        scaffoldState = scaffoldState,
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "Favourite",
+                        fontFamily = titleFontFamily,
+                        fontWeight = FontWeight.Bold,
+                        color = DarkYellow,
+                    )
+                },
+                navigationIcon = {
+                    IconButton(
+                        onClick = {
+                            navHostControllerLambda().navigateUp()
+                        },
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "ic_arrow_back_bt",
+                            tint = DarkYellow,
+                        )
+                    }
+                },
+                backgroundColor = Color.Transparent,
+                elevation = 0.dp,
+            )
+        }
+    ) {
+
+        //Main Column
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(it)
+                .background(Color.White),
+            verticalArrangement = Arrangement.SpaceEvenly,
+        ) {
+
+            //Item List
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .weight(3F)
+                    .padding(start = 8.dp, end = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(9.dp)
+            ) {
+
+                items(
+                    items = favouriteProductsViewModel.likedItemsList,
+                    key = { key -> key.id } // Caused n Solved multiple issues. Learn it.
+                ) { item ->
+
+                    val dismissState = rememberDismissState(
+                        initialValue = DismissValue.Default,
+                        confirmStateChange = {
+                            if (it == DismissValue.DismissedToStart) {
+
+                                //productCartViewModel.setNewlyDeletedItem(item)
+                                favouriteProductsViewModel.onDismiss(item)
+
+                                Log.d("testSwap", "FavouriteProductsPage: swiped")
+
+                                coroutineScope.launch {
+
+                                    val result = scaffoldState.snackbarHostState.showSnackbar(
+                                        message = if(item.title.length >= 15) "Item '${item.title.substring(0..15)}...' was removed"
+                                        else "Item '${item.title}' was removed",
+                                        actionLabel = "UNDO"
+                                    )
+
+                                    when(result){
+                                        SnackbarResult.ActionPerformed -> {
+                                            favouriteProductsViewModel.onRestore(item = item)
+                                        }
+                                        SnackbarResult.Dismissed -> {}
+                                    }
+
+                                }
+
+                            }
+                            true
+                        }
+                    )
+
+                    SwipeToDismiss(
+                        state = dismissState,
+                        directions = setOf(DismissDirection.EndToStart),
+                        dismissThresholds = { FractionalThreshold(0.2F) },
+                        dismissContent = {
+                            FavouriteCardView(item)
+                        },
+                        background = {
+
+                            val color = animateColorAsState(
+                                targetValue = when (dismissState.targetValue) {
+                                    DismissValue.DismissedToStart -> Color.Red
+                                    DismissValue.Default -> LightDarkGray
+                                    else -> Color.Transparent
+                                },
+                                animationSpec = tween(100)
+                            )
+
+                            Box(
+                                //Red background
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .clip(RoundedCornerShape(15.dp))
+                                    .background(color.value)
+                                    .padding(end = 25.dp),
+                                contentAlignment = Alignment.CenterEnd,
+                            ) {
+                                Icon(
+                                    //Dustbin Icon
+                                    imageVector = Icons.Default.Delete,
+                                    contentDescription = "ic_delete",
+                                    tint = Color.White,
+                                )
+                            }
+                        },
+                        modifier = Modifier.animateItemPlacement(
+                            animationSpec = tween(600)
+                        )
+                    )
+                }
+
+                item {
+                    Spacer(modifier = Modifier.height(5.dp))
+                }
+            }
+
+        }
+
+    }
 }
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun FavouriteCardView(item: Product) {
+fun FavouriteCardView(item: HomeItems) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -274,7 +276,7 @@ fun FavouriteCardView(item: Product) {
 
 @OptIn(ExperimentalCoilApi::class)
 @Composable
-fun FavouriteLoadImage(item: Product) {
+fun FavouriteLoadImage(item: HomeItems) {
     Image(
         painter = rememberImagePainter(item.url),
         contentDescription = "ic_cart_item",

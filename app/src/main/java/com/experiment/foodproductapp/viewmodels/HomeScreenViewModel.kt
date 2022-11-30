@@ -7,10 +7,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.experiment.foodproductapp.constants.Screen
+import com.experiment.foodproductapp.database.dao.LikedItemsDao
 import com.experiment.foodproductapp.database.entity.HomeItems
+import com.experiment.foodproductapp.database.entity.LikedItems
 import com.experiment.foodproductapp.database.entity.Product
 import com.experiment.foodproductapp.repository.DatabaseRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 class HomeScreenViewModel(
@@ -182,6 +185,38 @@ class HomeScreenViewModel(
             _cartItemCount.value = cartList.size
 
             Log.d("testBadge", "initCartItemsCount: ${cartItemCount.value}")
+        }
+    }
+
+    //Liked Feature methods
+    suspend fun fetchFavouriteProductsByEmail(
+        likedItemsDao: LikedItemsDao = databaseRepository.getLikedItemsDao(),
+        email: String,
+    ): List<LikedItems> {
+
+        val productListDeferred = viewModelScope.async(Dispatchers.IO){
+            databaseRepository.readItemsByEmail(likedItemsDao, email)
+        }
+
+        return productListDeferred.await()
+    }
+
+    fun insertFavouriteProduct(
+        likedItemsDao: LikedItemsDao = databaseRepository.getLikedItemsDao(),
+        likedItems: LikedItems,
+    ){
+        viewModelScope.launch(Dispatchers.IO){
+            databaseRepository.insertLikedItem(likedItemsDao,likedItems)
+        }
+    }
+
+    fun removeFromFavourites(
+        likedItemsDao: LikedItemsDao = databaseRepository.getLikedItemsDao(),
+        id: Int,
+        email: String
+    ){
+        viewModelScope.launch(Dispatchers.IO){
+            databaseRepository.deleteItem(likedItemsDao = likedItemsDao, id = id, email = email)
         }
     }
 }

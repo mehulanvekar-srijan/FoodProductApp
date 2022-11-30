@@ -45,6 +45,7 @@ import com.airbnb.lottie.compose.*
 
 import com.experiment.foodproductapp.R
 import com.experiment.foodproductapp.constants.Screen
+import com.experiment.foodproductapp.database.entity.LikedItems
 import com.experiment.foodproductapp.ui.theme.*
 
 import com.experiment.foodproductapp.viewmodels.HomeScreenViewModel
@@ -65,7 +66,7 @@ fun ProductDetailsPage(
 ) {
 
     val scrollState = rememberScrollState()
-    val likedState = remember { mutableStateOf(false) }
+
     val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(key1 = Unit) {
@@ -99,6 +100,7 @@ fun ProductDetailsPage(
                         .verticalScroll(scrollState),
                 ) {
 
+                    //Product Image
                     Image(
                         painter = rememberImagePainter(homeScreenViewModel.productForDetailPage.value.url),
                         contentDescription = "ic_product_image",
@@ -112,12 +114,11 @@ fun ProductDetailsPage(
                                             "testTaps",
                                             "ProductDetailsPage: onDoubleTap"
                                         )
-                                        homeScreenViewModel.changeState()
-//                                        coroutineScope.launch {
-//                                            likedState.value = !likedState.value
-//                                            //delay(5000)
-//                                            //likedState.value = !likedState.value
-//                                        }
+                                        coroutineScope.launch {
+                                            //likedState.value = !likedState.value
+                                            //delay(5000)
+                                            //likedState.value = !likedState.value
+                                        }
                                     },
                                 )
                             }
@@ -130,6 +131,7 @@ fun ProductDetailsPage(
                             },
                     )
 
+                    //Title
                     Text(
                         text = homeScreenViewModel.productForDetailPage.value.title,
                         color = Color.DarkGray,
@@ -146,6 +148,7 @@ fun ProductDetailsPage(
 
                     Spacer(modifier = Modifier.padding(top = 20.dp))
 
+                    //Description
                     Text(
                         text = homeScreenViewModel.productForDetailPage.value.description,
                         color = LightDarkGray,
@@ -161,6 +164,7 @@ fun ProductDetailsPage(
 
                 Spacer(modifier = Modifier.padding(top = 20.dp))
 
+                //Add n Minus icons
                 Row(
                     modifier = Modifier
                         .fillMaxSize()
@@ -225,6 +229,7 @@ fun ProductDetailsPage(
 
             Spacer(modifier = Modifier.padding(top = 20.dp))
 
+            //Bottom % Icons
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceAround,
@@ -271,6 +276,7 @@ fun ProductDetailsPage(
         }
 
         AppBar(
+            email = homeScreenViewModel.userEmail.value,
             homeScreenViewModel = homeScreenViewModel,
             navHostControllerLambda = navHostControllerLambda,
         ) {
@@ -281,17 +287,31 @@ fun ProductDetailsPage(
             )
         }
 
-        LikedAnimation(likedState = homeScreenViewModel.favoriteState)
+        //LikedAnimation(likedState = homeScreenViewModel.favoriteState)
     }
 }
 
 
 @Composable
 fun AppBar(
+    email: String,
     homeScreenViewModel: HomeScreenViewModel,
     navHostControllerLambda: () -> NavHostController,
     onProductCartClick: () -> Unit = {},
 ) {
+
+    val likedState = remember { mutableStateOf(false) }
+
+    //To set initial value of like button
+    LaunchedEffect(key1 = Unit){
+        val likedItems = homeScreenViewModel.fetchFavouriteProductsByEmail(email = email)
+        likedItems.forEach {
+            if(homeScreenViewModel.productForDetailPage.value.id == it.id){
+                likedState.value = true
+            }
+        }
+    }
+
     TopAppBar(
         title = { },
         backgroundColor = Color.Transparent,
@@ -307,21 +327,37 @@ fun AppBar(
         },
         actions = {
             IconButton(
-                onClick = { homeScreenViewModel.changeState() }
-            ) {
-                Box{
-                    if (!homeScreenViewModel.favoriteState.value) {
-                        Icon(
-                            imageVector = Icons.Outlined.FavoriteBorder,
-                            contentDescription = "ic_Favorite_bt",
-                            tint = Orange
+                onClick = {
+                    if(likedState.value){ //Liked
+                        homeScreenViewModel.removeFromFavourites(
+                            id = homeScreenViewModel.productForDetailPage.value.id,
+                            email = homeScreenViewModel.userEmail.value
                         )
                     }
-                    else{
+                    else{ //Not Yet Liked
+                        homeScreenViewModel.insertFavouriteProduct(
+                            likedItems = LikedItems(
+                                id = homeScreenViewModel.productForDetailPage.value.id,
+                                email = homeScreenViewModel.userEmail.value
+                            )
+                        )
+                    }
+                    likedState.value = !likedState.value
+                }
+            ) {
+                Box{
+                    if (likedState.value) {
                         Icon(
                             imageVector = Icons.Filled.Favorite,
                             contentDescription = "ic_Favorite_bt",
                             tint = Color.Red
+                        )
+                    }
+                    else{
+                        Icon(
+                            imageVector = Icons.Outlined.FavoriteBorder,
+                            contentDescription = "ic_Favorite_bt",
+                            tint = Orange
                         )
                     }
                 }
