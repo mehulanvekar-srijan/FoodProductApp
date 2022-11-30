@@ -223,7 +223,9 @@ fun OrderDetails(
             ) {
                 OutlinedButton(
                     onClick = {
-                        navHostControllerLambda().navigateUp()
+                        navHostControllerLambda().navigate(Screen.HomeScreen.routeWithData(orderDetailsViewModel.userEmail.value)) {
+                            popUpTo(Screen.HomeScreen.route) { inclusive = true }
+                        }
                     },
                     modifier = Modifier
                         .fillMaxWidth()

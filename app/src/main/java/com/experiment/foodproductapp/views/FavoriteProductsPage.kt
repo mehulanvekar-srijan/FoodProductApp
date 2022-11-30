@@ -48,7 +48,7 @@ fun FavouriteProductsPage(
     favouriteProductsViewModel: FavouriteProductsViewModel = koinViewModel(),
 ) {
 
-    ChangeBarColors(statusColor = Color.White, navigationBarColor = DarkYellow)
+    ChangeBarColors(statusColor = Color.White, navigationBarColor = Color.White)
 
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()

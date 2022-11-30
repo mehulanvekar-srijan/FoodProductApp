@@ -33,6 +33,9 @@ class SignInViewModel(
     private val _state = mutableStateOf(SignInState())
     val state = _state
 
+    private val _error = mutableStateOf(false)
+    val error = _error
+
     private val validationEventChannel = Channel<ValidationEvent>()
     val validationEvents = validationEventChannel.receiveAsFlow()
 
@@ -108,6 +111,7 @@ class SignInViewModel(
 
                     } else {
                         validationEventChannel.send(ValidationEvent.Failure)
+                        _error.value = false
 //                        withContext(Dispatchers.Main) {
 //                            Toast.makeText(
 //                                context,
@@ -119,6 +123,7 @@ class SignInViewModel(
                     }
                 } else {
                     validationEventChannel.send(ValidationEvent.Failure)
+                    _error.value = true
 //                    withContext(Dispatchers.Main) {
 //                        Toast.makeText(context, "incorrect email or password", Toast.LENGTH_LONG)
 //                            .show()

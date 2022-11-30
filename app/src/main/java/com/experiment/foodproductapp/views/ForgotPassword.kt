@@ -56,12 +56,14 @@ import com.experiment.foodproductapp.domain.event.SignupFormEvent
 import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.viewmodels.ForgotPasswordViewModel
 import com.razorpay.OTP
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun ForgotPassword(
+    navHostControllerLambda:()-> NavHostController,
     forgotPasswordViewModel: ForgotPasswordViewModel = koinViewModel()
 ) {
 
@@ -88,6 +90,10 @@ fun ForgotPassword(
                             "Password updated",
                             Toast.LENGTH_SHORT
                         ).show()
+                        delay(1000L)
+                        navHostControllerLambda().navigate(Screen.SignInScreen.route) {
+                            popUpTo(Screen.SignInScreen.route) { inclusive = true }
+                        }
                     }
                 }
                 is ValidationEvent.Failure -> {

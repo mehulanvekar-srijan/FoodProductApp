@@ -72,6 +72,8 @@ fun UserDetails(
     email: String?,
     userDetailsViewModel: UserDetailsViewModel = koinViewModel(),
 ) {
+    ChangeBarColors(statusColor = Orange, navigationBarColor = Color.White)
+
     if (email != null) {
         val focusManager = LocalFocusManager.current
         val viewRequesterForDatePicker = remember { BringIntoViewRequester() }

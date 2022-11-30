@@ -163,7 +163,7 @@ class ForgotPasswordViewModel(
         val client = OkHttpClient()
         val mediaType = "application/json".toMediaTypeOrNull()
         val content =
-            """{"personalizations": [ { "to": [ { "email": "${_state.value.email}" } ], "subject": "OTP" } ], "from": {"email": "mehul.anvekar@srijan.net" },"content": [{ "type": "text/plain","value": "Your otp is ${otp.value}" }] }"""
+            """{"personalizations": [ { "to": [ { "email": "${_state.value.email}" } ], "subject": "OTP" } ], "from": {"email": "sahil.deosekar@srijan.net" },"content": [{ "type": "text/plain","value": "Your otp is ${otp.value}" }] }"""
         val body = RequestBody.create(mediaType, content)
         val request = Request.Builder()
             .url("https://rapidprod-sendgrid-v1.p.rapidapi.com/mail/send")
@@ -176,6 +176,7 @@ class ForgotPasswordViewModel(
         viewModelScope.launch(Dispatchers.IO) {
 //            val response = client.newCall(request).execute()
             Log.d("testFP", "sendOtp: ${otp.value} content=$content")
+//            Log.d("testFP", "sendOtp: ${otp.value} response=$response")
         }
     }
 

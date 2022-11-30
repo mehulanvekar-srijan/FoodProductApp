@@ -70,12 +70,22 @@ fun SignInPage(
         signInViewModel.validationEvents.collect { event ->
             when (event) {
                 is ValidationEvent.Success -> {
-                    navHostControllerLambda().navigate(Screen.HomeScreen.routeWithData(signInViewModel.state.value.email)) {
-                                popUpTo(Screen.SignInScreen.route) { inclusive = true }
-                            }
+                    navHostControllerLambda().navigate(
+                        Screen.HomeScreen.routeWithData(
+                            signInViewModel.state.value.email
+                        )
+                    ) {
+                        popUpTo(Screen.SignInScreen.route) { inclusive = true }
+                    }
                 }
                 is ValidationEvent.Failure -> {
-                    Toast.makeText(context, "Email already registered", Toast.LENGTH_SHORT).show()
+                    if (signInViewModel.error.value) {
+                        Toast.makeText(context, "Email not Registered", Toast.LENGTH_SHORT)
+                            .show()
+                    } else {
+                        Toast.makeText(context, "Incorrect Email or Password", Toast.LENGTH_SHORT)
+                            .show()
+                    }
                 }
             }
         }
@@ -251,7 +261,7 @@ fun SignInPage(
                             elevation = ButtonDefaults.elevation(
                                 defaultElevation = 3.dp
                             )
-                            ) {
+                        ) {
                             Text(
                                 text = stringResource(id = R.string.sign_in_string),
                                 fontSize = 22.sp,

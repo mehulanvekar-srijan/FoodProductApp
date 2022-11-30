@@ -64,6 +64,7 @@ fun Preview() {
 fun ProductDetailsPage(
     navHostControllerLambda: () -> NavHostController, homeScreenViewModel: HomeScreenViewModel
 ) {
+    val likedState = remember { mutableStateOf(false) }
 
     val scrollState = rememberScrollState()
 
@@ -110,15 +111,43 @@ fun ProductDetailsPage(
                             .pointerInput(Unit) {
                                 detectTapGestures(
                                     onDoubleTap = {
+
+                                        if (likedState.value) { //Liked
+                                            homeScreenViewModel.removeFromFavourites(
+                                                id = homeScreenViewModel.productForDetailPage.value.id,
+                                                email = homeScreenViewModel.userEmail.value
+                                            )
+                                        } else { //Not Yet Liked
+                                            homeScreenViewModel.insertFavouriteProduct(
+                                                likedItems = LikedItems(
+                                                    id = homeScreenViewModel.productForDetailPage.value.id,
+                                                    email = homeScreenViewModel.userEmail.value
+                                                )
+                                            )
+                                        }
+                                        likedState.value = !likedState.value
+
                                         Log.d(
                                             "testTaps",
                                             "ProductDetailsPage: onDoubleTap"
                                         )
-                                        coroutineScope.launch {
-                                            //likedState.value = !likedState.value
-                                            //delay(5000)
-                                            //likedState.value = !likedState.value
-                                        }
+//                                        coroutineScope.launch {
+//                                            if(likedState.value){ //Liked
+//                                                homeScreenViewModel.removeFromFavourites(
+//                                                    id = homeScreenViewModel.productForDetailPage.value.id,
+//                                                    email = homeScreenViewModel.userEmail.value
+//                                                )
+//                                            }
+//                                            else{ //Not Yet Liked
+//                                                homeScreenViewModel.insertFavouriteProduct(
+//                                                    likedItems = LikedItems(
+//                                                        id = homeScreenViewModel.productForDetailPage.value.id,
+//                                                        email = homeScreenViewModel.userEmail.value
+//                                                    )
+//                                                )
+//                                            }
+//                                        likedState.value = !likedState.value
+//                                        }
                                     },
                                 )
                             }
@@ -275,7 +304,10 @@ fun ProductDetailsPage(
             }
         }
 
+//        LikedAnimation(likedState = likedState)
+
         AppBar(
+            likedState = likedState,
             email = homeScreenViewModel.userEmail.value,
             homeScreenViewModel = homeScreenViewModel,
             navHostControllerLambda = navHostControllerLambda,
@@ -286,32 +318,28 @@ fun ProductDetailsPage(
                 )
             )
         }
-
-        //LikedAnimation(likedState = homeScreenViewModel.favoriteState)
     }
 }
 
 
 @Composable
 fun AppBar(
+    likedState: MutableState<Boolean>,
     email: String,
     homeScreenViewModel: HomeScreenViewModel,
     navHostControllerLambda: () -> NavHostController,
     onProductCartClick: () -> Unit = {},
 ) {
 
-    val likedState = remember { mutableStateOf(false) }
-
     //To set initial value of like button
-    LaunchedEffect(key1 = Unit){
+    LaunchedEffect(key1 = Unit) {
         val likedItems = homeScreenViewModel.fetchFavouriteProductsByEmail(email = email)
         likedItems.forEach {
-            if(homeScreenViewModel.productForDetailPage.value.id == it.id){
+            if (homeScreenViewModel.productForDetailPage.value.id == it.id) {
                 likedState.value = true
             }
         }
     }
-
     TopAppBar(
         title = { },
         backgroundColor = Color.Transparent,
@@ -328,13 +356,12 @@ fun AppBar(
         actions = {
             IconButton(
                 onClick = {
-                    if(likedState.value){ //Liked
+                    if (likedState.value) { //Liked
                         homeScreenViewModel.removeFromFavourites(
                             id = homeScreenViewModel.productForDetailPage.value.id,
                             email = homeScreenViewModel.userEmail.value
                         )
-                    }
-                    else{ //Not Yet Liked
+                    } else { //Not Yet Liked
                         homeScreenViewModel.insertFavouriteProduct(
                             likedItems = LikedItems(
                                 id = homeScreenViewModel.productForDetailPage.value.id,
@@ -345,22 +372,22 @@ fun AppBar(
                     likedState.value = !likedState.value
                 }
             ) {
-                Box{
-                    if (likedState.value) {
-                        Icon(
-                            imageVector = Icons.Filled.Favorite,
-                            contentDescription = "ic_Favorite_bt",
-                            tint = Color.Red
-                        )
-                    }
-                    else{
-                        Icon(
-                            imageVector = Icons.Outlined.FavoriteBorder,
-                            contentDescription = "ic_Favorite_bt",
-                            tint = Orange
-                        )
-                    }
+//                Box {
+                if (likedState.value) {
+                    Icon(
+                        imageVector = Icons.Filled.Favorite,
+                        contentDescription = "ic_Favorite_bt",
+                        tint = Color.Red
+                    )
+                    LikedAnimation(likedState = likedState)
+                } else {
+                    Icon(
+                        imageVector = Icons.Outlined.FavoriteBorder,
+                        contentDescription = "ic_Favorite_bt",
+                        tint = Orange
+                    )
                 }
+//                }
 
             }
             val offset = 12
@@ -382,8 +409,7 @@ fun AppBar(
                         )
                     }
                 }
-            }
-            else {
+            } else {
                 IconButton(onClick = onProductCartClick) {
                     Icon(
                         imageVector = Icons.Default.ShoppingCart,
@@ -392,7 +418,7 @@ fun AppBar(
                     )
                 }
             }
-    })
+        })
 }
 
 @Composable
@@ -410,5 +436,9 @@ fun LikedAnimation(likedState: State<Boolean>) {
         cancellationBehavior = LottieCancellationBehavior.OnIterationFinish
     )
 
-    LottieAnimation(composition = compositionResult.value, progress = { progress.value } )
+    LottieAnimation(
+        composition = compositionResult.value,
+        progress = { progress.value },
+        modifier = Modifier.size(height = 200.dp, width = 50.dp)
+    )
 }

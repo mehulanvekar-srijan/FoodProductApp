@@ -38,15 +38,8 @@ class HomeScreenViewModel(
     private val _productForDetailPage = mutableStateOf(HomeItems())
     val productForDetailPage = _productForDetailPage
 
-    private val _favoriteState = mutableStateOf(false)
-    val favoriteState = _favoriteState
-
     private val _quantity =  mutableStateOf(0)
     val quantity = _quantity
-
-    fun changeState(){
-        _favoriteState.value =!_favoriteState.value
-    }
 
     fun initHomeItems() {
         viewModelScope.launch(Dispatchers.IO) {
