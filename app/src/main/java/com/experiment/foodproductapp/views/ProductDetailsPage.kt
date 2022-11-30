@@ -11,7 +11,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.runtime.*
 
@@ -26,7 +25,6 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 
@@ -35,7 +33,6 @@ import androidx.compose.ui.text.TextStyle
 
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -44,13 +41,16 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
 
 import com.experiment.foodproductapp.R
 import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.ui.theme.*
 
 import com.experiment.foodproductapp.viewmodels.HomeScreenViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Preview
@@ -117,8 +117,8 @@ fun ProductDetailsPage(
                                         )
                                         coroutineScope.launch {
                                             likedState.value = !likedState.value
-                                            delay(1000)
-                                            likedState.value = !likedState.value
+                                            //delay(5000)
+                                            //likedState.value = !likedState.value
                                         }
                                     },
                                 )
@@ -272,34 +272,18 @@ fun ProductDetailsPage(
             }
         }
 
-//        AnimatedVisibility(
-//            visible = likedState.value,
-//            enter= fadeIn() + scaleIn(),
-//            exit = fadeOut() + scaleOut(),
-//            modifier = Modifier.fillMaxHeight(0.6F)
-//        ){
-//
-//            Icon(
-//                imageVector = Icons.Filled.Favorite,
-//                contentDescription = "",
-//                modifier = Modifier
-//                    .fillMaxSize().padding(80.dp),
-//                tint = Color.Red,
-//            )
-//
-//        }
-
         AppBar(
             homeScreenViewModel = homeScreenViewModel,
             navHostControllerLambda = navHostControllerLambda,
-            onProductCartClick = {
-                navHostControllerLambda().navigate(
-                    Screen.ProductCart.routeWithData(
-                        homeScreenViewModel.userEmail.value
-                    )
+        ) {
+            navHostControllerLambda().navigate(
+                Screen.ProductCart.routeWithData(
+                    homeScreenViewModel.userEmail.value
                 )
-            },
-        )
+            )
+        }
+
+        //LikedAnimation(likedState = likedState)
     }
 }
 
@@ -310,59 +294,86 @@ fun AppBar(
     navHostControllerLambda: () -> NavHostController,
     onProductCartClick: () -> Unit = {},
 ) {
-    TopAppBar(title = { }, backgroundColor = Color.Transparent, elevation = 0.dp, navigationIcon = {
-        IconButton(onClick = { navHostControllerLambda().navigateUp() }) {
-            Icon(
-                imageVector = Icons.Default.ArrowBack,
-                contentDescription = "ic_arrow_back_bt",
-                tint = DarkYellow
-            )
-        }
-
-    }, actions = {
-        IconButton(onClick = { homeScreenViewModel.changeState()}) {
-            if (homeScreenViewModel.favoriteState.value) {
+    TopAppBar(
+        title = { },
+        backgroundColor = Color.Transparent,
+        elevation = 0.dp,
+        navigationIcon = {
+            IconButton(onClick = { navHostControllerLambda().navigateUp() }) {
                 Icon(
-                    imageVector = Icons.Outlined.FavoriteBorder,
-                    contentDescription = "ic_Favorite_bt",
-                    tint = Orange
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = "ic_arrow_back_bt",
+                    tint = DarkYellow
                 )
             }
-            else{
-                Icon(
-                    imageVector = Icons.Filled.Favorite,
-                    contentDescription = "ic_Favorite_bt",
-                    tint = Color.Red
-                )
-            }
-        }
-        val offset = 12
-        if (homeScreenViewModel.cartItemCount.value > 0) {
-            BadgedBox(
-                badge = {
-                    Badge(
-                        modifier = Modifier.offset(x = -offset.dp, y = offset.dp)
-                    ) {
-                        Text(text = "${homeScreenViewModel.cartItemCount.value}")
-                    }
-                },
+        },
+        actions = {
+            IconButton(
+                onClick = { homeScreenViewModel.changeState() }
             ) {
+                Box{
+                    if (homeScreenViewModel.favoriteState.value) {
+                        Icon(
+                            imageVector = Icons.Outlined.FavoriteBorder,
+                            contentDescription = "ic_Favorite_bt",
+                            tint = Orange
+                        )
+                    }
+                    else{
+                        Icon(
+                            imageVector = Icons.Filled.Favorite,
+                            contentDescription = "ic_Favorite_bt",
+                            tint = Color.Red
+                        )
+                    }
+                }
+
+            }
+            val offset = 12
+            if (homeScreenViewModel.cartItemCount.value > 0) {
+                BadgedBox(
+                    badge = {
+                        Badge(
+                            modifier = Modifier.offset(x = -offset.dp, y = offset.dp)
+                        ) {
+                            Text(text = "${homeScreenViewModel.cartItemCount.value}")
+                        }
+                    },
+                ) {
+                    IconButton(onClick = onProductCartClick) {
+                        Icon(
+                            imageVector = Icons.Default.ShoppingCart,
+                            contentDescription = "ic_product_cart_bt",
+                            tint = DarkYellow
+                        )
+                    }
+                }
+            }
+            else {
                 IconButton(onClick = onProductCartClick) {
                     Icon(
                         imageVector = Icons.Default.ShoppingCart,
-                        contentDescription = "ic_product_cart_bt",
+                        contentDescription = "ic_shopping_cart",
                         tint = DarkYellow
                     )
                 }
             }
-        } else {
-            IconButton(onClick = onProductCartClick) {
-                Icon(
-                    imageVector = Icons.Default.ShoppingCart,
-                    contentDescription = "ic_shopping_cart",
-                    tint = DarkYellow
-                )
-            }
-        }
     })
+}
+
+@Composable
+fun LikedAnimation(likedState: State<Boolean>) {
+
+    val compositionResult = rememberLottieComposition(
+        spec = LottieCompositionSpec.RawRes(R.raw.confetti)
+    )
+
+    val progress = animateLottieCompositionAsState(
+        composition = compositionResult.value,
+        isPlaying = likedState.value,
+        iterations = 1,
+        speed = 1.0F
+    )
+
+    LottieAnimation(composition = compositionResult.value, progress = { progress.value } )
 }

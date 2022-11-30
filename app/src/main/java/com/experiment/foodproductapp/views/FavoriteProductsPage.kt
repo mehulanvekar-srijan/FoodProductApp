@@ -30,9 +30,11 @@ import androidx.navigation.NavHostController
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.experiment.foodproductapp.R
+import com.experiment.foodproductapp.database.entity.LikedItems
 import com.experiment.foodproductapp.database.entity.Product
 import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.viewmodels.FavouriteProductsViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
@@ -49,9 +51,26 @@ fun FavouriteProductsPage(
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    val stateList = remember { mutableStateOf(listOf<LikedItems>()) }
+    LaunchedEffect(key1 = Unit, block = {
+        launch(Dispatchers.IO) {
+            stateList.value =
+                favouriteProductsViewModel.fetchFavouriteProductsByEmail(email = email.toString())
+        }
+    })
+
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
         Text(text = email.toString())
+        stateList.value.forEach {
+            Text(text = "$it")
+        }
     }
+
+
 
 //    LaunchedEffect(key1 = Unit) {
 //
@@ -204,7 +223,7 @@ fun FavouriteProductsPage(
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun FavouriteCardView(item: Product){
+fun FavouriteCardView(item: Product) {
     Card(
         modifier = Modifier
             .fillMaxWidth()

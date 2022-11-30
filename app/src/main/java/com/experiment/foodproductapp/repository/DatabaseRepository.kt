@@ -2,6 +2,7 @@ package com.experiment.foodproductapp.repository
 
 import android.content.Context
 import com.experiment.foodproductapp.database.*
+import com.experiment.foodproductapp.database.dao.HomeItemsDao
 import com.experiment.foodproductapp.database.dao.LikedItemsDao
 import com.experiment.foodproductapp.database.dao.UserDao
 import com.experiment.foodproductapp.database.entity.*
@@ -25,6 +26,7 @@ class DatabaseRepository(context: Context) {
 
     //User
     fun addUser(user: User) = userDao.insertUser(user)
+    fun addUser(userDao: UserDao, user: User) = userDao.insertUser(user)
 
     fun getUserByEmail(email: String) : User = userDao.getUserByEmail(email)
 
@@ -87,8 +89,11 @@ class DatabaseRepository(context: Context) {
 
     //Home Items
     fun insertItems(homeItems: HomeItems) = homeItemsDao.insertItems(homeItems)
+    fun insertItems(homeItemsDao: HomeItemsDao, homeItems: HomeItems) = homeItemsDao.insertItems(homeItems)
 
     fun readAllItems() : List<HomeItems> = homeItemsDao.readAllItems()
+
+    fun readItemById(homeItemsDao: HomeItemsDao, id: Int) : HomeItems = homeItemsDao.readItemById(id)
 
     fun readOrderId(id: Int) : HomeItems {
         return homeItemsDao.readOrderId(id)
@@ -106,5 +111,10 @@ class DatabaseRepository(context: Context) {
 
     fun readAllLikedItems(): List<LikedItems> = likedItemsDao.readAllLikedItems()
     fun readAllLikedItems(likedItemsDao: LikedItemsDao): List<LikedItems> = likedItemsDao.readAllLikedItems()
+
+    //fun readItemsByEmail(email: String): List<LikedItems> = likedItemsDao.readItemsByEmail(email)
+    fun readItemsByEmail(likedItemsDao: LikedItemsDao, email: String): List<LikedItems> = likedItemsDao.readItemsByEmail(email)
+
+    fun deleteItem(likedItemsDao: LikedItemsDao, id: Int, email: String) = likedItemsDao.deleteItem(id = id,email = email)
 
 }

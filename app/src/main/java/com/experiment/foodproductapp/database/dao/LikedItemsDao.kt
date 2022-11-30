@@ -11,4 +11,10 @@ interface LikedItemsDao {
 
     @Query("SELECT * FROM LikedItems")
     fun readAllLikedItems(): List<LikedItems>
+
+    @Query("SELECT * FROM LikedItems WHERE email=:email")
+    fun readItemsByEmail(email: String): List<LikedItems>
+
+    @Query("DELETE FROM LikedItems WHERE id = :id AND email=:email")
+    fun deleteItem(id: Int, email: String)
 }

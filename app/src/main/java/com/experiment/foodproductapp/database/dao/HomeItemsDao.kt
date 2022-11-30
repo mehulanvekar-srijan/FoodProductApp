@@ -14,6 +14,8 @@ interface HomeItemsDao {
     @Query("SELECT * FROM HomeItems")
     fun readAllItems() : List<HomeItems>
 
+    @Query("SELECT * FROM HomeItems WHERE id=:id")
+    fun readItemById(id: Int) : HomeItems
 
     @Query("SELECT * FROM HomeItems WHERE id = :id")
     fun readOrderId(id: Int) : HomeItems
