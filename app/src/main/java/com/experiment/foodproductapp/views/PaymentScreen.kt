@@ -20,6 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.airbnb.lottie.compose.*
 import com.experiment.foodproductapp.MainActivity
 import com.experiment.foodproductapp.R
 import com.experiment.foodproductapp.constants.Screen
@@ -169,17 +170,19 @@ fun PaymentScreen(
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
             )
+
             Column(
                 Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                Icon(
-                    modifier = Modifier.size(200.dp),
-                    painter = painterResource(id = R.drawable.ic_baseline_assignment_late_24),
-                    contentDescription = "ic_failure",
-//                    tint = Color.Unspecified,
-                )
+//                Icon(
+//                    modifier = Modifier.size(200.dp),
+//                    painter = painterResource(id = R.drawable.ic_baseline_assignment_late_24),
+//                    contentDescription = "ic_failure",
+////                    tint = Color.Unspecified,
+//                )
+                FailureAnimation(true)
                 Text(
                     text = stringResource(id = R.string.payment_failed_string),
                     fontFamily = titleFontFamily,
@@ -202,4 +205,23 @@ fun PaymentScreen(
             }
         }
     }
+}
+
+@Composable
+fun FailureAnimation(likedState: Boolean) {
+
+    val compositionResult = rememberLottieComposition(
+        spec = LottieCompositionSpec.RawRes(R.raw.failure_ani)
+    )
+
+    val progress = animateLottieCompositionAsState(
+        composition = compositionResult.value,
+        isPlaying = likedState,
+        iterations = 1,
+        speed = 1.6F,
+    )
+    LottieAnimation(
+        composition = compositionResult.value, progress = { progress.value },
+        modifier = Modifier.size(200.dp),
+    )
 }

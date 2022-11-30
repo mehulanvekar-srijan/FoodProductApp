@@ -3,10 +3,13 @@ package com.experiment.foodproductapp.viewmodels
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.experiment.foodproductapp.MainActivity
+import com.experiment.foodproductapp.R
 import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.constants.ValidationEvent
 import com.experiment.foodproductapp.database.entity.FinalPrice
@@ -116,7 +119,7 @@ class PaymentScreenViewModel(
     ){
         viewModelScope.launch(Dispatchers.Main){
             if(email != null) {
-                delay(2000)
+                delay(3000)
 //                navHostController.navigate(Screen.ProductCart.routeWithData(email)){
 //                    popUpTo(Screen.ProductCart.route)  { inclusive = true }
 //                }
@@ -127,3 +130,5 @@ class PaymentScreenViewModel(
     }
 
 }
+
+

@@ -58,6 +58,7 @@ fun OrderDetails(
         orderDetailsViewModel.setEmail(email)
         //orderDetailsViewModel.email.value = email.toString()
         orderDetailsViewModel.finalList.clear()
+//        orderDetailsViewModel.priceList.clear()
         orderDetailsViewModel.fetchOrderList()
     }
 
