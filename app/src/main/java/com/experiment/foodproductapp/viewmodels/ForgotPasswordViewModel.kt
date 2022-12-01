@@ -1,15 +1,10 @@
 package com.experiment.foodproductapp.viewmodels
 
-import android.content.Context
 import android.util.Log
-import android.widget.Toast
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.experiment.foodproductapp.BuildConfig
-import com.experiment.foodproductapp.R
 import com.experiment.foodproductapp.constants.ValidationEvent
 import com.experiment.foodproductapp.domain.event.ForgotPasswordFormEvent
 import com.experiment.foodproductapp.domain.use_case.ValidateConfirmPassword
@@ -17,10 +12,12 @@ import com.experiment.foodproductapp.domain.use_case.ValidateEmail
 import com.experiment.foodproductapp.domain.use_case.ValidatePassword
 import com.experiment.foodproductapp.repository.DatabaseRepository
 import com.experiment.foodproductapp.states.ForgotPasswordState
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
-import okhttp3.MediaType
+import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
