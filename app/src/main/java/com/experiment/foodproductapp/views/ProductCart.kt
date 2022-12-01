@@ -68,19 +68,12 @@ fun ProductCart(
         topBar = {
             TopAppBar(
                 title = {
-                    Row(horizontalArrangement = Arrangement.Center) {
-                        Text(
-                            text = stringResource(id = R.string.cart_string) + " ",
-                            fontFamily = titleFontFamily,
-                            fontWeight = FontWeight.Bold,
-                            color = DarkYellow,
-                        )
-                        Icon(
-                            imageVector = Icons.Default.ShoppingBag,
-                            contentDescription = "ic_cart_logo",
-                            tint = DarkYellow,
-                        )
-                    }
+                    Text(
+                        text = stringResource(id = R.string.cart_string) + " ",
+                        fontFamily = titleFontFamily,
+                        fontWeight = FontWeight.Bold,
+                        color = DarkYellow,
+                    )
                 },
                 navigationIcon = {
                     IconButton(
@@ -423,7 +416,7 @@ fun LoadImage(item: Product) {
     Image(
         painter = rememberImagePainter(item.url),
         contentDescription = "ic_cart_item",
-        contentScale = ContentScale.Crop,
+        contentScale = ContentScale.Fit,
         alignment = Alignment.Center,
         modifier = Modifier.padding(8.dp),
     )

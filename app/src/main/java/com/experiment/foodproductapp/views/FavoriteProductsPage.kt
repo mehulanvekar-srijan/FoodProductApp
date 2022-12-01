@@ -53,37 +53,10 @@ fun FavouriteProductsPage(
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
 
-
     LaunchedEffect(key1 = Unit, block = {
         favouriteProductsViewModel.initEmail()
         favouriteProductsViewModel.initLikedItemsList()
     })
-
-//    Column(
-//        modifier = Modifier.fillMaxSize(),
-//        verticalArrangement = Arrangement.Center,
-//        horizontalAlignment = Alignment.CenterHorizontally,
-//    ) {
-//        Text(text = email.toString())
-//        favouriteProductsViewModel.likedItemsList.forEach {
-//            Text(text = it.title)
-//        }
-//    }
-
-
-
-//    LaunchedEffect(key1 = Unit) {
-//
-//        //clearing list during recomposition
-//        //productCartViewModel.cartList.clear()
-//
-//        if (email != null) {
-//            //productCartViewModel.email.value = email
-//            //productCartViewModel.initAvailablePointsAndRedeemedAmount(email)
-//        }
-//
-//        //productCartViewModel.fetchCartList()
-//    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -239,7 +212,9 @@ fun FavouriteCardView(item: HomeItems) {
         ) {
             //Product Image
             Box(
-                modifier = Modifier.weight(2F)
+                modifier = Modifier
+                    .weight(2F),
+                contentAlignment = Alignment.Center
             ) {
                 FavouriteLoadImage(item)
             }

@@ -20,6 +20,7 @@ import com.experiment.foodproductapp.states.ForgotPasswordState
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
+import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -163,7 +164,7 @@ class ForgotPasswordViewModel(
         val client = OkHttpClient()
         val mediaType = "application/json".toMediaTypeOrNull()
         val content =
-            """{"personalizations": [ { "to": [ { "email": "${_state.value.email}" } ], "subject": "OTP" } ], "from": {"email": "sahil.deosekar@srijan.net" },"content": [{ "type": "text/plain","value": "Your otp is ${otp.value}" }] }"""
+            """{"personalizations": [ { "to": [ { "email": "${_state.value.email}" } ], "subject": "OTP" } ], "from": { "email": "sahil.deosekar@srijan.net" },"content": [{ "type": "text/plain","value": "Your otp is ${otp.value}" }] }"""
         val body = RequestBody.create(mediaType, content)
         val request = Request.Builder()
             .url("https://rapidprod-sendgrid-v1.p.rapidapi.com/mail/send")
@@ -174,9 +175,10 @@ class ForgotPasswordViewModel(
             .build()
 
         viewModelScope.launch(Dispatchers.IO) {
-//            val response = client.newCall(request).execute()
+            val response = client.newCall(request).execute()
             Log.d("testFP", "sendOtp: ${otp.value} content=$content")
-//            Log.d("testFP", "sendOtp: ${otp.value} response=$response")
+            Log.d("testFP", "sendOtp: response=$response")
+            //response.body?.close()
         }
     }
 

@@ -50,19 +50,21 @@ import com.experiment.foodproductapp.ui.theme.*
 
 import com.experiment.foodproductapp.viewmodels.HomeScreenViewModel
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 
 @Preview
 @Composable
 fun Preview() {
     val navHostController = rememberNavController()
-    ProductDetailsPage({ navHostController }, viewModel())
+    ProductDetailsPage({ navHostController }, koinViewModel())
 }
 
 
 @OptIn(ExperimentalCoilApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun ProductDetailsPage(
-    navHostControllerLambda: () -> NavHostController, homeScreenViewModel: HomeScreenViewModel
+    navHostControllerLambda: () -> NavHostController,
+    homeScreenViewModel: HomeScreenViewModel
 ) {
     val likedState = remember { mutableStateOf(false) }
 
@@ -86,6 +88,8 @@ fun ProductDetailsPage(
         Column(
             modifier = Modifier.fillMaxSize(),
         ) {
+
+            //White Background
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -94,6 +98,7 @@ fun ProductDetailsPage(
                     .background(Color.White)
             ) {
 
+                //Image Title Description
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -112,12 +117,12 @@ fun ProductDetailsPage(
                                 detectTapGestures(
                                     onDoubleTap = {
 
-                                        if (likedState.value) { //Liked
+                                        if (likedState.value) { //Already Liked, Then Remove
                                             homeScreenViewModel.removeFromFavourites(
                                                 id = homeScreenViewModel.productForDetailPage.value.id,
                                                 email = homeScreenViewModel.userEmail.value
                                             )
-                                        } else { //Not Yet Liked
+                                        } else { //Not Yet Liked, Then Add in the Table
                                             homeScreenViewModel.insertFavouriteProduct(
                                                 likedItems = LikedItems(
                                                     id = homeScreenViewModel.productForDetailPage.value.id,
@@ -127,27 +132,6 @@ fun ProductDetailsPage(
                                         }
                                         likedState.value = !likedState.value
 
-                                        Log.d(
-                                            "testTaps",
-                                            "ProductDetailsPage: onDoubleTap"
-                                        )
-//                                        coroutineScope.launch {
-//                                            if(likedState.value){ //Liked
-//                                                homeScreenViewModel.removeFromFavourites(
-//                                                    id = homeScreenViewModel.productForDetailPage.value.id,
-//                                                    email = homeScreenViewModel.userEmail.value
-//                                                )
-//                                            }
-//                                            else{ //Not Yet Liked
-//                                                homeScreenViewModel.insertFavouriteProduct(
-//                                                    likedItems = LikedItems(
-//                                                        id = homeScreenViewModel.productForDetailPage.value.id,
-//                                                        email = homeScreenViewModel.userEmail.value
-//                                                    )
-//                                                )
-//                                            }
-//                                        likedState.value = !likedState.value
-//                                        }
                                     },
                                 )
                             }
@@ -172,22 +156,25 @@ fun ProductDetailsPage(
                         ),
 
                         textAlign = TextAlign.Start,
-                        modifier = Modifier.padding(start = 40.dp, top = 20.dp)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 40.dp, top = 20.dp,end = 20.dp)
                     )
 
-                    Spacer(modifier = Modifier.padding(top = 20.dp))
+                    Spacer(modifier = Modifier.background(Color.Red).padding(top = 10.dp))
 
                     //Description
                     Text(
                         text = homeScreenViewModel.productForDetailPage.value.description,
                         color = LightDarkGray,
                         style = TextStyle(
-                            fontSize = 17.sp, fontFamily = descriptionFontFamily
+                            fontSize = 17.sp,
+                            fontFamily = descriptionFontFamily
                         ),
                         textAlign = TextAlign.Justify,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(start = 40.dp, end = 20.dp)
+                            .padding(start = 40.dp, end = 20.dp, bottom = 5.dp, top = 5.dp),
                     )
                 }
 

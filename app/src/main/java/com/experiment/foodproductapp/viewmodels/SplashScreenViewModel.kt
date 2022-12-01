@@ -73,7 +73,6 @@ class SplashScreenViewModel(
                 HomeItems(
                     id = 0,
                     url = "https://www.bigbasket.com/media/uploads/p/xxl/40213061_2-coolberg-non-alcoholic-beer-malt.jpg",
-//                    url = "https://products3.imgix.drizly.com/ci-budweiser-24269668d4e23c97.jpeg",
                     title = "Coolberg Non Alcoholic Beer - Malt",
                     description = "Coolberg Malt Beer is a Non-Alcoholic Beer. This NAB has toasty notes of barley malts and hops and a distinctive musky aroma. It is made from the finest natural barley malts extracts. It is carbonated and has a serious spunk. As it contains less carbonation and often develops a beer-like head when poured into a glass. It is a perfect blend of crisp, bold and smooth flavour. Enjoy it with your choice of snack in the evening or serve it at a party.",
                     price = 79,
@@ -82,7 +81,6 @@ class SplashScreenViewModel(
                 HomeItems(
                     id = 1,
                     url = "https://www.bigbasket.com/media/uploads/p/xxl/40122150_2-coolberg-beer-mint-non-alcoholic.jpg",
-//                    url = "https://products3.imgix.drizly.com/ci-budweiser-24269668d4e23c97.jpeg",
                     title = "Coolberg Non Alcoholic Beer - Mint",
                     description = "Coolberg Malt Beer is a Non-Alcoholic Beer. This NAB has toasty notes of barley malts and hops and a distinctive musky aroma. It is made from the finest natural barley malts extracts. It is carbonated and has a serious spunk. As it contains less carbonation and often develops a beer-like head when poured into a glass. It is a perfect blend of crisp, bold and smooth flavour. Enjoy it with your choice of snack in the evening or serve it at a party.",
                     price = 79,
@@ -91,7 +89,6 @@ class SplashScreenViewModel(
                 HomeItems(
                     id = 2,
                     url = "https://www.bigbasket.com/media/uploads/p/xxl/40213060_2-coolberg-non-alcoholic-beer-cranberry.jpg",
-//                    url = "https://products3.imgix.drizly.com/ci-budweiser-24269668d4e23c97.jpeg",
                     title = "Coolberg Non Alcoholic Beer - Cranberry",
                     description = "Coolberg Malt Beer is a Non-Alcoholic Beer. This NAB has toasty notes of barley malts and hops and a distinctive musky aroma. It is made from the finest natural barley malts extracts. It is carbonated and has a serious spunk. As it contains less carbonation and often develops a beer-like head when poured into a glass. It is a perfect blend of crisp, bold and smooth flavour. Enjoy it with your choice of snack in the evening or serve it at a party.",
                     price = 79,
@@ -100,7 +97,6 @@ class SplashScreenViewModel(
                 HomeItems(
                     id = 3,
                     url = "https://www.bigbasket.com/media/uploads/p/xxl/40213059_2-coolberg-non-alcoholic-beer-strawberry.jpg",
-//                    url = "https://products3.imgix.drizly.com/ci-budweiser-24269668d4e23c97.jpeg",
                     title = "Coolberg Non Alcoholic Beer - Strawberry",
                     description = "Coolberg Malt Beer is a Non-Alcoholic Beer. This NAB has toasty notes of barley malts and hops and a distinctive musky aroma. It is made from the finest natural barley malts extracts. It is carbonated and has a serious spunk. As it contains less carbonation and often develops a beer-like head when poured into a glass. It is a perfect blend of crisp, bold and smooth flavour. Enjoy it with your choice of snack in the evening or serve it at a party.",
                     price = 79,
@@ -109,7 +105,6 @@ class SplashScreenViewModel(
                 HomeItems(
                     id = 4,
                     url = "https://d1j4fphs4leb29.cloudfront.net/product_img/159150/380494-1.jpg",
-//                    url = "https://products3.imgix.drizly.com/ci-budweiser-24269668d4e23c97.jpeg",
                     title = "Coolberg Ginger Non Alcoholic Beer",
                     description = "Coolberg Ginger is a sweet pleasure-packed brew that tingles your taste buds with a zing. It has been brewed for an impeccable taste and a flawless aftertaste. It is a favourite among those who choose to take the wilder walk",
                     price = 71,
@@ -117,11 +112,11 @@ class SplashScreenViewModel(
                 ),
                 HomeItems(
                     id = 5,
-                    url = "https://cdn.shopify.com/s/files/1/0471/0907/9198/products/san-miguel-0-0-alcohol-free-lager-0-abv--116-1-p_503x503.png?v=1660226013",
-                    title = "San Miguel 0.0 Non Alcoholic Beer",
-                    description = "A taste of Spain recommends that before consuming, read carefully the ingredients, nutricional information, recommendations for use and conservation as well as all other information. Be warned that there may be transcription errors.",
-                    price = 80,
-                    alcohol = 1
+                    url = "https://cdn.shopify.com/s/files/1/0414/3031/9265/products/MinervaStout.001.png?v=1648506482",
+                    title = "Minerva Stout 355 ml",
+                    description = "Minerva Stout 355 ml is an elegant black beer with abundant abundant beige foam. From notes to roasted beans, caramel, subtle chocolate, coffee and herbal hops, Minerva Stout 355 ml offers a soft, velvety palate with slightly burned flavors that are complemented by notes of cocoa, chocolate and coffee. Classic English in its Tapatian version, Minerva Stout is a soft and velvety beer with dry and roasted flavors that evoke a visit to the Pub. Only for over 18s. Abuse in the consumption of this product is harmful to health. Avoid excess.",
+                    price = 130,
+                    alcohol = 6
                 ),
                 HomeItems(
                     id = 6,
@@ -133,11 +128,11 @@ class SplashScreenViewModel(
                 ),
                 HomeItems(
                     id = 7,
-                    url = "https://maxcommerce-cdn.freetls.fastly.net/liquorland/886668_20-1-5-12.png?format=pjpg&optimise=medium&auto=webp&width=800&height=800&fit=bounds&canvas=800,800",
-                    title = "EXPORT CITRUS",
-                    description = "A refreshing lemon flavoured low alcohol beer perfect on a summer's afternoon.",
-                    price = 110,
-                    alcohol = 2
+                    url = "https://images.squarespace-cdn.com/content/v1/553bfa4be4b0786b41dbc163/1628612226869-Y5ND4NR18D7X701NR3QL/Wensleydale+Brewery+Black+Dub+Stout+4.4%25.JPG?format=1000w",
+                    title = "Wensleydale Brewery Black Dub Stout",
+                    description = "Combining different malts gives Black Dub a rich and complex taste;  roasted coffee with hints of chocolate meet sweet oaty notes. There is a dark, deep pool (or dub) in the River Cover to the rear of Middleham Castle, after which our stout is named.",
+                    price = 100,
+                    alcohol = 4
                 ),
                 HomeItems(
                     id = 8,
@@ -149,51 +144,51 @@ class SplashScreenViewModel(
                 ),
                 HomeItems(
                     id = 9,
-                    url = "https://maxcommerce-cdn.freetls.fastly.net/liquorland/886908_20-1-5-12.png?format=pjpg&optimise=medium&auto=webp&width=800&height=800&fit=bounds&canvas=800,800",
-                    title = "EXPORT 33",
-                    description = "Brewed 33% longer than a standard beer to remove unwanted sugars and reduce the beer's level of carbohydrates - without compromising taste.",
+                    url = "https://images.squarespace-cdn.com/content/v1/553bfa4be4b0786b41dbc163/1591798676207-NAASOBJYWA17DFUUNVAH/Dark+Horse+Brewery+-+Hetton+Pale+Ale.JPG?format=1000w",
+                    title = "Dark Horse Brewery Hetton Pale Ale",
+                    description = "Ingredients and Allergen advice: Contains water, malted barley, wheat, hops, yeast",
                     price = 90,
                     alcohol = 4
                 ),
                 HomeItems(
                     id = 10,
-                    url = "https://maxcommerce-cdn.freetls.fastly.net/liquorland/897205_20-1-5-12.jpg?format=pjpg&optimise=medium&auto=webp&width=800&height=800&fit=bounds&canvas=800,800",
-                    title = "HEINEKEN LIGHT BOTTLES 330ML",
-                    description = "This exciting innovation from Heineken is set to cater for Heineken drinkers looking for a lighter alternative.",
-                    price = 120,
-                    alcohol = 4
+                    url = "https://www.beerparadise.co.uk/images/ww/product/187807-zi.jpg",
+                    title = "Schneider Und Sohn Aventinus",
+                    description = "For golden moments by the fireplace: Mein Aventinus - the wholehearted, dark ruby coloured wheat beer, intensive and fiery, warming, well-balanced and tender. Bavaria's oldest wheat Doppelbock - brewed since 1907! Its sturdy body in combination with its sweet malty aroma is an invitation to profound indulgence - an ingenious blend with a strong body. Perfectly matches rustic dishes, dark roasts and sweet desserts.",
+                    price = 140,
+                    alcohol = 8
                 ),
                 HomeItems(
                     id = 11,
-                    url = "https://maxcommerce-cdn.freetls.fastly.net/liquorland/896395_20-1-5-12.jpg?format=pjpg&optimise=medium&auto=webp&width=800&height=800&fit=bounds&canvas=800,800",
-                    title = "PURE BLONDE ULTRA LOW CARB",
-                    description = "A refreshing, full-flavoured lager, brewed using the finest ingredients. Pure Blonde is brewed with no preservatives to deliver an easy-drinking, ultra low carb beer",
-                    price = 140,
-                    alcohol = 5
+                    url = "https://www.beerparadise.co.uk/images/ww/product/187304-mi.jpg",
+                    title = "Erdinger Dunkel Weisse",
+                    description = "Carefully selected dark malts with delicate roasting aromas give ERDINGER Dunkel its full-bodied flavor and strong character. This elegant wheat beer has a lustrous, deep dark-brown appearance in the glass",
+                    price = 80,
+                    alcohol = 6
                 ),
                 HomeItems(
                     id = 12,
-                    url = "https://i.pinimg.com/236x/6e/d5/d4/6ed5d4751254be1d2bad9a8eaf927c8d--heineken-creative-package-design.jpg",
-                    title = "Trafiq Club Heineken Limited Edition",
-                    description = "These bottles were presented as part of the Heineken Cities campaign at the Budapest Design Week",
-                    price = 200,
+                    url = "https://www.beerparadise.co.uk/images/ww/product/181833-mi.jpg",
+                    title = "Samuel Smith Brewery",
+                    description = "Brewed with well water (the original well at the Old Brewery, sunk in 1758, is still in use, with the hard well water being drawn from 85 feet underground); best malted barley and a generous amount of choicest aroma hops",
+                    price = 100,
                     alcohol = 5
                 ),
                 HomeItems(
                     id = 13,
-                    url = "https://maxcommerce-cdn.freetls.fastly.net/liquorland/230284_20-1-5-12.JPG?format=pjpg&optimise=medium&auto=webp&width=800&height=800&fit=bounds&canvas=800,800",
-                    title = "Speights Summit Ultra Lager",
-                    description = "Speights Summit Ultra Lager is one of the most popular drink",
-                    price = 80,
-                    alcohol = 1
+                    url = "https://images.squarespace-cdn.com/content/v1/553bfa4be4b0786b41dbc163/1585678305114-DCTNSSKY68NQHNZG7YWK/Yorkshire+Heart+Brewery+Ghost+Porter.JPG?format=1000w",
+                    title = "Yorkshire Heart Brewery Ghost Porter",
+                    description = "Ingredients and Allergen advice: Contains water, malted barley, wheat, hops, yeast",
+                    price = 100,
+                    alcohol = 5
                 ),
                 HomeItems(
                     id = 14,
-                    url = "https://maxcommerce-cdn.freetls.fastly.net/liquorland/891417_20-1-5-12.jpg?format=pjpg&optimise=medium&auto=webp&width=800&height=800&fit=bounds&canvas=800,800",
-                    title = "SPEIGHTS MID ALE",
-                    description = "Speights don't usually do things by halves, but they had the good idea of making a full flavoured 2% beer. Brewed using Crystal, Caramalt and Chocolate malts, it enjoys a smooth caramelised flavour and aroma, which is contrasted by the bitterness of Pacific Jade and Green Bullet hops. The finished product is a perfectly balanced, mid strength beer that's still full of flavour.",
-                    price = 80,
-                    alcohol = 2
+                    url = "https://images.squarespace-cdn.com/content/v1/553bfa4be4b0786b41dbc163/1649329453619-FPHCE0ZP2W020W6EXJ94/Tartarus+Beers+Pishacha+-+Export+India+Porter+6.8%25.JPG?format=1000w",
+                    title = "Tartarus Beers Pishacha",
+                    description = "Built on a rich roasty porter base, Simcoe, Cascade & Chinook hops are used in the boil and dry hop",
+                    price = 120,
+                    alcohol = 7
                 ),
                 HomeItems(
                     id = 15,
@@ -245,11 +240,11 @@ class SplashScreenViewModel(
                 ),
                 HomeItems(
                     id = 21,
-                    url = "https://mishry.com/wp-content/uploads/2019/08/Carlsberg.png",
-                    title = "Carlsberg Smooth Lager Beer",
-                    description = "The Carlsberg smooth lager has been made with the finest European barley. It has a smooth and rich taste specially crafted for the Indian palate",
-                    price = 88,
-                    alcohol = 5
+                    url = "https://blackdonkeybeer.com/wp-content/uploads/2021/06/UW-Savage-500B-1-1.png",
+                    title = "Underworld Savage",
+                    description = "Aromas of candied citrus, blackberries, yeast and malt. Dry with flavours of lemon zest, forest fruits and funky wild yeast spice. Clean lingering bitterness",
+                    price = 120,
+                    alcohol = 3
                 ),
                 HomeItems(
                     id = 22,
@@ -285,46 +280,6 @@ class SplashScreenViewModel(
                 ),
                 HomeItems(
                     id = 26,
-                    url = "https://dydza6t6xitx6.cloudfront.net/ci-pilsner-urquell-68942c4af233c846.jpeg",
-                    title = "Pilsner Urquell Beer",
-                    description = "Plzen in the Czech Republic was literally born to make beer. When King Wenceslas II of Bohemia founded the city in 1295, he granted its 260 households the right to make beer. For hundreds of years, this worked great. Yet as might be expect with this many home brewers, quality varied over time. It was easy to get beer but not so easy to get good beer",
-                    price = 110,
-                    alcohol = 4
-                ),
-                HomeItems(
-                    id = 27,
-                    url = "https://cdn.shopify.com/s/files/1/0056/9019/6077/products/HellesBelles_1512x.png?v=1637056992",
-                    title = "HELLES BELLES PILSNER LAGER",
-                    description = "Ultimate in refreshment, this Helles lager was a pet project of the brewery team in 2020 and it proved so popular that we have made it a core line.",
-                    price = 100,
-                    alcohol = 4
-                ),
-                HomeItems(
-                    id = 28,
-                    url = "https://cdn.shopify.com/s/files/1/0056/9019/6077/products/OldHag_1080x.png?v=1637057483",
-                    title = "OLD HAG STOUT",
-                    description = "A traditional style stout porter. Discretion prevents us from revealing the inspiration for this one!",
-                    price = 120,
-                    alcohol = 5
-                ),
-                HomeItems(
-                    id = 29,
-                    url = "https://cdn.shopify.com/s/files/1/0056/9019/6077/products/BurkesSpecial_1080x.png?v=1637057220",
-                    title = "BURKES SPECIAL ESB",
-                    description = "A exceptional bitter in more ways than one. One of our absolute favourites, and a winner with lovers of darker beers. Enjoy ideally with a faithful companion.",
-                    price = 110,
-                    alcohol = 5
-                ),
-                HomeItems(
-                    id = 30,
-                    url = "https://cdn.shopify.com/s/files/1/0056/9019/6077/products/HellesBelles.png?v=1637056992",
-                    title = "HELLES BELLES PILSNER LAGER",
-                    description = "Ultimate in refreshment, this Helles lager was a pet project of the brewery team in 2020 and it proved so popular that we have made it a core line.",
-                    price = 90,
-                    alcohol = 4
-                ),
-                HomeItems(
-                    id = 31,
                     url = "https://www.seekpng.com/png/detail/878-8780069_craft-beer-beer-bottle.png",
                     title = "Night Swim",
                     description = "Dark and luxurious like a midnight dip in the warm gulf waters off St. Pete Beach. Rich and Roasty with a hint of chocolate. Both this porter, and a night swim, are best enjoyed with a friend",
@@ -332,72 +287,127 @@ class SplashScreenViewModel(
                     alcohol = 2
                 ),
                 HomeItems(
-                    id = 32,
-                    url = "https://blackdonkeybeer.com/wp-content/uploads/2021/06/UW-Savage-500B-1-1.png",
-                    title = "Underworld Savage",
-                    description = "Aromas of candied citrus, blackberries, yeast and malt. Dry with flavours of lemon zest, forest fruits and funky wild yeast spice. Clean lingering bitterness",
-                    price = 120,
-                    alcohol = 3
+                    id = 27,
+                    url = "https://cdn.shopify.com/s/files/1/0414/3031/9265/products/FAU-DEVOXION-650_0c8f5e01-fa12-456c-b721-a62668e7b368.jpg?v=1645510729",
+                    title = "Fauna Skull DevoXion Red Flanders 650 ml",
+                    description = "Intense burgundy red color with low retention white foam. Asertive acid that is accompanied by berries, nuts and bread. Its bitterness is almost non-existent. Fluted and slightly acetic, it denotes maturation in barrels. ",
+                    price = 200,
+                    alcohol = 6
                 ),
                 HomeItems(
-                    id = 33,
-                    url = "https://images.squarespace-cdn.com/content/v1/553bfa4be4b0786b41dbc163/1649329453619-FPHCE0ZP2W020W6EXJ94/Tartarus+Beers+Pishacha+-+Export+India+Porter+6.8%25.JPG?format=1000w",
-                    title = "Tartarus Beers Pishacha",
-                    description = "Built on a rich roasty porter base, Simcoe, Cascade & Chinook hops are used in the boil and dry hop",
+                    id = 28,
+                    url = "https://cdn.shopify.com/s/files/1/0056/9019/6077/products/OldHag_1080x.png?v=1637057483",
+                    title = "Old Hag Stout",
+                    description = "A traditional style stout porter. Discretion prevents us from revealing the inspiration for this one!",
                     price = 120,
-                    alcohol = 7
-                ),
-                HomeItems(
-                    id = 34,
-                    url = "https://images.squarespace-cdn.com/content/v1/553bfa4be4b0786b41dbc163/1585678305114-DCTNSSKY68NQHNZG7YWK/Yorkshire+Heart+Brewery+Ghost+Porter.JPG?format=1000w",
-                    title = "Yorkshire Heart Brewery Ghost Porter",
-                    description = "Ingredients and Allergen advice: Contains water, malted barley, wheat, hops, yeast",
-                    price = 100,
                     alcohol = 5
                 ),
                 HomeItems(
+                    id = 29,
+                    url = "https://cdn.shopify.com/s/files/1/0056/9019/6077/products/BurkesSpecial_1080x.png?v=1637057220",
+                    title = "Burkes Special EBS",
+                    description = "A exceptional bitter in more ways than one. One of our absolute favourites, and a winner with lovers of darker beers. Enjoy ideally with a faithful companion.",
+                    price = 110,
+                    alcohol = 5
+                ),
+                HomeItems(
+                    id = 30,
+                    url = "https://cdn.shopify.com/s/files/1/0056/9019/6077/products/HellesBelles.png?v=1637056992",
+                    title = "Helles Belles Pilsner Lager",
+                    description = "Ultimate in refreshment, this Helles lager was a pet project of the brewery team in 2020 and it proved so popular that we have made it a core line.",
+                    price = 90,
+                    alcohol = 4
+                ),
+
+                //Can Be removed
+                /*
+                HomeItems(
+                    id = 31,
+                    url = "https://dydza6t6xitx6.cloudfront.net/ci-pilsner-urquell-68942c4af233c846.jpeg",
+                    title = "Pilsner Urquell Beer",
+                    description = "Plzen in the Czech Republic was literally born to make beer. When King Wenceslas II of Bohemia founded the city in 1295, he granted its 260 households the right to make beer. For hundreds of years, this worked great. Yet as might be expect with this many home brewers, quality varied over time. It was easy to get beer but not so easy to get good beer",
+                    price = 110,
+                    alcohol = 4
+                ),
+                HomeItems(
+                    id = 32,
+                    url = "https://mishry.com/wp-content/uploads/2019/08/Carlsberg.png",
+                    title = "Carlsberg Smooth Lager Beer",
+                    description = "The Carlsberg smooth lager has been made with the finest European barley. It has a smooth and rich taste specially crafted for the Indian palate",
+                    price = 88,
+                    alcohol = 5
+                ),
+                HomeItems(
+                    id = 33,
+                    url = "https://maxcommerce-cdn.freetls.fastly.net/liquorland/891417_20-1-5-12.jpg?format=pjpg&optimise=medium&auto=webp&width=800&height=800&fit=bounds&canvas=800,800",
+                    title = "SPEIGHTS MID ALE",
+                    description = "Speights don't usually do things by halves, but they had the good idea of making a full flavoured 2% beer. Brewed using Crystal, Caramalt and Chocolate malts, it enjoys a smooth caramelised flavour and aroma, which is contrasted by the bitterness of Pacific Jade and Green Bullet hops. The finished product is a perfectly balanced, mid strength beer that's still full of flavour.",
+                    price = 80,
+                    alcohol = 2
+                ),
+                HomeItems(
+                    id = 34,
+                    url = "https://maxcommerce-cdn.freetls.fastly.net/liquorland/230284_20-1-5-12.JPG?format=pjpg&optimise=medium&auto=webp&width=800&height=800&fit=bounds&canvas=800,800",
+                    title = "Speights Summit Ultra Lager",
+                    description = "Speights Summit Ultra Lager is one of the most popular drink",
+                    price = 80,
+                    alcohol = 1
+                ),
+                HomeItems(
                     id = 35,
-                    url = "https://www.beerparadise.co.uk/images/ww/product/181833-mi.jpg",
-                    title = "SAMUEL SMITH BREWERY",
-                    description = "Brewed with well water (the original well at the Old Brewery, sunk in 1758, is still in use, with the hard well water being drawn from 85 feet underground); best malted barley and a generous amount of choicest aroma hops",
-                    price = 100,
+                    url = "https://i.pinimg.com/236x/6e/d5/d4/6ed5d4751254be1d2bad9a8eaf927c8d--heineken-creative-package-design.jpg",
+                    title = "Trafiq Club Heineken Limited Edition",
+                    description = "These bottles were presented as part of the Heineken Cities campaign at the Budapest Design Week",
+                    price = 200,
                     alcohol = 5
                 ),
                 HomeItems(
                     id = 36,
-                    url = "https://www.beerparadise.co.uk/images/ww/product/187304-mi.jpg",
-                    title = "ERDINGER Dunkel Weisse",
-                    description = "Carefully selected dark malts with delicate roasting aromas give ERDINGER Dunkel its full-bodied flavor and strong character. This elegant wheat beer has a lustrous, deep dark-brown appearance in the glass",
-                    price = 80,
-                    alcohol = 6
+                    url = "https://maxcommerce-cdn.freetls.fastly.net/liquorland/896395_20-1-5-12.jpg?format=pjpg&optimise=medium&auto=webp&width=800&height=800&fit=bounds&canvas=800,800",
+                    title = "PURE BLONDE ULTRA LOW CARB",
+                    description = "A refreshing, full-flavoured lager, brewed using the finest ingredients. Pure Blonde is brewed with no preservatives to deliver an easy-drinking, ultra low carb beer",
+                    price = 140,
+                    alcohol = 5
                 ),
                 HomeItems(
                     id = 37,
-                    url = "https://www.beerparadise.co.uk/images/ww/product/187807-zi.jpg",
-                    title = "SCHNEIDER UND SOHN Aventinus",
-                    description = "For golden moments by the fireplace: Mein Aventinus - the wholehearted, dark ruby coloured wheat beer, intensive and fiery, warming, well-balanced and tender. Bavaria's oldest wheat Doppelbock - brewed since 1907! Its sturdy body in combination with its sweet malty aroma is an invitation to profound indulgence - an ingenious blend with a strong body. Perfectly matches rustic dishes, dark roasts and sweet desserts.",
-                    price = 140,
-                    alcohol = 8
+                    url = "https://maxcommerce-cdn.freetls.fastly.net/liquorland/897205_20-1-5-12.jpg?format=pjpg&optimise=medium&auto=webp&width=800&height=800&fit=bounds&canvas=800,800",
+                    title = "HEINEKEN LIGHT BOTTLES 330ML",
+                    description = "This exciting innovation from Heineken is set to cater for Heineken drinkers looking for a lighter alternative.",
+                    price = 120,
+                    alcohol = 4
                 ),
+                HomeItems(
+                    id = 38,
+                    url = "https://maxcommerce-cdn.freetls.fastly.net/liquorland/886908_20-1-5-12.png?format=pjpg&optimise=medium&auto=webp&width=800&height=800&fit=bounds&canvas=800,800",
+                    title = "EXPORT 33",
+                    description = "Brewed 33% longer than a standard beer to remove unwanted sugars and reduce the beer's level of carbohydrates - without compromising taste.",
+                    price = 90,
+                    alcohol = 4
+                ),
+                HomeItems(
+                    id = 39,
+                    url = "https://maxcommerce-cdn.freetls.fastly.net/liquorland/886668_20-1-5-12.png?format=pjpg&optimise=medium&auto=webp&width=800&height=800&fit=bounds&canvas=800,800",
+                    title = "EXPORT CITRUS",
+                    description = "A refreshing lemon flavoured low alcohol beer perfect on a summer's afternoon.",
+                    price = 110,
+                    alcohol = 2
+                ),
+               HomeItems(
+                    id = 40,
+                    url = "https://cdn.shopify.com/s/files/1/0471/0907/9198/products/san-miguel-0-0-alcohol-free-lager-0-abv--116-1-p_503x503.png?v=1660226013",
+                    title = "San Miguel 0.0 Non Alcoholic Beer",
+                    description = "A taste of Spain recommends that before consuming, read carefully the ingredients, nutricional information, recommendations for use and conservation as well as all other information. Be warned that there may be transcription errors.",
+                    price = 80,
+                    alcohol = 1
+                ),
+                */
             ).forEach {
                 try { databaseRepository.insertItems(it) }
                 catch (_: android.database.sqlite.SQLiteConstraintException) { }
             }
 
         }
-
-//        viewModelScope.launch(Dispatchers.IO){
-//
-//            try {
-//                databaseRepository.insertLikedItem(LikedItems(id = 1, email = "meh@ul.com"))
-//                databaseRepository.insertLikedItem(LikedItems(id = 2, email = "meh@ul.com"))
-//                databaseRepository.insertLikedItem(LikedItems(id = 10, email = "meh@ul.com"))
-//            }
-//            catch (_: android.database.sqlite.SQLiteConstraintException) { }
-//
-//            val list = databaseRepository.readAllLikedItems()
-//            Log.d("testLikedItem", "dummyData: $list")
-//        }
     }
 
 }
