@@ -111,7 +111,7 @@ fun RewardDetails(
                             .padding(rewardsDetailsPageViewModel.bronzePadding.value)
                             .border(
                                 width = rewardsDetailsPageViewModel.bronzeBorder.value,
-                                color = Color.Black,
+                                color = Color.Yellow,
                                 shape = RoundedCornerShape(20.dp)
                             ),
                         verticalAlignment = Alignment.CenterVertically,
@@ -251,7 +251,7 @@ fun RewardDetails(
                             .padding(rewardsDetailsPageViewModel.silverPadding.value)
                             .border(
                                 width = rewardsDetailsPageViewModel.silverBorder.value,
-                                color = Color.Black,
+                                color = Color.Yellow,
                                 shape = RoundedCornerShape(20.dp)
                             ),
                         verticalAlignment = Alignment.CenterVertically,
@@ -390,7 +390,7 @@ fun RewardDetails(
                             .padding(rewardsDetailsPageViewModel.goldPadding.value)
                             .border(
                                 width = rewardsDetailsPageViewModel.goldBorder.value,
-                                color = Color.Black,
+                                color = Color.Yellow,
                                 shape = RoundedCornerShape(20.dp)
                             ),
                         verticalAlignment = Alignment.CenterVertically,
