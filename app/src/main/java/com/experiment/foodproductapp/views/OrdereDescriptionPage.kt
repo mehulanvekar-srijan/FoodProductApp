@@ -1,18 +1,14 @@
 package com.experiment.foodproductapp.views
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 
 
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -22,17 +18,12 @@ import androidx.navigation.compose.rememberNavController
 import com.experiment.foodproductapp.R
 import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.viewmodels.OrderDetailsViewModel
-import java.math.RoundingMode
-import java.text.DecimalFormat
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
 import androidx.compose.material.Text
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
@@ -41,12 +32,12 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
+import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
-
-
-
+import com.experiment.foodproductapp.constants.Screen
 
 
 @Preview
@@ -61,6 +52,7 @@ fun Preview4() {
 }
 
 
+@OptIn(ExperimentalCoilApi::class)
 @Composable
 fun OrderDescriptionPage(
     navHostControllerLambda: () -> NavHostController,
@@ -68,9 +60,12 @@ fun OrderDescriptionPage(
 ) {
 
     ChangeBarColors(statusColor = Color.White, navigationBarColor = Color.White)
-    val df = DecimalFormat("#.##")
-    df.roundingMode = RoundingMode.DOWN
-    var sum = 0
+//    val df = DecimalFormat("#.##")
+//    df.roundingMode = RoundingMode.DOWN
+
+    LaunchedEffect(key1 = Unit) {
+        orderDetailsViewModel.calculateRedeemedAmount()
+    }
 
 
     Box(
@@ -87,14 +82,19 @@ fun OrderDescriptionPage(
                 )
         ) {
             TopAppBar(
-                title = { Text(text = "Order Details", color = Color.White) },
+                title = {
+                    Text(
+                        text = stringResource(id = R.string.order_details_string),
+                        color = Color.White
+                    )
+                },
                 backgroundColor = Color.White,
                 elevation = 0.dp,
                 navigationIcon = {
                     IconButton(onClick = { navHostControllerLambda().navigateUp() }) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "",
+                            contentDescription = "ic_arrow_back_bt",
                             tint = DarkYellow
                         )
                     }
@@ -103,7 +103,7 @@ fun OrderDescriptionPage(
 
             Image(
                 painter = rememberImagePainter("https://img.freepik.com/free-photo/glass-bottles-beer-with-glass-ice-dark-background_1150-8899.jpg?w=1800&t=st=1668510784~exp=1668511384~hmac=42d4cfbe3cb90558df3640a8ab42e896db228c61c752648f20bb6e0ceb87b586"),
-                contentDescription = "Background Image",
+                contentDescription = "ic_description_top_background",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -139,7 +139,7 @@ fun OrderDescriptionPage(
                 Column(modifier = Modifier.padding(15.dp)) {
                     val item = orderDetailsViewModel.orderDetails
                     Text(
-                        text = "Order No: #" + item[0].orderId,
+                        text = stringResource(id = R.string.order_no_string) + item[0].orderId,
                         fontFamily = titleFontFamily,
                         fontSize = 22.sp,
                         fontWeight = FontWeight.SemiBold,
@@ -147,7 +147,7 @@ fun OrderDescriptionPage(
                         modifier = Modifier.padding(bottom = 10.dp)
                     )
                     Text(
-                        text = "Total Items: " + item.size.toString(),
+                        text = stringResource(id = R.string.total_items_string) + " " + item.size.toString(),
                         fontFamily = titleFontFamily,
                         fontSize = 22.sp,
                         color = Color.DarkGray,
@@ -193,7 +193,7 @@ fun OrderDescriptionPage(
 
 
                             Text(
-                                text = "Rs. " + item.price * item.count,
+                                text = stringResource(id = R.string.rs_dot_string) + " " + item.price * item.count,
                                 fontSize = 18.sp,
                                 fontFamily = descriptionFontFamily,
                                 fontWeight = FontWeight.Thin,
@@ -201,8 +201,6 @@ fun OrderDescriptionPage(
                                     .padding(start = 15.dp)
                                     .fillMaxWidth()
                             )
-                            sum += item.price * item.count
-
                         }
 
                     }
@@ -229,7 +227,7 @@ fun OrderDescriptionPage(
                             //Log.d("CheckSum", "OrderDescriptionPage: Sum is: $sum")
 
                             Text(
-                                text = "Item Total:",
+                                text = stringResource(id = R.string.item_total_string),
                                 fontFamily = descriptionFontFamily,
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Thin,
@@ -239,7 +237,7 @@ fun OrderDescriptionPage(
                             )
 
                             Text(
-                                text = "Rs. ${df.format(sum * .82)}",
+                                text = stringResource(id = R.string.rs_dot_string) + " " + orderDetailsViewModel.calculateSum(orderDetailsViewModel.orderDetails),
                                 fontFamily = descriptionFontFamily,
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Thin,
@@ -258,7 +256,7 @@ fun OrderDescriptionPage(
                                 .padding(bottom = 10.dp)
                         ) {
                             Text(
-                                text = "Tax:",
+                                text = stringResource(id = R.string.redeemed_amount_string),
                                 fontFamily = descriptionFontFamily,
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.SemiBold,
@@ -268,7 +266,12 @@ fun OrderDescriptionPage(
                             )
 
                             Text(
-                                text = "Rs. ${df.format(sum * .18)}",
+                                text = stringResource(id = R.string.rs_dot_string) + " " + (
+                                            orderDetailsViewModel.calculateSum(
+                                                orderDetailsViewModel.orderDetails
+                                            ) - orderDetailsViewModel.finalAmount.value
+                                        ).toInt(),
+
                                 fontFamily = descriptionFontFamily,
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.SemiBold,
@@ -286,7 +289,7 @@ fun OrderDescriptionPage(
                                 .padding(bottom = 10.dp)
                         ) {
                             Text(
-                                text = "Amount Paid:",
+                                text = stringResource(id = R.string.amount_paid_string),
                                 fontFamily = descriptionFontFamily,
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.SemiBold,
@@ -296,7 +299,7 @@ fun OrderDescriptionPage(
                             )
 
                             Text(
-                                text = "Rs. ${sum}",
+                                text = stringResource(id = R.string.rs_dot_string) + " " + orderDetailsViewModel.finalAmount.value.toInt(),
                                 fontFamily = descriptionFontFamily,
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.SemiBold,
@@ -312,7 +315,7 @@ fun OrderDescriptionPage(
                     //Log.d("CheckSum", "OrderDescriptionPage end of lazy: Sum is: $sum")
 
                 }
-                Log.d("CheckSum", "OrderDescriptionPage outside lazy: Sum is: $sum")
+                //Log.d("CheckSum", "OrderDescriptionPage outside lazy: Sum is: $sum")
             }
 
             Row(
@@ -332,15 +335,16 @@ fun OrderDescriptionPage(
                 ) {
                     IconButton(
                         onClick = {
-                                  orderDetailsViewModel.navigateToHomeScreenPage(navHostController = navHostControllerLambda())
+                            navHostControllerLambda().navigate(Screen.HomeScreen.routeWithData(orderDetailsViewModel.userEmail.value)) {
+                                popUpTo(Screen.HomeScreen.route) { inclusive = true }
+                            }
                         },
                         modifier = Modifier
-
                             .size(width = 40.dp, height = 35.dp)
                     ) {
                         Icon(
                             imageVector = Icons.Default.Home,
-                            contentDescription = "",
+                            contentDescription = "ic_home_bt",
                             tint = Color.White,
                             modifier = Modifier
                                 .fillMaxSize()

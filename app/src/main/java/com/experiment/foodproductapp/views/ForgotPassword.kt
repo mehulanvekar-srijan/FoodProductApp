@@ -1,43 +1,70 @@
 package com.experiment.foodproductapp.views
 
+import android.util.Log
 import android.widget.Toast
+import androidx.activity.OnBackPressedDispatcher
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.twotone.EditCalendar
 import androidx.compose.runtime.*
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.FocusManager
+import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.*
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import com.experiment.foodproductapp.R
+import com.experiment.foodproductapp.constants.Screen
+import com.experiment.foodproductapp.constants.ValidationEvent
+import com.experiment.foodproductapp.domain.event.ForgotPasswordFormEvent
 import com.experiment.foodproductapp.domain.event.SignupFormEvent
 import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.viewmodels.ForgotPasswordViewModel
+import com.razorpay.OTP
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 
-@Preview(showBackground = true)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun ForgotPassword(
-    forgotPasswordViewModel: ForgotPasswordViewModel = viewModel()
+    navHostControllerLambda:()-> NavHostController,
+    forgotPasswordViewModel: ForgotPasswordViewModel = koinViewModel()
 ) {
 
     ChangeBarColors(navigationBarColor = Color.White)
@@ -45,19 +72,57 @@ fun ForgotPassword(
     val coroutineScope = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
     val context = LocalContext.current
+    val viewRequesterForSetButton = remember { BringIntoViewRequester() }
 
-    val inputList = remember { mutableStateListOf("","","","") }
+    LaunchedEffect(key1 = Unit) {
+        forgotPasswordViewModel.validationEvents.collect { event ->
+            when (event) {
+                is ValidationEvent.Success -> {
+                    if (forgotPasswordViewModel.showEnterEmail.value) {
+                        Toast.makeText(
+                            context,
+                            R.string.email_not_registered_string,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } else if (forgotPasswordViewModel.showEnterPasswordTextField.value) {
+                        Toast.makeText(
+                            context,
+                            "Password updated",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        delay(1000L)
+                        navHostControllerLambda().navigate(Screen.SignInScreen.route) {
+                            popUpTo(Screen.SignInScreen.route) { inclusive = true }
+                        }
+                    }
+                }
+                is ValidationEvent.Failure -> {
+                    if (forgotPasswordViewModel.showEnterEmail.value) {
+                        Toast.makeText(
+                            context,
+                            forgotPasswordViewModel.state.value.emailError,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } else if (forgotPasswordViewModel.showEnterPasswordTextField.value) {
+                        Toast.makeText(
+                            context,
+                            forgotPasswordViewModel.state.value.passwordError,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
+        }
+    }
 
-    val showEnterEmail = remember { mutableStateOf(true) }
-    val showEnterOTP = remember { mutableStateOf(false) }
-    val showEnterPasswordTextField = remember { mutableStateOf(false) }
+    val inputList = remember { mutableStateListOf("", "", "", "") }
 
-    Box(modifier = Modifier.fillMaxSize()){
+    Box(modifier = Modifier.fillMaxSize()) {
 
         //Background Image
         Image(
             painter = painterResource(id = R.drawable.background_yellow_wave),
-            contentDescription = "Background Image",
+            contentDescription = "ic_background_image",
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
         )
@@ -73,7 +138,7 @@ fun ForgotPassword(
                 modifier = Modifier
                     .fillMaxHeight(0.40F),
                 painter = painterResource(id = R.drawable.ic_beer_cheers),
-                contentDescription = "brand logo"
+                contentDescription = "ic_brand_logo"
             )
 
             LazyColumn(
@@ -84,12 +149,12 @@ fun ForgotPassword(
                     .padding(20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
-            ){
+            ) {
 
                 item { //Enter email Text
-                    AnimatedVisibility(visible = showEnterEmail.value){
+                    AnimatedVisibility(visible = forgotPasswordViewModel.showEnterEmail.value) {
                         Text(
-                            text = "Please enter your registered email",
+                            text = stringResource(id = R.string.please_enter_your_registered_email_string),
                             style = MaterialTheme.typography.h4,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.padding(10.dp),
@@ -100,16 +165,23 @@ fun ForgotPassword(
                     }
                 }
                 item { //Enter email TextField
-                    AnimatedVisibility(visible = showEnterEmail.value){
+                    AnimatedVisibility(visible = forgotPasswordViewModel.showEnterEmail.value) {
                         TextField(
                             modifier = Modifier
                                 .fillMaxWidth(),
-                            value = forgotPasswordViewModel.inputEmail.value,
-                            shape= RoundedCornerShape(30.dp),
+                            value = forgotPasswordViewModel.state.value.email,
+                            shape = RoundedCornerShape(30.dp),
                             onValueChange = {
-                                forgotPasswordViewModel.setEmail(it)
+                                forgotPasswordViewModel.onEvent(
+                                    ForgotPasswordFormEvent.EmailChanged(it)
+                                )
                             },
-                            label = { Text(text = "Email", color = Color.Black) },
+                            label = {
+                                Text(
+                                    text = stringResource(id = R.string.email_string),
+                                    color = Color.Black
+                                )
+                            },
                             colors = TextFieldDefaults.textFieldColors(
                                 textColor = Color.Black,
                                 backgroundColor = LightGray1,
@@ -125,29 +197,22 @@ fun ForgotPassword(
                         )
                         Spacer(modifier = Modifier.padding(10.dp))
                     }
+                    Spacer(modifier = Modifier.padding(15.dp))
                 }
                 item { //Next Button
-                    AnimatedVisibility(visible = showEnterEmail.value){
+                    AnimatedVisibility(visible = forgotPasswordViewModel.showEnterEmail.value) {
                         Button(
                             onClick = {
-                                coroutineScope.launch {
-                                    val status = forgotPasswordViewModel.isUserRegistered(context)
-                                    if(status){
-                                        showEnterOTP.value = true
-                                        showEnterEmail.value = false
-                                        forgotPasswordViewModel.sendOtp()
-                                    }
-                                    else{
-                                        Toast.makeText(context,"Email not registered",Toast.LENGTH_SHORT).show()
-                                    }
-                                }
+                                forgotPasswordViewModel.onEvent(
+                                    ForgotPasswordFormEvent.Next
+                                )
                             },
                             colors = ButtonDefaults.buttonColors(
                                 backgroundColor = DarkYellow,
                                 contentColor = Color.White
                             ),
                         ) {
-                            Text(text = "Next")
+                            Text(text = stringResource(id = R.string.next_string))
                         }
                     }
                 }
@@ -155,9 +220,9 @@ fun ForgotPassword(
 
 
                 item { //Enter OTP Text
-                    AnimatedVisibility(visible = showEnterOTP.value){
+                    AnimatedVisibility(visible = forgotPasswordViewModel.showEnterOTP.value) {
                         Text(
-                            text = "Enter 4 digit OTP sent via email",
+                            text = stringResource(id = R.string.enter_4_digit_otp_sent_via_email_string),
                             style = MaterialTheme.typography.h4,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.padding(10.dp),
@@ -166,25 +231,36 @@ fun ForgotPassword(
                         )
                         Spacer(modifier = Modifier.padding(30.dp))
                     }
+                    Spacer(modifier = Modifier.padding(15.dp))
                 }
                 item { //Enter OTP TextField
-                    AnimatedVisibility(visible = showEnterOTP.value){
+                    AnimatedVisibility(visible = forgotPasswordViewModel.showEnterOTP.value) {
                         Row(
                             modifier = Modifier
                                 .padding(5.dp)
                                 .fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceAround,
                         ) {
-                            for(i in 0..3){
+                            for (i in 0..3) {
                                 TextField(
+                                    keyboardOptions = KeyboardOptions(
+                                        keyboardType = KeyboardType.Phone,
+                                    ),
                                     value = inputList[i],
                                     modifier = Modifier
                                         .padding(2.dp)
                                         .size(55.dp),
                                     onValueChange = {
-                                        inputList[i] = it
-                                        if(inputList[i].isNotEmpty()) focusManager.moveFocus(FocusDirection.Right)
-                                        if(i == 3 && inputList[i].isNotEmpty()) focusManager.clearFocus()
+
+                                        if(it.length > 1) {
+                                            Toast.makeText(context,R.string.invalid_digit,Toast.LENGTH_SHORT).show()
+                                        }
+                                        else { inputList[i] = it }
+
+                                        if (inputList[i].isNotEmpty()) focusManager.moveFocus(
+                                            FocusDirection.Right
+                                        )
+                                        if (i == 3 && inputList[i].isNotEmpty()) focusManager.clearFocus()
                                     },
                                     textStyle = TextStyle().copy(
                                         textAlign = TextAlign.Center,
@@ -202,23 +278,26 @@ fun ForgotPassword(
                                 )
                             }
                         }
-                        Spacer(modifier = Modifier.padding(10.dp))
                     }
+                    Spacer(modifier = Modifier.padding(5.dp))
                 }
                 item { //submit button
-                    AnimatedVisibility(visible = showEnterOTP.value){
+                    AnimatedVisibility(visible = forgotPasswordViewModel.showEnterOTP.value) {
                         Button(
                             onClick = {
                                 var otp = ""
-                                inputList.forEach{ otp += it }
+                                inputList.forEach { otp += it }
 
                                 forgotPasswordViewModel.setOtp(otp)
-                                if(forgotPasswordViewModel.verifyOtp()){ //success
-                                    showEnterOTP.value = false
-                                    showEnterPasswordTextField.value = true
-                                }
-                                else{ //failure
-                                    Toast.makeText(context,"Incorrect OTP",Toast.LENGTH_SHORT).show()
+                                if (forgotPasswordViewModel.verifyOtp()) { //success
+                                    forgotPasswordViewModel.showEnterOTP.value = false
+                                    forgotPasswordViewModel.showEnterPasswordTextField.value = true
+                                } else { //failure
+                                    Toast.makeText(
+                                        context,
+                                        R.string.incorrect_otp_string,
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 }
                             },
                             colors = ButtonDefaults.buttonColors(
@@ -226,7 +305,7 @@ fun ForgotPassword(
                                 contentColor = Color.White
                             ),
                         ) {
-                            Text(text = "submit")
+                            Text(text = stringResource(id = R.string.submit_string))
                         }
                     }
                 }
@@ -234,29 +313,44 @@ fun ForgotPassword(
 
 
                 item { //new password Text
-                    AnimatedVisibility(visible = showEnterPasswordTextField.value){
+                    AnimatedVisibility(visible = forgotPasswordViewModel.showEnterPasswordTextField.value) {
                         Text(
-                            text = "Please enter your new password",
+                            text = stringResource(id = R.string.please_enter_your_new_password_string),
                             style = MaterialTheme.typography.h4,
                             textAlign = TextAlign.Center,
-                            modifier = Modifier.padding(10.dp),
+                            modifier = Modifier
+                                .padding(10.dp),
                             fontWeight = FontWeight.Bold,
-                            fontFamily = titleFontFamily
+                            fontFamily = titleFontFamily,
                         )
                         Spacer(modifier = Modifier.padding(30.dp))
                     }
                 }
                 item { //new password TextField
-                    AnimatedVisibility(visible = showEnterPasswordTextField.value){
+                    AnimatedVisibility(visible = forgotPasswordViewModel.showEnterPasswordTextField.value) {
                         TextField(
                             modifier = Modifier
-                                .fillMaxWidth(),
-                            value = forgotPasswordViewModel.inputPassword.value,
-                            shape= RoundedCornerShape(30.dp),
+                                .fillMaxWidth()
+                                .onFocusEvent {
+                                    if (it.isFocused) {
+                                        coroutineScope.launch {
+                                            viewRequesterForSetButton.bringIntoView()
+                                        }
+                                    }
+                                },
+                            value = forgotPasswordViewModel.state.value.password,
+                            shape = RoundedCornerShape(30.dp),
                             onValueChange = {
-                                forgotPasswordViewModel.setPassword(it)
+                                forgotPasswordViewModel.onEvent(
+                                    ForgotPasswordFormEvent.PasswordChanged(it)
+                                )
                             },
-                            label = { Text(text = "Enter new password", color = Color.Black) },
+                            label = {
+                                Text(
+                                    text = stringResource(id = R.string.enter_new_password_string),
+                                    color = Color.Black
+                                )
+                            },
                             colors = TextFieldDefaults.textFieldColors(
                                 textColor = Color.Black,
                                 backgroundColor = LightGray1,
@@ -269,19 +363,44 @@ fun ForgotPassword(
                                 unfocusedIndicatorColor = Color.Transparent,
                                 unfocusedLabelColor = Orange,
                             ),
+                            visualTransformation = if (forgotPasswordViewModel.passwordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
+                            trailingIcon = {
+                                val image = if (forgotPasswordViewModel.passwordVisible.value)
+                                    Icons.Filled.Visibility
+                                else Icons.Filled.VisibilityOff
+                                val description =
+                                    if (forgotPasswordViewModel.passwordVisible.value) stringResource(
+                                        id = R.string.hide_password_string
+                                    ) else stringResource(
+                                        id = R.string.show_password_string
+                                    )
+
+                                IconButton(onClick = { forgotPasswordViewModel.passwordVisibilityChange() }) {
+                                    Icon(imageVector = image, description)
+                                }
+                            },
                         )
-                        Spacer(modifier = Modifier.padding(30.dp))
                     }
+                    Spacer(modifier = Modifier.padding(5.dp))
                 }
-                item { //new password TextField
-                    AnimatedVisibility(visible = showEnterPasswordTextField.value){
+                item { //confirm password TextField
+                    AnimatedVisibility(visible = forgotPasswordViewModel.showEnterPasswordTextField.value) {
                         TextField(
                             modifier = Modifier
                                 .fillMaxWidth(),
-                            value = "",
-                            shape= RoundedCornerShape(30.dp),
-                            onValueChange = {},
-                            label = { Text(text = "Confirm password", color = Color.Black) },
+                            value = forgotPasswordViewModel.state.value.confirmPassword,
+                            shape = RoundedCornerShape(30.dp),
+                            onValueChange = {
+                                forgotPasswordViewModel.onEvent(
+                                    ForgotPasswordFormEvent.ConfirmPasswordChanged(it)
+                                )
+                            },
+                            label = {
+                                Text(
+                                    text = stringResource(id = R.string.confirm_password_string),
+                                    color = Color.Black
+                                )
+                            },
                             colors = TextFieldDefaults.textFieldColors(
                                 textColor = Color.Black,
                                 backgroundColor = LightGray1,
@@ -294,28 +413,95 @@ fun ForgotPassword(
                                 unfocusedIndicatorColor = Color.Transparent,
                                 unfocusedLabelColor = Orange,
                             ),
+                            visualTransformation = if (forgotPasswordViewModel.confirmPasswordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
+                            trailingIcon = {
+                                val image =
+                                    if (forgotPasswordViewModel.confirmPasswordVisible.value)
+                                        Icons.Filled.Visibility
+                                    else Icons.Filled.VisibilityOff
+                                val description =
+                                    if (forgotPasswordViewModel.confirmPasswordVisible.value) stringResource(
+                                        id = R.string.hide_password_string
+                                    ) else stringResource(
+                                        id = R.string.show_password_string
+                                    )
+
+                                IconButton(onClick = { forgotPasswordViewModel.confirmPasswordVisibilityChange() }) {
+                                    Icon(imageVector = image, description)
+                                }
+                            },
                         )
                     }
+                    Spacer(modifier = Modifier.padding(5.dp))
                 }
                 item { //Set Button
-                    AnimatedVisibility(visible = showEnterPasswordTextField.value){
+                    AnimatedVisibility(visible = forgotPasswordViewModel.showEnterPasswordTextField.value) {
                         Button(
                             onClick = {
                                 coroutineScope.launch {
-                                    forgotPasswordViewModel.changePassword(context)
+                                    forgotPasswordViewModel.onEvent(
+                                        ForgotPasswordFormEvent.Set
+                                    )
                                 }
                             },
                             colors = ButtonDefaults.buttonColors(
                                 backgroundColor = DarkYellow,
                                 contentColor = Color.White
                             ),
+                            modifier = Modifier.bringIntoViewRequester(viewRequesterForSetButton)
                         ) {
-                            Text(text = "Set")
+                            Text(text = stringResource(id = R.string.set_string))
                         }
                     }
                 }
             }
         }
     }
+}
 
+
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+fun OtpTextField(
+    inputList: SnapshotStateList<String>,
+    i: Int,
+    focusManager: FocusManager
+) {
+    TextField(
+        value = inputList[i],
+        modifier = Modifier
+            .padding(2.dp)
+            .size(55.dp)
+            .onKeyEvent {
+                if (it.key == Key.Backspace) {
+                    if (inputList[i].isEmpty() && i > 0) inputList[i - 1] =
+                        ""
+                    focusManager.moveFocus(FocusDirection.Left)
+                }
+                false
+            },
+        onValueChange = {
+            inputList[i] = it
+            if (inputList[i].isNotEmpty()) focusManager.moveFocus(
+                FocusDirection.Right
+            )
+            if (i == 3 && inputList[i].isNotEmpty()) focusManager.clearFocus()
+        },
+        textStyle = TextStyle().copy(
+            textAlign = TextAlign.Center,
+            fontWeight = FontWeight.ExtraBold,
+            fontSize = 20.sp
+        ),
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Phone,
+        ),
+        colors = TextFieldDefaults.textFieldColors(
+            backgroundColor = Color.Transparent,
+            textColor = LightPink,
+            focusedIndicatorColor = DarkYellow,
+            unfocusedIndicatorColor = Orange,
+            cursorColor = DarkYellow,
+            errorCursorColor = Color.Red,
+        ),
+    )
 }

@@ -2,9 +2,9 @@ package com.experiment.foodproductapp.views
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -20,181 +20,216 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.experiment.foodproductapp.R
 import com.experiment.foodproductapp.constants.Screen
-import com.experiment.foodproductapp.database.Product
+import com.experiment.foodproductapp.database.entity.Product
 import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.viewmodels.ProductCartViewModel
+import kotlinx.coroutines.*
+import org.koin.androidx.compose.koinViewModel
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun ProductCart(
     email: String?,
     navHostControllerLambda: () -> NavHostController,
-    productCartViewModel: ProductCartViewModel = viewModel(),
+    productCartViewModel: ProductCartViewModel = koinViewModel(),
 ) {
 
-    val context = LocalContext.current
     ChangeBarColors(statusColor = Color.White, navigationBarColor = DarkYellow)
 
+    val scaffoldState = rememberScaffoldState()
+    val coroutineScope = rememberCoroutineScope()
+
     LaunchedEffect(key1 = Unit) {
+        //clearing list during recomposition
+        productCartViewModel.cartList.clear()
         if (email != null) {
             productCartViewModel.email.value = email
-            //productCartViewModel.initRedeemAmount(context,email)
-            productCartViewModel.initTotalPointsAndRedeemedAmount(context, email)
+            productCartViewModel.initAvailablePointsAndRedeemedAmount(email)
         }
-        productCartViewModel.fetchCartList(context)
+        productCartViewModel.fetchCartList()
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White),
-        verticalArrangement = Arrangement.SpaceEvenly,
-    ) {
-
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .weight(7F)
-                .padding(top = 8.dp, start = 8.dp, end = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(9.dp)
-        ) {
-            item {
-                TopAppBar(
-                    title = {
-                        Row(horizontalArrangement = Arrangement.Center) {
-                            Text(
-                                text = "Cart ",
-                                fontFamily = titleFontFamily,
-                                fontWeight = FontWeight.Bold,
-                                color = DarkYellow,
-                            )
-                            Icon(
-                                imageVector = Icons.Default.ShoppingBag,
-                                contentDescription = "",
-                                tint = DarkYellow,
-                            )
-                        }
-                    },
-                    navigationIcon = {
-                        IconButton(
-                            onClick = {
-                                navHostControllerLambda().navigateUp()
-                            },
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.ArrowBack,
-                                contentDescription = "",
-                                tint = DarkYellow,
-                            )
-                        }
-                    },
-                    backgroundColor = Color.Transparent,
-                    elevation = 0.dp,
-                    actions = {
-                        IconButton(onClick = {
-                            productCartViewModel.navigateToRewards(
-                                navHostController = navHostControllerLambda(),
-                                email = email,
-                            )
-                        }) {
-                            Icon(
-                                imageVector = Icons.Default.Stars,
-                                contentDescription = "Rewards Page",
-                                tint = DarkYellow
-                            )
-                        }
-                    }
-                )
-            }
-
-            items(
-                items = productCartViewModel.cartList,
-                key = { it.id } // Caused n Solved multiple issues. Learn it.
-            ) { item ->
-
-                val dismissState = rememberDismissState(
-                    initialValue = DismissValue.Default,
-                    confirmStateChange = {
-                        if (it == DismissValue.DismissedToStart) {
-                            productCartViewModel.onDismiss(context, item)
-                        }
-                        true
-                    }
-                )
-
-                SwipeToDismiss(
-                    state = dismissState,
-                    directions = setOf(DismissDirection.EndToStart),
-                    dismissThresholds = { FractionalThreshold(0.2F) },
-                    dismissContent = {
-                        CardView(item, productCartViewModel)
-                    },
-                    background = {
-
-                        val color = animateColorAsState(
-                            targetValue = when (dismissState.targetValue) {
-                                DismissValue.DismissedToStart -> Color.Red
-                                DismissValue.Default -> LightDarkGray
-                                else -> Color.Transparent
-                            },
-                            animationSpec = tween(100)
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        scaffoldState = scaffoldState,
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = stringResource(id = R.string.cart_string) + " ",
+                        fontFamily = titleFontFamily,
+                        fontWeight = FontWeight.Bold,
+                        color = DarkYellow,
+                    )
+                },
+                navigationIcon = {
+                    IconButton(
+                        onClick = {
+                            navHostControllerLambda().navigateUp()
+                        },
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "ic_arrow_back_bt",
+                            tint = DarkYellow,
                         )
-
-                        Box(
-                            //Red background
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .clip(RoundedCornerShape(15.dp))
-                                .background(color.value)
-                                .padding(end = 25.dp),
-                            contentAlignment = Alignment.CenterEnd,
-                        ) {
-                            Icon(
-                                //Dustbin Icon
-                                imageVector = Icons.Default.Delete,
-                                contentDescription = "",
-                                tint = Color.White,
-                            )
-                        }
-                    },
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.padding(5.dp))
-
-        Box(
-            modifier = Modifier
-                .shadow(70.dp)
-                .clip(RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp))
-                .weight(2F)
-                .fillMaxSize()
-                .background(DarkYellow)
-        ) {
-            CheckoutArea(
-                productCartViewModel = productCartViewModel,
-                navigate = {
-                    if (productCartViewModel.sum.value != 0) {
-                        productCartViewModel.navigateToCheckout(navHostControllerLambda(), context)
                     }
-//                    navHostControllerLambda().navigate(Screen.PaymentScreen.route)
+                },
+                backgroundColor = Color.Transparent,
+                elevation = 0.dp,
+                actions = {
+                    IconButton(onClick = {
+                        productCartViewModel.cartList.clear()
+                        navHostControllerLambda().navigate(Screen.Rewards.routeWithData(productCartViewModel.email.value))
+                    }) {
+                        Icon(
+                            imageVector = Icons.Default.Stars,
+                            contentDescription = "ic_rewards_page_bt",
+                            tint = DarkYellow
+                        )
+                    }
                 }
             )
+        }
+    ) {
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(it)
+                .background(Color.White),
+            verticalArrangement = Arrangement.SpaceEvenly,
+        ) {
+
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .weight(3F)
+                    .padding(start = 8.dp, end = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(9.dp)
+            ) {
+
+                items(
+                    items = productCartViewModel.cartList,
+                    key = { key -> key.id } // Caused n Solved multiple issues. Learn it.
+                ) { item ->
+
+                    val dismissState = rememberDismissState(
+                        initialValue = DismissValue.Default,
+                        confirmStateChange = {
+                            if (it == DismissValue.DismissedToStart) {
+
+                                //productCartViewModel.setNewlyDeletedItem(item)
+                                productCartViewModel.onDismiss(item)
+
+                                coroutineScope.launch {
+
+                                    val result = scaffoldState.snackbarHostState.showSnackbar(
+                                        message = if(item.title.length >= 15) "Item '${item.title.substring(0..15)}...' was removed"
+                                                  else "Item '${item.title}' was removed",
+                                        actionLabel = "UNDO"
+                                    )
+
+                                    when(result){
+                                        SnackbarResult.ActionPerformed -> {
+                                            productCartViewModel.onRestore(product = item)
+                                        }
+                                        SnackbarResult.Dismissed -> {}
+                                    }
+
+                                }
+
+                            }
+                            true
+                        }
+                    )
+
+                    SwipeToDismiss(
+                        state = dismissState,
+                        directions = setOf(DismissDirection.EndToStart),
+                        dismissThresholds = { FractionalThreshold(0.2F) },
+                        dismissContent = {
+                            CardView(item, productCartViewModel)
+                        },
+                        background = {
+
+                            val color = animateColorAsState(
+                                targetValue = when (dismissState.targetValue) {
+                                    DismissValue.DismissedToStart -> Color.Red
+                                    DismissValue.Default -> LightDarkGray
+                                    else -> Color.Transparent
+                                },
+                                animationSpec = tween(100)
+                            )
+
+                            Box(
+                                //Red background
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .clip(RoundedCornerShape(15.dp))
+                                    .background(color.value)
+                                    .padding(end = 25.dp),
+                                contentAlignment = Alignment.CenterEnd,
+                            ) {
+                                Icon(
+                                    //Dustbin Icon
+                                    imageVector = Icons.Default.Delete,
+                                    contentDescription = "ic_delete",
+                                    tint = Color.White,
+                                )
+                            }
+                        },
+                        modifier = Modifier.animateItemPlacement(
+                            animationSpec = tween(600)
+                        )
+                    )
+                }
+
+                item {
+                    Spacer(modifier =Modifier.height(5.dp))
+                }
+            }
+
+            Box(
+                modifier = Modifier
+                    .shadow(70.dp)
+                    .clip(RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp))
+                    .weight(1F)
+                    .fillMaxSize()
+                    .background(DarkYellow)
+            ) {
+                CheckoutArea(
+                    productCartViewModel = productCartViewModel,
+                    navigate = {
+                        if (productCartViewModel.sum.value != 0) {
+                            val success = productCartViewModel.toCheckout()
+                            if (success){
+                                navHostControllerLambda().navigate(
+                                    Screen.CheckoutPage.routeWithData(
+                                        email =productCartViewModel.email.value,
+                                        sum = productCartViewModel.finalSum.value,
+                                        points = productCartViewModel.availablePoints.value
+                                    )
+                                )
+                            }
+                        }
+                    }
+                )
+            }
+
         }
 
     }
@@ -207,10 +242,9 @@ fun CardView(
     productCartViewModel: ProductCartViewModel
 ) {
     val quantity = remember { mutableStateOf(0) }
-    val context = LocalContext.current
 
     LaunchedEffect(key1 = Unit) {
-        productCartViewModel.getProductCount(context, item.id, quantity)
+        productCartViewModel.getProductCount(item.id, quantity)
     }
 
     Card(
@@ -254,7 +288,7 @@ fun CardView(
                     textAlign = TextAlign.Center,
                     color = Color.Black,
                     overflow = TextOverflow.Ellipsis,
-                    text = "MRP:Rs ${item.price}",
+                    text = stringResource(id = R.string.mrp_rs_string) + " " + item.price,
                     fontFamily = descriptionFontFamily,
                 )
             }
@@ -281,7 +315,6 @@ fun CardView(
                         IconButton(
                             onClick = {
                                 productCartViewModel.incrementProductCount(
-                                    context,
                                     item.id,
                                     quantity
                                 )
@@ -300,7 +333,7 @@ fun CardView(
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Add,
-                                contentDescription = "",
+                                contentDescription = "ic_add_count_bt",
                                 tint = Color.White,
                             )
                         }
@@ -308,7 +341,6 @@ fun CardView(
                 }
 
                 //Count Value
-                //Text(text = "1", textAlign = TextAlign.Center)
                 Text(text = quantity.value.toString(), textAlign = TextAlign.Center)
 
                 //Minus
@@ -327,7 +359,6 @@ fun CardView(
                             IconButton(
                                 onClick = {
                                     productCartViewModel.decrementProductCount(
-                                        context,
                                         item.id,
                                         quantity
                                     )
@@ -347,7 +378,7 @@ fun CardView(
                             ) {
                                 Icon(
                                     imageVector = Icons.Filled.Remove,
-                                    contentDescription = "",
+                                    contentDescription = "ic_subtract_count_bt",
                                     tint = Color.White,
                                 )
                             }
@@ -355,7 +386,6 @@ fun CardView(
                             IconButton(
                                 onClick = {
                                     productCartViewModel.decrementProductCount(
-                                        context,
                                         item.id,
                                         quantity
                                     )
@@ -368,7 +398,7 @@ fun CardView(
                             ) {
                                 Icon(
                                     imageVector = Icons.Filled.Remove,
-                                    contentDescription = "",
+                                    contentDescription = "ic_subtract_count_bt",
                                     tint = Color.White,
                                 )
                             }
@@ -385,9 +415,9 @@ fun CardView(
 fun LoadImage(item: Product) {
     Image(
         painter = rememberImagePainter(item.url),
-        contentDescription = "",
+        contentDescription = "ic_cart_item",
         contentScale = ContentScale.Fit,
-        alignment = Alignment.CenterStart,
+        alignment = Alignment.Center,
         modifier = Modifier.padding(8.dp),
     )
 }
@@ -408,7 +438,7 @@ fun CheckoutArea(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                text = "Price ",
+                text = stringResource(id = R.string.price_string) + " ",
                 color = Color.White,
                 modifier = Modifier
                     .padding(start = 25.dp),
@@ -417,7 +447,7 @@ fun CheckoutArea(
             )
 
             Text(
-                text = "Rs : ${productCartViewModel.sum.value}",
+                text = stringResource(id = R.string.rs_string) + " " + productCartViewModel.sum.value,
                 color = Color.White,
                 modifier = Modifier
                     .padding(end = 48.dp)
@@ -428,9 +458,12 @@ fun CheckoutArea(
         }
 
         //Redeem Amount
-        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Text(
-                text = "Redeem Amount ",
+                text = stringResource(id = R.string.redeem_amount_string) + " ",
                 color = if (productCartViewModel.checkedState.value) {
                     Color.White
                 } else {
@@ -451,9 +484,9 @@ fun CheckoutArea(
 
                 Text(
                     text = if (productCartViewModel.checkedState.value) {
-                        "Rs : ${productCartViewModel.sum.value - productCartViewModel.finalSum.value}"
+                        stringResource(id = R.string.rs_string) + " " + (productCartViewModel.sum.value - productCartViewModel.finalSum.value)
                     } else {
-                        "Rs : 0"
+                        stringResource(id = R.string.rs_0_string)
                     },
                     color = if (productCartViewModel.checkedState.value) {
                         Color.White
@@ -466,7 +499,7 @@ fun CheckoutArea(
                     fontSize = 20.sp,
                 )
                 Checkbox(
-                    enabled = productCartViewModel.sum.value >= 100 && productCartViewModel.redeemAmount.value > 10,
+                    enabled = productCartViewModel.sum.value >= 100 && productCartViewModel.availablePoints.value > 20,
                     modifier = Modifier.padding(0.dp),
                     colors = CheckboxDefaults.colors(
                         checkedColor = Color.White,
@@ -480,7 +513,7 @@ fun CheckoutArea(
                     // change to our checkbox.
                     onCheckedChange = {
                         productCartViewModel.checkedState.value = it
-                        if(productCartViewModel.sum.value>=100) {
+                        if (productCartViewModel.sum.value >= 100) {
                             productCartViewModel.updateFinalSum()
                         }
                     },
@@ -498,7 +531,7 @@ fun CheckoutArea(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                text = "Final Amount ",
+                text = stringResource(id = R.string.final_amount_string) + " ",
                 color = Color.White,
                 modifier = Modifier
                     .padding(start = 25.dp)
@@ -509,7 +542,7 @@ fun CheckoutArea(
             )
 
             Text(
-                text = "Rs : ${productCartViewModel.finalSum.value}",
+                text = stringResource(id = R.string.rs_string) + " " + productCartViewModel.finalSum.value,
                 color = Color.White,
                 modifier = Modifier
                     .padding(end = 45.dp)
@@ -536,7 +569,7 @@ fun CheckoutArea(
                 shape = RoundedCornerShape(50),
             ) {
                 Text(
-                    text = "CHECKOUT",
+                    text = stringResource(id = R.string.checkout_string),
                     color = Color.Black,
                     fontWeight = FontWeight.Bold
                 )
@@ -547,7 +580,6 @@ fun CheckoutArea(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Preview(showBackground = true, backgroundColor = 1)
 @Composable
 fun PrevPC() {

@@ -1,6 +1,7 @@
-package com.experiment.foodproductapp.database
+package com.experiment.foodproductapp.database.entity
 
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 
 @Entity

@@ -1,3 +1,133 @@
 <resources>
     <string name="app_name">BeerBasket</string>
+<!--    SignInpage-->
+    <string name="sign_in_string">Sign In</string>
+    <string name="email_address_string">Email Address</string>
+    <string name="password_string">Password</string>
+    <string name="create_an_account_string">Create An Account</string>
+    <string name="forgot_password_string">Forgot Password?</string>
+
+<!--    SignUpPage-->
+    <string name="sign_up_string">Sign Up</string>
+    <string name="first_name_string">First Name</string>
+    <string name="last_name_string">Last Name</string>
+    <string name="enter_phone_number_string">Enter Phone Number</string>
+    <string name="enter_email_string">Enter Email</string>
+    <string name="enter_password_string">Enter password</string>
+    <string name="hide_password_string">Hide password</string>
+    <string name="show_password_string">Show password</string>
+    <string name="confirm_password_string">Confirm password</string>
+    <string name="date_of_birth_string">Date of Birth</string>
+    <string name="create_account_string">CREATE ACCOUNT</string>
+
+<!--    HomeScreenPage-->
+    <string name="mrp_rs_string">MRP:Rs</string>
+
+<!--    ForgotPasswordScreen-->
+    <string name="please_enter_your_registered_email_string">Please enter your registered email</string>
+    <string name="email_string">Email</string>
+    <string name="email_not_registered_string">Email not registered</string>
+    <string name="next_string">Next</string>
+    <string name="enter_4_digit_otp_sent_via_email_string">Enter 4 digit OTP sent via email</string>
+    <string name="incorrect_otp_string">Incorrect OTP</string>
+    <string name="submit_string">submit</string>
+    <string name="please_enter_your_new_password_string">Please enter your new password</string>
+    <string name="enter_new_password_string">Enter new password</string>
+    <string name="set_string">Set</string>
+    <string name="invalid_digit">Invalid Digit</string>
+
+<!--    CheckoutPage-->
+    <string-array name="state">
+        <item>Goa</item>
+        <item>Maharashtra</item>
+        <item>Karnataka</item>
+        <item>Rajasthan</item>
+        <item>Kerala</item>
+        <item>Tamil Nadu</item>
+        <item>Andhra Pradesh</item>
+    </string-array>
+    <string name="shipping_details_string">Shipping Details</string>
+    <string name="phone_number_string">Phone Number</string>
+    <string name="enter_pincode_string">Enter Pincode</string>
+    <string name="flat_house_string">Flat, House no., Building</string>
+    <string name="area_street_string">Area, Street</string>
+    <string name="city_string">City</string>
+    <string name="state_string">State</string>
+    <string name="total_string">Total</string>
+    <string name="rs_string">Rs :</string>
+    <string name="proceed_to_payment_string">Proceed to Payment</string>
+
+<!--    OrderDetailsPage-->
+    <string name="order_details_string">Order Details</string>
+    <string name="order_no_string">Order No: #</string>
+    <string name="total_items_string">Total Items:</string>
+    <string name="there_are_no_items_in_the_cart_string">There are no items in the cart</string>
+    <string name="click_here_to_order_string">Click Here to Order</string>
+
+<!--    OrderDescriptionPage-->
+    <string name="rs_dot_string">Rs.</string>
+    <string name="item_total_string">Item Total:</string>
+    <string name="redeemed_amount_string">Redeemed Amount:</string>
+    <string name="amount_paid_string">Amount Paid:</string>
+
+<!--    PaymentScreen-->
+    <string name="order_placed_string">Order Placed !</string>
+    <string name="your_order_was_placed_successfully_string">Your Order was Placed Successfully</string>
+    <string name="redirecting_you_to_home_page_string">redirecting you to Home Page</string>
+    <string name="payment_failed_string">Payment Failed !</string>
+    <string name="redirecting_you_to_product_cart_string">redirecting you to product cart</string>
+
+<!--    ProductCart-->
+    <string name="cart_string">Cart</string>
+    <string name="price_string">Price</string>
+    <string name="redeem_amount_string">Redeem Amount</string>
+    <string name="rs_0_string">Rs : 0</string>
+    <string name="final_amount_string">Final Amount</string>
+    <string name="checkout_string">CHECKOUT</string>
+
+<!--    ProductDetailsPage-->
+    <string name="five_alcohol_string">% Alc</string>
+
+<!--    RewardsPage-->
+    <string name="refer_copy_string">http://www.beerbasket.com/ryfagr</string>
+    <string name="welcome_to_string">Welcome to</string>
+    <string name="rewards_string">Rewards</string>
+    <string name="points_string">Points</string>
+    <string name="equals_rs_string">Equals Rs</string>
+    <string name="redeem_string">Redeem</string>
+    <string name="redeem_message_20_string">You can Redeem 20 Points for equivalent of Rs.1</string>
+    <string name="redeem_message_10_string">You can Redeem 10 Points for equivalent of Rs.1</string>
+    <string name="redeem_message_5_string">You can Redeem 5 Points for equivalent of Rs.1</string>
+    <string name="bracket_level_string">(Level</string>
+    <string name="gold_string">Gold</string>
+    <string name="you_are_already_in_the_top_string">You are already in the Top Level</string>
+    <string name="points_to_next_level_string">Points to Next Level</string>
+    <string name="refer_your_friends_string">Refer Your Friends</string>
+    <string name="you_get_string">You get</string>
+    <string name="two_hundred_reward_points_string">200 Reward Points</string>
+    <string name="they_get_string">They get</string>
+    <string name="hundred_reward_points_string">100 Reward Points</string>
+    <string name="text_copied_to_clipboard_string">Text copied to clipboard</string>
+    <string name="copy_string">Copy</string>
+    <string name="you_have_referred_zero_friends_string">You have referred 0 friends</string>
+
+<!--    UserDetailsPage-->
+    <string name="profile_string">Profile</string>
+    <string name="save_changes_string">Save Changes</string>
+
+<!--    RewardsDetailsPage-->
+    <string name="reward_category_string">Reward Category</string>
+    <string name="tap_on_card_to_know_more_string">Tap on Card to know more</string>
+    <string name="level_one_string">Level 1</string>
+    <string name="level_two_string">Level 2</string>
+    <string name="level_three_string">Level 3</string>
+    <string name="bronze_string">Bronze</string>
+    <string name="silver_string">Silver</string>
+    <string name="you_get_one_rupee_for_20_points_string">You get 1 Rs for every 20 points that you redeem</string>
+    <string name="you_get_one_rupee_for_10_points_string">You get 1 Rs for every 10 points that you redeem</string>
+    <string name="you_get_one_rupee_for_5_points_string">You get 1 Rs for every 5 points that you redeem</string>
+    <string name="you_can_redeem_points_in_cart_string">You can redeem your points in the cart</string>
+    <string name="you_can_redeem_max_10_string">You can redeem maximum of 10% cart value</string>
+    <string name="you_can_redeem_points_on_order_above_100_string">You can redeem points on orders above Rs100</string>
+
 </resources>

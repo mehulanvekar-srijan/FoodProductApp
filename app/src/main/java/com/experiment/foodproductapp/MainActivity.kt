@@ -19,6 +19,7 @@ import com.experiment.foodproductapp.viewmodels.OrderDetailsViewModel
 import com.experiment.foodproductapp.views.*
 import com.razorpay.PaymentData
 import com.razorpay.PaymentResultWithDataListener
+import org.koin.androidx.compose.koinViewModel
 
 class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
 
@@ -28,14 +29,13 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
         super.onCreate(savedInstanceState)
         setContent {
 
-
-
             navHostController = rememberNavController()
 
             val navHostControllerLambda: () -> NavHostController =
                 { navHostController as NavHostController }
-            val homeScreenViewModel: HomeScreenViewModel = viewModel()
-            val orderScreenViewModel: OrderDetailsViewModel = viewModel()
+
+            val homeScreenViewModel: HomeScreenViewModel = koinViewModel()
+            val orderScreenViewModel: OrderDetailsViewModel = koinViewModel()
 
             FoodProductAppTheme {
                 NavHost(
@@ -52,7 +52,7 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
                         SignInPage(navHostControllerLambda)
                     }
                     composable(route = Screen.ForgotPassword.route) {
-                        ForgotPassword()
+                        ForgotPassword(navHostControllerLambda)
                     }
                     composable(
                         route = Screen.UserDetails.route,
@@ -66,7 +66,8 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
                     ) {
                         HomeScreenPage(
                             it.arguments?.getString("email"),
-                            navHostControllerLambda, homeScreenViewModel = homeScreenViewModel
+                            navHostControllerLambda,
+                            homeScreenViewModel = homeScreenViewModel
                         )
                     }
 
@@ -96,7 +97,8 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
                     }
                     composable(route = Screen.ProductDetailsScreen.route) {
                         ProductDetailsPage(
-                            navHostControllerLambda, homeScreenViewModel = homeScreenViewModel
+                            navHostControllerLambda,
+                            homeScreenViewModel = homeScreenViewModel
                         )
                     }
                     composable(
@@ -129,7 +131,8 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
 
                     composable(route = Screen.OrderDescriptionPage.route) {
                         OrderDescriptionPage(
-                            navHostControllerLambda, orderDetailsViewModel = orderScreenViewModel
+                            navHostControllerLambda,
+                            orderDetailsViewModel = orderScreenViewModel
                         )
                     }
 
@@ -142,6 +145,24 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
                         arguments = listOf(navArgument("email") { type = NavType.StringType })
                     ) {
                         Reward(
+                            it.arguments?.getString("email"),
+                            navHostControllerLambda
+                        )
+                    }
+                    composable(
+                        route = Screen.RewardsDetailsPage.route,
+                        arguments = listOf(navArgument("points") { type = NavType.IntType})
+                    ) {
+                        RewardDetails(
+                            it.arguments?.getInt("points"),
+                            navHostControllerLambda
+                        )
+                    }
+                    composable(
+                        route = Screen.FavouriteProductsScreen.route,
+                        arguments = listOf(navArgument("email") { type = NavType.StringType})
+                    ) {
+                        FavouriteProductsPage(
                             it.arguments?.getString("email"),
                             navHostControllerLambda
                         )

@@ -1,9 +1,9 @@
-package com.experiment.foodproductapp.database
+package com.experiment.foodproductapp.database.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import com.experiment.foodproductapp.domain.use_case.ValidatePincode
+import com.experiment.foodproductapp.database.entity.User
 
 @Dao
 interface UserDao {

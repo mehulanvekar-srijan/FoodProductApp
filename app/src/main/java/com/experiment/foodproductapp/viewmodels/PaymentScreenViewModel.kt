@@ -3,44 +3,59 @@ package com.experiment.foodproductapp.viewmodels
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.experiment.foodproductapp.MainActivity
+import com.experiment.foodproductapp.R
 import com.experiment.foodproductapp.constants.Screen
-import com.experiment.foodproductapp.database.OrderDetails
-import com.experiment.foodproductapp.database.Product
+import com.experiment.foodproductapp.constants.ValidationEvent
+import com.experiment.foodproductapp.database.entity.FinalPrice
+import com.experiment.foodproductapp.database.entity.OrderDetails
+import com.experiment.foodproductapp.database.entity.Product
 import com.experiment.foodproductapp.repository.DatabaseRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class PaymentScreenViewModel : ViewModel() {
+class PaymentScreenViewModel(
+    private val databaseRepository: DatabaseRepository,
+) : ViewModel() {
+    val splashDuration: Long = 3000
+
+    private val validationEventChannel = Channel<ValidationEvent>()
+    val validationEvents = validationEventChannel.receiveAsFlow()
+
+    init {
+        Log.d("testDI", "PaymentScreenViewModel: ${databaseRepository.hashCode()}")
+    }
 
     fun navigateOnSuccess(
-        navHostController: NavHostController,
-        context: Context,
         email: String?,
         sum: Int?,
-        points: Int?,
-        activity: MainActivity,
+        points: Int?
     ){
 
         viewModelScope.launch(Dispatchers.IO){
             if(email != null) {
 
                 //Fetch products from Cart
-                val cartList: MutableList<Product> = DatabaseRepository(context).readAllProducts(email)
+                val cartList: MutableList<Product> = databaseRepository.readAllProducts(email)
 
                 //Delete fetched products from cart
-                DatabaseRepository(context).deleteAllProductByEmail(email)
+                databaseRepository.deleteAllProductByEmail(email)
 
                 //Fetch latest order Id
-                var orderId = DatabaseRepository(context).getLatestOrderId(email)
+                val orderId = databaseRepository.getLatestOrderId(email)
 
                 //Add the order details in DB
                 cartList.forEach{ item ->
+
                     val order = OrderDetails(
                         email = item.email,
                         id = item.id,
@@ -50,76 +65,70 @@ class PaymentScreenViewModel : ViewModel() {
                         description =  item.description,
                         price = item.price,
                         orderId = orderId,
+                        alcohol = item.alcohol,
                         canceled = false,
                     )
 
-                    DatabaseRepository(context).insertOrder(order)
+                    databaseRepository.insertOrder(order)
                 }
 
                 //Update order Id
-                DatabaseRepository(context).updateLatestOrderId(email,++orderId)
+                databaseRepository.updateLatestOrderId(email,orderId+1)
 
-                //Compute and save reward points
-                if(sum != null){
-                    //sum is multiplied by 100 in previous screen, Hence divide it by 100
-                    val rewardPoints = (sum/100) / 2
-                    var currentRewardPoints = DatabaseRepository(context).getRewardPoints(email = email)
-                    currentRewardPoints += rewardPoints
-                    DatabaseRepository(context).updateRewardPoints(email = email, rewardPoints = currentRewardPoints)
-                    Log.d("testPTS", "navigateOnSuccess: sum=$sum rp=$rewardPoints crp=$currentRewardPoints")
-                }
-
-                //Update the remaining Redeemed Amount
-                Log.d("testredeemAmount", "PaymentScreenViewModel: email=${email} , finalSum=${sum} , points=${points}")
+                //Compute and save reward points in Users table
+//                if(sum != null){
+//                    //sum is multiplied by 100 in previous screen, Hence divide it by 100
+//                    val rewardPoints = (sum/100) / 2
+//                    var currentRewardPoints = databaseRepository.getRewardPoints(email = email)
+//                    currentRewardPoints += rewardPoints
+//                    databaseRepository.updateRewardPoints(email = email, rewardPoints = currentRewardPoints)
+//                    Log.d("testPTS", "navigateOnSuccess: sum=$sum rp=$rewardPoints crp=$currentRewardPoints")
+//                }
 
                 //Update points
                 if(points != null && sum != null) {
                     //sum is multiplied by 100 in previous screen, Hence divide it my 100
-                    val value = (sum/100) / 2
-                    Log.d("testredeemAmount", "PaymentScreenViewModel: email=${email} , finalSum=${sum} , new points=${points + value}")
-                    DatabaseRepository(context).updateRewardPoints(email,points + value)
+
+                    val newRewardPoints = (sum/100) / 2
+                    Log.d("Redeem", "New Points: $newRewardPoints")
+                    Log.d("Redeem", "Final Points: $newRewardPoints + $points")
+
+                    databaseRepository.updateRewardPoints(email,points + newRewardPoints)
+
+                    //Store Final price in the FinalPrice Table
+                    databaseRepository.insertFinalPrice(FinalPrice(email = email,orderId = orderId, finalPrice = (sum/100.0)))
                 }
 
-                delay(2000)
+                delay(splashDuration)
 
-                withContext(Dispatchers.Main){
-                    navHostController.navigate(Screen.HomeScreen.routeWithData(email)){
-                        popUpTo(Screen.HomeScreen.route) { inclusive = true }
-                    }
-                    activity.status.value = null
-                }
+                validationEventChannel.send(ValidationEvent.Success)
 
-            }
+//                withContext(Dispatchers.Main) {
+//                    navHostController.navigate(Screen.HomeScreen.routeWithData(email)) {
+//                        popUpTo(Screen.HomeScreen.route) { inclusive = true }
+//                    }
+//                    activity.status.value = null
+//                }
 
-            else {
-                withContext(Dispatchers.Main){
-                    Toast.makeText(context,"Internal Error Occurred",Toast.LENGTH_SHORT).show()
-                }
             }
         }
     }
 
     fun navigateOnFailure(
-        navHostController: NavHostController,
-        context: Context,
-        email: String?,
-        activity: MainActivity,
+        email: String?
     ){
         viewModelScope.launch(Dispatchers.Main){
             if(email != null) {
-                delay(2000)
-                navHostController.navigate(Screen.ProductCart.routeWithData(email)){
-                    popUpTo(Screen.ProductCart.route)  { inclusive = true }
-                }
-                activity.status.value = null
-            }
+                delay(3000)
+//                navHostController.navigate(Screen.ProductCart.routeWithData(email)){
+//                    popUpTo(Screen.ProductCart.route)  { inclusive = true }
+//                }
 
-            else {
-                withContext(Dispatchers.Main){
-                    Toast.makeText(context,"Internal Error Occurred",Toast.LENGTH_SHORT).show()
-                }
+                validationEventChannel.send(ValidationEvent.Failure)
             }
         }
     }
 
 }
+
+

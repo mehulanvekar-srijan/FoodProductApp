@@ -10,49 +10,67 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.experiment.foodproductapp.constants.Screen
-import com.experiment.foodproductapp.database.User
+import com.experiment.foodproductapp.constants.ValidationEvent
+import com.experiment.foodproductapp.database.entity.User
 import com.experiment.foodproductapp.domain.event.SignInFormEvent
 import com.experiment.foodproductapp.domain.use_case.EmptyPassword
 import com.experiment.foodproductapp.domain.use_case.ValidateEmail
+import com.experiment.foodproductapp.domain.use_case.ValidationResult
 import com.experiment.foodproductapp.repository.DatabaseRepository
 import com.experiment.foodproductapp.states.SignInState
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class SignInViewModel(
+    private val databaseRepository: DatabaseRepository,
     private val validateEmail: ValidateEmail = ValidateEmail(),
-    private val validatePassword: EmptyPassword = EmptyPassword()
+    private val validatePassword: EmptyPassword = EmptyPassword(),
 ) : ViewModel() {
-    var state by mutableStateOf(SignInState())
 
-    private val _passwordVisibility =  mutableStateOf(false)
+    private val _state = mutableStateOf(SignInState())
+    val state = _state
+
+    private val _error = mutableStateOf(false)
+    val error = _error
+
+    private val validationEventChannel = Channel<ValidationEvent>()
+    val validationEvents = validationEventChannel.receiveAsFlow()
+
+    init {
+        Log.d("testDI", "SignInViewModel: ${databaseRepository.hashCode()}")
+    }
+
+    private val _passwordVisibility = mutableStateOf(false)
     val passwordVisibility = _passwordVisibility
 
-    fun navigate(navHostController: NavHostController,route: String) {
-        when(route){
-            Screen.SignUpScreen.route -> { navHostController.navigate(Screen.SignUpScreen.route) }
-            Screen.ForgotPassword.route -> { navHostController.navigate(Screen.ForgotPassword.route) }
-        }
-    }
+    //moved navigation to view
+//    fun navigate(navHostController: NavHostController,route: String) {
+//        when(route){
+//            Screen.SignUpScreen.route -> { navHostController.navigate(Screen.SignUpScreen.route) }
+//            Screen.ForgotPassword.route -> { navHostController.navigate(Screen.ForgotPassword.route) }
+//        }
+//    }
 
-    fun onEvent(context: Context, event: SignInFormEvent, navHostController: NavHostController) {
+    fun onEvent(event: SignInFormEvent) {
         when (event) {
             is SignInFormEvent.EmailChanged -> {
-                state = state.copy(email = event.email)
+                _state.value = _state.value.copy(email = event.email)
             }
             is SignInFormEvent.PasswordChanged -> {
-                state = state.copy(password = event.password)
+                _state.value = _state.value.copy(password = event.password)
             }
             is SignInFormEvent.Login -> {
-                loginUser(context,navHostController)
+                loginUser()
             }
         }
     }
 
-    private fun loginUser(context: Context,navHostController: NavHostController) {
-        val emailResult = validateEmail.execute(state.email)
-        val passwordResult = validatePassword.execute(state.password)
+    private fun loginUser() {
+        val emailResult = validateEmail.execute(_state.value.email)
+        val passwordResult = validatePassword.execute(_state.value.password)
 
         val hasError = listOf(
             emailResult,
@@ -60,51 +78,59 @@ class SignInViewModel(
         ).any { !it.successful }
 
         if (hasError) {
-            state = state.copy(
+            _state.value = _state.value.copy(
                 emailError = emailResult.errorMessage,
                 passwordError = passwordResult.errorMessage
             )
             Log.d("passwordEroor", "loginUser: ${passwordResult.errorMessage}")
             return
         } else {
-            state = state.copy(emailError = null)
-            state = state.copy(passwordError = null)
-        }
+            _state.value = _state.value.copy(emailError = null)
+            _state.value = _state.value.copy(passwordError = null)
+            viewModelScope.launch(Dispatchers.IO) {
 
-        viewModelScope.launch(Dispatchers.IO) {
+                val user: User?
+                user = databaseRepository.getUserByEmail(_state.value.email)
 
-            val user : User?
-            val database = DatabaseRepository(context)
-            user = database.getUserByEmail(state.email)
+                if (user != null) {
+                    if (user.email == _state.value.email && user.password == _state.value.password) {
+                        databaseRepository.updateLoginStatus(
+                            email = _state.value.email,
+                            loggedIn = true
+                        )
+                        validationEventChannel.send(ValidationEvent.Success)
 
-            if (user != null) {
-                if (user.email == state.email && user.password == state.password ) {
+//                        withContext(Dispatchers.Main) {
+//
+//                            Toast.makeText(context, "log in successfull", Toast.LENGTH_LONG).show()
+//
+//                            navHostController.navigate(Screen.HomeScreen.routeWithData(user.email)) {
+//                                popUpTo(Screen.SignInScreen.route) { inclusive = true }
+//                            }
+//                        }
 
-                    DatabaseRepository(context).updateLoginStatus(email = state.email,loggedIn = true)
-
-                    withContext(Dispatchers.Main) {
-
-                        Toast.makeText(context, "log in successfull", Toast.LENGTH_LONG).show()
-
-                        navHostController.navigate(Screen.HomeScreen.routeWithData(user.email)) {
-                            popUpTo(Screen.SignInScreen.route) { inclusive = true }
-                        }
+                    } else {
+                        validationEventChannel.send(ValidationEvent.Failure)
+                        _error.value = false
+//                        withContext(Dispatchers.Main) {
+//                            Toast.makeText(
+//                                context,
+//                                "incorrect email or password",
+//                                Toast.LENGTH_LONG
+//                            )
+//                                .show()
+//                        }
                     }
-
                 } else {
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(context, "incorrect email or password", Toast.LENGTH_LONG).show()
-                    }
-                }
-            } else {
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(context, "incorrect email or password", Toast.LENGTH_LONG).show()
+                    validationEventChannel.send(ValidationEvent.Failure)
+                    _error.value = true
+//                    withContext(Dispatchers.Main) {
+//                        Toast.makeText(context, "incorrect email or password", Toast.LENGTH_LONG)
+//                            .show()
+//                    }
                 }
             }
         }
     }
 
-//    sealed class ValidationEvent {
-//        object Succcess : ValidationEvent()
-//    }
 }

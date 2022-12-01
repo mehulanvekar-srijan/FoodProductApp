@@ -2,6 +2,7 @@ package com.experiment.foodproductapp.views
 
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -16,6 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,6 +33,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 
 import androidx.compose.ui.text.TextStyle
 
@@ -50,38 +53,53 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.experiment.foodproductapp.R
 import com.experiment.foodproductapp.constants.Screen
+import com.experiment.foodproductapp.constants.ValidationEvent
 import com.experiment.foodproductapp.domain.event.SignInFormEvent
 import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.viewmodels.SignInViewModel
-//
-//@Preview
-//@Composable
-//fun preview() {
-//    val navHostController = rememberNavController()
-//    val navHostControllerLambda: () -> NavHostController = {
-//
-//        navHostController
-//    }
-//    SignInPage(navHostControllerLambda = navHostControllerLambda)
-//}
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SignInPage(
     navHostControllerLambda: () -> NavHostController,
-    signInViewModel: SignInViewModel = viewModel()
+    signInViewModel: SignInViewModel = koinViewModel()
 ) {
+    val context = LocalContext.current
+
+    LaunchedEffect(key1 = Unit) {
+        signInViewModel.validationEvents.collect { event ->
+            when (event) {
+                is ValidationEvent.Success -> {
+                    navHostControllerLambda().navigate(
+                        Screen.HomeScreen.routeWithData(
+                            signInViewModel.state.value.email
+                        )
+                    ) {
+                        popUpTo(Screen.SignInScreen.route) { inclusive = true }
+                    }
+                }
+                is ValidationEvent.Failure -> {
+                    if (signInViewModel.error.value) {
+                        Toast.makeText(context, "Email not Registered", Toast.LENGTH_SHORT)
+                            .show()
+                    } else {
+                        Toast.makeText(context, "Incorrect Email or Password", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                }
+            }
+        }
+    }
 
     ChangeBarColors(navigationBarColor = Color.White)
     val focusManager = LocalFocusManager.current
-    val context = LocalContext.current
-    val state = signInViewModel.state
 
     Box(
         modifier = Modifier.fillMaxSize(),
     ) {
         Image(
             painter = painterResource(id = R.drawable.background_yellow_wave),
-            contentDescription = "Background Image",
+            contentDescription = "ic_background_image",
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
         )
@@ -97,7 +115,7 @@ fun SignInPage(
                 modifier = Modifier
                     .fillMaxHeight(0.40F),
                 painter = painterResource(id = R.drawable.ic_beer_cheers),
-                contentDescription = "brand logo"
+                contentDescription = "ic_brand_logo"
             )
 
             Column(
@@ -111,7 +129,7 @@ fun SignInPage(
                 verticalArrangement = Arrangement.Center,
             ) {
                 Text(
-                    text = "Sign In",
+                    text = stringResource(id = R.string.sign_in_string),
                     color = Color.Black,
                     style = TextStyle(
                         fontWeight = FontWeight.Bold,
@@ -125,8 +143,8 @@ fun SignInPage(
                     item {
                         TextField(
 
-                            value = state.email,
-                            shape= RoundedCornerShape(30.dp),
+                            value = signInViewModel.state.value.email,
+                            shape = RoundedCornerShape(30.dp),
                             colors = TextFieldDefaults.textFieldColors(
                                 textColor = Color.Black,
                                 backgroundColor = LightGray1,
@@ -140,24 +158,25 @@ fun SignInPage(
                                 unfocusedLabelColor = Orange,
                             ),
                             onValueChange = {
-                                signInViewModel.onEvent(
-                                    context,
-                                    SignInFormEvent.EmailChanged(it),
-                                    navHostControllerLambda()
-                                )
+                                signInViewModel.onEvent(SignInFormEvent.EmailChanged(it))
                             },
                             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                             keyboardActions = KeyboardActions(
                                 onNext = { focusManager.moveFocus(FocusDirection.Down) },
                             ),
-                            label = { Text("Email Address", color = Color.Black) },
+                            label = {
+                                Text(
+                                    text = stringResource(id = R.string.email_address_string),
+                                    color = Color.Black
+                                )
+                            },
                             singleLine = true,
                             modifier = Modifier
                                 .fillMaxWidth(0.8f)
                         )
-                        if (state.emailError != null) {
+                        if (signInViewModel.state.value.emailError != null) {
                             Text(
-                                text = state.emailError,
+                                text = signInViewModel.state.value.emailError!!,
                                 color = Color.Red,
                                 fontSize = 14.sp,
                                 modifier = Modifier.fillMaxWidth(0.8f),
@@ -166,8 +185,8 @@ fun SignInPage(
                         }
                         Spacer(modifier = Modifier.padding(top = 8.dp))
                         TextField(
-                            value = state.password,
-                            shape= RoundedCornerShape(30.dp),
+                            value = signInViewModel.state.value.password,
+                            shape = RoundedCornerShape(30.dp),
                             colors = TextFieldDefaults.textFieldColors(
                                 textColor = Color.Black,
                                 backgroundColor = LightGray1,
@@ -185,11 +204,7 @@ fun SignInPage(
                                 onNext = { focusManager.moveFocus(FocusDirection.Down) },
                             ),
                             onValueChange = {
-                                signInViewModel.onEvent(
-                                    context,
-                                    SignInFormEvent.PasswordChanged(it),
-                                    navHostControllerLambda()
-                                )
+                                signInViewModel.onEvent(SignInFormEvent.PasswordChanged(it))
                             },
                             trailingIcon = {
                                 val image = if (signInViewModel.passwordVisibility.value) {
@@ -204,20 +219,25 @@ fun SignInPage(
                                 }) {
                                     Icon(
                                         imageVector = image,
-                                        contentDescription = "",
+                                        contentDescription = "ic_password_visibility_bt",
                                     )
                                 }
                             },
-                            label = { Text("Password", color = Color.Black) },
+                            label = {
+                                Text(
+                                    text = stringResource(id = R.string.password_string),
+                                    color = Color.Black
+                                )
+                            },
                             singleLine = true,
                             visualTransformation = if (signInViewModel.passwordVisibility.value) VisualTransformation.None
                             else PasswordVisualTransformation(),
                             modifier = Modifier
                                 .fillMaxWidth(0.8f)
                         )
-                        if (state.passwordError != null) {
+                        if (signInViewModel.state.value.passwordError != null) {
                             Text(
-                                text = state.passwordError,
+                                text = signInViewModel.state.value.passwordError!!,
                                 color = Color.Red,
                                 fontSize = 14.sp,
                                 modifier = Modifier.fillMaxWidth(0.8f),
@@ -228,47 +248,42 @@ fun SignInPage(
                         Spacer(modifier = Modifier.padding(10.dp))
                         OutlinedButton(
                             onClick = {
-                                signInViewModel.onEvent(
-                                    context,
-                                    SignInFormEvent.Login,
-                                    navHostControllerLambda()
-                                )
+                                signInViewModel.onEvent(SignInFormEvent.Login)
                             },
                             modifier = Modifier
                                 .fillMaxWidth(0.8f)
                                 .height(50.dp),
-
                             shape = RoundedCornerShape(50),
                             colors = ButtonDefaults.buttonColors(
                                 backgroundColor = DarkYellow,
                                 contentColor = Color.White
                             ),
-
-                            ) {
-                            Text(text = "Sign In", fontSize = 22.sp, color = Color.Black)
+                            elevation = ButtonDefaults.elevation(
+                                defaultElevation = 3.dp
+                            )
+                        ) {
+                            Text(
+                                text = stringResource(id = R.string.sign_in_string),
+                                fontSize = 22.sp,
+                                color = Color.Black
+                            )
                         }
 
                         Spacer(modifier = Modifier.padding(15.dp))
                         Text(
-                            text = "Create An Account",
+                            text = stringResource(id = R.string.create_an_account_string),
                             color = DarkYellow,
                             modifier = Modifier.clickable(onClick = {
-                                signInViewModel.navigate(
-                                    navHostController = navHostControllerLambda(),
-                                    route = Screen.SignUpScreen.route
-                                )
+                                navHostControllerLambda().navigate(Screen.SignUpScreen.route)
                             }),
                             style = TextStyle(fontSize = 20.sp),
                         )
                         Spacer(modifier = Modifier.padding(10.dp))
                         Text(
-                            text = "Forgot Password?",
+                            text = stringResource(id = R.string.forgot_password_string),
                             color = DarkYellow,
                             modifier = Modifier.clickable(onClick = {
-                                signInViewModel.navigate(
-                                    navHostController = navHostControllerLambda(),
-                                    route = Screen.ForgotPassword.route
-                                )
+                                navHostControllerLambda().navigate(Screen.ForgotPassword.route)
                             }),
                             style = TextStyle(fontSize = 20.sp),
                         )

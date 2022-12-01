@@ -2,19 +2,31 @@ package com.experiment.foodproductapp.repository
 
 import android.content.Context
 import com.experiment.foodproductapp.database.*
+import com.experiment.foodproductapp.database.dao.HomeItemsDao
+import com.experiment.foodproductapp.database.dao.LikedItemsDao
+import com.experiment.foodproductapp.database.dao.UserDao
+import com.experiment.foodproductapp.database.entity.*
 
 class DatabaseRepository(context: Context) {
 
     private val userDao = UserDatabase.getDatabase(context).userDao()
     private val productDao = UserDatabase.getDatabase(context).productDao()
     private val orderDetailsDao = UserDatabase.getDatabase(context).orderDetailsDao()
-    private val rewardsDao = UserDatabase.getDatabase(context).rewardsDao()
-    private val rewardsUsedDao = UserDatabase.getDatabase(context).rewardsUsedDao()
+    private val homeItemsDao = UserDatabase.getDatabase(context).homeItemsDao()
+    private val finalPriceDao = UserDatabase.getDatabase(context).finalPriceDao()
+    private val likedItemsDao = UserDatabase.getDatabase(context).likedItemsDao()
+
+    //Getter of Dao
+    fun getUserDao() = userDao
+    fun getProductDao() = productDao
+    fun getOrderDetailsDao() = orderDetailsDao
+    fun getHomeItemsDao() = homeItemsDao
+    fun getFinalPriceDao() = finalPriceDao
+    fun getLikedItemsDao() = likedItemsDao
 
     //User
     fun addUser(user: User) = userDao.insertUser(user)
-
-    fun readAllUsers() : List<User> = userDao.readAllUsers()
+    fun addUser(userDao: UserDao, user: User) = userDao.insertUser(user)
 
     fun getUserByEmail(email: String) : User = userDao.getUserByEmail(email)
 
@@ -35,6 +47,7 @@ class DatabaseRepository(context: Context) {
     }
 
     fun getLoggedInUser(): String? = userDao.getLoggedInUser()
+    fun getLoggedInUser(userDao: UserDao): String? = userDao.getLoggedInUser()
 
     fun updatePassword(email: String,password: String) = userDao.updatePassword(email,password)
 
@@ -69,21 +82,39 @@ class DatabaseRepository(context: Context) {
     //Order details
     fun insertOrder(order: OrderDetails) = orderDetailsDao.insertOrder(order)
 
-    fun readAllOrderDetails(email: String,count: Int): MutableList<OrderDetails> {
-        return orderDetailsDao.readAllOrderDetails(email,count)
+    fun readAllOrderDetails(email: String, orderId: Int): MutableList<OrderDetails> {
+        return orderDetailsDao.readAllOrderDetails(email, orderId)
     }
 
 
-    //Rewards
-    fun insertReward(rewards: Rewards) = rewardsDao.insertReward(rewards)
-    fun readAllRewards() : List<Rewards> = rewardsDao.readAllRewards()
+    //Home Items
+    fun insertItems(homeItems: HomeItems) = homeItemsDao.insertItems(homeItems)
+    fun insertItems(homeItemsDao: HomeItemsDao, homeItems: HomeItems) = homeItemsDao.insertItems(homeItems)
+
+    fun readAllItems() : List<HomeItems> = homeItemsDao.readAllItems()
+
+    fun readItemById(homeItemsDao: HomeItemsDao, id: Int) : HomeItems = homeItemsDao.readItemById(id)
+
+    fun readOrderId(id: Int) : HomeItems {
+        return homeItemsDao.readOrderId(id)
+    }
 
 
-    //RewardsUsedDao
-    fun insertRewardUsed(rewardsUsed: RewardsUsed) = rewardsUsedDao.insertRewardUsed(rewardsUsed)
-    fun readAllRewardsUsed(email: String) : List<RewardsUsed> = rewardsUsedDao.readAllRewardsUsed(email)
+    //Final Price Table
+    fun insertFinalPrice(finalPrice: FinalPrice) = finalPriceDao.insertFinalPrice(finalPrice)
+    fun getFinalPrice(email: String, orderId: Int): Double = finalPriceDao.getFinalPrice(email,orderId)
 
-    //fun listOfAvailableRewards(email: String) = rewardsUsedDao.listOfAvailableRewards(email)
 
+    //Liked Item
+    fun insertLikedItem(item: LikedItems) = likedItemsDao.insertLikedItem(item)
+    fun insertLikedItem(likedItemsDao: LikedItemsDao, item: LikedItems) = likedItemsDao.insertLikedItem(item)
+
+    fun readAllLikedItems(): List<LikedItems> = likedItemsDao.readAllLikedItems()
+    fun readAllLikedItems(likedItemsDao: LikedItemsDao): List<LikedItems> = likedItemsDao.readAllLikedItems()
+
+    //fun readItemsByEmail(email: String): List<LikedItems> = likedItemsDao.readItemsByEmail(email)
+    fun readItemsByEmail(likedItemsDao: LikedItemsDao, email: String): List<LikedItems> = likedItemsDao.readItemsByEmail(email)
+
+    fun deleteItem(likedItemsDao: LikedItemsDao, id: Int, email: String) = likedItemsDao.deleteItem(id = id,email = email)
 
 }

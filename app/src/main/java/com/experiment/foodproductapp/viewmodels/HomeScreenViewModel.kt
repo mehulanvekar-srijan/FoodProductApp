@@ -1,181 +1,215 @@
 package com.experiment.foodproductapp.viewmodels
 
-import android.content.Context
 import android.util.Log
-import android.widget.Toast
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.experiment.foodproductapp.constants.Screen
-import com.experiment.foodproductapp.database.Product
+import com.experiment.foodproductapp.database.dao.LikedItemsDao
+import com.experiment.foodproductapp.database.entity.HomeItems
+import com.experiment.foodproductapp.database.entity.LikedItems
+import com.experiment.foodproductapp.database.entity.Product
 import com.experiment.foodproductapp.repository.DatabaseRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
-class HomeScreenViewModel : ViewModel() {
+class HomeScreenViewModel(
+    private val databaseRepository: DatabaseRepository
+) : ViewModel() {
 
-    private var userEmail = mutableStateOf("")
+    init {
+        Log.d("testDI", "HomeScreenViewModel: ${databaseRepository.hashCode()}")
+    }
+
+    private var _userEmail = mutableStateOf("")
+    val userEmail = _userEmail
+
+    //Create empty state list object of homeItems
+    private val _homeItems: MutableState<List<HomeItems>> = mutableStateOf(listOf())
+    val homeItems: State<List<HomeItems>> = _homeItems
+
+    private val _cartItemCount: MutableState<Int> = mutableStateOf(0)
+    val cartItemCount: State<Int> = _cartItemCount
 
     //creating empty object
-    var productForDetailPage by mutableStateOf<Product>(Product())
+    private val _productForDetailPage = mutableStateOf(HomeItems())
+    val productForDetailPage = _productForDetailPage
 
+    private val _quantity =  mutableStateOf(0)
+    val quantity = _quantity
 
-    fun addProduct(newProduct: Product) {
-        productForDetailPage = newProduct
+    fun initHomeItems() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _homeItems.value = databaseRepository.readAllItems()
+        }
     }
 
-    val productsList = listOf(
-        Product(
-            id = 0,
-//             url = "https://www.bigbasket.com/media/uploads/p/xxl/40213061_2-coolberg-non-alcoholic-beer-malt.jpg",
-            url = "https://products3.imgix.drizly.com/ci-budweiser-24269668d4e23c97.jpeg",
-            title = "Coolberg Non Alcoholic Beer - Malt",
-            description = "Coolberg Malt Beer is a Non-Alcoholic Beer. This NAB has toasty notes of barley malts and hops and a distinctive musky aroma. It is made from the finest natural barley malts extracts. It is carbonated and has a serious spunk. As it contains less carbonation and often develops a beer-like head when poured into a glass. It is a perfect blend of crisp, bold and smooth flavour. Enjoy it with your choice of snack in the evening or serve it at a party.",
-            price = 79,
-            //alcohol = 5
-        ),
-        Product(
-            id = 1,
-//             url = "https://www.bigbasket.com/media/uploads/p/xxl/40122150_2-coolberg-beer-mint-non-alcoholic.jpg",
-            url = "https://products3.imgix.drizly.com/ci-budweiser-24269668d4e23c97.jpeg",
-            title = "Coolberg Non Alcoholic Beer - Mint",
-            description = "Coolberg Malt Beer is a Non-Alcoholic Beer. This NAB has toasty notes of barley malts and hops and a distinctive musky aroma. It is made from the finest natural barley malts extracts. It is carbonated and has a serious spunk. As it contains less carbonation and often develops a beer-like head when poured into a glass. It is a perfect blend of crisp, bold and smooth flavour. Enjoy it with your choice of snack in the evening or serve it at a party.",
-            price = 79,
-            //alcohol = 5
-        ),
-        Product(
-            id = 2,
-//             url = "https://www.bigbasket.com/media/uploads/p/xxl/40213060_2-coolberg-non-alcoholic-beer-cranberry.jpg",
-            url = "https://products3.imgix.drizly.com/ci-budweiser-24269668d4e23c97.jpeg",
-            title = "Coolberg Non Alcoholic Beer - Cranberry",
-            description = "Coolberg Malt Beer is a Non-Alcoholic Beer. This NAB has toasty notes of barley malts and hops and a distinctive musky aroma. It is made from the finest natural barley malts extracts. It is carbonated and has a serious spunk. As it contains less carbonation and often develops a beer-like head when poured into a glass. It is a perfect blend of crisp, bold and smooth flavour. Enjoy it with your choice of snack in the evening or serve it at a party.",
-            price = 79,
-            //alcohol = 5
-        ),
-        Product(
-            id = 3,
-//             url = "https://www.bigbasket.com/media/uploads/p/xxl/40213059_2-coolberg-non-alcoholic-beer-strawberry.jpg",
-            url = "https://products3.imgix.drizly.com/ci-budweiser-24269668d4e23c97.jpeg",
-            title = "Coolberg Non Alcoholic Beer - Strawberry",
-            description = "Coolberg Malt Beer is a Non-Alcoholic Beer. This NAB has toasty notes of barley malts and hops and a distinctive musky aroma. It is made from the finest natural barley malts extracts. It is carbonated and has a serious spunk. As it contains less carbonation and often develops a beer-like head when poured into a glass. It is a perfect blend of crisp, bold and smooth flavour. Enjoy it with your choice of snack in the evening or serve it at a party.",
-            price = 79,
-            //alcohol = 5
-        ),
-    )
+    fun addProduct(productId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+           _productForDetailPage.value  = databaseRepository.readOrderId(productId)
+        }
+    }
 
     fun setEmail(email: String?) {
-        if (email != null) userEmail.value = email
+        if (email != null) _userEmail.value = email
     }
 
-    fun navigateToUserDetails(navHostController: NavHostController) {
-        navHostController.navigate(Screen.UserDetails.routeWithData(userEmail.value))
-    }
+    //Navigation logic moved to composable views
+//    fun navigateToUserDetails(navHostController: NavHostController) {
+//        navHostController.navigate(Screen.UserDetails.routeWithData(_userEmail.value))
+//    }
+//
+//    fun navigateToProductCart(navHostController: NavHostController) {
+//        navHostController.navigate(Screen.ProductCart.routeWithData(_userEmail.value))
+//    }
+//
+//    fun navigateToOrderDetailsPage(navHostController: NavHostController) {
+//        navHostController.navigate(Screen.OrderDetails.routeWithData(_userEmail.value))
+//    }
+//
+//    fun navigateToProductDetailsPage(navHostController: NavHostController) {
+//        navHostController.navigate(Screen.ProductDetailsScreen.route) {
+//            popUpTo(Screen.HomeScreen.route) { inclusive = false }
+//        }
+//    }
 
-    fun navigateToProductCart(navHostController: NavHostController) {
-        navHostController.navigate(Screen.ProductCart.routeWithData(userEmail.value))
-    }
-
-    fun navigateToOrderDetailsPage(navHostController: NavHostController) {
-        navHostController.navigate(Screen.OrderDetails.routeWithData(userEmail.value))
-    }
-
-    fun navigateToProductDetailsPage(navHostController: NavHostController) {
-        navHostController.navigate(Screen.ProductDetailsScreen.route) {
-            popUpTo(Screen.HomeScreen.route) { inclusive = false }
-        }
-    }
-
-    fun addProductToCart(item: Product, context: Context) {
+    fun addProductToCart(homeItem: HomeItems) {
         viewModelScope.launch(Dispatchers.IO) {
-            try {
-                item.email = userEmail.value
-                DatabaseRepository(context).addProduct(item)
-            } catch (e: android.database.sqlite.SQLiteConstraintException) {
 
+            //Convert HomeItem to Product Object
+            val product = Product(
+                email = _userEmail.value,
+                id = homeItem.id,
+                url = homeItem.url,
+                title = homeItem.title,
+                description = homeItem.description,
+                price = homeItem.price,
+                count = homeItem.count,
+                alcohol = homeItem.alcohol
+            )
+
+            //Inset into Product Table
+            try {
+                databaseRepository.addProduct(product)
+                initCartItemsCount()
+            } catch (_: android.database.sqlite.SQLiteConstraintException) {
             }
         }
     }
 
-    private fun removeFromDatabase(context: Context, item: Product) {
+    private fun removeProductFromDatabase(productId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            DatabaseRepository(context).removeProduct(id = item.id, email = userEmail.value)
+            databaseRepository.removeProduct(id = productId, email = _userEmail.value)
+            initCartItemsCount()
         }
     }
-
 
     //Get count from db and set state
-    fun getProductCount(context: Context, id: Int, state: MutableState<Int>) {
+    fun getProductCount() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                state.value = DatabaseRepository(context).getCount(id = id, email = userEmail.value)
-            } catch (e: android.database.sqlite.SQLiteConstraintException) {
-
-            }
+                _quantity.value = databaseRepository.getCount(id = _productForDetailPage.value.id, email = _userEmail.value)
+            } catch (_: android.database.sqlite.SQLiteConstraintException) { }
         }
     }
 
     //Get current count from db, increment value, set state
-    fun incrementProductCount(context: Context, id: Int, state: MutableState<Int>) {
-        if (state.value == 0) {
-            addProductToCart(productForDetailPage!!, context)
-            state.value += 1
+    fun incrementProductCount() {
+        if (_quantity.value == 0) {
+            addProductToCart(productForDetailPage.value)
+            _quantity.value += 1
         } else {
             viewModelScope.launch(Dispatchers.IO) {
 
                 var currentCount =
-                    DatabaseRepository(context).getCount(id = id, email = userEmail.value)
+                    databaseRepository.getCount(id = _productForDetailPage.value.id, email = _userEmail.value)
                 currentCount += 1
 
-                DatabaseRepository(context).setCount(
-                    id = id,
+                databaseRepository.setCount(
+                    id = _productForDetailPage.value.id,
                     count = currentCount,
-                    email = userEmail.value
+                    email = _userEmail.value
                 ) //set count in db
             }
             //after updating count or adding product update count state in UI
-            state.value += 1
+            _quantity.value += 1
         }
-
     }
 
     //Get current count from db, decrement value, set state
-    fun decrementProductCount(context: Context, id: Int, state: MutableState<Int>) {
+    fun decrementProductCount() {
 
         viewModelScope.launch(Dispatchers.IO) {
 
             var currentCount =
-                DatabaseRepository(context).getCount(id = id, email = userEmail.value)
+                databaseRepository.getCount(id = _productForDetailPage.value.id, email = _userEmail.value)
             if (currentCount != 0) {
                 currentCount -= 1
             }
 
-            DatabaseRepository(context).setCount(
-                id = id,
+            if (currentCount == 0) {
+                // remove product
+                removeProductFromDatabase(productForDetailPage.value.id)
+            }
+
+            databaseRepository.setCount(
+                id = _productForDetailPage.value.id,
                 count = currentCount,
-                email = userEmail.value
+                email = _userEmail.value
             ) //set count in db
 
-            if (currentCount == 0) {
-                // remove product
-                removeFromDatabase(context, productForDetailPage!!)
-            }
-            state.value = currentCount //set count of UI state
-            DatabaseRepository(context).setCount(
-                id = id,
-                count = currentCount,
-                email = userEmail.value
-            ) //set count in db
-            if (currentCount == 0) {
-                // remove product
-                removeFromDatabase(context, productForDetailPage!!)
-            }
-            getProductCount(
-                context = context,
-                id = id,
-                state = state
-            )          //set count of UI state
+            getProductCount()          //set count of UI state
+        }
+    }
+
+    /**
+     * NOTE: This method is called
+     *          - In the beginning, in LaunchedEffect
+     *          - When an item is added to the cart
+     *          - When an item is removed from the cart
+     * */
+
+    fun initCartItemsCount(){
+        viewModelScope.launch(Dispatchers.IO){
+            val cartList = databaseRepository.readAllProducts(_userEmail.value)
+            _cartItemCount.value = cartList.size
+
+            Log.d("testBadge", "initCartItemsCount: ${cartItemCount.value}")
+        }
+    }
+
+    //Liked Feature methods
+    suspend fun fetchFavouriteProductsByEmail(
+        likedItemsDao: LikedItemsDao = databaseRepository.getLikedItemsDao(),
+        email: String,
+    ): List<LikedItems> {
+
+        val productListDeferred = viewModelScope.async(Dispatchers.IO){
+            databaseRepository.readItemsByEmail(likedItemsDao, email)
+        }
+
+        return productListDeferred.await()
+    }
+
+    fun insertFavouriteProduct(
+        likedItemsDao: LikedItemsDao = databaseRepository.getLikedItemsDao(),
+        likedItems: LikedItems,
+    ){
+        viewModelScope.launch(Dispatchers.IO){
+            databaseRepository.insertLikedItem(likedItemsDao,likedItems)
+        }
+    }
+
+    fun removeFromFavourites(
+        likedItemsDao: LikedItemsDao = databaseRepository.getLikedItemsDao(),
+        id: Int,
+        email: String
+    ){
+        viewModelScope.launch(Dispatchers.IO){
+            databaseRepository.deleteItem(likedItemsDao = likedItemsDao, id = id, email = email)
         }
     }
 }

@@ -11,26 +11,23 @@ import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.History
-import androidx.compose.material.icons.filled.ManageAccounts
-import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material.icons.outlined.Favorite
-import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Blue
 import androidx.compose.ui.graphics.Color.Companion.DarkGray
+import androidx.compose.ui.graphics.Color.Companion.Green
+import androidx.compose.ui.graphics.Color.Companion.Red
+import androidx.compose.ui.graphics.Color.Companion.Transparent
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,11 +37,16 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import coil.annotation.ExperimentalCoilApi
+import coil.compose.ImagePainter
 import coil.compose.rememberImagePainter
 import com.experiment.foodproductapp.R
-import com.experiment.foodproductapp.repository.DatabaseRepository
+import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.viewmodels.HomeScreenViewModel
+import com.google.accompanist.placeholder.PlaceholderHighlight
+import com.google.accompanist.placeholder.placeholder
+import com.google.accompanist.placeholder.shimmer
 import kotlinx.coroutines.launch
 import kotlin.math.min
 
@@ -59,44 +61,52 @@ fun preview3() {
     HomeScreenPage("sahil@test.com", navHostControllerLambda = navHostControllerLambda)
 }
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalAnimationApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalCoilApi::class)
 @Composable
 fun HomeScreenPage(
     email: String?,
     navHostControllerLambda: () -> NavHostController,
     homeScreenViewModel: HomeScreenViewModel = viewModel(),
 ) {
-    LaunchedEffect(key1 = Unit) { homeScreenViewModel.setEmail(email) }
+
+    LaunchedEffect(key1 = Unit) {
+        homeScreenViewModel.setEmail(email)
+        homeScreenViewModel.initHomeItems()
+        homeScreenViewModel.initCartItemsCount()
+    }
 
     ChangeBarColors(navigationBarColor = Color.White)
-
-    val context = LocalContext.current
 
     val coroutineScope = rememberCoroutineScope()
 
     val listState = rememberLazyListState()
     val brandLogoSize = remember { mutableStateOf(Int.MAX_VALUE) }
 
+    //When using derivedStateOf{} the screen we recompose only when the condition changes
+    val visibleOffsetCondition by remember {
+        derivedStateOf { listState.firstVisibleItemScrollOffset >= (brandLogoSize.value / 2) }
+    }
+    val visibleItemCondition by remember { derivedStateOf { listState.firstVisibleItemIndex > 0 } }
+
     val animatedAppBarBackgroundColor = animateColorAsState(
-        targetValue = if ((listState.firstVisibleItemScrollOffset >= (brandLogoSize.value / 2)) || (listState.firstVisibleItemIndex > 0)) Orange
-        else Color.Transparent,
+        targetValue = if ( visibleOffsetCondition || visibleItemCondition ) Orange
+        else Transparent,
         animationSpec = tween(1),
     )
     val animatedAppBarContentColor = animateColorAsState(
-        targetValue = if ((listState.firstVisibleItemScrollOffset >= (brandLogoSize.value / 2)) || (listState.firstVisibleItemIndex > 0)) Color.White
-        else Color.Transparent,
+        targetValue = if ( visibleOffsetCondition || visibleItemCondition ) Color.White
+        else Transparent,
         animationSpec = tween(1),
     )
 
     val animatedAppBarBrandIconColor = animateColorAsState(
-        targetValue = if ((listState.firstVisibleItemScrollOffset >= (brandLogoSize.value / 2)) || (listState.firstVisibleItemIndex > 0)) Color.Unspecified
-        else Color.Transparent,
+        targetValue = if ( visibleOffsetCondition || visibleItemCondition ) Color.Unspecified
+        else Transparent,
         animationSpec = tween(1),
     )
 
     val animatedAppBarElevation = animateDpAsState(
-        targetValue = if ((listState.firstVisibleItemScrollOffset >= (brandLogoSize.value / 2)) || (listState.firstVisibleItemIndex > 0)) 3.dp
-        else 0.dp,
+        targetValue = if ( visibleOffsetCondition || visibleItemCondition ) 3.dp else 0.dp,
         animationSpec = tween(1),
     )
 
@@ -121,7 +131,7 @@ fun HomeScreenPage(
             }
 
             //Products
-            items(items = homeScreenViewModel.productsList) { item ->
+            items(items = homeScreenViewModel.homeItems.value) { item ->
 
                 Box(
                     modifier = Modifier
@@ -141,25 +151,46 @@ fun HomeScreenPage(
                             bottomEnd = 3.dp,
                         ),
                         onClick = {
-                            homeScreenViewModel.addProduct(item)
-                            homeScreenViewModel.navigateToProductDetailsPage(navHostController = navHostControllerLambda())
+                            homeScreenViewModel.addProduct(item.id)
+                            navHostControllerLambda().navigate(Screen.ProductDetailsScreen.route) {
+                                popUpTo(Screen.HomeScreen.route) { inclusive = false }
+                            }
                         },
                     ) {
-                        Row {
+                        Row{
 
                             //Product Image
-                            Box {
+                            Box(
+                                modifier = Modifier
+                                    .weight(2F)
+                                    .fillMaxHeight(),
+                                contentAlignment = Alignment.Center,
+                            ){
+
+                                val painter = rememberImagePainter(data = item.url)
+
+                                val shimmerState = remember { mutableStateOf(false) }
+                                shimmerState.value = painter.state is ImagePainter.State.Loading || painter.state is ImagePainter.State.Error
+
                                 Image(
-                                    painter = rememberImagePainter(item.url),
-                                    contentDescription = "",
-                                    contentScale = ContentScale.Fit,
-                                    alignment = Alignment.CenterStart,
-                                    modifier = Modifier.padding(8.dp),
+                                    painter = painter,
+                                    contentDescription = "ic_product",
+                                    contentScale = ContentScale.Crop,
+                                    alignment = Alignment.Center,
+                                    modifier = Modifier
+                                        .padding(8.dp)
+                                        .placeholder(
+                                            visible = shimmerState.value,
+                                            color = Transparent,
+                                            highlight = PlaceholderHighlight.shimmer(LightDarkGray),
+                                        ),
                                 )
                             }
 
                             Column(
-                                modifier = Modifier.fillMaxSize(),
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .weight(3F),
                                 verticalArrangement = Arrangement.SpaceEvenly,
                             ) {
                                 Text( // Title
@@ -183,7 +214,7 @@ fun HomeScreenPage(
                                     // Price
                                     textAlign = TextAlign.Center,
                                     overflow = TextOverflow.Ellipsis,
-                                    text = "MRP:Rs ${item.price}",
+                                    text = stringResource(id = R.string.mrp_rs_string) + " " + item.price,
                                     fontFamily = descriptionFontFamily,
                                     color = LightDarkGray,
                                 )
@@ -197,15 +228,16 @@ fun HomeScreenPage(
                     Box( //left Middle Add Icon
                         modifier = Modifier
                             .fillMaxSize()
+                            .background(Transparent)
                             .padding(start = 17.dp, top = 70.dp)
                     ) {
                         Surface(
                             elevation = 3.dp,
-                            color = Color.Transparent
+                            color = Transparent
                         ) {
                             IconButton(
                                 onClick = {
-                                    homeScreenViewModel.addProductToCart(item, context)
+                                    homeScreenViewModel.addProductToCart(item)
                                     coroutineScope.launch {
                                         iconColor.animateTo(Orange, tween(50))
                                         iconColor.animateTo(DarkPink, tween(200))
@@ -218,7 +250,7 @@ fun HomeScreenPage(
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.Add,
-                                    contentDescription = "",
+                                    contentDescription = "ic_add_to_cart_bt",
                                     tint = Color.White,
                                 )
                             }
@@ -234,57 +266,63 @@ fun HomeScreenPage(
 
         //Top App Bar
         AppBar(
+            homeScreenViewModel = homeScreenViewModel,
             animatedAppBarBackgroundColor = animatedAppBarBackgroundColor,
             animatedAppBarContentColor = animatedAppBarContentColor,
             animatedAppBarBrandIconColor = animatedAppBarBrandIconColor,
             animatedAppBarElevation = animatedAppBarElevation,
             onUserProfileClick = {
-                homeScreenViewModel.navigateToUserDetails(navHostControllerLambda())
+                navHostControllerLambda().navigate(Screen.UserDetails.routeWithData(homeScreenViewModel.userEmail.value))
             },
             onProductCartClick = {
-                homeScreenViewModel.navigateToProductCart(navHostControllerLambda())
+                navHostControllerLambda().navigate(Screen.ProductCart.routeWithData(homeScreenViewModel.userEmail.value))
             },
-            onOrderDetailsClick = {
-                homeScreenViewModel.navigateToOrderDetailsPage(navHostControllerLambda())
+            onLikedProductsClick = {
+                navHostControllerLambda().navigate(Screen.FavouriteProductsScreen.routeWithData(homeScreenViewModel.userEmail.value))
             }
         )
     }
-
-//    val count = remember{ mutableStateOf(0) }
-//    SideEffect { Log.d("testRecomp", "HomeScreenPage : ${count.value++}") }
 }
 
 @Composable
 fun BackgroundImage() {
     Image(
         painter = painterResource(id = R.drawable.background_home_view),
-        contentDescription = "Background Image",
+        contentDescription = "ic_background_image",
         contentScale = ContentScale.Crop,
         modifier = Modifier.fillMaxSize()
     )
-
-//    val count = remember{ mutableStateOf(0) }
-//    SideEffect { Log.d("testRecomp", "BackgroundImage : ${count.value++}") }
 }
 
 @Composable
 fun AppBar(
+    homeScreenViewModel: HomeScreenViewModel,
     animatedAppBarBackgroundColor: State<Color>,
     animatedAppBarContentColor: State<Color>,
     animatedAppBarBrandIconColor: State<Color>,
     animatedAppBarElevation: State<Dp>,
     onUserProfileClick: () -> Unit = {},
     onProductCartClick: () -> Unit = {},
-    onOrderDetailsClick: () -> Unit = {},
+    onLikedProductsClick: () -> Unit = {},
 ) {
+    val count by remember {
+        derivedStateOf{
+            homeScreenViewModel.cartItemCount.value
+        }
+    }
     TopAppBar(
-        title = { Text(text = "Beer App", color = animatedAppBarContentColor.value) },
+        title = {
+            Text(
+                text = stringResource(id = R.string.app_name),
+                color = animatedAppBarContentColor.value
+            )
+        },
         backgroundColor = animatedAppBarBackgroundColor.value,
         elevation = animatedAppBarElevation.value,
         navigationIcon = {
             Icon(
                 painter = painterResource(id = R.drawable.ic_beer_cheers),
-                contentDescription = "",
+                contentDescription = "ic_beer_cheers",
                 tint = animatedAppBarBrandIconColor.value,
                 modifier = Modifier.padding(start = 5.dp)
             )
@@ -293,31 +331,51 @@ fun AppBar(
             IconButton(onClick = onUserProfileClick) {
                 Icon(
                     imageVector = Icons.Default.ManageAccounts,
-                    contentDescription = "",
+                    contentDescription = "ic_edit_profile_bt",
                     tint = Color.White
                 )
             }
 
-            IconButton(onClick = onOrderDetailsClick) {
+            IconButton(onClick = onLikedProductsClick) {
                 Icon(
-                    imageVector = Icons.Default.History,
-                    contentDescription = "",
+                    imageVector = Icons.Default.Favorite,
+                    contentDescription = "ic_Favorite_bt",
                     tint = Color.White
                 )
             }
 
-            IconButton(onClick = onProductCartClick) {
-                Icon(
-                    imageVector = Icons.Default.ShoppingCart,
-                    contentDescription = "",
-                    tint = Color.White
-                )
+            val offset = 12
+            if(count > 0){
+                BadgedBox(
+                    badge = {
+                        Badge(
+                            modifier = Modifier
+                                .offset(x = -offset.dp, y = offset.dp)
+                        ){
+                            Text(text = "${homeScreenViewModel.cartItemCount.value}")
+                        }
+                    },
+                ){
+                    IconButton(onClick = onProductCartClick) {
+                        Icon(
+                            imageVector = Icons.Default.ShoppingCart,
+                            contentDescription = "ic_shopping_cart",
+                            tint = Color.White
+                        )
+                    }
+                }
+            }
+            else{
+                IconButton(onClick = onProductCartClick) {
+                    Icon(
+                        imageVector = Icons.Default.ShoppingCart,
+                        contentDescription = "ic_shopping_cart",
+                        tint = Color.White
+                    )
+                }
             }
         }
     )
-
-//    val count = remember{ mutableStateOf(0) }
-//    SideEffect { Log.d("testRecomp", "AppBar: ${count.value++}") }
 }
 
 @Composable
@@ -338,10 +396,8 @@ fun BrandLogo(
             },
         alignment = Alignment.Center,
         painter = painterResource(id = R.drawable.ic_beer_cheers),
-        contentDescription = "brand logo",
+        contentDescription = "ic_brand_logo",
     )
-//    val count = remember{ mutableStateOf(0) }
-//    SideEffect { Log.d("testRecomp", "BrandLogo: ${count.value++}") }
 }
 
 

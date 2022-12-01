@@ -1,61 +1,80 @@
 package com.experiment.foodproductapp.viewmodels
 
-import android.content.Context
 import android.util.Log
-import android.widget.Toast
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.experiment.foodproductapp.constants.Screen
-import com.experiment.foodproductapp.database.Product
+import com.experiment.foodproductapp.database.entity.HomeItems
+import com.experiment.foodproductapp.database.entity.Product
 import com.experiment.foodproductapp.repository.DatabaseRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlin.math.abs
 
-class ProductCartViewModel : ViewModel() {
+class ProductCartViewModel(
+    private val databaseRepository: DatabaseRepository
+) : ViewModel() {
 
-    val checkedState = mutableStateOf(false)
+    init {
+        Log.d("testDI", "ProductCartViewModel: ${databaseRepository.hashCode()}")
+    }
 
-    private var _cartList = mutableStateListOf<Product>()
+    private val _checkedState = mutableStateOf(false)
+    val checkedState = _checkedState
+
+    private val _cartList = mutableStateListOf<Product>()
     val cartList = _cartList
 
     private val _email = mutableStateOf("")
     val email = _email
 
-    fun onDismiss(context: Context, item: Product) {
-        viewModelScope.launch(Dispatchers.IO) {
-            removeFromProductList(item)
-            removeFromDatabase(context, item)
-            updateSum()
-            updateFinalSum()
-        }
+    private val _sum = mutableStateOf(computeSum())
+    val sum = _sum
+
+    private val _availablePoints = mutableStateOf(0)
+    val availablePoints = _availablePoints
+
+    private val _redeemAmount = mutableStateOf(0)
+
+    private val _finalSum = mutableStateOf(0)
+    val finalSum = _finalSum
+
+    private val redeemedAmount = mutableStateOf(0)
+
+//    private val _newlyDeletedItem: MutableState<Product> = mutableStateOf(Product())
+//    val newlyDeletedItem: State<Product> = _newlyDeletedItem
+
+//    fun setNewlyDeletedItem(item: Product) {
+//        _newlyDeletedItem.value = item
+//    }
+
+    fun onDismiss(item: Product) {
+        removeFromProductList(item)
+        removeFromDatabase(item)
+        updateSum()
+        updateFinalSum()
     }
 
     private fun removeFromProductList(item: Product) = _cartList.remove(item)
 
-    private fun removeFromDatabase(context: Context, item: Product) {
+    private fun removeFromDatabase(item: Product) {
         viewModelScope.launch(Dispatchers.IO) {
-            DatabaseRepository(context).removeProduct(id = item.id, email = email.value)
+            databaseRepository.removeProduct(id = item.id, email = _email.value)
         }
     }
 
-    fun fetchCartList(context: Context) {
+    fun fetchCartList() {
         viewModelScope.launch(Dispatchers.IO) {
-            val list = DatabaseRepository(context).readAllProducts(_email.value)
+            val list = databaseRepository.readAllProducts(_email.value)
             list.forEach { _cartList.add(it) }
             updateSum()
             updateFinalSum()
         }
     }
-
-    //===== count feature =====
-    private val _sum = mutableStateOf(computeSum())
-    val sum = _sum
 
     private fun computeSum(): Int = _cartList.fold(0) { result, value ->
         result + (value.price * value.count)
@@ -66,28 +85,27 @@ class ProductCartViewModel : ViewModel() {
     }
 
     //Get count from db and set state
-    fun getProductCount(context: Context, id: Int, state: MutableState<Int>) {
+    fun getProductCount(id: Int, state: MutableState<Int>) {
         viewModelScope.launch(Dispatchers.IO) {
-            state.value = DatabaseRepository(context).getCount(id = id, email = email.value)
+            state.value = databaseRepository.getCount(id = id, email = _email.value)
         }
     }
 
     //Get current count from db, increment value, set state
-    fun incrementProductCount(context: Context, id: Int, state: MutableState<Int>) {
+    fun incrementProductCount(id: Int, state: MutableState<Int>) {
 
         viewModelScope.launch(Dispatchers.IO) {
 
-            var currentCount = DatabaseRepository(context).getCount(id = id, email = email.value)
+            var currentCount = databaseRepository.getCount(id = id, email = _email.value)
 
             currentCount += 1
 
-            DatabaseRepository(context).setCount(
+            databaseRepository.setCount(
                 id = id,
                 count = currentCount,
-                email = email.value
+                email = _email.value
             ) //set count in db
             getProductCount(
-                context = context,
                 id = id,
                 state = state
             )          //set count of UI state
@@ -104,21 +122,20 @@ class ProductCartViewModel : ViewModel() {
     }
 
     //Get current count from db, decrement value, set state
-    fun decrementProductCount(context: Context, id: Int, state: MutableState<Int>) {
+    fun decrementProductCount(id: Int, state: MutableState<Int>) {
 
         viewModelScope.launch(Dispatchers.IO) {
 
-            var currentCount = DatabaseRepository(context).getCount(id = id, email = email.value)
+            var currentCount = databaseRepository.getCount(id = id, email = _email.value)
 
             currentCount -= 1
 
-            DatabaseRepository(context).setCount(
+            databaseRepository.setCount(
                 id = id,
                 count = currentCount,
-                email = email.value
+                email = _email.value
             ) //set count in db
             getProductCount(
-                context = context,
                 id = id,
                 state = state
             )          //set count of UI state
@@ -134,94 +151,123 @@ class ProductCartViewModel : ViewModel() {
 
     }
 
-    fun navigateToCheckout(navHostController: NavHostController, context: Context) {
+    fun toCheckout():Boolean {
 
-        //Compute necessary details
-        if (flag != null && checkedState.value) {
-            if (flag == true) _totalPoints.value -= remainingPoints * 10
-            else _totalPoints.value = _totalPoints.value - (_redeemAmount.value * 10)
+
+        //Compute currently available points only after applying redeemed amount
+        if (_checkedState.value) updateAvailablePoints()
+
+        //Clear the cart list
+        _cartList.clear()
+        return true
+
+//        navHostController.navigate(
+//            Screen.CheckoutPage.routeWithData(
+//                email = _email.value,
+//                sum = _finalSum.value,
+//                points = _availablePoints.value
+//            )
+//        )
+    }
+
+    private fun updateAvailablePoints() {
+        when (_availablePoints.value) {
+            in 1..500 -> {
+                _availablePoints.value -= (redeemedAmount.value * 20) //Multiplied by 20 to convert rupees to points
+                Log.d("Redeem", "Updated Points: ${_availablePoints.value}")
+            }
+            in 501..1000 -> {
+                _availablePoints.value -= (redeemedAmount.value * 10) //Multiplied by 10 to convert rupees to points
+                Log.d("Redeem", "Updated Points: ${_availablePoints.value}")
+            }
+            else -> {
+                _availablePoints.value -= (redeemedAmount.value * 5) //Multiplied by 5 to convert rupees to points
+                Log.d("Redeem", "Updated Points: ${_availablePoints.value}")
+            }
         }
-        Log.d(
-            "testredeemAmount",
-            "navigateToCheckout: email=${email.value} , _totalPoints=${_totalPoints.value}"
-        )
-
-        //Clear the cart list
-        _cartList.clear()
-
-        navHostController.navigate(
-            Screen.CheckoutPage.routeWithData(
-                email = email.value,
-                sum = finalSum.value,
-                points = _totalPoints.value
-            )
-        )
     }
 
-    fun navigateToRewards(navHostController: NavHostController, email: String?) {
+    //moved navigation to view
+//    fun navigateToRewards(navHostController: NavHostController, email: String?) {
+//
+//        //Clear the cart list
+//        _cartList.clear()
+//
+//        //Then navigate
+//        if (email != null) navHostController.navigate(Screen.Rewards.routeWithData(email))
+//    }
 
-        //Clear the cart list
-        _cartList.clear()
-
-        //Then navigate
-        if (email != null) navHostController.navigate(Screen.Rewards.routeWithData(email))
-    }
-
-
-    //===== Redeem point =====
-    private val _totalPoints = mutableStateOf(0)
-    val totalPoints = _totalPoints
-
-    private val _redeemAmount = mutableStateOf(0)
-    val redeemAmount = _redeemAmount
-
-    fun initTotalPointsAndRedeemedAmount(context: Context, email: String) {
+    fun initAvailablePointsAndRedeemedAmount(email: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            _totalPoints.value = DatabaseRepository(context).getRewardPoints(email)
-            _redeemAmount.value = _totalPoints.value / 10
+            _availablePoints.value = databaseRepository.getRewardPoints(email)
+            Log.d("Redeem", "TotalRedeempoints: ${_availablePoints.value}")
+            if (_availablePoints.value in 1..500) {
+                _redeemAmount.value = _availablePoints.value / 20
+                Log.d("Redeem", "Max Redeemvalue: ${_redeemAmount.value}")
+            }
+            else if (_availablePoints.value in 501..1000) {
+                _redeemAmount.value = _availablePoints.value / 10
+                Log.d("Redeem", "Max Redeemvalue: ${_redeemAmount.value}")
+            }
+            else {
+                _redeemAmount.value = _availablePoints.value / 5
+                Log.d("Redeem", "Max Redeemvalue: ${_redeemAmount.value}")
+            }
         }
     }
-
-    private val _finalSum = mutableStateOf(0)
-    val finalSum = _finalSum
-
-    var flag: Boolean? = null
-    var remainingPoints = 0
 
     fun updateFinalSum() {
-        if (checkedState.value && sum.value>=100) {
-            Log.d(
-                "testredeemAmount",
-                "updateFinalSum : email=${email.value} , redeemedAmount=${_redeemAmount.value} , _totalPoints=${_totalPoints.value}"
-            )
+        //Offer is applicable only if CheckButton is checked & cart sum is >= 100
+        if (_checkedState.value && _sum.value >= 100) {
 
+            //User can get discount up to only 10% of the cart sum
             val maxDiscount = _sum.value / 10   //10% of order value
 
+            /**
+             * NOTE: _redeemAmount is the value in your wallet and
+             *      redeemedAmount is the value you remove from wallet
+             * */
             if (_redeemAmount.value >= maxDiscount) {
 
-                remainingPoints = maxDiscount
+                redeemedAmount.value = maxDiscount
+                Log.d("Redeem", "Redeemeedvalue: $redeemedAmount")
 
-                _finalSum.value = _sum.value - maxDiscount
+                _finalSum.value = _sum.value - redeemedAmount.value
 
-                flag = true
-
-                Log.d(
-                    "testredeemAmount",
-                    "updateFinalSum: if : email=${email.value} , redeemedAmount=${_redeemAmount.value} , _totalPoints=${_totalPoints.value} maxDiscount=$maxDiscount"
-                )
             } else {
-                _finalSum.value = _sum.value - _redeemAmount.value
 
-                flag = false
+                redeemedAmount.value = _redeemAmount.value
+                Log.d("Redeem", "Redeemeedvalue: $redeemedAmount")
 
-                Log.d(
-                    "testredeemAmount",
-                    "updateFinalSum: else : email=${email.value} , redeemedAmount=${_redeemAmount.value} , _totalPoints=${_totalPoints.value}, maxDiscount=$maxDiscount"
-                )
+                _finalSum.value = _sum.value - redeemedAmount.value
+
             }
         } else {
-            finalSum.value = sum.value
-            checkedState.value=false
+            _finalSum.value = _sum.value
+            _checkedState.value = false
         }
     }
+
+    fun onRestore(product: Product){
+        addProductToCart(product)
+        addProductToCartList(product)
+        updateSum()
+        updateFinalSum()
+    }
+    private fun addProductToCart(product: Product) {
+        viewModelScope.launch(Dispatchers.IO) {
+
+            //Inset into Product Table
+            try {
+                databaseRepository.addProduct(product)
+            }
+            catch (_: android.database.sqlite.SQLiteConstraintException) { }
+
+        }
+    }
+
+    private fun addProductToCartList(product: Product) {
+        _cartList.add(product)
+    }
+
 }

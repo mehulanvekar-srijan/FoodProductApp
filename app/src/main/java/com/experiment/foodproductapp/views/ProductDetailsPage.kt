@@ -1,24 +1,18 @@
 package com.experiment.foodproductapp.views
 
 
-
-import android.graphics.Paint
-import android.text.style.LineHeightSpan
+import android.util.Log
+import androidx.compose.animation.*
 import androidx.compose.foundation.*
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.runtime.*
-
-import androidx.compose.runtime.saveable.rememberSaveable
 
 
 import androidx.compose.ui.Alignment
@@ -27,67 +21,60 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
 
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.HorizontalAlignmentLine
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 
 
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontStyle
 
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
+import com.airbnb.lottie.compose.*
 
 import com.experiment.foodproductapp.R
-import com.experiment.foodproductapp.database.Product
+import com.experiment.foodproductapp.constants.Screen
+import com.experiment.foodproductapp.database.entity.LikedItems
 import com.experiment.foodproductapp.ui.theme.*
 
 import com.experiment.foodproductapp.viewmodels.HomeScreenViewModel
+import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 
 @Preview
 @Composable
 fun Preview() {
     val navHostController = rememberNavController()
-    ProductDetailsPage({navHostController },viewModel())
+    ProductDetailsPage({ navHostController }, koinViewModel())
 }
 
 
-val  productDetails =  Product(
-    id = 0,
-    url = "https://www.bigbasket.com/media/uploads/p/xxl/40213061_2-coolberg-non-alcoholic-beer-malt.jpg",
-    title = "Coolberg Non Alcoholic Beer - Malt",
-    description = "Coolberg Malt Beer is a Non-Alcoholic Beer. This NAB has toasty notes of barley malts and hops and a distinctive musky aroma. It is made from the finest natural barley malts extracts. It is carbonated and has a serious spunk. As it contains less carbonation and often develops a beer-like head when poured into a glass. It is a perfect blend of crisp, bold and smooth flavour. Enjoy it with your choice of snack in the evening or serve it at a party.",
-    price = 79,
-    count = 0,
-//alcohol = 5
-)
-
-
+@OptIn(ExperimentalCoilApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun ProductDetailsPage(
     navHostControllerLambda: () -> NavHostController,
     homeScreenViewModel: HomeScreenViewModel
 ) {
+    val likedState = remember { mutableStateOf(false) }
 
-    val productDetails = homeScreenViewModel.productForDetailPage
-    val context = LocalContext.current
     val scrollState = rememberScrollState()
-    val quantity = remember {mutableStateOf(0)}
+
+    val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(key1 = Unit) {
-        homeScreenViewModel.getProductCount(context,productDetails.id,quantity)
+        homeScreenViewModel.getProductCount()
+        homeScreenViewModel.initCartItemsCount()
     }
 
     ChangeBarColors(statusColor = Color.White, navigationBarColor = DarkYellow)
@@ -98,13 +85,11 @@ fun ProductDetailsPage(
             .background(DarkYellow),
     ) {
 
-
         Column(
-            modifier = Modifier
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally
-
+            modifier = Modifier.fillMaxSize(),
         ) {
+
+            //White Background
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -113,6 +98,7 @@ fun ProductDetailsPage(
                     .background(Color.White)
             ) {
 
+                //Image Title Description
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -120,318 +106,326 @@ fun ProductDetailsPage(
                         .verticalScroll(scrollState),
                 ) {
 
+                    //Product Image
+                    Image(
+                        painter = rememberImagePainter(homeScreenViewModel.productForDetailPage.value.url),
+                        contentDescription = "ic_product_image",
+                        contentScale = ContentScale.Fit,
+                        modifier = Modifier
+                            .padding(top = 60.dp)
+                            .pointerInput(Unit) {
+                                detectTapGestures(
+                                    onDoubleTap = {
 
-                    Column(
+                                        if (likedState.value) { //Already Liked, Then Remove
+                                            homeScreenViewModel.removeFromFavourites(
+                                                id = homeScreenViewModel.productForDetailPage.value.id,
+                                                email = homeScreenViewModel.userEmail.value
+                                            )
+                                        } else { //Not Yet Liked, Then Add in the Table
+                                            homeScreenViewModel.insertFavouriteProduct(
+                                                likedItems = LikedItems(
+                                                    id = homeScreenViewModel.productForDetailPage.value.id,
+                                                    email = homeScreenViewModel.userEmail.value
+                                                )
+                                            )
+                                        }
+                                        likedState.value = !likedState.value
+
+                                    },
+                                )
+                            }
+                            .height(350.dp)
+                            .align(alignment = Alignment.CenterHorizontally)
+                            .graphicsLayer {
+                                alpha =
+                                    1.05f - ((scrollState.value.toFloat() / scrollState.maxValue) * 1.0f)
+                                translationY = 0.3f * scrollState.value
+                            },
+                    )
+
+                    //Title
+                    Text(
+                        text = homeScreenViewModel.productForDetailPage.value.title,
+                        color = Color.DarkGray,
+                        style = TextStyle(
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 26.sp,
+                            letterSpacing = 1.sp,
+                            fontFamily = titleFontFamily
+                        ),
+
+                        textAlign = TextAlign.Start,
                         modifier = Modifier
                             .fillMaxWidth()
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .fillMaxHeight()
-                                .background(Color.White)
-                                .graphicsLayer {
-                                    alpha =
-                                        1.05f - ((scrollState.value.toFloat() / scrollState.maxValue) * 1.0f)
-                                    translationY = 0.3f * scrollState.value
-                                },
+                            .padding(start = 40.dp, top = 20.dp,end = 20.dp)
+                    )
 
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Image(
-                                painter = rememberImagePainter(productDetails.url),
-                                //painter = painterResource(id = R.drawable.beer),
-                                contentDescription = "",
-                                contentScale = ContentScale.FillWidth,
+                    Spacer(modifier = Modifier.background(Color.Red).padding(top = 10.dp))
 
-                                modifier = Modifier
-                                    .padding(top = 60.dp)
-                                    .height(350.dp)
-                                //.padding(10.dp, top = 60.dp)
-                            )
-                        }
-                    }
-
-                    Column(
+                    //Description
+                    Text(
+                        text = homeScreenViewModel.productForDetailPage.value.description,
+                        color = LightDarkGray,
+                        style = TextStyle(
+                            fontSize = 17.sp,
+                            fontFamily = descriptionFontFamily
+                        ),
+                        textAlign = TextAlign.Justify,
                         modifier = Modifier
                             .fillMaxWidth()
-                    ) {
-                        Text(
-                            text = productDetails.title,
-                            color = Color.DarkGray,
-                            style = TextStyle(
-                                fontWeight = FontWeight.SemiBold,
-                                fontSize = 26.sp,
-                                letterSpacing = 1.sp,
-                                fontFamily = titleFontFamily
-                            ),
-                            textAlign = TextAlign.Start,
-                            modifier = Modifier
-                                .padding(start = 40.dp, top = 20.dp)
-
-                        )
-                    }
-                    Spacer(modifier = Modifier.padding(top = 20.dp))
-
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
-                        //item {
-                        if (scrollState.value == 0) {
-                            Text(
-                                text = productDetails.description,
-                                color = LightDarkGray,
-                                style = TextStyle(
-                                    fontSize = 16.sp,
-                                    //letterSpacing = 1.sp,
-                                    fontFamily = descriptionFontFamily
-                                ),
-                                maxLines = 4,
-
-                                overflow = TextOverflow.Ellipsis,
-                                textAlign = TextAlign.Justify,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(start = 40.dp, end = 20.dp)
-                            )
-                        } else  {
-                            Text(
-                                text = productDetails.description,
-                                color = LightDarkGray,
-                                style = TextStyle(
-                                    fontSize = 17.sp,
-                                    //letterSpacing = 1.sp,
-                                    fontFamily = descriptionFontFamily
-                                ),
-                                overflow = TextOverflow.Ellipsis,
-                                //overflow = TextOverflow.Clip,
-                                textAlign = TextAlign.Justify,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(start = 40.dp, end = 20.dp)
-                            )
-                        }
-                    }
+                            .padding(start = 40.dp, end = 20.dp, bottom = 5.dp, top = 5.dp),
+                    )
                 }
 
                 Spacer(modifier = Modifier.padding(top = 20.dp))
-                Column(
+
+                //Add n Minus icons
+                Row(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight()
-                        .padding(end = 20.dp, start = 40.dp),
-                    verticalArrangement = Arrangement.Center
-
+                        .fillMaxSize()
+                        .padding(end = 20.dp),
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.End
-                    ) {
-                        //Add
-                        Box(
-                            modifier = Modifier
-                                .background(Color.Transparent)
-                                .padding(end = 10.dp),
-                            contentAlignment = Alignment.TopEnd
-                        ){
-                            Surface(
-                                color = Color.Transparent
-                            ){
-                                IconButton(
-                                    onClick = {
-                                        homeScreenViewModel.incrementProductCount(
-                                            context,
-                                            productDetails.id,
-                                            quantity
-                                        )
-                                    },
-                                    modifier = Modifier
-                                        .clip(RoundedCornerShape(50))
-                                        .background(
-                                            Brush.verticalGradient(
-                                                listOf(
-                                                    Orange,
-                                                    DarkYellow
-                                                )
-                                            )
-                                        )
-                                        .size(width = 35.dp, height = 35.dp)
-                                ){
-                                    Icon(
-                                        imageVector = Icons.Default.Add,
-                                        contentDescription = "",
-                                        tint = Color.White,
+                    //Add
+                    IconButton(
+                        onClick = {
+                            homeScreenViewModel.incrementProductCount()
+                        }, modifier = Modifier
+                            .clip(RoundedCornerShape(50))
+                            .background(
+                                Brush.verticalGradient(
+                                    listOf(
+                                        Orange, DarkYellow
                                     )
-                                }
-                            }
-                        }
-
-                        //Count Value
-//                        Box(
-//                            modifier = Modifier,
-//                                //.background(Color.Transparent)
-//                                //.clip(RoundedCornerShape(25)),
-//                            contentAlignment = Alignment.Center,
-//                        ) {
-                            Text(
-                                text = "" + quantity.value,
-                                style = TextStyle(
-                                    fontSize = 25.sp,
-                                ),
-                                color = DarkYellow,
-                                modifier = Modifier
-                                    //.background(DarkYellow)
-                                    .padding(start = 5.dp, end = 5.dp)
+                                )
                             )
-
-                        //}
-
-                        //Minus
-                        Box(
-                            modifier = Modifier
-                                .background(Color.Transparent)
-                                .padding(start = 10.dp),
-                            contentAlignment = Alignment.TopEnd,
-                        ){
-                            Surface(
-                                color = Color.Transparent
-                            ){
-                                IconButton(
-                                    onClick = {
-                                        homeScreenViewModel.decrementProductCount(
-                                            context,
-                                            productDetails.id,
-                                            quantity
-                                        )
-                                    },
-                                    modifier = Modifier
-                                        .clip(RoundedCornerShape(50))
-                                        .background(
-                                            Brush.verticalGradient(
-                                                listOf(
-                                                    Orange,
-                                                    DarkYellow
-                                                )
-                                            )
-                                        )
-                                        .size(width = 35.dp, height = 35.dp)
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Default.Remove,
-                                        contentDescription = "",
-                                        tint = Color.White,
-                                    )
-                                }
-                            }
-                        }
+                            .size(width = 35.dp, height = 35.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = "ic_add_count_bt",
+                            tint = Color.White,
+                        )
                     }
 
+                    Text(
+                        text = homeScreenViewModel.quantity.value.toString(),
+                        style = TextStyle(
+                            fontSize = 25.sp,
+                        ),
+                        color = DarkYellow,
+                        modifier = Modifier.padding(start = 15.dp, end = 15.dp)
+                    )
 
+                    //Minus
+                    IconButton(
+                        onClick = {
+                            homeScreenViewModel.decrementProductCount()
+                        }, modifier = Modifier
+                            .clip(RoundedCornerShape(50))
+                            .background(
+                                Brush.verticalGradient(
+                                    listOf(
+                                        Orange, DarkYellow
+                                    )
+                                )
+                            )
+                            .size(width = 35.dp, height = 35.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Remove,
+                            contentDescription = "ic_minus_count_bt",
+                            tint = Color.White,
+                        )
+                    }
                 }
             }
 
             Spacer(modifier = Modifier.padding(top = 20.dp))
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
+
+            //Bottom % Icons
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceAround,
             ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceAround,
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxHeight(),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_percentage_percent),
-                            contentDescription = "",
-                            modifier = Modifier.fillMaxHeight(.5f)
-                        )
-                        Text(
-                            text = "5" + "% Alc",
-                            color = Color.White,
-                            style = TextStyle(
-                                fontWeight = FontWeight.Normal,
-                                fontSize = 20.sp,
-                                letterSpacing = 1.sp
-                            ),
-                            fontFamily = descriptionFontFamily,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier
-                                .align(Alignment.CenterHorizontally)
-                        )
-                    }
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_percentage_percent),
+                        contentDescription = "ic_percentage",
+                        modifier = Modifier.fillMaxHeight(.5f)
+                    )
+                    Text(
+                        text = "" + homeScreenViewModel.productForDetailPage.value.alcohol + stringResource(
+                            id = R.string.five_alcohol_string
+                        ),
+                        color = Color.White,
+                        style = TextStyle(
+                            fontWeight = FontWeight.Normal, fontSize = 20.sp, letterSpacing = 1.sp
+                        ),
+                        fontFamily = descriptionFontFamily,
+                    )
+                }
 
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_rupee_sv),
+                        contentDescription = "ic_rupees",
+                        modifier = Modifier.fillMaxHeight(.5f)
+                    )
 
-                    Column(
-                        modifier = Modifier
-                            .fillMaxHeight(),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_rupee_sv),
-                            contentDescription = "",
-                            //olorFilter = ColorFilter.tint(color = Color.White),
-                            modifier = Modifier.fillMaxHeight(.5f)
-                        )
-
-                        Text(
-                            text = "Rs. " + productDetails.price,
-                            color = Color.White,
-                            style = TextStyle(
-                                fontWeight = FontWeight.Normal,
-                                fontSize = 20.sp,
-                                letterSpacing = 1.sp
-                            ),
-                            fontFamily = descriptionFontFamily,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier
-                                .align(Alignment.CenterHorizontally)
-                        )
-                    }
-
+                    Text(
+                        text = stringResource(id = R.string.rs_dot_string) + " " + homeScreenViewModel.productForDetailPage.value.price,
+                        color = Color.White,
+                        style = TextStyle(
+                            fontWeight = FontWeight.Normal, fontSize = 20.sp, letterSpacing = 1.sp
+                        ),
+                        fontFamily = descriptionFontFamily,
+                    )
                 }
             }
         }
-    }
 
-    AppBar(
-        navHostControllerLambda = navHostControllerLambda,
-        onProductCartClick = {
-            homeScreenViewModel.navigateToProductCart(navHostControllerLambda())
-        },
-    )
+//        LikedAnimation(likedState = likedState)
+
+        AppBar(
+            likedState = likedState,
+            email = homeScreenViewModel.userEmail.value,
+            homeScreenViewModel = homeScreenViewModel,
+            navHostControllerLambda = navHostControllerLambda,
+        ) {
+            navHostControllerLambda().navigate(
+                Screen.ProductCart.routeWithData(
+                    homeScreenViewModel.userEmail.value
+                )
+            )
+        }
+    }
 }
+
 
 @Composable
 fun AppBar(
+    likedState: MutableState<Boolean>,
+    email: String,
+    homeScreenViewModel: HomeScreenViewModel,
     navHostControllerLambda: () -> NavHostController,
-    onProductCartClick: ()-> Unit = {},
+    onProductCartClick: () -> Unit = {},
 ) {
 
+    //To set initial value of like button
+    LaunchedEffect(key1 = Unit) {
+        val likedItems = homeScreenViewModel.fetchFavouriteProductsByEmail(email = email)
+        likedItems.forEach {
+            if (homeScreenViewModel.productForDetailPage.value.id == it.id) {
+                likedState.value = true
+            }
+        }
+    }
     TopAppBar(
         title = { },
         backgroundColor = Color.Transparent,
         elevation = 0.dp,
         navigationIcon = {
             IconButton(onClick = { navHostControllerLambda().navigateUp() }) {
-                Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "", tint = DarkYellow)
-            }
-
-        },
-        actions = {
-            IconButton(onClick = onProductCartClick) {
                 Icon(
-                    imageVector = Icons.Default.ShoppingCart,
-                    contentDescription = "",
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = "ic_arrow_back_bt",
                     tint = DarkYellow
                 )
             }
-        }
+        },
+        actions = {
+            IconButton(
+                onClick = {
+                    if (likedState.value) { //Liked
+                        homeScreenViewModel.removeFromFavourites(
+                            id = homeScreenViewModel.productForDetailPage.value.id,
+                            email = homeScreenViewModel.userEmail.value
+                        )
+                    } else { //Not Yet Liked
+                        homeScreenViewModel.insertFavouriteProduct(
+                            likedItems = LikedItems(
+                                id = homeScreenViewModel.productForDetailPage.value.id,
+                                email = homeScreenViewModel.userEmail.value
+                            )
+                        )
+                    }
+                    likedState.value = !likedState.value
+                }
+            ) {
+//                Box {
+                if (likedState.value) {
+                    Icon(
+                        imageVector = Icons.Filled.Favorite,
+                        contentDescription = "ic_Favorite_bt",
+                        tint = Color.Red
+                    )
+                    LikedAnimation(likedState = likedState)
+                } else {
+                    Icon(
+                        imageVector = Icons.Outlined.FavoriteBorder,
+                        contentDescription = "ic_Favorite_bt",
+                        tint = Orange
+                    )
+                }
+//                }
+
+            }
+            val offset = 12
+            if (homeScreenViewModel.cartItemCount.value > 0) {
+                BadgedBox(
+                    badge = {
+                        Badge(
+                            modifier = Modifier.offset(x = -offset.dp, y = offset.dp)
+                        ) {
+                            Text(text = "${homeScreenViewModel.cartItemCount.value}")
+                        }
+                    },
+                ) {
+                    IconButton(onClick = onProductCartClick) {
+                        Icon(
+                            imageVector = Icons.Default.ShoppingCart,
+                            contentDescription = "ic_product_cart_bt",
+                            tint = DarkYellow
+                        )
+                    }
+                }
+            } else {
+                IconButton(onClick = onProductCartClick) {
+                    Icon(
+                        imageVector = Icons.Default.ShoppingCart,
+                        contentDescription = "ic_shopping_cart",
+                        tint = DarkYellow
+                    )
+                }
+            }
+        })
+}
+
+@Composable
+fun LikedAnimation(likedState: State<Boolean>) {
+
+    val compositionResult = rememberLottieComposition(
+        spec = LottieCompositionSpec.RawRes(R.raw.confetti)
+    )
+
+    val progress = animateLottieCompositionAsState(
+        composition = compositionResult.value,
+        isPlaying = likedState.value,
+        iterations = 1,
+        speed = 1.0F,
+        cancellationBehavior = LottieCancellationBehavior.OnIterationFinish
+    )
+
+    LottieAnimation(
+        composition = compositionResult.value,
+        progress = { progress.value },
+        modifier = Modifier.size(height = 200.dp, width = 50.dp)
     )
 }
