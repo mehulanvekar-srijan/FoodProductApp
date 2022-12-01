@@ -1,8 +1,6 @@
 package com.experiment.foodproductapp.viewmodels
 
-import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import com.experiment.foodproductapp.constants.CardFace
@@ -22,22 +20,22 @@ class RewardsDetailsPageViewModel : ViewModel() {
     val rewardPoints = _rewardPoints
 
     private val _bronzeBorder = mutableStateOf(0.dp)
-    val bronzeBorder: State<Dp> = _bronzeBorder
+    val bronzeBorder = _bronzeBorder
 
     private val _silverBorder = mutableStateOf(0.dp)
-    val silverBorder: State<Dp> = _silverBorder
+    val silverBorder = _silverBorder
 
     private val _goldBorder = mutableStateOf(0.dp)
-    val goldBorder: State<Dp> = _goldBorder
+    val goldBorder = _goldBorder
 
-    private val _bronzePadding = mutableStateOf(5.dp)
-    val bronzePadding = _bronzePadding
+    private val _bronzeBroderAni = mutableStateOf(false)
+    val bronzeBorderAni = _bronzeBroderAni
 
-    private val _silverPadding = mutableStateOf(5.dp)
-    val silverPadding = _silverPadding
+    private val _silverBroderAni = mutableStateOf(false)
+    val silverBorderAni = _silverBroderAni
 
-    private val _goldPadding = mutableStateOf(5.dp)
-    val goldPadding = _goldPadding
+    private val _goldBroderAni = mutableStateOf(false)
+    val goldBorderAni = _goldBroderAni
 
     fun onBronzeClick(cardFace: CardFace) {
         if (cardFace== CardFace.Back)
@@ -64,16 +62,16 @@ class RewardsDetailsPageViewModel : ViewModel() {
     fun setBorder() {
         when (rewardPoints.value) {
             in 0..500 -> {
-                _bronzeBorder.value=5.dp
-                _bronzePadding.value=0.dp
+                _bronzeBorder.value=0.5.dp
+                _bronzeBroderAni.value = true
             }
             in 501..1000 -> {
-                _silverBorder.value=5.dp
-                _silverPadding.value=0.dp
+                _silverBorder.value=0.5.dp
+                _silverBroderAni.value = true
             }
             else -> {
-                _goldBorder.value=5.dp
-                _goldPadding.value=0.dp
+                _goldBorder.value=0.5.dp
+                _goldBroderAni.value = true
             }
         }
     }

@@ -1,6 +1,5 @@
 package com.experiment.foodproductapp.views
 
-import android.util.Log
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -27,12 +26,10 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.airbnb.lottie.compose.*
 import com.experiment.foodproductapp.R
 import com.experiment.foodproductapp.constants.CardFace
-import com.experiment.foodproductapp.ui.theme.ChangeBarColors
-import com.experiment.foodproductapp.ui.theme.DarkYellow
-import com.experiment.foodproductapp.ui.theme.Orange
-import com.experiment.foodproductapp.ui.theme.titleFontFamily
+import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.viewmodels.RewardsDetailsPageViewModel
 
 @Preview
@@ -63,7 +60,12 @@ fun RewardDetails(
     Background()
 
     TopAppBar(
-        title = { Text(text = stringResource(id = R.string.reward_category_string), color = Color.White) },
+        title = {
+            Text(
+                text = stringResource(id = R.string.reward_category_string),
+                color = Color.White
+            )
+        },
         backgroundColor = Color.Transparent,
         elevation = 0.dp,
         navigationIcon = {
@@ -105,14 +107,14 @@ fun RewardDetails(
                     .fillMaxWidth()
                     .height(height * 26),
                 front = {
+                    BorderAnimation(rewardsDetailsPageViewModel.bronzeBorderAni)
                     Row(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(rewardsDetailsPageViewModel.bronzePadding.value)
                             .border(
-                                width = rewardsDetailsPageViewModel.bronzeBorder.value,
-                                color = Color.Yellow,
-                                shape = RoundedCornerShape(20.dp)
+                                rewardsDetailsPageViewModel.bronzeBorder.value,
+                                color = lightGreen,
+                                shape = RoundedCornerShape(13.dp)
                             ),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center
@@ -245,14 +247,14 @@ fun RewardDetails(
                     .fillMaxWidth()
                     .height(height * 26),
                 front = {
+                    BorderAnimation(rewardsDetailsPageViewModel.silverBorderAni)
                     Row(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(rewardsDetailsPageViewModel.silverPadding.value)
                             .border(
-                                width = rewardsDetailsPageViewModel.silverBorder.value,
-                                color = Color.Yellow,
-                                shape = RoundedCornerShape(20.dp)
+                                rewardsDetailsPageViewModel.silverBorder.value,
+                                color = lightGreen,
+                                shape = RoundedCornerShape(13.dp)
                             ),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center
@@ -384,14 +386,14 @@ fun RewardDetails(
                     .fillMaxWidth()
                     .height(height * 26),
                 front = {
+                    BorderAnimation(rewardsDetailsPageViewModel.goldBorderAni)
                     Row(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(rewardsDetailsPageViewModel.goldPadding.value)
                             .border(
-                                width = rewardsDetailsPageViewModel.goldBorder.value,
-                                color = Color.Yellow,
-                                shape = RoundedCornerShape(20.dp)
+                                rewardsDetailsPageViewModel.goldBorder.value,
+                                color = lightGreen,
+                                shape = RoundedCornerShape(13.dp)
                             ),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center
@@ -545,7 +547,7 @@ fun FlipCard(
     )
     Card(
         onClick = { onClick(cardFace) },
-        shape = RoundedCornerShape(20.dp),
+        shape = RoundedCornerShape(13.dp),
         elevation = 20.dp,
         modifier = modifier
             .graphicsLayer {
@@ -571,4 +573,27 @@ fun FlipCard(
             }
         }
     }
+}
+
+@Composable
+fun BorderAnimation(levelTrue: State<Boolean>) {
+
+    val compositionResult = rememberLottieComposition(
+        spec = LottieCompositionSpec.RawRes(R.raw.border)
+    )
+
+    val progress = animateLottieCompositionAsState(
+        composition = compositionResult.value,
+        isPlaying = levelTrue.value,
+        iterations = 1,
+        speed = 1.0F,
+        cancellationBehavior = LottieCancellationBehavior.OnIterationFinish,
+    )
+
+    LottieAnimation(
+        composition = compositionResult.value,
+        progress = { progress.value },
+        contentScale = ContentScale.FillBounds,
+        modifier = Modifier.padding(0.5.dp)
+    )
 }
