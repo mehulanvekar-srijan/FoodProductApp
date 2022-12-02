@@ -129,7 +129,7 @@ class ForgotPasswordViewModel(
                 if (status) {
                     _showEnterOTP.value = true
                     _showEnterEmail.value = false
-                    sendOtp()
+                    sendOtpM()
                 } else {
                     validationEventChannel.send(ValidationEvent.Success)
                 }
@@ -179,6 +179,35 @@ class ForgotPasswordViewModel(
             Log.d("testFP", "sendOtp: ${otp.value} content=$content")
             Log.d("testFP", "sendOtp: response=$response")
             //response.body?.close()
+        }
+    }
+
+    //Working OTP function
+    private fun sendOtpM() {
+
+        val senderEmail = "anvekarmehul@gmail.com"
+        val apiKey = BuildConfig.EMAIL_API_KEY
+
+        otp.value = ((Math.random() * 9000).toInt() + 1000).toString()
+
+        val client = OkHttpClient()
+
+        val mediaType = "application/json".toMediaTypeOrNull()
+        val body = RequestBody.create(
+            mediaType, "{\n    \"personalizations\": [\n        {\n            \"to\": [\n                {\n                    \"email\": \"${_state.value.email}\"\n                }\n            ],\n            \"subject\": \"OTP!\"\n        }\n    ],\n    \"from\": {\n        \"email\": \"${senderEmail}\"\n    },\n    \"content\": [\n        {\n            \"type\": \"text/plain\",\n            \"value\": \"Your OTP is ${otp.value}\"\n        }\n    ]\n}"
+        )
+
+        val request = Request.Builder()
+            .url("https://rapidprod-sendgrid-v1.p.rapidapi.com/mail/send")
+            .post(body)
+            .addHeader("content-type", "application/json")
+            .addHeader("X-RapidAPI-Key", apiKey)
+            .addHeader("X-RapidAPI-Host", "rapidprod-sendgrid-v1.p.rapidapi.com")
+            .build()
+
+        viewModelScope.launch(Dispatchers.IO) {
+            val response = client.newCall(request).execute()
+            Log.d("testFP", "sendOtp: response=$response")
         }
     }
 

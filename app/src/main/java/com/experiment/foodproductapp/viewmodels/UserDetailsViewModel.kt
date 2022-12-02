@@ -37,6 +37,9 @@ class UserDetailsViewModel(
     private val _dialogBox: MutableState<Boolean> = mutableStateOf(false)
     val dialogBox: State<Boolean> = _dialogBox
 
+    private val _passwordVisibility = mutableStateOf(false)
+    val passwordVisibility = _passwordVisibility
+
     private val validationEventChannel = Channel<ValidationEvent>()
     val validationEvents = validationEventChannel.receiveAsFlow()
 

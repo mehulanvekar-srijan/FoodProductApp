@@ -260,7 +260,10 @@ fun CardView(
         ) {
             //Product Image
             Box(
-                modifier = Modifier.weight(2F)
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .weight(2F),
+                contentAlignment = Alignment.Center
             ) {
                 LoadImage(item)
             }
