@@ -12,13 +12,21 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.experiment.foodproductapp.actor.ScopeReference
+import com.experiment.foodproductapp.actor.TheActor
+import com.experiment.foodproductapp.actor.route.RouteState
+import com.experiment.foodproductapp.actor.route.routeActor
 import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.ui.theme.FoodProductAppTheme
 import com.experiment.foodproductapp.viewmodels.HomeScreenViewModel
+import com.experiment.foodproductapp.viewmodels.MainViewModel
 import com.experiment.foodproductapp.viewmodels.OrderDetailsViewModel
 import com.experiment.foodproductapp.views.*
 import com.razorpay.PaymentData
 import com.razorpay.PaymentResultWithDataListener
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import org.koin.androidx.compose.koinViewModel
 
 class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
@@ -169,6 +177,13 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
                     }
                 }
             }
+        }
+
+        with(ScopeReference(CoroutineScope(Dispatchers.Main + Job()))) {
+            TheActor.run {
+                Log.d("testActors", "0. TheActor.run{} : called")
+                routeActor().toActor(RouteState.NotNavigated)
+            }.start()
         }
     }
 

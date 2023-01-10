@@ -48,4 +48,7 @@ val viewModelModule = module {
     viewModel{
         FavouriteProductsViewModel(get())
     }
+    viewModel{
+        MainViewModel()
+    }
 }

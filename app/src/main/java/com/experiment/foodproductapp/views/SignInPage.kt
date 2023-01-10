@@ -18,6 +18,7 @@ import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,29 +44,33 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 
-import androidx.compose.ui.tooling.preview.Preview
-
 
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.core.net.toUri
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.experiment.foodproductapp.R
+import com.experiment.foodproductapp.actor.route.NavigateObj
 import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.constants.ValidationEvent
 import com.experiment.foodproductapp.domain.event.SignInFormEvent
 import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.viewmodels.SignInViewModel
+import kotlinx.coroutines.launch
+import com.experiment.foodproductapp.stream.AppStream
+import com.experiment.foodproductapp.viewmodels.MainViewModel
+import com.experiment.foodproductapp.viewmodels.NavigationUIMessages
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SignInPage(
     navHostControllerLambda: () -> NavHostController,
-    signInViewModel: SignInViewModel = koinViewModel()
+    signInViewModel: SignInViewModel = koinViewModel(),
+    mainViewModel: MainViewModel = koinViewModel()
 ) {
     val context = LocalContext.current
 
+    val coroutineScope = rememberCoroutineScope()
     LaunchedEffect(key1 = Unit) {
         signInViewModel.validationEvents.collect { event ->
             when (event) {
@@ -90,6 +95,23 @@ fun SignInPage(
             }
         }
     }
+
+    LaunchedEffect(key1 = Unit) {
+        mainViewModel.uiMessages.collect {
+            Log.d("testActors", "5. uiMessages.collect it=$it")
+            when(it) {
+                is NavigationUIMessages.NavigateTo -> {
+                    Log.d("testActors", "5.1. NavigateTo : finally navigating it=$it")
+                    navHostControllerLambda().navigate(Screen.SignUpScreen.route)
+                }
+                NavigationUIMessages.SkipNavigation -> {
+                    Log.d("testActors", "5.2. SkipNavigation : finally navigating it=$it")
+                }
+            }
+        }
+    }
+
+
 
     ChangeBarColors(navigationBarColor = Color.White)
     val focusManager = LocalFocusManager.current
@@ -274,7 +296,11 @@ fun SignInPage(
                             text = stringResource(id = R.string.create_an_account_string),
                             color = DarkYellow,
                             modifier = Modifier.clickable(onClick = {
-                                navHostControllerLambda().navigate(Screen.SignUpScreen.route)
+                                //navHostControllerLambda().navigate(Screen.SignUpScreen.route)
+                                coroutineScope.launch {
+                                    AppStream.send(NavigateObj(route = Screen.SignUpScreen.route))
+                                    mainViewModel.getNavigationState()
+                                }
                             }),
                             style = TextStyle(fontSize = 20.sp),
                         )

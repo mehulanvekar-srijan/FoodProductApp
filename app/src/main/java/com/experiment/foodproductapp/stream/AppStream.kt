@@ -1,4 +1,4 @@
-package net.srijan.swiko.stream
+package com.experiment.foodproductapp.stream
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -8,7 +8,6 @@ interface State : Message
 interface Action : Message
 
 object AppStream {
-
 
     private val stream: MutableSharedFlow<Message> = MutableSharedFlow(extraBufferCapacity = 100)
 

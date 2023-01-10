@@ -1,12 +1,12 @@
-package net.srijan.swiko.ui.actor
+package com.experiment.foodproductapp.actor
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.channels.ActorScope
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.launch
-import net.srijan.swiko.stream.AppStream.messages
-import net.srijan.swiko.stream.Message
+import com.experiment.foodproductapp.stream.AppStream.messages
+import com.experiment.foodproductapp.stream.Message
 import kotlin.reflect.KSuspendFunction2
 
 typealias ActorFunction<S> = KSuspendFunction2<ActorScope<Message>,S, Unit>
@@ -14,7 +14,7 @@ typealias ActorFunction<S> = KSuspendFunction2<ActorScope<Message>,S, Unit>
 typealias TheActorScope = ActorScope<Message>
 
 @OptIn(ObsoleteCoroutinesApi::class)
-data class TheActor<S> private constructor(val actorFunction:ActorFunction<S>, val initialState: S){
+data class TheActor<S> private constructor(val actorFunction: ActorFunction<S>, val initialState: S){
 
     companion object{
 
