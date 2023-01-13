@@ -54,7 +54,7 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
                         SplashScreenPage(navHostControllerLambda)
                     }
                     composable(route = Screen.SignUpScreen.route) {
-                        SignupPage(navHostControllerLambda)
+                        SignupPage(navHostControllerLambda = navHostControllerLambda)
                     }
                     composable(route = Screen.SignInScreen.route) {
                         SignInPage(navHostControllerLambda)

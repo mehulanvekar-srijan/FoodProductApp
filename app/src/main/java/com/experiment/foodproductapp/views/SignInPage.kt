@@ -76,20 +76,16 @@ fun SignInPage(
             when (event) {
                 is ValidationEvent.Success -> {
                     navHostControllerLambda().navigate(
-                        Screen.HomeScreen.routeWithData(
-                            signInViewModel.state.value.email
-                        )
+                        Screen.HomeScreen.routeWithData(signInViewModel.state.value.email)
                     ) {
                         popUpTo(Screen.SignInScreen.route) { inclusive = true }
                     }
                 }
                 is ValidationEvent.Failure -> {
                     if (signInViewModel.error.value) {
-                        Toast.makeText(context, "Email not Registered", Toast.LENGTH_SHORT)
-                            .show()
+                        Toast.makeText(context, "Email not Registered", Toast.LENGTH_SHORT).show()
                     } else {
-                        Toast.makeText(context, "Incorrect Email or Password", Toast.LENGTH_SHORT)
-                            .show()
+                        Toast.makeText(context, "Incorrect Email or Password", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -102,7 +98,16 @@ fun SignInPage(
             when(it) {
                 is NavigationUIMessages.NavigateTo -> {
                     Log.d("testActors", "5.1. NavigateTo : finally navigating it=$it")
-                    navHostControllerLambda().navigate(Screen.SignUpScreen.route)
+
+                    if (it.route == Screen.SignUpScreen.route)
+                        navHostControllerLambda().navigate(Screen.SignUpScreen.route)
+
+                    if (it.route == Screen.ForgotPassword.route)
+                        navHostControllerLambda().navigate(Screen.ForgotPassword.route)
+
+                    if (it.route == Screen.HomeScreen.route){
+                        signInViewModel.onEvent(SignInFormEvent.Login)
+                    }
                 }
                 NavigationUIMessages.SkipNavigation -> {
                     Log.d("testActors", "5.2. SkipNavigation : finally navigating it=$it")
@@ -270,7 +275,11 @@ fun SignInPage(
                         Spacer(modifier = Modifier.padding(10.dp))
                         OutlinedButton(
                             onClick = {
-                                signInViewModel.onEvent(SignInFormEvent.Login)
+                                //signInViewModel.onEvent(SignInFormEvent.Login)
+                                coroutineScope.launch {
+                                    AppStream.send(NavigateObj(route = Screen.HomeScreen.route))
+                                    mainViewModel.getNavigationState()
+                                }
                             },
                             modifier = Modifier
                                 .fillMaxWidth(0.8f)
@@ -309,7 +318,11 @@ fun SignInPage(
                             text = stringResource(id = R.string.forgot_password_string),
                             color = DarkYellow,
                             modifier = Modifier.clickable(onClick = {
-                                navHostControllerLambda().navigate(Screen.ForgotPassword.route)
+                                //navHostControllerLambda().navigate(Screen.ForgotPassword.route)
+                                coroutineScope.launch {
+                                    AppStream.send(NavigateObj(route = Screen.ForgotPassword.route))
+                                    mainViewModel.getNavigationState()
+                                }
                             }),
                             style = TextStyle(fontSize = 20.sp),
                         )

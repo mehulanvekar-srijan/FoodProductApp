@@ -1,6 +1,7 @@
 package com.experiment.foodproductapp.views
 
 import android.app.DatePickerDialog
+import android.util.Log
 import android.widget.DatePicker
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -49,10 +50,15 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.experiment.foodproductapp.R
+import com.experiment.foodproductapp.actor.route.NavigateObj
 import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.constants.ValidationEvent
+import com.experiment.foodproductapp.domain.event.SignInFormEvent
 import com.experiment.foodproductapp.domain.event.SignupFormEvent
+import com.experiment.foodproductapp.stream.AppStream
 import com.experiment.foodproductapp.ui.theme.*
+import com.experiment.foodproductapp.viewmodels.MainViewModel
+import com.experiment.foodproductapp.viewmodels.NavigationUIMessages
 import com.experiment.foodproductapp.viewmodels.SignUpViewModel
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -73,7 +79,8 @@ fun preview1() {
 @Composable
 fun SignupPage(
     navHostControllerLambda: () -> NavHostController,
-    signUpViewModel: SignUpViewModel = koinViewModel()
+    signUpViewModel: SignUpViewModel = koinViewModel(),
+    mainViewModel: MainViewModel = koinViewModel()
 ) {
     ChangeBarColors(navigationBarColor = Color.White)
     val focusManager = LocalFocusManager.current
@@ -120,6 +127,17 @@ fun SignupPage(
                 is ValidationEvent.Failure -> {
                     Toast.makeText(context, "Email already registered", Toast.LENGTH_SHORT).show()
                 }
+            }
+        }
+    }
+
+    LaunchedEffect(key1 = Unit) {
+        mainViewModel.uiMessages.collect {
+            when(it) {
+                is NavigationUIMessages.NavigateTo -> {
+                    signUpViewModel.onEvent(SignupFormEvent.Submit)
+                }
+                NavigationUIMessages.SkipNavigation -> {}
             }
         }
     }
@@ -563,7 +581,10 @@ fun SignupPage(
 
                 OutlinedButton(
                     onClick = {
-                        signUpViewModel.onEvent(SignupFormEvent.Submit)
+                        coroutineScope.launch {
+                            AppStream.send(NavigateObj(route = Screen.HomeScreen.route))
+                            mainViewModel.getNavigationState()
+                        }
                     },
                     modifier = Modifier
                         .fillMaxWidth()
