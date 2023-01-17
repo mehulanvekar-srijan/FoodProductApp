@@ -11,7 +11,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import androidx.navigation.navDeepLink
 import com.experiment.foodproductapp.actor.ScopeReference
 import com.experiment.foodproductapp.actor.TheActor
 import com.experiment.foodproductapp.actor.route.RouteState
@@ -19,6 +18,7 @@ import com.experiment.foodproductapp.actor.route.routeActor
 import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.ui.theme.FoodProductAppTheme
 import com.experiment.foodproductapp.viewmodels.HomeScreenViewModel
+import com.experiment.foodproductapp.viewmodels.MainViewModel
 import com.experiment.foodproductapp.viewmodels.OrderDetailsViewModel
 import com.experiment.foodproductapp.views.*
 import com.razorpay.PaymentData
@@ -166,7 +166,7 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
                     }
                     composable(
                         route = Screen.RewardsDetailsPage.route,
-                        arguments = listOf(navArgument("points") { type = NavType.IntType })
+                        arguments = listOf(navArgument("points") { type = NavType.IntType})
                     ) {
                         RewardDetails(
                             it.arguments?.getInt("points"),
@@ -175,7 +175,7 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
                     }
                     composable(
                         route = Screen.FavouriteProductsScreen.route,
-                        arguments = listOf(navArgument("email") { type = NavType.StringType })
+                        arguments = listOf(navArgument("email") { type = NavType.StringType})
                     ) {
                         FavouriteProductsPage(
                             it.arguments?.getString("email"),

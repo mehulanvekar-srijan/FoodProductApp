@@ -55,7 +55,8 @@ fun routeActor(): ActorFunction<RouteState> {
         when(route) {
 
             Screen.SignUpScreen.route -> { return NavigateTo(route = Screen.SignUpScreen.route) }
-
+            Screen.ForgotPassword.route -> { return NavigateTo(route = Screen.ForgotPassword.route) }
+            Screen.HomeScreen.route -> { return NavigateTo(route = Screen.HomeScreen.route) }
             else -> { return NotNavigated }
 
         }
