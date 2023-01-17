@@ -57,6 +57,9 @@ android {
             includeAndroidResources true
         }
     }
+    buildFeatures{
+        viewBinding true
+    }
     namespace 'com.experiment.foodproductapp'
 }
 

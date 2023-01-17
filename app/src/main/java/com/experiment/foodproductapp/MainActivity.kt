@@ -5,13 +5,13 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.navigation.navDeepLink
 import com.experiment.foodproductapp.actor.ScopeReference
 import com.experiment.foodproductapp.actor.TheActor
 import com.experiment.foodproductapp.actor.route.RouteState
@@ -19,7 +19,6 @@ import com.experiment.foodproductapp.actor.route.routeActor
 import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.ui.theme.FoodProductAppTheme
 import com.experiment.foodproductapp.viewmodels.HomeScreenViewModel
-import com.experiment.foodproductapp.viewmodels.MainViewModel
 import com.experiment.foodproductapp.viewmodels.OrderDetailsViewModel
 import com.experiment.foodproductapp.views.*
 import com.razorpay.PaymentData
@@ -44,6 +43,7 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
 
             val homeScreenViewModel: HomeScreenViewModel = koinViewModel()
             val orderScreenViewModel: OrderDetailsViewModel = koinViewModel()
+            val uri = "https://www.foodproductapp.com"
 
             FoodProductAppTheme {
                 NavHost(
@@ -53,10 +53,16 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
                     composable(route = Screen.SplashScreen.route) {
                         SplashScreenPage(navHostControllerLambda)
                     }
-                    composable(route = Screen.SignUpScreen.route) {
+                    composable(
+                        route = Screen.SignUpScreen.route,
+                        deepLinks = listOf(navDeepLink { uriPattern = "$uri/signup" }),
+                    ) {
                         SignupPage(navHostControllerLambda)
                     }
-                    composable(route = Screen.SignInScreen.route) {
+                    composable(
+                        route = Screen.SignInScreen.route,
+                        deepLinks = listOf(navDeepLink { uriPattern = "$uri/signin" }),
+                    ) {
                         SignInPage(navHostControllerLambda)
                     }
                     composable(route = Screen.ForgotPassword.route) {
@@ -70,6 +76,7 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
                     }
                     composable(
                         route = Screen.HomeScreen.route,
+                        deepLinks = listOf(navDeepLink { uriPattern = "$uri/{email}" }),
                         arguments = listOf(navArgument("email") { type = NavType.StringType })
                     ) {
                         HomeScreenPage(
@@ -159,7 +166,7 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
                     }
                     composable(
                         route = Screen.RewardsDetailsPage.route,
-                        arguments = listOf(navArgument("points") { type = NavType.IntType})
+                        arguments = listOf(navArgument("points") { type = NavType.IntType })
                     ) {
                         RewardDetails(
                             it.arguments?.getInt("points"),
@@ -168,7 +175,7 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
                     }
                     composable(
                         route = Screen.FavouriteProductsScreen.route,
-                        arguments = listOf(navArgument("email") { type = NavType.StringType})
+                        arguments = listOf(navArgument("email") { type = NavType.StringType })
                     ) {
                         FavouriteProductsPage(
                             it.arguments?.getString("email"),
