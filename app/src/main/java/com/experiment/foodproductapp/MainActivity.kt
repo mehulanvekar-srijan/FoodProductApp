@@ -11,6 +11,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.navigation.navDeepLink
 import com.experiment.foodproductapp.actor.ScopeReference
 import com.experiment.foodproductapp.actor.TheActor
 import com.experiment.foodproductapp.actor.route.RouteState
