@@ -41,13 +41,19 @@ import coil.annotation.ExperimentalCoilApi
 import coil.compose.ImagePainter
 import coil.compose.rememberImagePainter
 import com.experiment.foodproductapp.R
+import com.experiment.foodproductapp.actor.route.NavigateObj
 import com.experiment.foodproductapp.constants.Screen
+import com.experiment.foodproductapp.domain.event.SignInFormEvent
+import com.experiment.foodproductapp.stream.AppStream
 import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.viewmodels.HomeScreenViewModel
+import com.experiment.foodproductapp.viewmodels.MainViewModel
+import com.experiment.foodproductapp.viewmodels.NavigationUIMessages
 import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.placeholder
 import com.google.accompanist.placeholder.shimmer
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 import kotlin.math.min
 
 @Preview
@@ -55,7 +61,6 @@ import kotlin.math.min
 fun preview3() {
     val navHostController = rememberNavController()
     val navHostControllerLambda: () -> NavHostController = {
-
         navHostController
     }
     HomeScreenPage("sahil@test.com", navHostControllerLambda = navHostControllerLambda)
@@ -67,12 +72,30 @@ fun HomeScreenPage(
     email: String?,
     navHostControllerLambda: () -> NavHostController,
     homeScreenViewModel: HomeScreenViewModel = viewModel(),
+    mainViewModel: MainViewModel = koinViewModel()
 ) {
 
     LaunchedEffect(key1 = Unit) {
         homeScreenViewModel.setEmail(email)
         homeScreenViewModel.initHomeItems()
         homeScreenViewModel.initCartItemsCount()
+    }
+
+    LaunchedEffect(key1 = Unit) {
+        mainViewModel.uiMessages.collect {
+            Log.d("testActors", "5. uiMessages.collect it=$it")
+            when(it) {
+                is NavigationUIMessages.NavigateTo -> {
+                    navHostControllerLambda().navigate(Screen.ProductDetailsScreen.route) {
+                        popUpTo(Screen.HomeScreen.route) { inclusive = false }
+                    }
+                }
+                NavigationUIMessages.SkipNavigation -> {
+                    Log.d("testActors", "5.2. SkipNavigation : finally navigating it=$it")
+                }
+                else -> {}
+            }
+        }
     }
 
     ChangeBarColors(navigationBarColor = Color.White)
@@ -152,9 +175,13 @@ fun HomeScreenPage(
                         ),
                         onClick = {
                             homeScreenViewModel.addProduct(item.id)
-                            navHostControllerLambda().navigate(Screen.ProductDetailsScreen.route) {
-                                popUpTo(Screen.HomeScreen.route) { inclusive = false }
+                            coroutineScope.launch {
+                                AppStream.send(NavigateObj(route = Screen.ProductDetailsScreen.route))
+                                mainViewModel.getNavigationState()
                             }
+//                            navHostControllerLambda().navigate(Screen.ProductDetailsScreen.route) {
+//                                popUpTo(Screen.HomeScreen.route) { inclusive = false }
+//                            }
                         },
                     ) {
                         Row{

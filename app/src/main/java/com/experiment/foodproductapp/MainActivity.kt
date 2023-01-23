@@ -17,6 +17,7 @@ import com.experiment.foodproductapp.actor.TheActor
 import com.experiment.foodproductapp.actor.route.RouteState
 import com.experiment.foodproductapp.actor.route.routeActor
 import com.experiment.foodproductapp.constants.Screen
+import com.experiment.foodproductapp.database.entity.User
 import com.experiment.foodproductapp.ui.theme.FoodProductAppTheme
 import com.experiment.foodproductapp.viewmodels.HomeScreenViewModel
 import com.experiment.foodproductapp.viewmodels.MainViewModel
@@ -81,8 +82,8 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
                         arguments = listOf(navArgument("email") { type = NavType.StringType })
                     ) {
                         HomeScreenPage(
-                            it.arguments?.getString("email"),
-                            navHostControllerLambda,
+                            email = it.arguments?.getString("email"),
+                            navHostControllerLambda = navHostControllerLambda,
                             homeScreenViewModel = homeScreenViewModel
                         )
                     }
