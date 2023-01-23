@@ -112,7 +112,10 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
                             navHostControllerLambda
                         )
                     }
-                    composable(route = Screen.ProductDetailsScreen.route) {
+                    composable(route = Screen.ProductDetailsScreen.route,
+                        deepLinks = listOf(navDeepLink { uriPattern = "$uri/{id}"
+                        })
+                    ) {
                         ProductDetailsPage(
                             navHostControllerLambda,
                             homeScreenViewModel = homeScreenViewModel
@@ -168,7 +171,7 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
                     }
                     composable(
                         route = Screen.RewardsDetailsPage.route,
-                        arguments = listOf(navArgument("points") { type = NavType.IntType})
+                        arguments = listOf(navArgument("points") { type = NavType.IntType })
                     ) {
                         RewardDetails(
                             it.arguments?.getInt("points"),
@@ -177,7 +180,7 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
                     }
                     composable(
                         route = Screen.FavouriteProductsScreen.route,
-                        arguments = listOf(navArgument("email") { type = NavType.StringType})
+                        arguments = listOf(navArgument("email") { type = NavType.StringType })
                     ) {
                         FavouriteProductsPage(
                             it.arguments?.getString("email"),
