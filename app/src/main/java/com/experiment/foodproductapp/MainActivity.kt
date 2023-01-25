@@ -90,6 +90,7 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
 
                     composable(
                         route = Screen.ProductDetailsScreen.route,
+                        deepLinks = listOf(navDeepLink { uriPattern = "$uri/{email}/{id}"}),
                         arguments = listOf(
                             navArgument("email") { type = NavType.StringType },
                             navArgument("id") { type = NavType.IntType },
