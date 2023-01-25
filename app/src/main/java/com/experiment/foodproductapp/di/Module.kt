@@ -43,6 +43,9 @@ val viewModelModule = module {
         HomeScreenViewModel(get())
     }
     viewModel{
+        DetailsPageViewModel(get())
+    }
+    viewModel{
         OrderDetailsViewModel(get())
     }
     viewModel{

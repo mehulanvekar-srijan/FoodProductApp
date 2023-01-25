@@ -6,7 +6,10 @@ sealed class Screen(val route:String) {
     object SignInScreen : Screen("SignInScreen")
     object ForgotPassword : Screen("ForgotPassword")
 
-    object ProductDetailsScreen : Screen("ProductDetailsScreen")
+
+    object ProductDetailsScreen : Screen("ProductDetailsScreen/{email}/{id}") {
+        fun routeWithData(email: String,id:Int) = "ProductDetailsScreen/$email/$id"
+    }
 
     object OrderDescriptionPage : Screen("OrderDescriptionPage")
 

@@ -17,10 +17,9 @@ import com.experiment.foodproductapp.actor.TheActor
 import com.experiment.foodproductapp.actor.route.RouteState
 import com.experiment.foodproductapp.actor.route.routeActor
 import com.experiment.foodproductapp.constants.Screen
-import com.experiment.foodproductapp.database.entity.User
 import com.experiment.foodproductapp.ui.theme.FoodProductAppTheme
+import com.experiment.foodproductapp.viewmodels.DetailsPageViewModel
 import com.experiment.foodproductapp.viewmodels.HomeScreenViewModel
-import com.experiment.foodproductapp.viewmodels.MainViewModel
 import com.experiment.foodproductapp.viewmodels.OrderDetailsViewModel
 import com.experiment.foodproductapp.views.*
 import com.razorpay.PaymentData
@@ -43,8 +42,9 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
             val navHostControllerLambda: () -> NavHostController =
                 { navHostController as NavHostController }
 
-            val homeScreenViewModel: HomeScreenViewModel = koinViewModel()
+            //val homeScreenViewModel: HomeScreenViewModel = koinViewModel()
             val orderScreenViewModel: OrderDetailsViewModel = koinViewModel()
+            //val detailsPageViewModel: DetailsPageViewModel = koinViewModel()
             val uri = "https://www.foodproductapp.com"
 
             FoodProductAppTheme {
@@ -76,6 +76,7 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
                     ) {
                         UserDetails(navHostControllerLambda, it.arguments?.getString("email"))
                     }
+
                     composable(
                         route = Screen.HomeScreen.route,
                         deepLinks = listOf(navDeepLink { uriPattern = "$uri/{email}" }),
@@ -84,7 +85,20 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
                         HomeScreenPage(
                             email = it.arguments?.getString("email"),
                             navHostControllerLambda = navHostControllerLambda,
-                            homeScreenViewModel = homeScreenViewModel
+                        )
+                    }
+
+                    composable(
+                        route = Screen.ProductDetailsScreen.route,
+                        arguments = listOf(
+                            navArgument("email") { type = NavType.StringType },
+                            navArgument("id") { type = NavType.IntType },
+                        )
+                    ) {
+                        ProductDetailsPage(
+                            email = it.arguments?.getString("email"),
+                            id = it.arguments?.getInt("id"),
+                            navHostControllerLambda = navHostControllerLambda,
                         )
                     }
 
@@ -97,6 +111,7 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
                             navHostControllerLambda
                         )
                     }
+
                     composable(
                         route = Screen.CheckoutPage.route,
                         arguments = listOf(
@@ -112,15 +127,17 @@ class MainActivity : ComponentActivity(), PaymentResultWithDataListener {
                             navHostControllerLambda
                         )
                     }
-                    composable(route = Screen.ProductDetailsScreen.route,
-                        deepLinks = listOf(navDeepLink { uriPattern = "$uri/{id}"
-                        })
-                    ) {
-                        ProductDetailsPage(
-                            navHostControllerLambda,
-                            homeScreenViewModel = homeScreenViewModel
-                        )
-                    }
+
+//                    composable(route = Screen.ProductDetailsScreen.route,
+//                        deepLinks = listOf(navDeepLink { uriPattern = "$uri/{id}"
+//                        })
+//                    ) {
+//                        ProductDetailsPage(
+//                            navHostControllerLambda =navHostControllerLambda,
+//
+//                        )
+//                    }
+
                     composable(
                         route = Screen.PaymentScreen.route,
                         arguments = listOf(

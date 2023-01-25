@@ -1,7 +1,6 @@
 package com.experiment.foodproductapp.views
 
 
-import android.util.Log
 import androidx.compose.animation.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -36,7 +35,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil.annotation.ExperimentalCoilApi
@@ -47,24 +45,25 @@ import com.experiment.foodproductapp.R
 import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.database.entity.LikedItems
 import com.experiment.foodproductapp.ui.theme.*
+import com.experiment.foodproductapp.viewmodels.DetailsPageViewModel
 
-import com.experiment.foodproductapp.viewmodels.HomeScreenViewModel
-import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @Preview
 @Composable
 fun Preview() {
     val navHostController = rememberNavController()
-    ProductDetailsPage({ navHostController }, koinViewModel())
+    ProductDetailsPage("romi@romi.com",1,{ navHostController }, koinViewModel())
 }
 
 
 @OptIn(ExperimentalCoilApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun ProductDetailsPage(
+    email: String?,
+    id: Int?,
     navHostControllerLambda: () -> NavHostController,
-    homeScreenViewModel: HomeScreenViewModel
+    detailsPageViewModel: DetailsPageViewModel = koinViewModel()
 ) {
     val likedState = remember { mutableStateOf(false) }
 
@@ -73,8 +72,12 @@ fun ProductDetailsPage(
     val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(key1 = Unit) {
-        homeScreenViewModel.getProductCount()
-        homeScreenViewModel.initCartItemsCount()
+
+        detailsPageViewModel.setEmail(email)
+        detailsPageViewModel.addProduct(id!!)
+
+        detailsPageViewModel.getProductCount()
+        detailsPageViewModel.initCartItemsCount()
     }
 
     ChangeBarColors(statusColor = Color.White, navigationBarColor = DarkYellow)
@@ -108,7 +111,7 @@ fun ProductDetailsPage(
 
                     //Product Image
                     Image(
-                        painter = rememberImagePainter(homeScreenViewModel.productForDetailPage.value.url),
+                        painter = rememberImagePainter(detailsPageViewModel.productForDetailPage.value.url),
                         contentDescription = "ic_product_image",
                         contentScale = ContentScale.Fit,
                         modifier = Modifier
@@ -118,15 +121,15 @@ fun ProductDetailsPage(
                                     onDoubleTap = {
 
                                         if (likedState.value) { //Already Liked, Then Remove
-                                            homeScreenViewModel.removeFromFavourites(
-                                                id = homeScreenViewModel.productForDetailPage.value.id,
-                                                email = homeScreenViewModel.userEmail.value
+                                            detailsPageViewModel.removeFromFavourites(
+                                                id = detailsPageViewModel.productForDetailPage.value.id,
+                                                email = detailsPageViewModel.userEmail.value
                                             )
                                         } else { //Not Yet Liked, Then Add in the Table
-                                            homeScreenViewModel.insertFavouriteProduct(
+                                            detailsPageViewModel.insertFavouriteProduct(
                                                 likedItems = LikedItems(
-                                                    id = homeScreenViewModel.productForDetailPage.value.id,
-                                                    email = homeScreenViewModel.userEmail.value
+                                                    id = detailsPageViewModel.productForDetailPage.value.id,
+                                                    email = detailsPageViewModel.userEmail.value
                                                 )
                                             )
                                         }
@@ -146,7 +149,7 @@ fun ProductDetailsPage(
 
                     //Title
                     Text(
-                        text = homeScreenViewModel.productForDetailPage.value.title,
+                        text = detailsPageViewModel.productForDetailPage.value.title,
                         color = Color.DarkGray,
                         style = TextStyle(
                             fontWeight = FontWeight.SemiBold,
@@ -165,7 +168,7 @@ fun ProductDetailsPage(
 
                     //Description
                     Text(
-                        text = homeScreenViewModel.productForDetailPage.value.description,
+                        text = detailsPageViewModel.productForDetailPage.value.description,
                         color = LightDarkGray,
                         style = TextStyle(
                             fontSize = 17.sp,
@@ -191,7 +194,7 @@ fun ProductDetailsPage(
                     //Add
                     IconButton(
                         onClick = {
-                            homeScreenViewModel.incrementProductCount()
+                            detailsPageViewModel.incrementProductCount()
                         }, modifier = Modifier
                             .clip(RoundedCornerShape(50))
                             .background(
@@ -211,7 +214,7 @@ fun ProductDetailsPage(
                     }
 
                     Text(
-                        text = homeScreenViewModel.quantity.value.toString(),
+                        text = detailsPageViewModel.quantity.value.toString(),
                         style = TextStyle(
                             fontSize = 25.sp,
                         ),
@@ -222,7 +225,7 @@ fun ProductDetailsPage(
                     //Minus
                     IconButton(
                         onClick = {
-                            homeScreenViewModel.decrementProductCount()
+                            detailsPageViewModel.decrementProductCount()
                         }, modifier = Modifier
                             .clip(RoundedCornerShape(50))
                             .background(
@@ -259,7 +262,7 @@ fun ProductDetailsPage(
                         modifier = Modifier.fillMaxHeight(.5f)
                     )
                     Text(
-                        text = "" + homeScreenViewModel.productForDetailPage.value.alcohol + stringResource(
+                        text = "" + detailsPageViewModel.productForDetailPage.value.alcohol + stringResource(
                             id = R.string.five_alcohol_string
                         ),
                         color = Color.White,
@@ -280,7 +283,7 @@ fun ProductDetailsPage(
                     )
 
                     Text(
-                        text = stringResource(id = R.string.rs_dot_string) + " " + homeScreenViewModel.productForDetailPage.value.price,
+                        text = stringResource(id = R.string.rs_dot_string) + " " + detailsPageViewModel.productForDetailPage.value.price,
                         color = Color.White,
                         style = TextStyle(
                             fontWeight = FontWeight.Normal, fontSize = 20.sp, letterSpacing = 1.sp
@@ -295,13 +298,13 @@ fun ProductDetailsPage(
 
         AppBar(
             likedState = likedState,
-            email = homeScreenViewModel.userEmail.value,
-            homeScreenViewModel = homeScreenViewModel,
+            email = detailsPageViewModel.userEmail.value,
+            detailsPageViewModel = detailsPageViewModel,
             navHostControllerLambda = navHostControllerLambda,
         ) {
             navHostControllerLambda().navigate(
                 Screen.ProductCart.routeWithData(
-                    homeScreenViewModel.userEmail.value
+                    detailsPageViewModel.userEmail.value
                 )
             )
         }
@@ -313,16 +316,16 @@ fun ProductDetailsPage(
 fun AppBar(
     likedState: MutableState<Boolean>,
     email: String,
-    homeScreenViewModel: HomeScreenViewModel,
+    detailsPageViewModel: DetailsPageViewModel,
     navHostControllerLambda: () -> NavHostController,
     onProductCartClick: () -> Unit = {},
 ) {
 
     //To set initial value of like button
     LaunchedEffect(key1 = Unit) {
-        val likedItems = homeScreenViewModel.fetchFavouriteProductsByEmail(email = email)
+        val likedItems = detailsPageViewModel.fetchFavouriteProductsByEmail(email = email)
         likedItems.forEach {
-            if (homeScreenViewModel.productForDetailPage.value.id == it.id) {
+            if (detailsPageViewModel.productForDetailPage.value.id == it.id) {
                 likedState.value = true
             }
         }
@@ -344,15 +347,15 @@ fun AppBar(
             IconButton(
                 onClick = {
                     if (likedState.value) { //Liked
-                        homeScreenViewModel.removeFromFavourites(
-                            id = homeScreenViewModel.productForDetailPage.value.id,
-                            email = homeScreenViewModel.userEmail.value
+                        detailsPageViewModel.removeFromFavourites(
+                            id = detailsPageViewModel.productForDetailPage.value.id,
+                            email = detailsPageViewModel.userEmail.value
                         )
                     } else { //Not Yet Liked
-                        homeScreenViewModel.insertFavouriteProduct(
+                        detailsPageViewModel.insertFavouriteProduct(
                             likedItems = LikedItems(
-                                id = homeScreenViewModel.productForDetailPage.value.id,
-                                email = homeScreenViewModel.userEmail.value
+                                id = detailsPageViewModel.productForDetailPage.value.id,
+                                email = detailsPageViewModel.userEmail.value
                             )
                         )
                     }
@@ -378,13 +381,13 @@ fun AppBar(
 
             }
             val offset = 12
-            if (homeScreenViewModel.cartItemCount.value > 0) {
+            if (detailsPageViewModel.cartItemCount.value > 0) {
                 BadgedBox(
                     badge = {
                         Badge(
                             modifier = Modifier.offset(x = -offset.dp, y = offset.dp)
                         ) {
-                            Text(text = "${homeScreenViewModel.cartItemCount.value}")
+                            Text(text = "${detailsPageViewModel.cartItemCount.value}")
                         }
                     },
                 ) {

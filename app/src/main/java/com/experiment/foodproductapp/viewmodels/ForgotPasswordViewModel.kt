@@ -167,7 +167,7 @@ class ForgotPasswordViewModel(
             .url("https://rapidprod-sendgrid-v1.p.rapidapi.com/mail/send")
             .post(body)
             .addHeader("content-type", "application/json")
-            .addHeader("X-RapidAPI-Key", BuildConfig.EMAIL_API_KEY)
+            .addHeader("X-RapidAPI-Key", "83c81c00dmsh801338fe53ee411p13ccf8jsna84ec8addb52")
             .addHeader("X-RapidAPI-Host", "rapidprod-sendgrid-v1.p.rapidapi.com")
             .build()
 

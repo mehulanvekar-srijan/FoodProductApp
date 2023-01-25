@@ -71,7 +71,7 @@ fun preview3() {
 fun HomeScreenPage(
     email: String?,
     navHostControllerLambda: () -> NavHostController,
-    homeScreenViewModel: HomeScreenViewModel = viewModel(),
+    homeScreenViewModel: HomeScreenViewModel = koinViewModel(),
     mainViewModel: MainViewModel = koinViewModel()
 ) {
 
@@ -174,11 +174,20 @@ fun HomeScreenPage(
                             bottomEnd = 3.dp,
                         ),
                         onClick = {
-                            homeScreenViewModel.addProduct(item.id)
-                            coroutineScope.launch {
-                                AppStream.send(NavigateObj(route = Screen.ProductDetailsScreen.route))
-                                mainViewModel.getNavigationState()
+
+                            //homeScreenViewModel.addProduct(item.id)
+//                            coroutineScope.launch {
+//                                AppStream.send(NavigateObj(route = Screen.ProductDetailsScreen.route))
+//                                mainViewModel.getNavigationState()
+//                            }
+
+                            navHostControllerLambda().navigate(
+                                Screen.ProductDetailsScreen.routeWithData(homeScreenViewModel.userEmail.value, item.id)
+                            ) {
+                                popUpTo(Screen.HomeScreen.route) { inclusive = false }
                             }
+
+                            //previous navigation
 //                            navHostControllerLambda().navigate(Screen.ProductDetailsScreen.route) {
 //                                popUpTo(Screen.HomeScreen.route) { inclusive = false }
 //                            }
