@@ -93,7 +93,8 @@ fun ProductCart(
                 actions = {
                     IconButton(onClick = {
                         productCartViewModel.cartList.clear()
-                        navHostControllerLambda().navigate(Screen.Rewards.routeWithData(productCartViewModel.email.value))
+                        //navHostControllerLambda().navigate(Screen.Rewards.routeWithData(productCartViewModel.email.value))
+                        navHostControllerLambda().navigate("CartToReward/${productCartViewModel.email.value}")
                     }) {
                         Icon(
                             imageVector = Icons.Default.Stars,

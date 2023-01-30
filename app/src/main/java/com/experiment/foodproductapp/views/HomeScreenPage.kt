@@ -17,15 +17,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.Blue
 import androidx.compose.ui.graphics.Color.Companion.DarkGray
-import androidx.compose.ui.graphics.Color.Companion.Green
-import androidx.compose.ui.graphics.Color.Companion.Red
 import androidx.compose.ui.graphics.Color.Companion.Transparent
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -34,17 +30,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.ImagePainter
 import coil.compose.rememberImagePainter
 import com.experiment.foodproductapp.R
-import com.experiment.foodproductapp.actor.route.NavigateObj
 import com.experiment.foodproductapp.constants.Screen
-import com.experiment.foodproductapp.domain.event.SignInFormEvent
-import com.experiment.foodproductapp.stream.AppStream
+import com.experiment.foodproductapp.domain.homeScreenStartDestinationRoute
 import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.viewmodels.HomeScreenViewModel
 import com.experiment.foodproductapp.viewmodels.MainViewModel
@@ -74,6 +67,9 @@ fun HomeScreenPage(
     homeScreenViewModel: HomeScreenViewModel = koinViewModel(),
     mainViewModel: MainViewModel = koinViewModel()
 ) {
+    navHostControllerLambda().backQueue.forEach {
+        if(it.destination.route != null) Log.d("testBS", "HomeScreenPage: route=${it.destination.route}")
+    }
 
     LaunchedEffect(key1 = Unit) {
         homeScreenViewModel.setEmail(email)
@@ -181,10 +177,13 @@ fun HomeScreenPage(
 //                                mainViewModel.getNavigationState()
 //                            }
 
-                            navHostControllerLambda().navigate(
-                                Screen.ProductDetailsScreen.routeWithData(homeScreenViewModel.userEmail.value, item.id)
-                            ) {
-                                popUpTo(Screen.HomeScreen.route) { inclusive = false }
+//                            navHostControllerLambda().navigate("HomeToProductDetails/${homeScreenViewModel.userEmail.value}/${item.id}") {
+//                                popUpTo(Screen.HomeScreen.route) { inclusive = false }
+//                            }
+
+                            homeScreenStartDestinationRoute.value = "HomeToProductDetails/{email}/{id}"
+                            navHostControllerLambda().navigate("HomeToProductDetails/${homeScreenViewModel.userEmail.value}/${item.id}") {
+                                //popUpTo(Screen.HomeScreen.route) { inclusive = false }
                             }
 
                             //previous navigation
@@ -308,13 +307,20 @@ fun HomeScreenPage(
             animatedAppBarBrandIconColor = animatedAppBarBrandIconColor,
             animatedAppBarElevation = animatedAppBarElevation,
             onUserProfileClick = {
-                navHostControllerLambda().navigate(Screen.UserDetails.routeWithData(homeScreenViewModel.userEmail.value))
-            },
-            onProductCartClick = {
-                navHostControllerLambda().navigate(Screen.ProductCart.routeWithData(homeScreenViewModel.userEmail.value))
+                //navHostControllerLambda().navigate(Screen.UserDetails.routeWithData(homeScreenViewModel.userEmail.value))
+                homeScreenStartDestinationRoute.value = "UserDetailsNavigation"
+                navHostControllerLambda().navigate("UserDetailsScreenX/${homeScreenViewModel.userEmail.value}")
+                //navHostControllerLambda().navigate("UserDetailsScreenX/meh@ul.com")
             },
             onLikedProductsClick = {
-                navHostControllerLambda().navigate(Screen.FavouriteProductsScreen.routeWithData(homeScreenViewModel.userEmail.value))
+                //navHostControllerLambda().navigate(Screen.FavouriteProductsScreen.routeWithData(homeScreenViewModel.userEmail.value))
+                homeScreenStartDestinationRoute.value = "HomeToLikedScreen/{email}"
+                navHostControllerLambda().navigate("HomeToLikedScreen/${homeScreenViewModel.userEmail.value}")
+            },
+            onProductCartClick = {
+                //navHostControllerLambda().navigate(Screen.ProductCart.routeWithData(homeScreenViewModel.userEmail.value))
+                homeScreenStartDestinationRoute.value = "CartScreenNavigation"
+                navHostControllerLambda().navigate("HomeToCartScreen/${homeScreenViewModel.userEmail.value}")
             }
         )
     }

@@ -57,6 +57,7 @@ import com.experiment.foodproductapp.R
 import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.constants.ValidationEvent
 import com.experiment.foodproductapp.domain.event.UserDetailsFormEvent
+import com.experiment.foodproductapp.domain.userScreenStartDestinationRoute
 import com.experiment.foodproductapp.ui.theme.*
 import com.experiment.foodproductapp.utility.ComposeFileProvider
 import com.experiment.foodproductapp.viewmodels.ProductCartViewModel
@@ -583,9 +584,9 @@ fun UserDetails(
             actions = {
                 IconButton(
                     onClick = {
-                        navHostControllerLambda().navigate(
-                            Screen.OrderDetails.routeWithData(email)
-                        )
+                        //navHostControllerLambda().navigate(Screen.OrderDetails.routeWithData(email))
+                        userScreenStartDestinationRoute.value = "UserDetailsToOrderDetailsScreen/{email}"
+                        navHostControllerLambda().navigate("UserDetailsToOrderDetailsScreen/${email}")
                     })
                 {
                     Icon(
@@ -595,7 +596,9 @@ fun UserDetails(
                     )
                 }
                 IconButton(onClick = {
-                    navHostControllerLambda().navigate(Screen.Rewards.routeWithData(email))
+                    //navHostControllerLambda().navigate(Screen.Rewards.routeWithData(email))
+                    userScreenStartDestinationRoute.value = "UserDetailsToRewardsScreen/{email}"
+                    navHostControllerLambda().navigate("UserDetailsToRewardsScreen/${email}")
                 }) {
                     Icon(
                         imageVector = Icons.Default.Stars,

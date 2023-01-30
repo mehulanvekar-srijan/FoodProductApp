@@ -1,5 +1,6 @@
 package com.experiment.foodproductapp.views
 
+import android.util.Log
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -17,6 +18,7 @@ import androidx.navigation.NavHostController
 import com.experiment.foodproductapp.R
 import com.experiment.foodproductapp.constants.Screen
 import com.experiment.foodproductapp.constants.ValidationEvent
+import com.experiment.foodproductapp.domain.rootStartDestinationRoute
 import com.experiment.foodproductapp.ui.theme.ChangeBarColors
 import com.experiment.foodproductapp.ui.theme.DarkYellow
 import com.experiment.foodproductapp.ui.theme.Orange
@@ -32,6 +34,9 @@ fun SplashScreenPage(
     splashScreenViewModel: SplashScreenViewModel = koinViewModel(),
     animationDuration: Int = splashScreenViewModel.splashDuration.toInt() - 1000
 ) {
+    navHostControllerLambda().backQueue.forEach {
+        if(it.destination.route != null) Log.d("testBS", "SplashScreenPage: route=${it.destination.route}")
+    }
     val startAnimation = remember { mutableStateOf(false) }
 
     ChangeBarColors(statusColor = Orange, navigationBarColor = DarkYellow)
@@ -75,14 +80,21 @@ fun SplashScreenPage(
         splashScreenViewModel.validationEvents.collect { event ->
             when (event) {
                 is ValidationEvent.Success -> {
-                    navHostControllerLambda().navigate(
-                        Screen.HomeScreen.routeWithData(
-                            splashScreenViewModel.email.value
-                        )
-                    )
+//                    navHostControllerLambda().navigate(
+//                        Screen.HomeScreen.routeWithData(
+//                            splashScreenViewModel.email.value
+//                        )
+//                    )
+//                    {
+//                        popUpTo(Screen.SplashScreen.route) { inclusive = true }
+//                    }
+
+                    navHostControllerLambda().navigate("HomeScreenX/${splashScreenViewModel.email.value}")
                     {
                         popUpTo(Screen.SplashScreen.route) { inclusive = true }
                     }
+
+//                    rootStartDestinationRoute.value = "HomeScreenX/{email}"
                 }
                 is ValidationEvent.Failure -> {
                     navHostControllerLambda().navigate(Screen.SignInScreen.route) {

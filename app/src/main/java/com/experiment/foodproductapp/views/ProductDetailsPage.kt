@@ -1,6 +1,7 @@
 package com.experiment.foodproductapp.views
 
 
+import android.util.Log
 import androidx.compose.animation.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -65,6 +66,9 @@ fun ProductDetailsPage(
     navHostControllerLambda: () -> NavHostController,
     detailsPageViewModel: DetailsPageViewModel = koinViewModel()
 ) {
+    navHostControllerLambda().backQueue.forEach {
+        if(it.destination.route != null) Log.d("testBS", "ProductDetailsPage: route=${it.destination.route}")
+    }
     val likedState = remember { mutableStateOf(false) }
 
     val scrollState = rememberScrollState()
@@ -302,11 +306,7 @@ fun ProductDetailsPage(
             detailsPageViewModel = detailsPageViewModel,
             navHostControllerLambda = navHostControllerLambda,
         ) {
-            navHostControllerLambda().navigate(
-                Screen.ProductCart.routeWithData(
-                    detailsPageViewModel.userEmail.value
-                )
-            )
+            navHostControllerLambda().navigate("ProductToCart/${detailsPageViewModel.userEmail.value}")
         }
     }
 }

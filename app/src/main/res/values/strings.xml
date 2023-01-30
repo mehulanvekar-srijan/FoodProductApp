@@ -1,13 +1,13 @@
 <resources>
     <string name="app_name">BeerBasket</string>
-<!--    SignInpage-->
+    <!--    SignInpage-->
     <string name="sign_in_string">Sign In</string>
     <string name="email_address_string">Email Address</string>
     <string name="password_string">Password</string>
     <string name="create_an_account_string">Create An Account</string>
     <string name="forgot_password_string">Forgot Password?</string>
 
-<!--    SignUpPage-->
+    <!--    SignUpPage-->
     <string name="sign_up_string">Sign Up</string>
     <string name="first_name_string">First Name</string>
     <string name="last_name_string">Last Name</string>
@@ -20,10 +20,10 @@
     <string name="date_of_birth_string">Date of Birth</string>
     <string name="create_account_string">CREATE ACCOUNT</string>
 
-<!--    HomeScreenPage-->
+    <!--    HomeScreenPage-->
     <string name="mrp_rs_string">MRP:Rs</string>
 
-<!--    ForgotPasswordScreen-->
+    <!--    ForgotPasswordScreen-->
     <string name="please_enter_your_registered_email_string">Please enter your registered email</string>
     <string name="email_string">Email</string>
     <string name="email_not_registered_string">Email not registered</string>
@@ -36,7 +36,7 @@
     <string name="set_string">Set</string>
     <string name="invalid_digit">Invalid Digit</string>
 
-<!--    CheckoutPage-->
+    <!--    CheckoutPage-->
     <string-array name="state">
         <item>Goa</item>
         <item>Maharashtra</item>
@@ -57,27 +57,27 @@
     <string name="rs_string">Rs :</string>
     <string name="proceed_to_payment_string">Proceed to Payment</string>
 
-<!--    OrderDetailsPage-->
+    <!--    OrderDetailsPage-->
     <string name="order_details_string">Order Details</string>
     <string name="order_no_string">Order No: #</string>
     <string name="total_items_string">Total Items:</string>
     <string name="there_are_no_items_in_the_cart_string">There are no items in the cart</string>
     <string name="click_here_to_order_string">Click Here to Order</string>
 
-<!--    OrderDescriptionPage-->
+    <!--    OrderDescriptionPage-->
     <string name="rs_dot_string">Rs.</string>
     <string name="item_total_string">Item Total:</string>
     <string name="redeemed_amount_string">Redeemed Amount:</string>
     <string name="amount_paid_string">Amount Paid:</string>
 
-<!--    PaymentScreen-->
+    <!--    PaymentScreen-->
     <string name="order_placed_string">Order Placed !</string>
     <string name="your_order_was_placed_successfully_string">Your Order was Placed Successfully</string>
     <string name="redirecting_you_to_home_page_string">redirecting you to Home Page</string>
     <string name="payment_failed_string">Payment Failed !</string>
     <string name="redirecting_you_to_product_cart_string">redirecting you to product cart</string>
 
-<!--    ProductCart-->
+    <!--    ProductCart-->
     <string name="cart_string">Cart</string>
     <string name="price_string">Price</string>
     <string name="redeem_amount_string">Redeem Amount</string>
@@ -85,10 +85,10 @@
     <string name="final_amount_string">Final Amount</string>
     <string name="checkout_string">CHECKOUT</string>
 
-<!--    ProductDetailsPage-->
+    <!--    ProductDetailsPage-->
     <string name="five_alcohol_string">% Alc</string>
 
-<!--    RewardsPage-->
+    <!--    RewardsPage-->
     <string name="refer_copy_string">http://www.beerbasket.com/ryfagr</string>
     <string name="welcome_to_string">Welcome to</string>
     <string name="rewards_string">Rewards</string>
@@ -111,11 +111,11 @@
     <string name="copy_string">Copy</string>
     <string name="you_have_referred_zero_friends_string">You have referred 0 friends</string>
 
-<!--    UserDetailsPage-->
+    <!--    UserDetailsPage-->
     <string name="profile_string">Profile</string>
     <string name="save_changes_string">Save Changes</string>
 
-<!--    RewardsDetailsPage-->
+    <!--    RewardsDetailsPage-->
     <string name="reward_category_string">Reward Category</string>
     <string name="tap_on_card_to_know_more_string">Tap on Card to know more</string>
     <string name="level_one_string">Level 1</string>
